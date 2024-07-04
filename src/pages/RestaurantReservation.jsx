@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { menus } from "../utils/localDB";
-import { Button, Input, MenuCard } from "../component";
+import { Button, MenuCard, Input } from "../component";
 import { FaCheck } from "react-icons/fa";
-import { Logo, fallback } from "../assets";
+import { Logo, fallback, relatedFallback } from "../assets";
+import { addBooking, clearAllBookings } from "../store/bookingSlice";
 
 export default function RestaurantReservation() {
-  const [selectedMenus, setSelectedMenus] = useState(() => {
-    const savedMenus = localStorage.getItem("selectedMenus");
-    return savedMenus ? JSON.parse(savedMenus) : {};
-  });
-  const location = useLocation();
-  const { restaurant, date, time, people } = location.state || {};
   const SERVICE_CHARGE = 150;
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [phoneError, setPhoneError] = useState('')
+  const [selectedMenus, setSelectedMenus] = useState({});
+  const [isGuest, setIsGuest] = useState(() => {
+    const guestState = localStorage.getItem("guestState");
+    return guestState ? JSON.parse(guestState) : false; // Default to false if not found
+  });
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const user = useSelector((state) => state.auth.userData);
+  const isLoggedIn = !!user;
 
   useEffect(() => {
-    localStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
-  }, [selectedMenus]);
+    localStorage.setItem("guestState", JSON.stringify(isGuest));
+  }, [isGuest]);
 
-  if (!restaurant || !date || !time || !people) {
-    return <div className="container mx-auto p-4 text-center">Loading...</div>;
-  }
+  // Fetch data from location state
+  const { restaurant, date, time, people } = location.state || {};
 
   const handleCheckboxChange = (menu) => {
     setSelectedMenus((prevSelectedMenus) => {
       const isSelected = prevSelectedMenus.hasOwnProperty(menu.id);
-
       if (isSelected) {
         const { [menu.id]: removedItem, ...rest } = prevSelectedMenus;
         return rest;
@@ -61,11 +69,64 @@ export default function RestaurantReservation() {
   };
 
   const totalPrice = calculateTotalPrice();
+
   const handlePayment = () => {
     if (totalPrice > 0) {
-      console.log(totalPrice + SERVICE_CHARGE);
+      if (!phone) {
+        setPhoneError("Please enter phone number");
+        return;
+      }
+  
+      const newBooking = {
+        user: user?.uid || "guest", // Use guest if user is not logged in
+        restaurant,
+        date,
+        time,
+        people,
+        selectedMenus,
+        totalPrice: totalPrice + SERVICE_CHARGE,
+        name: user?.displayName || name, // Use user's name if logged in, otherwise use input name
+        phone,
+      };
+  
+      console.log(newBooking, " booking details");
+      if (!user?.uid) {
+        const guestBookings = JSON.parse(localStorage.getItem("guestBookings")) || [];
+        guestBookings.push(newBooking);
+        localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
+      }
+  
+      dispatch(addBooking(newBooking));
+  
+      if (user?.uid) {
+        navigate("/profile");
+      } else {
+        navigate("/thankyou");
+      }
     }
   };
+  
+
+  const handleLogin = () => {
+    // Save current state to sessionStorage (or localStorage)
+    localStorage.setItem(
+      "redirectState",
+      JSON.stringify({ fromReservation: true, location: location })
+    );
+  
+    // Clear guest bookings stored in local storage
+    localStorage.removeItem("guestBookings");
+  
+    // Clear guest bookings stored in Redux
+    // dispatch(clearAllBookings());
+  
+    navigate("/login");
+  };
+  
+
+  if (!restaurant || !date || !time || !people) {
+    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto">
@@ -84,24 +145,24 @@ export default function RestaurantReservation() {
           <div className="col-span-12 md:col-span-8">
             <h4 className="font-bold text-xl mb-4">Select Menu</h4>
             {menus.map((menu) => (
-              <div key={menu.id} className="flex items-center my-2">
+              <div key={menu?.id} className="flex items-center my-2">
                 <MenuCard
-                  image={menu.image || "fallback_image_url"}
+                  image={menu?.image || relatedFallback}
                   fallbackText={"Image not available"}
-                  name={menu.name || "No Title"}
-                  detail={menu.detail || "No Description"}
-                  duration={menu.duration || "N/A"}
-                  price={menu.price || "N/A"}
-                  type={menu.type || "No Type"}
+                  name={menu?.name || "No Title"}
+                  detail={menu?.detail || "No Description"}
+                  duration={menu?.duration || "N/A"}
+                  price={menu?.price || "N/A"}
+                  type={menu?.type || "No Type"}
                 />
                 <div className="relative ml-12 h-7 w-7">
                   <input
                     type="checkbox"
                     className="appearance-none h-7 w-7 border-4 border-tn_dark rounded-md checked:bg-tn_dark checked:border-transparent focus:ring-tn_dark"
-                    checked={selectedMenus.hasOwnProperty(menu.id)}
+                    checked={selectedMenus.hasOwnProperty(menu?.id)}
                     onChange={() => handleCheckboxChange(menu)}
                   />
-                  {selectedMenus.hasOwnProperty(menu.id) && (
+                  {selectedMenus.hasOwnProperty(menu?.id) && (
                     <span className="absolute left-0 top-0 m-[1px] z-10 w-[26px] h-[26px] rounded-md text-tn_light border-2 border-white">
                       <FaCheck
                         size={16}
@@ -121,7 +182,7 @@ export default function RestaurantReservation() {
                   <img
                     src={
                       restaurant?.profile_image ||
-                      restaurant?.galleries[0].image ||
+                      restaurant?.galleries[0]?.image ||
                       fallback
                     }
                     alt={restaurant?.name}
@@ -171,20 +232,20 @@ export default function RestaurantReservation() {
                           <div className="flex space-x-1 w-4/5 items-center">
                             <div className="size-16 w-1/4">
                               <img
-                                src={menu?.image || "fallback_image_url"}
-                                alt={restaurant?.name}
+                                src={menu?.image || relatedFallback}
+                                alt={menu?.name}
                                 className="object-cover size-16 rounded-md "
                               />
                             </div>
                             <div className="flex flex-col justify-between relative w-3/4">
                               <span className="text-xs text-tn_text_grey opacity-70">
-                                {menu.type}
+                                {menu?.type}
                               </span>
                               <span className="text-lg font-bold ">
-                                {menu.name}
+                                {menu?.name}
                               </span>
                               <span className="text-xs text-tn_dark_field font-medium">
-                                DKK {menu.price * menu.quantity}
+                                DKK {menu?.price * menu?.quantity}
                               </span>
                             </div>
                           </div>
@@ -192,22 +253,24 @@ export default function RestaurantReservation() {
                             <div className="flex items-center p-1 border border-black rounded-2xl text-sm">
                               <button
                                 onClick={() =>
-                                  handleQuantityChange(menu.id, -1)
+                                  handleQuantityChange(menu?.id, -1)
                                 }
                                 style={{ margin: "0 5px" }}
                               >
                                 -
                               </button>
-                              <span>{menu.quantity}</span>
+                              <span>{menu?.quantity}</span>
                               <button
-                                onClick={() => handleQuantityChange(menu.id, 1)}
+                                onClick={() =>
+                                  handleQuantityChange(menu?.id, 1)
+                                }
                                 style={{ margin: "0 5px" }}
                               >
                                 +
                               </button>
                             </div>
                             <span
-                              onClick={() => removeMenu(menu.id)}
+                              onClick={() => removeMenu(menu?.id)}
                               className="cursor-pointer text-white px-1 shadow-sm bg-red-600 rounded-sm ml-2 text-xs"
                             >
                               X
@@ -217,7 +280,9 @@ export default function RestaurantReservation() {
                       </li>
                     ))
                   ) : (
-                    <p className="text-sm text-tn_dark_field">Card is empty. Select menu item first!</p>
+                    <p className="text-sm text-tn_dark_field">
+                      Card is empty. Select menu item first!
+                    </p>
                   )}
                 </ul>
               </div>
@@ -227,16 +292,61 @@ export default function RestaurantReservation() {
               </p>
             </div>
             <div className="mt-6 mb-4">
-              <Input
-                type="text"
-                placeholder="Enter Your Name"
-                className="border-tn_light_grey mb-4"
-              />
-              <Input
-                type="tel"
-                placeholder="Enter Your Phone"
-                className="border-tn_light_grey mb-5"
-              />
+              {!user && (
+                <div className="mb-4">
+                  <h4 className="font-bold text-xl capitalize mb-4">
+                    Continue as Guest or Login
+                  </h4>
+                  <div className="flex space-x-4">
+                    {/* <Button
+                      children="Continue as Guest"
+                      bgColor={`${isGuest ? "bg-tn_dark" : "bg-tn_pink"}`}
+                      onClick={() => setIsGuest(true)}
+                      className="text-white"
+                    /> */}
+                    <Button
+                      children="Login"
+                      onClick={handleLogin}
+                      className={`${
+                        !isGuest ? "bg-tn_dark text-white" : "bg-tn_light_grey"
+                      }`}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {isGuest && !user && (
+                <div className="mb-4">
+                  <h4 className="font-bold text-xl capitalize mb-4">
+                    Book now as guest
+                  </h4>
+                </div>
+              )}
+
+              {(user || isGuest) && (
+                <div className="mb-4">
+                  <h4 className="font-medium text-base capitalize mb-4">
+                    {user ? `Welcome, ${user?.displayName}` : "Guest Details"}
+                  </h4>
+                  {!user && (
+                    <Input
+                      type="text"
+                      placeholder="Enter Your Name"
+                      className="border-tn_light_grey mb-4"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required="true"
+                    />
+                  )}
+                  <Input
+                    type="tel"
+                    placeholder="Enter Your Phone"
+                    className="border-tn_light_grey mb-5"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              )}
 
               <h4 className="font-bold text-xl capitalize mb-4">
                 Terms & Conditions
@@ -259,10 +369,12 @@ export default function RestaurantReservation() {
               <Button
                 children={"Confirm Payment"}
                 className={`w-full ${
-                  totalPrice === 0 ? "opacity-50 cursor-not-allowed" : ""
+                  totalPrice === 0 || !phone
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
                 }`}
                 onClick={handlePayment}
-                disabled={totalPrice === 0}
+                disabled={totalPrice === 0 || !phone}
               />
             </div>
           </div>

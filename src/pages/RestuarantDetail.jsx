@@ -124,8 +124,8 @@ export default function RestuarantDetail() {
             </div>
           </div>
 
-          <div className="col-span-12 md:col-span-3  p-4">
-            <div className="px-4 py-6 rounded-lg shadow-lg">
+          <div className="col-span-12 md:col-span-3 p-1">
+            <div className="px-4 pt-6 pb-8 rounded-lg shadow-lg border border-tn_light_grey">
               <h3 className="text-black text-[26px] font-bold mb-3">
                 For Resrvation
               </h3>

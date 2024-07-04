@@ -16,7 +16,7 @@ const LanguageSelector = () => {
 
   return (
     <div className="flex flex-row items-center">
-      <LuGlobe size={12} />
+      <LuGlobe size={16} />
       <select defaultValue={i18n.language} onChange={onChangeLang} className="outline-none">
         {LANGUAGES.map(({ code, label }) => (
           <option key={code} value={code}>

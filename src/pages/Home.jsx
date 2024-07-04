@@ -27,7 +27,7 @@ export default function Home() {
 
   const { loading, data, error } = useFetch("filter");
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="p-4 text-center container mx-auto">Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const transformedData = data ? transformData(data) : [];

@@ -31,7 +31,7 @@ export default function LogoutBtn({className}) {
   return (
     <>
       <button
-        className={`${className} block px-4 py-2 text-tn_dark hover:bg-gray-200 w-full text-start`}
+        className={`${className} block px-0 py-0 sm:px-4 sm:py-2 text-tn_dark hover:bg-gray-200 w-full text-start`}
         onClick={() => setIsModalOpen(true)}
       >
         Logout

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Logo, fallback, fb, instagram, twitter, youtube } from "../../assets";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSelector from "../LanguageSelector";
 
 const Header = () => {
+  const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
@@ -33,6 +34,17 @@ const Header = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+     // Function to handle click outside
+     const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    // Attach the event listener on mount
+    document.addEventListener("mousedown", handleClickOutside);
+
+   
     if (toggle) {
       document.body.classList.add("overflow-hidden");
     } else {
@@ -41,6 +53,8 @@ const Header = () => {
 
     return () => {
       document.body.classList.remove("overflow-hidden");
+      document.removeEventListener("mousedown", handleClickOutside);
+
     };
   }, [toggle]);
 
@@ -80,7 +94,7 @@ const Header = () => {
                       </span>
                     </div>
                     {isDropdownOpen && (
-                      <div className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10">
+                      <div ref={dropdownRef} className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10">
                         <Link
                           to="/profile"
                           className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
@@ -114,15 +128,15 @@ const Header = () => {
             {toggle && (
               <ul className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0 w-full h-screen duration-200 justify-center z-10 overflow-y-auto">
                 <div className="relative w-full min-h-screen p-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-start">
                     <LuX
                       onClick={() => setToggle((prev) => !prev)}
                       size={24}
-                      className=""
+                      className="mt-3 -ml-1"
                     />
                     {authStatus ? (
                       <li className="inline-block">
-                        <span className="text-tn_dark text-lg font-medium mr-4">
+                        <span className="text-tn_dark text-lg font-medium">
                           <img
                             src={userData?.photoURL || fallback}
                             alt="user profile"
@@ -157,7 +171,7 @@ const Header = () => {
                       <Link to={"/"}>Secure Payment</Link>
                     </li>
                     <li>
-                      <LogoutBtn className="px-0 py-0 inline" />
+                      <LogoutBtn className="inline" />
                     </li>
                   </ul>
 
