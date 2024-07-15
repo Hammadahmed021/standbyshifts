@@ -6,7 +6,7 @@ const SelectOption = forwardRef(function Input(
 ) {
   const id = useId();
   return (
-    <div className={`w-full mx-5 ${className}`}>
+    <div className={`w-full ${className}`}>
       {label && (
         <label className="text-sm font-semibold" htmlFor={id}>
           {label}

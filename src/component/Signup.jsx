@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../component";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { signupUser } from "../store/authSlice";
 
 export default function Signup() {
-  
+  const [isSigning, setIsSigning] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -29,12 +30,32 @@ export default function Signup() {
   //     }
   //   };
 
-  const handleSignup = (data) => {
-    // setError("");
-    console.log(data);
+  // const handleSignup = async (userData) => {
+  //   setIsSigning(true);
+  //   try {
+  //     const response = await dispatch(signupUser(userData)).unwrap();
+  //     console.log("Signup form response:", response);
+  //   } catch (error) {
+  //     console.error("API Signup failed:", error);
+  //   }
+  // };
+
+  const handleSignup = async (userData) => {
+    setIsSigning(true);
+    // const userData = { email, password, fname };
+
+    try {
+      const response = await dispatch(signupUser(userData)).unwrap();
+      console.log("Signup response:", response);
+      // navigate("/");
+    } catch (error) {
+      console.error("API Signup failed:", error.message);
+      setIsSigning(false);
+    }
   };
-  
+
   const password = watch("password");
+
   return (
     <>
       <form onSubmit={handleSubmit(handleSignup)} className="mt-8">
@@ -142,7 +163,9 @@ export default function Signup() {
                 className="mr-2"
                 {...register("terms", { required: true })}
               />
-              <p className="text-sm">I agree to all the Terms and Privacy Policies</p>
+              <p className="text-sm">
+                I agree to all the Terms and Privacy Policies
+              </p>
             </div>
             {errors.terms && (
               <p className="text-red-500 text-xs mt-1">
@@ -151,8 +174,14 @@ export default function Signup() {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button
+            type="submit"
+            className={`w-full ${
+              isSigning ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            disabled={isSigning} // Disable button while signing
+          >
+            {isSigning ? "Registering user..." : "Sign in"}
           </Button>
         </div>
       </form>

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle, FaApple } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { SignUpWithGoogle } from "../service";
-import { login as loginFunc } from "../store/authSlice";
+import { signupUser, login as loginFunc } from "../store/authSlice";
 import { auth } from "../service/firebase";
 
 // const images = [login, signup];
@@ -50,6 +50,7 @@ const Login = () => {
       console.error("Login failed:", error.message);
     }
   };
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen p-2 relative">
       <Link to={"/"}>

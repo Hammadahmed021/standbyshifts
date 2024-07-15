@@ -2,7 +2,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
-  signOut as firebaseSignOut // Rename to avoid conflicts
+  signOut as firebaseSignOut
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -18,9 +18,10 @@ export const SignUpWithGoogle = async () => {
       return;
     }
 
-    const token = credential.accessToken;
     const user = result.user;
-    console.log(user, token);
+    // Get the ID token
+    const token = await user.getIdToken();
+    console.log("user token",token);
     return { user, token };
 
   } catch (error) {
@@ -39,8 +40,10 @@ export const SignupWithEmail = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    console.log(user);
-    return user;
+    // Get the ID token
+    const token = await user.getIdToken();
+    console.log(user, token);
+    return { user, token };
 
   } catch (error) {
     console.error("Error signing in with email:", error);
@@ -58,3 +61,19 @@ export const signOut = async () => {
     throw error; // Propagate the error to be handled by the calling function
   }
 };
+
+
+
+export const testFirebaseAuth = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    const token = await user.getIdToken();
+    console.log("Successfully signed in:", user);
+    console.log("Firebase ID Token:", token);
+  } catch (error) {
+    console.error("Firebase Authentication Error:", error.code, error.message);
+  }
+};
+
+// Replace with your test email and password

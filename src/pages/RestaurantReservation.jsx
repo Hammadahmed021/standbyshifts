@@ -15,14 +15,18 @@ export default function RestaurantReservation() {
   const dispatch = useDispatch();
   const [phoneError, setPhoneError] = useState('')
   const [selectedMenus, setSelectedMenus] = useState({});
-  const [isGuest, setIsGuest] = useState(() => {
-    const guestState = localStorage.getItem("guestState");
-    return guestState ? JSON.parse(guestState) : false; // Default to false if not found
-  });
+  const [isGuest, setIsGuest] = useState(true)
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const user = useSelector((state) => state.auth.userData);
   const isLoggedIn = !!user;
+
+  useEffect(() => {
+    const guestState = localStorage.getItem("guestState");
+    if (guestState) {
+      setIsGuest(JSON.parse(guestState));
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("guestState", JSON.stringify(isGuest));
@@ -281,7 +285,7 @@ export default function RestaurantReservation() {
                     ))
                   ) : (
                     <p className="text-sm text-tn_dark_field">
-                      Card is empty. Select menu item first!
+                      Card is empty.
                     </p>
                   )}
                 </ul>
@@ -315,7 +319,7 @@ export default function RestaurantReservation() {
                 </div>
               )}
 
-              {isGuest && !user && (
+              {isGuest && (
                 <div className="mb-4">
                   <h4 className="font-bold text-xl capitalize mb-4">
                     Book now as guest
@@ -326,7 +330,7 @@ export default function RestaurantReservation() {
               {(user || isGuest) && (
                 <div className="mb-4">
                   <h4 className="font-medium text-base capitalize mb-4">
-                    {user ? `Welcome, ${user?.displayName}` : "Guest Details"}
+                    {user ? `Welcome, ${user?.displayName || user?.user?.name}` : "Guest Details"}
                   </h4>
                   {!user && (
                     <Input

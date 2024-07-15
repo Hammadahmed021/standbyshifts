@@ -57,28 +57,28 @@ const Filter = ({ onFilterChange }) => {
           label="Kitchens"
           value={selectedOptions.kitchens}
           onChange={(e) => handleFilterChange(e, "kitchens")}
-          className="border-r-2 pr-1"
+          className="border-r-2 pr-1 mx-5"
           options={data?.kitchens?.original || []}
         />
         <SelectOption
           label="Atmospheres"
           value={selectedOptions.atmospheres}
           onChange={(e) => handleFilterChange(e, "atmospheres")}
-          className="border-r-2 pr-1"
+          className="border-r-2 pr-1 mx-5"
           options={data?.atmospheres?.original || []}
         />
         <SelectOption
           label="Facilities"
           value={selectedOptions.facilities}
           onChange={(e) => handleFilterChange(e, "facilities")}
-          className="border-r-2 pr-1"
+          className="border-r-2 pr-1 mx-5"
           options={data?.facilities?.original || []}
         />
         <SelectOption
           label="Areas"
           value={selectedOptions.areas}
           onChange={(e) => handleFilterChange(e, "areas")}
-          className="border-r-2 pr-1"
+          className="border-r-2 pr-1 mx-5"
           options={data?.areas?.original || []}
         />
         <SelectOption

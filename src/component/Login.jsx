@@ -3,11 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../component";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { loginUser } from "../store/authSlice";
 
 export default function Login() {
+  const [isSigning, setIsSigning] = useState(false);
+  const [token, setToken] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit, formState: { errors }, } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   // const [error, setError] = useState("");
   // const Login = async (data) => {
   //     setError("");
@@ -23,10 +30,20 @@ export default function Login() {
   //     }
   //   };
 
-  const LoginSubmit = (data) => {
-    // setError("")
-    console.log(data);
+  const LoginSubmit = async (data) => {
+    // let { email, password } = data
+    try {
+      const loginResponse = await dispatch(loginUser(data)).unwrap();
+      console.log("Login Response:", loginResponse);
+      // Handle success, navigate user or update UI
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle error, show error message or retry
+    }
   };
+
+  
+
 
   return (
     <>
@@ -50,8 +67,10 @@ export default function Login() {
               })}
             />
             {errors.email && (
-                <p className="text-red-500 text-xs mt-1">Enter valid email address</p>
-              )}
+              <p className="text-red-500 text-xs mt-1">
+                Enter valid email address
+              </p>
+            )}
           </span>
           <span className="mb-6 block">
             <Input
@@ -64,11 +83,19 @@ export default function Login() {
               })}
             />
             {errors.password && (
-                <p className="text-red-500 text-xs mt-1">Enter corrent password</p>
-              )}
+              <p className="text-red-500 text-xs mt-1">
+                Enter corrent password
+              </p>
+            )}
           </span>
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button
+            type="submit"
+            className={`w-full ${
+              isSigning ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            disabled={isSigning} // Disable button while signing
+          >
+            {isSigning ? "Logging in..." : "Log in"}
           </Button>
         </div>
       </form>

@@ -4,7 +4,7 @@ import { signup, login, Logo } from "../assets";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle, FaApple } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { login as loginFunc } from "../store/authSlice";
+import { signupUser, login as loginFunc } from "../store/authSlice";
 import { SignUpWithGoogle } from "../service";
 import { auth } from "../service/firebase";
 
@@ -47,11 +47,15 @@ const Signup = () => {
       console.error("Login failed:", error.message);
     }
   };
+  
 
   return (
     <div className="container mx-auto flex sm:items-center justify-center min-h-screen p-2 relative flex-col sm:flex-col items-start">
       <Link to={"/"}>
-        <img src={Logo} className="w-fit relative sm:absolute top-4 left-4 mb-8 sm:mb-0" />
+        <img
+          src={Logo}
+          className="w-fit relative sm:absolute top-4 left-4 mb-8 sm:mb-0"
+        />
       </Link>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {/* Left Column: Login Form */}

@@ -127,7 +127,7 @@ export default function RestuarantDetail() {
           <div className="col-span-12 md:col-span-3 p-1">
             <div className="px-4 pt-6 pb-8 rounded-lg shadow-lg border border-tn_light_grey">
               <h3 className="text-black text-[26px] font-bold mb-3">
-                For Resrvation
+                For Reservation
               </h3>
               <form onSubmit={handleSubmit(Reservation)}>
                 <SelectOption
@@ -160,7 +160,7 @@ export default function RestuarantDetail() {
                     required: true,
                   })}
                 />
-                <Button children={'Make Resrvation'} className="w-full mt-4"/>
+                <Button children={'Make Reservation'} className="w-full mt-4"/>
               </form>
               <p className="text-center text-tn_text_grey text-xs mt-2 mb-4">You won’t be charged yet</p>
               <Button children={'See Restaurant’s Menu'} className="w-full border border-black" bgColor="transparnet" textColor="text-black"/>

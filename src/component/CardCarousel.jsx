@@ -112,7 +112,7 @@ const CardCarousel = ({
           ))}
         </Slider>
       )}
-      {data.type === "featured" ? (
+      {/* {data.type === "featured" ? (
         <div className="absolute top-2 right-5 bg-white rounded-full w-7 h-7 flex items-center justify-center">
           <WishlistButton />
         </div>
@@ -120,7 +120,7 @@ const CardCarousel = ({
         <div className="absolute top-2 right-2 bg-white rounded-full w-7 h-7 flex items-center justify-center">
           <WishlistButton />
         </div>
-      )}
+      )} */}
       {data.type === "featured" && (
         <div className="px-2 py-2 absolute bottom-0 left-0 w-full z-10">
           <p className="text-white text-base">{data.location}</p>
