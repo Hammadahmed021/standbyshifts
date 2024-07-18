@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   getIdToken,
   signInWithEmailAndPassword,
+  AuthErrorCodes,
 } from "firebase/auth";
 import { auth } from "../service/firebase";
 
@@ -13,6 +14,7 @@ const initialState = {
   loading: false,
   error: null,
 };
+
 
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
@@ -24,7 +26,7 @@ export const signupUser = createAsyncThunk(
         email,
         password
       );
-
+      
       const user = userCredential.user;
       const token = await getIdToken(user);
 
@@ -53,7 +55,10 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const { email, password, fname, phone } = userData;
+      const { email, password, fname } = userData;
+      console.log("Starting login process...");
+      console.log("Email:", email);
+      console.log("Password:", password);
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -63,18 +68,30 @@ export const loginUser = createAsyncThunk(
       const user = userCredential.user;
       const token = await getIdToken(user);
 
-      const response = await ApiLogin({ email, fname });
+
+      console.log("User Credential:", userCredential);
+
+      const signupData = {
+        email,
+        fname,
+      };
+
+      const response = await ApiLogin({ email });
+      console.log("API Login Response:", response);
 
       return {
         uid: user.uid,
         email: user.email,
-        displayName: response?.displayName || user.displayName,
-        phone: response?.phone || "",
-        photoURL: response?.photoURL || "",
+        displayName: user.displayName,
         token,
         ...response,
       };
     } catch (error) {
+      console.error(
+        "Firebase Authentication Error:",
+        error.code,
+        error.message
+      );
       return rejectWithValue(error.message);
     }
   }
@@ -86,7 +103,7 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.status = true;
-      state.userData = action.payload; // Set userData from action payload
+      state.userData = action.payload.userData; // Set userData from action payload
     },
     logout: (state) => {
       state.status = false;

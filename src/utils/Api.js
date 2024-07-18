@@ -40,20 +40,12 @@ export const Login = async (userData) => {
     const payload = {
       name: fname,
       email,
-      type: 'user',
+      type: "user",
     };
-
-    console.log('Sending login request with payload:', payload);
     const response = await axios.post(`${BASE_URL}login`, payload);
-    console.log('Login response:', response.data);
-
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('API Login request failed with response:', error.response.data);
-    } else {
-      console.error('API Login request failed:', error.message);
-    }
+    console.error("API Login request failed:", error.response);
     throw error;
   }
 };

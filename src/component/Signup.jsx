@@ -41,7 +41,7 @@ export default function Signup() {
   // };
 
   const handleSignup = async (userData) => {
-    setIsSigning(true); 
+    setIsSigning(true);
     // const userData = { email, password, fname };
 
     try {
