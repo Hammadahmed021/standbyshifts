@@ -4,7 +4,6 @@ import {
   createUserWithEmailAndPassword,
   getIdToken,
   signInWithEmailAndPassword,
-  AuthErrorCodes 
 } from "firebase/auth";
 import { auth } from "../service/firebase";
 
@@ -19,18 +18,19 @@ export const signupUser = createAsyncThunk(
   "auth/signupUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const { email, password, fname } = userData;
+      const { email, password, fname, phone } = userData;
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+
       const user = userCredential.user;
       const token = await getIdToken(user);
 
       const signupData = {
+        email,
         fname,
-        token,
       };
 
       const response = await Signup(signupData);
@@ -39,6 +39,7 @@ export const signupUser = createAsyncThunk(
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
+        phone: phone,
         token,
         ...response,
       };
@@ -52,31 +53,28 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const { email, password } = userData;
-      console.log("Starting login process...");
-      console.log("Email:", email);
-      console.log("Password:", password);
+      const { email, password, fname, phone } = userData;
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
+      const token = await getIdToken(user);
 
-      console.log("User Credential:", userCredential);
-
-      const token = await user.getIdToken();
-      console.log("Firebase ID Token:", token);
-
-      const response = await ApiLogin({ token });
-      console.log("API Login Response:", response);
+      const response = await ApiLogin({ email, fname });
 
       return {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName,
+        displayName: response?.displayName || user.displayName,
+        phone: response?.phone || "",
+        photoURL: response?.photoURL || "",
         token,
         ...response,
       };
     } catch (error) {
-      console.error("Firebase Authentication Error:", error.code, error.message);
       return rejectWithValue(error.message);
     }
   }
@@ -88,7 +86,7 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.status = true;
-      state.userData = action.payload.userData; // Set userData from action payload
+      state.userData = action.payload; // Set userData from action payload
     },
     logout: (state) => {
       state.status = false;

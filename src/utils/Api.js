@@ -20,10 +20,11 @@ export const getListDetails = async (url, params) => {
 
 export const Signup = async (userData) => {
   try {
-    const { fname, token } = userData;
+    const { email, fname } = userData;
     const payload = {
       name: fname,
-      token,
+      email,
+      type: "user",
     };
     const response = await axios.post(`${BASE_URL}signup`, payload);
     return response.data;
@@ -35,12 +36,24 @@ export const Signup = async (userData) => {
 
 export const Login = async (userData) => {
   try {
-    const { token } = userData;
-    const payload = { token };
+    const { email, fname } = userData;
+    const payload = {
+      name: fname,
+      email,
+      type: 'user',
+    };
+
+    console.log('Sending login request with payload:', payload);
     const response = await axios.post(`${BASE_URL}login`, payload);
+    console.log('Login response:', response.data);
+
     return response.data;
   } catch (error) {
-    console.error("API Login request failed:", error.response);
+    if (error.response) {
+      console.error('API Login request failed with response:', error.response.data);
+    } else {
+      console.error('API Login request failed:', error.message);
+    }
     throw error;
   }
 };

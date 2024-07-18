@@ -7,7 +7,7 @@ import { loginUser } from "../store/authSlice";
 
 export default function Login() {
   const [isSigning, setIsSigning] = useState(false);
-  const [token, setToken] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -15,7 +15,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  // const [error, setError] = useState("");
+
   // const Login = async (data) => {
   //     setError("");
   //     try {
@@ -31,19 +31,25 @@ export default function Login() {
   //   };
 
   const LoginSubmit = async (data) => {
-    // let { email, password } = data
+    setIsSigning(true); // Assuming you have setIsSigning state
     try {
       const loginResponse = await dispatch(loginUser(data)).unwrap();
       console.log("Login Response:", loginResponse);
       // Handle success, navigate user or update UI
     } catch (error) {
       console.error("Login failed:", error);
+      if (error == "auth/wrong-password") {
+        setError("Password is wrong");
+      } else if (error == "auth/user-not-found") {
+        setError("User does not exist");
+      } else {
+        setError("Login failed. Please try again."); // Generic error message
+      }
       // Handle error, show error message or retry
+    } finally {
+      setIsSigning(false); // Reset signing state
     }
   };
-
-  
-
 
   return (
     <>
@@ -88,6 +94,9 @@ export default function Login() {
               </p>
             )}
           </span>
+          {error && (
+            <p className="text-start text-red-500 text-sm pb-2">{error}</p>
+          )}
           <Button
             type="submit"
             className={`w-full ${

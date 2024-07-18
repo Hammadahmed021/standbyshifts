@@ -13,13 +13,13 @@ export default function RestaurantReservation() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [phoneError, setPhoneError] = useState('')
+  const [phoneError, setPhoneError] = useState("");
   const [selectedMenus, setSelectedMenus] = useState({});
-  const [isGuest, setIsGuest] = useState(true)
+  const [isGuest, setIsGuest] = useState(true);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const user = useSelector((state) => state.auth.userData);
-  const isLoggedIn = !!user;
+  const isLoggedIn = !user;
 
   useEffect(() => {
     const guestState = localStorage.getItem("guestState");
@@ -31,6 +31,13 @@ export default function RestaurantReservation() {
   useEffect(() => {
     localStorage.setItem("guestState", JSON.stringify(isGuest));
   }, [isGuest]);
+
+  useEffect(() => {
+    if (user) {
+      setName(user?.displayName || user?.user?.name || "");
+      setPhone(user?.phone || "");
+    }
+  }, [user]);
 
   // Fetch data from location state
   const { restaurant, date, time, people } = location.state || {};
@@ -80,7 +87,7 @@ export default function RestaurantReservation() {
         setPhoneError("Please enter phone number");
         return;
       }
-  
+
       const newBooking = {
         user: user?.uid || "guest", // Use guest if user is not logged in
         restaurant,
@@ -92,16 +99,17 @@ export default function RestaurantReservation() {
         name: user?.displayName || name, // Use user's name if logged in, otherwise use input name
         phone,
       };
-  
+
       console.log(newBooking, " booking details");
       if (!user?.uid) {
-        const guestBookings = JSON.parse(localStorage.getItem("guestBookings")) || [];
+        const guestBookings =
+          JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
       }
-  
+
       dispatch(addBooking(newBooking));
-  
+
       if (user?.uid) {
         navigate("/profile");
       } else {
@@ -109,7 +117,6 @@ export default function RestaurantReservation() {
       }
     }
   };
-  
 
   const handleLogin = () => {
     // Save current state to sessionStorage (or localStorage)
@@ -117,16 +124,15 @@ export default function RestaurantReservation() {
       "redirectState",
       JSON.stringify({ fromReservation: true, location: location })
     );
-  
+
     // Clear guest bookings stored in local storage
     localStorage.removeItem("guestBookings");
-  
+
     // Clear guest bookings stored in Redux
     // dispatch(clearAllBookings());
-  
+
     navigate("/login");
   };
-  
 
   if (!restaurant || !date || !time || !people) {
     return <div className="container mx-auto p-4 text-center">Loading...</div>;
@@ -284,9 +290,7 @@ export default function RestaurantReservation() {
                       </li>
                     ))
                   ) : (
-                    <p className="text-sm text-tn_dark_field">
-                      Card is empty.
-                    </p>
+                    <p className="text-sm text-tn_dark_field">Card is empty.</p>
                   )}
                 </ul>
               </div>
@@ -319,18 +323,20 @@ export default function RestaurantReservation() {
                 </div>
               )}
 
-              {isGuest && (
+              {/* {isGuest && (
                 <div className="mb-4">
                   <h4 className="font-bold text-xl capitalize mb-4">
                     Book now as guest
                   </h4>
                 </div>
-              )}
+              )} */}
 
               {(user || isGuest) && (
                 <div className="mb-4">
                   <h4 className="font-medium text-base capitalize mb-4">
-                    {user ? `Welcome, ${user?.displayName || user?.user?.name}` : "Guest Details"}
+                    {user
+                      ? `Welcome, ${user?.userData?.displayName || user?.user?.name}`
+                      : "Guest Details"}
                   </h4>
                   {!user && (
                     <Input
@@ -342,13 +348,17 @@ export default function RestaurantReservation() {
                       required="true"
                     />
                   )}
-                  <Input
-                    type="tel"
-                    placeholder="Enter Your Phone"
-                    className="border-tn_light_grey mb-5"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
+                  {user ? (
+                    user?.phone || phone
+                  ) : (
+                    <Input
+                      type="tel"
+                      placeholder="Enter Your Phone Number"
+                      className="border-tn_light_grey mb-5"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  )}
                 </div>
               )}
 
@@ -373,12 +383,16 @@ export default function RestaurantReservation() {
               <Button
                 children={"Confirm Payment"}
                 className={`w-full ${
-                  totalPrice === 0 || !phone
+                
+                  totalPrice === 0
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
                 onClick={handlePayment}
-                disabled={totalPrice === 0 || !phone}
+                disabled={
+                 
+                  totalPrice === 0
+                }
               />
             </div>
           </div>

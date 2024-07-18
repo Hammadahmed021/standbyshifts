@@ -78,12 +78,12 @@ const Header = () => {
                   <div className="relative inline-block">
                     <div className="flex items-center cursor-pointer">
                       <img
-                        src={userData?.photoURL || fallback}
+                        src={userData?.photoURL || userData?.userData?.photo || fallback}
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
                       />
                       <span className="text-tn_dark text-base font-medium ml-2">
-                        {userData?.displayName || userData?.user?.name}
+                        {userData?.userData?.displayName || userData?.user?.name}
                       </span>
                       <span className="p-2" onClick={toggleDropdown}>
                         {isDropdownOpen ? (
