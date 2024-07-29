@@ -35,8 +35,8 @@ const Search = ({ data, className }) => {
             type="text"
             placeholder={"Search Restaurants by Name.."}
             className={`px-2 w-full outline-none`}
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
           />
          
           <LuSearch

@@ -83,10 +83,10 @@ export default function RestaurantReservation() {
 
   const handlePayment = () => {
     if (totalPrice > 0) {
-      if (!phone) {
-        setPhoneError("Please enter phone number");
-        return;
-      }
+      // if (!phone) {
+      //   setPhoneError("Please enter phone number");
+      //   return;
+      // }
 
       const newBooking = {
         user: user?.uid || "guest", // Use guest if user is not logged in
@@ -335,7 +335,7 @@ export default function RestaurantReservation() {
                 <div className="mb-4">
                   <h4 className="font-medium text-base capitalize mb-4">
                     {user
-                      ? `Welcome, ${user?.userData?.displayName || user?.user?.name}`
+                      ? `Welcome, ${user?.userData?.displayName || user?.user?.name || user?.displayName}`
                       : "Guest Details"}
                   </h4>
                   {!user && (

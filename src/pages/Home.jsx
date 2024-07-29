@@ -25,12 +25,12 @@ export default function Home() {
     setFilterValues(selectedOptions);
   };
 
-  const { loading, data, error } = useFetch("filter");
+    const { loading, data, error } = useFetch("filter");
 
-  if (loading) return <p className="p-4 text-center container mx-auto">Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <p className="p-4 text-center container mx-auto">Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
-  const transformedData = data ? transformData(data) : [];
+    const transformedData = data ? transformData(data) : [];
 
   const hasMore = visibleCards < transformedData.length;
   const hasAllMore = visibleAllCards < transformedData.length;

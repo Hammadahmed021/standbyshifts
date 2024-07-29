@@ -101,7 +101,7 @@ const CardCarousel = ({
         />
       ) : (
         <Slider {...settings}>
-          {data.images.map((image, index) => (
+          {data?.images?.map((image, index) => (
             <div key={index}>
               <img
                 className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
@@ -149,7 +149,7 @@ const CardCarousel = ({
           </div>
           <p className="text-black text-sm font-light">{data.cuisine}</p>
           <ul className="flex items-center mt-1">
-            {data.timeline.map((item, index) => (
+            {data?.timeline?.map((item, index) => (
               <li className="text-black text-sm font-medium" key={index}>
                 {item}
                 {index < data.timeline.length - 1 && <span>,&nbsp;</span>}

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { auth } from "../service/firebase";
 
-const BASE_URL = "https://virtualrealitycreators.com/tablenow-backend/api/";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 
 export const getListDetails = async (url, params) => {

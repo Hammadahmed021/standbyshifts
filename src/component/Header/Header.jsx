@@ -83,7 +83,7 @@ const Header = () => {
                         className="w-8 h-8 rounded-full"
                       />
                       <span className="text-tn_dark text-base font-medium ml-2">
-                        {userData?.userData?.displayName || userData?.user?.name}
+                        {userData?.userData?.displayName || userData?.user?.name || userData?.displayName}
                       </span>
                       <span className="p-2" onClick={toggleDropdown}>
                         {isDropdownOpen ? (

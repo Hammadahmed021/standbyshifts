@@ -4,7 +4,7 @@ import { FaCheck } from "react-icons/fa";
 const Checkbox = ({ label, options, selectedOptions, onChange }) => (
   <div className="my-4">
     <p className="text-sm font-semibold">{label}</p>
-    {options.map((option) => (
+    {options?.map((option) => (
       <label key={option.id} className="flex items-center my-2">
         <div className="relative">
           <input

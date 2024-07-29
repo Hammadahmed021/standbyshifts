@@ -6,14 +6,13 @@ function App() {
   const location = useLocation();
   const hideHeaderFooterRoutes = ["/login", "/signup"];
   const userData = useSelector((state) => state.auth.userData);
-  console.log(userData, 'app js');
-  
+  console.log(userData, "app js");
+
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(
     location.pathname
   );
   return (
     <>
-
       <ScrollToTop />
       {!shouldHideHeaderFooter && <Header />}
       <main className="relative">

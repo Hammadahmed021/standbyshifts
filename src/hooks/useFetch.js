@@ -9,10 +9,14 @@ const useFetch = (url) => {
   const error = useSelector((state) => state.home.error);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(fetchApiData(url));
-    }
-  }, [url, data, dispatch]);
+    const fetchData = async () => {
+      if (!data && !loading && !error) {
+        dispatch(fetchApiData(url));
+      }
+    };
+
+    fetchData();
+  }, [url, data, loading, error, dispatch]);
 
   return { data, error, loading };
 };
