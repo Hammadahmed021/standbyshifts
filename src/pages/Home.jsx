@@ -31,6 +31,7 @@ export default function Home() {
     if (error) return <p>Error: {error.message}</p>;
 
     const transformedData = data ? transformData(data) : [];
+    console.log(transformedData, 'home comp');
 
   const hasMore = visibleCards < transformedData.length;
   const hasAllMore = visibleAllCards < transformedData.length;

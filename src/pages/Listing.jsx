@@ -1,40 +1,76 @@
-import React, { useState } from "react";
-import { CardCarousel, LoadMore, SelectOption, Checkbox } from "../component";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
-import { transformData } from "../utils/HelperFun";
-import { facilities, city, cuisine, guest, times } from "../utils/localDB";
+import CardCarousel from "../component/CardCarousel";
+import LoadMore from "../component/Loadmore";
+import Checkbox from "../component/Checkbox";
+import SelectOption from "../component/SelectOption";
+import { fetchFilteredData } from "../utils/Api";
+import { transformSingleImageData } from "../utils/HelperFun";
 
 const Listing = () => {
+  const location = useLocation();
+  const [filters, setFilters] = useState({
+    kitchen_ids: [location.state?.filters?.kitchens],
+    endTime: location.state?.filters?.endTime,
+    startTime: location.state?.filters?.startTime,
+    // facility_ids: [...location.state?.filters?.kitchens],
+    // menu_type_ids: [...location.state?.filters?.kitchens],
+  });
+  const [filteredData, setFilteredData] = useState([]);
   const [visibleCards, setVisibleCards] = useState(6);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedGuest, setSelectedGuest] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedCuisine, setSelectedCuisine] = useState([]);
-  const [selectedFacilities, setSelectedFacilities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const { loading, data, error } = useFetch("filter");
+  const { data: filterData } = useFetch("data-for-filter");
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  useEffect(() => {
+    const fetchFilteredDataAndUpdateState = async () => {
+      if (!filterData) return;
+      const requestBody = {
+        kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
+        // facility_ids: filters.facility_ids || [],
+        // menu_type_ids: filters.menu_type_ids || [],
+        // person: filters.person || 1,
+        startTime: filters.startTime ,
+        endTime: filters.endTime,
+      };
+      console.log(requestBody, "requestBody");
+      try {
+        setLoading(true);
+        const result = await fetchFilteredData(requestBody);
+        console.log(result, "result");
+        setFilteredData(Array.isArray(result) ? result : [result]);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const transformedData = data ? transformData(data) : [];
-  const handleLoadMore = () => {
-    setVisibleCards((prevVisibleCards) => prevVisibleCards + 4);
+    fetchFilteredDataAndUpdateState();
+  }, [filters, filterData]);
+
+  const handleLoadMore = () => setVisibleCards((prev) => prev + 4);
+  const hasMore = visibleCards < filteredData.length;
+
+  const updateFilter = (category, id) => {
+    setFilters((prev) => {
+      const newCategoryIds = prev[category] || [];
+      return {
+        ...prev,
+        [category]: newCategoryIds.includes(id)
+          ? newCategoryIds.filter((item) => item !== id)
+          : [...newCategoryIds, id],
+      };
+    });
   };
 
-  const hasMore = visibleCards < transformedData.length;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error loading data.</p>;
 
-  const handleCuisineChange = (id) => {
-    setSelectedCuisine((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-    );
-  };
-
-  const handleFacilitiesChange = (id) => {
-    setSelectedFacilities((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
-  };
+  // Ensure the data is always an array before transformation
+  const transformedData = transformSingleImageData(filteredData);
 
   return (
     <>
@@ -54,81 +90,100 @@ const Listing = () => {
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 md:col-span-3 p-2">
             <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark ">City</h3>
-              <SelectOption
-                // label="Select City"
-                options={city}
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="mx-0 py-1 px-2 border border-tn_light_grey rounded-md mt-3"
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Cuisine</h3>
+              <h3 className="text-2xl font-bold text-tn_dark">Kitchens</h3>
               <Checkbox
-                // label="Select Cuisine"
-                showLabel={cuisine}
-                options={cuisine}
-                selectedOptions={selectedCuisine}
-                onChange={handleCuisineChange}
+                options={filterData?.kitchens || []}
+                selectedOptions={filters.kitchen_ids || []}
+                onChange={(id) => updateFilter("kitchen_ids", id)}
               />
             </div>
             <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Arrival Time</h3>
-              <SelectOption
-                // label="Time"
-                options={times}
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-                className="mx-0 py-1 px-2 border border-tn_light_grey rounded-md mt-3"
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">
-                Persons/Guests
-              </h3>
-              <SelectOption
-                // label="Number of Guests"
-                options={guest}
-                value={selectedGuest}
-                onChange={(e) => setSelectedGuest(e.target.value)}
-                className="mx-0 py-1 px-2 border border-tn_light_grey rounded-md mt-3"
-              />
-            </div>
-
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">
-                Available Facilities
-              </h3>
+              <h3 className="text-2xl font-bold text-tn_dark">Facilities</h3>
               <Checkbox
-                // label="Select Facilities"
-                showLabel={facilities}
-                options={facilities}
-                selectedOptions={selectedFacilities}
-                onChange={handleFacilitiesChange}
+                options={filterData?.facilities || []}
+                selectedOptions={filters.facility_ids || []}
+                onChange={(id) => updateFilter("facility_ids", id)}
+              />
+            </div>
+            <div className="block mb-6">
+              <h3 className="text-2xl font-bold text-tn_dark">Menu Types</h3>
+              <Checkbox
+                options={filterData?.menuTypes || []}
+                selectedOptions={filters.menu_type_ids || []}
+                onChange={(id) => updateFilter("menu_type_ids", id)}
+              />
+            </div>
+            <div className="block mb-6">
+              <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
+              <SelectOption
+                options={Array.from({ length: 5 }, (_, i) => ({
+                  id: i + 1,
+                  name: (i + 1).toString(),
+                }))}
+                value={filters.person || 1}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, person: e.target.value }))
+                }
+              />
+            </div>
+            <div className="block mb-6">
+              <h3 className="text-2xl font-bold text-tn_dark">Start Time</h3>
+              <SelectOption
+                options={[
+                  { id: "05:00:00", name: "05:00 PM" },
+                  { id: "06:00:00", name: "06:00 PM" },
+                  { id: "07:00:00", name: "07:00 PM" },
+                  { id: "08:00:00", name: "08:00 PM" },
+                  { id: "09:00:00", name: "09:00 PM" },
+                ]}
+                value={filters.startTime || "05:00:00"}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, startTime: e.target.value }))
+                }
+              />
+            </div>
+            <div className="block mb-6">
+              <h3 className="text-2xl font-bold text-tn_dark">End Time</h3>
+              <SelectOption
+                options={[
+                  { id: "05:00:00", name: "05:00 PM" },
+                  { id: "06:00:00", name: "06:00 PM" },
+                  { id: "07:00:00", name: "07:00 PM" },
+                  { id: "08:00:00", name: "08:00 PM" },
+                  { id: "09:00:00", name: "09:00 PM" },
+                ]}
+                value={filters.endTime || "10:00:00"}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, endTime: e.target.value }))
+                }
               />
             </div>
           </div>
           <div className="col-span-12 md:col-span-9">
-            {/* Content for the 9-column section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
-              {transformedData.slice(0, visibleCards).map((data) => (
-                <CardCarousel
-                  key={data.id}
-                  id={data.id}
-                  title={data.title}
-                  location={data.location}
-                  images={data.images}
-                  cuisine={data.cuisine}
-                  timeline={data.timeline}
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
+                  {transformedData.slice(0, visibleCards).map((data) => (
+                    <CardCarousel
+                      key={data.id}
+                      id={data.id}
+                      title={data.title}
+                      location={data.location}
+                      images={data.images}
+                      cuisine={data.cuisine}
+                      timeline={data.timeline}
+                    />
+                  ))}
+                </div>
+                <LoadMore
+                  onLoadMore={handleLoadMore}
+                  hasMore={hasMore}
+                  className={"mt-5"}
                 />
-              ))}
-            </div>
-            <LoadMore
-              onLoadMore={handleLoadMore}
-              hasMore={hasMore}
-              className={"mt-5"}
-            />
+              </>
+            )}
           </div>
         </div>
       </div>

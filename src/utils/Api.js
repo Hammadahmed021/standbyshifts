@@ -49,3 +49,23 @@ export const Login = async (userData) => {
     throw error;
   }
 };
+
+
+// Function to fetch filtered data
+export const fetchFilteredData = async (filters) => {
+  try {
+    const response = await axios.post(`${BASE_URL}filter`, filters, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data; // Adjust based on actual response structure
+  } catch (error) {
+    console.error("Error fetching filtered data:", error);
+    throw error;
+  }
+};
+
+
+

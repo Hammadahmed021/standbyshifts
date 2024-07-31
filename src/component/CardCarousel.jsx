@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import { WishlistButton } from "../component";
+import { fallback } from "../assets";
 
 // Skeleton Loader Component
 const SkeletonLoader = () => {
@@ -96,7 +97,7 @@ const CardCarousel = ({
       {isSingleImage ? (
         <img
           className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
-          src={data.images[0]}
+          src={data.images[0] || fallback}
           alt={`Slide 1`}
         />
       ) : (
@@ -105,7 +106,7 @@ const CardCarousel = ({
             <div key={index}>
               <img
                 className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
-                src={image}
+                src={image || fallback}
                 alt={`Slide ${index + 1}`}
               />
             </div>

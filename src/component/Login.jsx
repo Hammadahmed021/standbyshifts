@@ -90,7 +90,7 @@ export default function Login() {
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
-                Enter corrent password
+                Enter correct password
               </p>
             )}
           </span>

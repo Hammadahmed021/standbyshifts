@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import { Home, About, Login, RestuarantDetail, Partner, PrivacyPolicy, TradingCondition, Press, FAQs, Contact, Listing, RestaurantReservation, Signup, Profile, Thankyou } from "../pages";
+import { Home, About, Login, RestuarantDetail, Partner, PrivacyPolicy, TradingCondition, Press, FAQs, Contact, Listing, RestaurantReservation, Signup, Profile, Thankyou, ResDetail } from "../pages";
 import { AuthLayout } from "../component";
 
 const router = createBrowserRouter([
@@ -37,6 +37,11 @@ const router = createBrowserRouter([
         path: "/restaurant/:id",
         element: <RestuarantDetail />,
       },
+      {
+        path: "/resdetail/:id",
+        element: <ResDetail />,
+      },
+      
       {
         path: "/partner",
         element: <Partner />,
