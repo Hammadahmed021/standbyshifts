@@ -28,7 +28,7 @@ const Listing = () => {
     const fetchFilteredDataAndUpdateState = async () => {
       if (!filterData) return;
       const requestBody = {
-        kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
+        // kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
         // facility_ids: filters.facility_ids || [],
         // menu_type_ids: filters.menu_type_ids || [],
         // person: filters.person || 1,
@@ -71,6 +71,30 @@ const Listing = () => {
 
   // Ensure the data is always an array before transformation
   const transformedData = transformSingleImageData(filteredData);
+  console.log(transformedData, 'transformedData');
+
+  const generateTimeOptionsWithAMPM = () => {
+    const options = [];
+    const formatTime = (hours, minutes) => {
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hourIn12 = hours % 12 || 12; // Convert to 12-hour format
+      return {
+        id: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`,
+        name: `${hourIn12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`
+      };
+    };
+  
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        options.push(formatTime(hour, minute));
+      }
+    }
+  
+    return options;
+  };
+  
+  const timeOptions = generateTimeOptionsWithAMPM();
+  
 
   return (
     <>
@@ -129,13 +153,7 @@ const Listing = () => {
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Start Time</h3>
               <SelectOption
-                options={[
-                  { id: "05:00:00", name: "05:00 PM" },
-                  { id: "06:00:00", name: "06:00 PM" },
-                  { id: "07:00:00", name: "07:00 PM" },
-                  { id: "08:00:00", name: "08:00 PM" },
-                  { id: "09:00:00", name: "09:00 PM" },
-                ]}
+                options={timeOptions}
                 value={filters.startTime || "05:00:00"}
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, startTime: e.target.value }))
@@ -145,13 +163,7 @@ const Listing = () => {
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">End Time</h3>
               <SelectOption
-                options={[
-                  { id: "05:00:00", name: "05:00 PM" },
-                  { id: "06:00:00", name: "06:00 PM" },
-                  { id: "07:00:00", name: "07:00 PM" },
-                  { id: "08:00:00", name: "08:00 PM" },
-                  { id: "09:00:00", name: "09:00 PM" },
-                ]}
+               options={timeOptions}
                 value={filters.endTime || "10:00:00"}
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, endTime: e.target.value }))

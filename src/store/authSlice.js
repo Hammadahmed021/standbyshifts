@@ -33,6 +33,7 @@ export const signupUser = createAsyncThunk(
       const signupData = {
         email,
         fname,
+        password
       };
 
       const response = await Signup(signupData);
@@ -76,7 +77,7 @@ export const loginUser = createAsyncThunk(
         fname,
       };
 
-      const response = await ApiLogin({ email });
+      const response = await ApiLogin({ email, password });
       console.log("API Login Response:", response);
 
       return {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearBookingById, clearAllBookings } from "../store/bookingSlice";
 import { updateUserData } from "../store/authSlice";
@@ -11,9 +11,11 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
-  const bookings = useSelector((state) =>
-    state.bookings.filter((booking) => booking.user === userData?.uid)
-  );
+  const bookings = useSelector((state) => state.bookings);
+  
+  const userBookings = useMemo(() => {
+    return bookings.filter((booking) => booking.user === userData?.uid);
+  }, [bookings, userData?.uid]);
 
   const [displayedBookings, setDisplayedBookings] = useState(4); // Display first 4 bookings
   const [selectedFile, setSelectedFile] = useState(null);
@@ -121,14 +123,15 @@ const Profile = () => {
           </button>
         </div>
 
-        {bookings.length === 0 ? (
+        {userBookings.length === 0 ? (
           <p className="text-lg text-tn_dark">No bookings to display.</p>
         ) : (
-          bookings.slice(0, displayedBookings).map((booking) => (
-            <div key={booking.id} className="border rounded-md p-4 mb-4">
+          userBookings.slice(0, displayedBookings).map((booking, index) => (
+            <div key={`${booking.id}-${index}`} className="border rounded-md p-4 mb-4">
               <img
                 src={booking.restaurant?.photoURL || fallback}
                 className="w-10 h-10 rounded-sm"
+                alt="restaurant"
               />
               <p>
                 <strong>Restaurant:</strong> {booking.restaurant.name}
@@ -140,23 +143,21 @@ const Profile = () => {
                 <strong>Time:</strong> {booking.time}
               </p>
               <p>
-                <strong>People:</strong> {booking.people}
+                <strong>People:</strong> {booking.seats}
               </p>
               <p>
                 <strong>Total Price:</strong> ${booking.totalPrice}
               </p>
               <div className="flex">
                 <Link
-                  to={{
-                    pathname: `/restaurant/${booking.restaurant.id}`,
-                  }}
+                  to={`/resdetail/${booking.restaurant.id}`}
                   className="bg-green-500 text-white px-4 py-2 rounded-md inline-block mt-2"
                 >
                   Rebook
                 </Link>
                 <button
                   onClick={() => handleClearBooking(booking.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                  className="bg-red-500 text-white px-4 py-2 rounded-md ml-2"
                 >
                   Clear Booking
                 </button>
@@ -164,7 +165,7 @@ const Profile = () => {
             </div>
           ))
         )}
-        {displayedBookings < bookings.length && (
+        {displayedBookings < userBookings.length && (
           <LoadMore onLoadMore={handleLoadMore} hasMore={true} />
         )}
       </div>

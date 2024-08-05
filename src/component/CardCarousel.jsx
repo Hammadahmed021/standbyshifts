@@ -144,6 +144,8 @@ const CardCarousel = ({
             className="font-bold text-md text-tn_dark ellipsis"
             style={{ maxWidth: "100%" }}
           >
+            {/* had to change this after api alteration */}
+            {/* <Link to={`/restaurant/${data.id}`} className="hover:opacity-80"> */}
             <Link to={`/restaurant/${data.id}`} className="hover:opacity-80">
               {data.title}
             </Link>

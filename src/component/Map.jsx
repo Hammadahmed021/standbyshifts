@@ -27,9 +27,9 @@ const MapComponent = ({ latitude, longitude }) => {
   const center = (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : defaultCoordinates;
 
   useEffect(() => {
-    console.log('Latitude:', latitude);
-    console.log('Longitude:', longitude);
-    console.log('Center Coordinates:', center);
+    // console.log('Latitude:', latitude);
+    // console.log('Longitude:', longitude);
+    // console.log('Center Coordinates:', center);
   }, [latitude, longitude, center]);
 
   return (

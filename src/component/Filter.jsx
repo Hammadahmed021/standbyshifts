@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 const Filter = ({ onFilterChange }) => {
   const [selectedOptions, setSelectedOptions] = useState({
-    kitchens: [],
+    kitchens: [1], // Default to first kitchen
     atmospheres: [],
     facilities: [],
     areas: [],
     menuTypes: [],
     person: 1,
-    startTime: "05:00:00",
-    endTime: "10:00:00",
+    startTime: "00:00:00",
+    endTime: "01:00:00",
   });
 
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Filter = ({ onFilterChange }) => {
     if (data) {
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
-        kitchens: data.kitchens || [],
+        kitchens: prevSelectedOptions.kitchens.length > 0 ? prevSelectedOptions.kitchens : [data.kitchens?.[0]?.id || 1],
         atmospheres: data.atmospheres || [],
         facilities: data.facilities || [],
         areas: data.areas || [],
@@ -31,7 +31,7 @@ const Filter = ({ onFilterChange }) => {
     }
   }, [data]);
 
-  const handleFilterChange = (e, category) => {
+  const handleFilterChange = (e, category) => { 
     const value = e.target.value;
     setSelectedOptions((prevSelectedOptions) => ({
       ...prevSelectedOptions,
@@ -43,11 +43,33 @@ const Filter = ({ onFilterChange }) => {
     });
   };
 
+  const handleTimeChange = (e, isStartTime) => {
+    const value = e.target.value;
+    let newEndTime = selectedOptions.endTime;
+
+    if (isStartTime) {
+      const [hours, minutes] = value.split(":").map(Number);
+      const newHours = (hours + 1) % 24;
+      newEndTime = `${newHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+
+      setSelectedOptions((prevSelectedOptions) => ({
+        ...prevSelectedOptions,
+        startTime: value,
+        endTime: newEndTime,
+      }));
+    } else {
+      setSelectedOptions((prevSelectedOptions) => ({
+        ...prevSelectedOptions,
+        endTime: value,
+      }));
+    }
+  };
+
   const handleSearch = () => {
     navigate("/listing", { state: { filters: selectedOptions } });
-    console.log(selectedOptions, 'filter options');
+    console.log(selectedOptions, "filter options");
   };
-  
+
   if (loading) return <p>Loading...</p>;
 
   const personOptions = [
@@ -58,14 +80,27 @@ const Filter = ({ onFilterChange }) => {
     { id: 5, name: "5" },
   ];
 
-  const timeOptions = [
-    { id: "05:00:00", name: "05:00 PM" },
-    { id: "06:00:00", name: "06:00 PM" },
-    { id: "07:00:00", name: "07:00 PM" },
-    { id: "08:00:00", name: "08:00 PM" },
-    { id: "09:00:00", name: "09:00 PM" },
-    { id: "10:00:00", name: "10:00 PM" },
-  ];
+  const generateTimeOptionsWithAMPM = () => {
+    const options = [];
+    const formatTime = (hours, minutes) => {
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hourIn12 = hours % 12 || 12; // Convert to 12-hour format
+      return {
+        id: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`,
+        name: `${hourIn12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`
+      };
+    };
+
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        options.push(formatTime(hour, minute));
+      }
+    }
+
+    return options;
+  };
+
+  const timeOptions = generateTimeOptionsWithAMPM();
 
   return (
     <div className="flex">
@@ -77,20 +112,6 @@ const Filter = ({ onFilterChange }) => {
           className="border-r-2 pr-1 mx-5"
           options={data?.kitchens || []}
         />
-        {/* <SelectOption
-          label="Atmospheres"
-          value={selectedOptions.atmospheres}
-          onChange={(e) => handleFilterChange(e, "atmospheres")}
-          className="border-r-2 pr-1 mx-5"
-          options={data?.atmospheres || []}
-        /> */}
-        {/* <SelectOption
-          label="Facilities"
-          value={selectedOptions.facilities}
-          onChange={(e) => handleFilterChange(e, "facilities")}
-          className="border-r-2 pr-1 mx-5"
-          options={data?.facilities || []}
-        /> */}
         <SelectOption
           label="Areas"
           value={selectedOptions.areas}
@@ -115,14 +136,14 @@ const Filter = ({ onFilterChange }) => {
         <SelectOption
           label="Start Time"
           value={selectedOptions.startTime}
-          onChange={(e) => handleFilterChange(e, "startTime")}
+          onChange={(e) => handleTimeChange(e, true)}
           className="border-r-2 pr-1 mx-5"
           options={timeOptions}
         />
         <SelectOption
           label="End Time"
           value={selectedOptions.endTime}
-          onChange={(e) => handleFilterChange(e, "endTime")}
+          onChange={(e) => handleTimeChange(e, false)}
           options={timeOptions}
         />
       </div>

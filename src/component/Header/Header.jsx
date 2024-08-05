@@ -27,7 +27,8 @@ const Header = () => {
   const userData = useSelector((state) => state.auth.userData);
   const isDesktop = useMediaQuery("(max-width: 991px)");
   const [toggle, setToggle] = useState(false);
-  const { data } = useFetch("filter"); // Example useFetch hook, adjust as needed
+  const { data } = useFetch("hotels"); // Example useFetch hook, adjust as needed
+  // console.log(data, 'data search');
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };

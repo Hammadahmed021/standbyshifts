@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useMediaQuery from "../hooks/useQuery";
-import Filter from "../component/Filter";
-import { Button, CardCarousel, LoadMore, Carousel, Search } from "../component";
+import { Button, CardCarousel, LoadMore, Carousel, Search, Filter } from "../component";
 import { Fav, App, storeBtn, fallback } from "../assets";
 import { localDB } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
@@ -25,7 +24,9 @@ export default function Home() {
     setFilterValues(selectedOptions);
   };
 
-    const { loading, data, error } = useFetch("filter");
+    const { loading, data, error } = useFetch("hotels");
+    console.log(data, 'data');
+    
 
     if (loading) return <p className="p-4 text-center container mx-auto">Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;

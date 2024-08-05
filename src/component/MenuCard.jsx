@@ -32,7 +32,7 @@ const MenuCard  = ({ image, fallbackText, name, detail, duration, price, type })
           
           <div className="flex justify-between items-center">
           <p className=" text-sm">{duration}</p>
-          <p className=" text-lg font-bold">${price}</p>
+          <p className=" text-lg font-bold">Dkk   {price}</p>
           </div>
           
         </div>

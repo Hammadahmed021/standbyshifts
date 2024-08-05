@@ -53,7 +53,7 @@ const Gallery = ({ images, address, name, loading }) => {
                   <img
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className="w-full h-auto object-cover cursor-pointer rounded-2xl"
+                    className="w-full sm:h-64 object-cover cursor-pointer rounded-2xl h-auto"
                     onClick={() => handleOpenLightbox(index)}
                   />
                 </div>
@@ -65,7 +65,7 @@ const Gallery = ({ images, address, name, loading }) => {
                 <img
                   src={image}
                   alt={`Image ${index + 4}`}
-                  className="w-full h-auto object-cover cursor-pointer rounded-2xl"
+                  className="w-full sm:h-64 object-cover cursor-pointer rounded-2xl h-auto"
                   onClick={() => handleOpenLightbox(index + 3)}
                 />
               </div>

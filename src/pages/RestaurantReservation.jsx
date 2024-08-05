@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { menus } from "../utils/localDB";
+// import { menus } from "../utils/localDB";
 import { Button, MenuCard, Input } from "../component";
 import { FaCheck } from "react-icons/fa";
 import { Logo, fallback, relatedFallback } from "../assets";
 import { addBooking, clearAllBookings } from "../store/bookingSlice";
+import { fetchBookings } from "../utils/Api";
 
 export default function RestaurantReservation() {
-  const SERVICE_CHARGE = 150;
+  // const SERVICE_CHARGE = 150;
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [phoneError, setPhoneError] = useState("");
   const [selectedMenus, setSelectedMenus] = useState({});
+  const [curMenus, setCurMenus] = useState({});
   const [isGuest, setIsGuest] = useState(true);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isSigning, setIsSigning] = useState(false);
+
   const user = useSelector((state) => state.auth.userData);
   const isLoggedIn = !user;
+
+  const { restaurant, date, time, seats, hotel_id } = location.state || {};
 
   useEffect(() => {
     const guestState = localStorage.getItem("guestState");
@@ -40,7 +46,6 @@ export default function RestaurantReservation() {
   }, [user]);
 
   // Fetch data from location state
-  const { restaurant, date, time, people } = location.state || {};
 
   const handleCheckboxChange = (menu) => {
     setSelectedMenus((prevSelectedMenus) => {
@@ -72,16 +77,25 @@ export default function RestaurantReservation() {
     });
   };
 
+  // const calculateTotalPrice = () => {
+  //   return Object.values(selectedMenus).reduce(
+  //     (total, menu) => total + menu.price_per_person * menu.quantity,
+  //     0
+  //   );
+  // };
+
   const calculateTotalPrice = () => {
-    return Object.values(selectedMenus).reduce(
-      (total, menu) => total + menu.price * menu.quantity,
+    const menuTotal = Object.values(selectedMenus).reduce(
+      (total, menu) => total + menu.price_per_person * menu.quantity,
       0
     );
+    return menuTotal * (seats || 1); // Multiply by number of seats, default to 1 if seats is undefined
   };
 
   const totalPrice = calculateTotalPrice();
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
+    setIsSigning(true);
     if (totalPrice > 0) {
       // if (!phone) {
       //   setPhoneError("Please enter phone number");
@@ -93,22 +107,37 @@ export default function RestaurantReservation() {
         restaurant,
         date,
         time,
-        people,
+        seats,
         selectedMenus,
-        totalPrice: totalPrice + SERVICE_CHARGE,
+        totalPrice: totalPrice,
         name: user?.displayName || name, // Use user's name if logged in, otherwise use input name
         phone,
       };
+      const booking = {
+        hotel_id,
+        seats,
+        time,
+        date,
+      };
 
       console.log(newBooking, " booking details");
+      console.log(booking, " booking details");
       if (!user?.uid) {
         const guestBookings =
           JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
       }
-
-      dispatch(addBooking(newBooking));
+      try {
+        const result = await fetchBookings(booking);
+        console.log(result, "booking");
+         dispatch(addBooking(newBooking));
+      } catch (error) {
+        console.log(error, "error while sending bookings");
+        throw new Error("something went wrong");
+      } finally {
+        setIsSigning(false);
+      }
 
       if (user?.uid) {
         navigate("/profile");
@@ -134,9 +163,37 @@ export default function RestaurantReservation() {
     navigate("/login");
   };
 
-  if (!restaurant || !date || !time || !people) {
+  if (!restaurant || !date || !time || !seats) {
     return <div className="container mx-auto p-4 text-center">Loading...</div>;
   }
+  console.log(restaurant, "restaurant");
+
+  useEffect(() => {
+    checkMenu();
+  }, [date]);
+
+  const checkMenu = () => {
+    if (restaurant?.calendars?.length > 0) {
+      const matchingCalendar = restaurant.calendars.find(
+        (calendar) => calendar.date === date
+      );
+      console.log(matchingCalendar, "matchingCalendar");
+      if (matchingCalendar.date == date) {
+        setCurMenus(matchingCalendar.menus);
+      } else {
+        setCurMenus([]); // Clear menus if none are found for the selected date
+      }
+    } else {
+      setCurMenus([]); // Clear menus if calendars are not available
+    }
+  };
+  // useEffect(() => {
+  //   // Extract and store prices when menus change
+  //   const prices = curMenus.map((menu) => menu.price_per_person || "N/A");
+  //   console.log(prices, 'price');
+  //   setMenuPrices(prices);
+  // }, [curMenus]);
+  console.log(selectedMenus, "selectedMenus");
 
   return (
     <div className="container mx-auto">
@@ -154,35 +211,43 @@ export default function RestaurantReservation() {
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 md:col-span-8">
             <h4 className="font-bold text-xl mb-4">Select Menu</h4>
-            {menus.map((menu) => (
-              <div key={menu?.id} className="flex items-center my-2">
-                <MenuCard
-                  image={menu?.image || relatedFallback}
-                  fallbackText={"Image not available"}
-                  name={menu?.name || "No Title"}
-                  detail={menu?.detail || "No Description"}
-                  duration={menu?.duration || "N/A"}
-                  price={menu?.price || "N/A"}
-                  type={menu?.type || "No Type"}
-                />
-                <div className="relative ml-12 h-7 w-7">
-                  <input
-                    type="checkbox"
-                    className="appearance-none h-7 w-7 border-4 border-tn_dark rounded-md checked:bg-tn_dark checked:border-transparent focus:ring-tn_dark"
-                    checked={selectedMenus.hasOwnProperty(menu?.id)}
-                    onChange={() => handleCheckboxChange(menu)}
+
+            {curMenus.length > 0 ? (
+              curMenus?.map((menu) => (
+                <div key={menu.id} className="flex items-center my-2">
+                  <MenuCard
+                    image={menu.image || relatedFallback}
+                    fallbackText={"Image not available"}
+                    name={menu.title || "No Title"}
+                    detail={menu.description || "No Description"}
+                    duration={menu.meal_type || "N/A"}
+                    price={menu.price_per_person || "N/A"}
+                    type={
+                      menu.menu_types.map((type) => type.name).join(", ") ||
+                      "No Type"
+                    }
                   />
-                  {selectedMenus.hasOwnProperty(menu?.id) && (
-                    <span className="absolute left-0 top-0 m-[1px] z-10 w-[26px] h-[26px] rounded-md text-tn_light border-2 border-white">
-                      <FaCheck
-                        size={16}
-                        className="mx-auto absolute left-[3px] top-[3px]"
-                      />
-                    </span>
-                  )}
+                  <div className="relative ml-12 h-7 w-7">
+                    <input
+                      type="checkbox"
+                      className="appearance-none h-7 w-7 border-4 border-tn_dark rounded-md checked:bg-tn_dark checked:border-transparent focus:ring-tn_dark"
+                      checked={selectedMenus.hasOwnProperty(menu.id)}
+                      onChange={() => handleCheckboxChange(menu)}
+                    />
+                    {selectedMenus.hasOwnProperty(menu.id) && (
+                      <span className="absolute left-0 top-0 m-[1px] z-10 w-[26px] h-[26px] rounded-md text-tn_light border-2 border-white">
+                        <FaCheck
+                          size={16}
+                          className="mx-auto absolute left-[3px] top-[3px]"
+                        />
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No menus available.</p>
+            )}
           </div>
 
           <div className="col-span-12 md:col-span-4">
@@ -225,12 +290,12 @@ export default function RestaurantReservation() {
                 </p>
                 <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
                   <span className="underline">Number of People:</span>{" "}
-                  <span>{people}</span>
+                  <span>{seats}</span>
                 </p>
-                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
+                {/* <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
                   <span className="underline">Service Charge:</span>
-                  <span>${SERVICE_CHARGE}</span>
-                </p>
+                  <span>Dkk{SERVICE_CHARGE}</span>
+                </p> */}
               </div>
               <div className="border-b border-b-tn_light_grey py-4">
                 <h4 className="font-bold text-xl capitalize mb-4">Dishes</h4>
@@ -243,24 +308,24 @@ export default function RestaurantReservation() {
                             <div className="size-16 w-1/4">
                               <img
                                 src={menu?.image || relatedFallback}
-                                alt={menu?.name}
+                                alt={menu?.title}
                                 className="object-cover size-16 rounded-md "
                               />
                             </div>
                             <div className="flex flex-col justify-between relative w-3/4">
                               <span className="text-xs text-tn_text_grey opacity-70">
-                                {menu?.type}
+                                {menu?.meal_type}
                               </span>
                               <span className="text-lg font-bold ">
-                                {menu?.name}
+                                {menu?.title}
                               </span>
                               <span className="text-xs text-tn_dark_field font-medium">
-                                DKK {menu?.price * menu?.quantity}
+                                DKK {menu?.price_per_person * menu?.quantity}
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2 w-1/5">
-                            <div className="flex items-center p-1 border border-black rounded-2xl text-sm">
+                          <div className="flex items-center space-x-2 w-1/5 justify-end">
+                            {/* <div className="flex items-center p-1 border border-black rounded-2xl text-sm">
                               <button
                                 onClick={() =>
                                   handleQuantityChange(menu?.id, -1)
@@ -278,7 +343,7 @@ export default function RestaurantReservation() {
                               >
                                 +
                               </button>
-                            </div>
+                            </div> */}
                             <span
                               onClick={() => removeMenu(menu?.id)}
                               className="cursor-pointer text-white px-1 shadow-sm bg-red-600 rounded-sm ml-2 text-xs"
@@ -296,7 +361,7 @@ export default function RestaurantReservation() {
               </div>
               <p className="text-base text-tn_dark_field font-semibold flex justify-between items-center mt-4">
                 <span>Total (DKK)</span>
-                <span>DKK {`${calculateTotalPrice() + SERVICE_CHARGE}`}</span>
+                <span>DKK {`${calculateTotalPrice()}`}</span>
               </p>
             </div>
             <div className="mt-6 mb-4">
@@ -335,7 +400,11 @@ export default function RestaurantReservation() {
                 <div className="mb-4">
                   <h4 className="font-medium text-base capitalize mb-4">
                     {user
-                      ? `Welcome, ${user?.userData?.displayName || user?.user?.name || user?.displayName}`
+                      ? `Welcome, ${
+                          user?.userData?.displayName ||
+                          user?.user?.name ||
+                          user?.displayName
+                        }`
                       : "Guest Details"}
                   </h4>
                   {!user && (
@@ -381,18 +450,12 @@ export default function RestaurantReservation() {
                 dolore utemien.
               </p>
               <Button
-                children={"Confirm Payment"}
+                children={isSigning ? "Payment..." : "Confirm Payment"}
                 className={`w-full ${
-                
-                  totalPrice === 0
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
+                  totalPrice === 0 ? "opacity-50 cursor-not-allowed" : ""
+                } ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
                 onClick={handlePayment}
-                disabled={
-                 
-                  totalPrice === 0
-                }
+                disabled={totalPrice === 0 || isSigning}
               />
             </div>
           </div>

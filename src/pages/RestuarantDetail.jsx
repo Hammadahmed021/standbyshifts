@@ -1,67 +1,179 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import { useForm } from "react-hook-form";
 import {
   Button,
   CardCarousel,
   Gallery,
   MapComponent,
-  MenuCard,
-  RelatedCard,
   SelectOption,
 } from "../component";
-import { dates, menus, people, times } from "../utils/localDB";
 import { fallback } from "../assets";
-import { useForm } from "react-hook-form";
 
-export default function RestuarantDetail() {
+export default function ResDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data, loading, error } = useFetch("filter");
+  const { data, loading, error } = useFetch("hotels");
   const [card, setCard] = useState(null);
   const [relatedRestaurants, setRelatedRestaurants] = useState([]);
-  const { register, handleSubmit } = useForm();
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [availableSeats, setAvailableSeats] = useState([]);
+  const { register, handleSubmit, watch, resetField, setValue } = useForm();
 
-  
+  const selectedDate = watch("date");
+  const selectedTime = watch("time");
+  const selectedSeats = watch("seats");
+
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     if (!data) return;
 
     const foundCard = data.find((card) => card.id === parseInt(id, 10));
+    // console.log(foundCard, "foundCard");
 
     if (foundCard) {
       setCard(foundCard);
 
-      const foundKitchens = foundCard.kitchens.map((kitchen) => kitchen.name);
-
+      const foundKitchens =
+        foundCard.kitchens?.map((kitchen) => kitchen.name) || [];
       const filteredRestaurants = data.filter(
         (restaurant) =>
           restaurant.id !== parseInt(id, 10) &&
-          restaurant.kitchens.some((kitchen) =>
+          restaurant.kitchens?.some((kitchen) =>
             foundKitchens.includes(kitchen.name)
           )
       );
-
-      const sortedRestaurants = filteredRestaurants.slice(0, 4); // Show only latest 4
-
-      setRelatedRestaurants(sortedRestaurants);
+      setRelatedRestaurants(filteredRestaurants.slice(0, 4));
+    } else {
+      setCard(null);
     }
   }, [data, id]);
 
-  if (!card)
-    return <div className="container mx-auto p-4 text-center">Loading...</div>;
-  console.log(card, 'restaurant details');
-  const Reservation = (formData) => {
-    const { date, time, people } = formData;
+  useEffect(() => {
+    if (selectedDate && card?.calendars) {
+      const dateCalendar = card.calendars.find(
+        (calendar) => calendar.date === selectedDate
+      );
+      console.log(dateCalendar, "dateCalendar");
+
+      if (dateCalendar) {
+        const times = dateCalendar.calendar_details.map((detail) => ({
+          name: detail.time,
+          id: detail.time,
+        }));
+        console.log(times, "times");
+
+        setAvailableTimes(times || []);
+        resetField("time");
+        resetField("seats");
+        setAvailableSeats([]);
+
+        if (times.length === 1) {
+          setValue("time", times[0].id);
+        }
+      } else {
+        setAvailableTimes([]);
+      }
+    }
+  }, [selectedDate, card, resetField, setValue]);
+
+  useEffect(() => {
+    if (selectedTime && selectedDate && card?.calendars) {
+      const dateCalendar = card.calendars.find(
+        (calendar) => calendar.date === selectedDate
+      );
+      console.log(dateCalendar, "dateCalendar");
+
+      if (dateCalendar) {
+        const timeDetail = dateCalendar.calendar_details.find(
+          (detail) => detail.time === selectedTime
+        );
+        if (timeDetail) {
+          const seats = Array.from(
+            { length: timeDetail.seats },
+            (_, index) => index + 1
+          ).map((seat) => ({
+            name: seat,
+            label: seat,
+            id: seat,
+          }));
+
+          setAvailableSeats(seats);
+
+          if (seats.length === 1) {
+            setValue("seats", seats[0].id);
+          }
+        } else {
+          setAvailableSeats([]);
+        }
+      }
+    }
+  }, [selectedTime, selectedDate, card, setValue]);
+
+  useEffect(() => {
+    if (card?.calendars && card.calendars.length === 1) {
+      setValue("date", card.calendars[0].date);
+    }
+  }, [card, setValue]);
+
+  const onSubmit = (formData) => {
+    const { date, time, seats } = formData;
     navigate(`/reservation/${id}`, {
-      state: { restaurant: card, date, time, people },
+      state: { hotel_id: card.id, restaurant: card, date, time, seats },
     });
   };
 
+  if (loading)
+    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+  if (error)
+    return <div className="container mx-auto p-4 text-center">{error}</div>;
+  if (!card)
+    return (
+      <div className="container mx-auto p-4 text-center">
+        Restaurant not found.
+      </div>
+    );
+
+  const futureDates = card.calendars.filter(
+    (calendar) => new Date(calendar.date) >= new Date(today) 
+  );
+  console.log(futureDates, "futureDates");
+
+  function extractFacilitiesNames(card) {
+    const facilityNames = new Set();
+
+    // Extract from calendars -> calendar_details
+    card.calendars?.forEach((calendar) => {
+      calendar.menus?.forEach((menu) => {
+        menu.facilities?.forEach((facility) => {
+          if (facility.name) facilityNames.add(facility.name);
+        });
+      });
+    });
+    return Array.from(facilityNames); // Convert Set to Array
+  }
+
+  function extractCuisineNames(card) {
+    const facilityNames = new Set();
+
+    // Extract from calendars -> calendar_details
+    card.calendars?.forEach((calendar) => {
+      calendar.menus?.forEach((menu) => {
+        menu.kitchens?.forEach((facility) => {
+          if (facility.name) facilityNames.add(facility.name);
+        });
+      });
+    });
+    return Array.from(facilityNames); // Convert Set to Array
+  }
+
   return (
     <>
-      <div className="container mx-auto p-4 ">
+      <div className="container mx-auto p-4">
         <Gallery
-          images={card.galleries.map((gallery) => gallery.image)}
+          images={card.galleries?.map((gallery) => gallery.image) || [fallback]}
           address={card.address}
           name={card.name}
         />
@@ -74,50 +186,49 @@ export default function RestuarantDetail() {
               <div className="col-span-12 md:col-span-6">
                 <h4 className="text-[17px] font-bold mb-1">About</h4>
                 <p className="text-sm pr-5 mb-6">
-                  {/* Example placeholder text */}
-                  Check out OBLU SELECT Lobigili, where idyllic tropical vistas
-                  meet nature-inspired designs. Picture a secluded, adults-only
-                  setting with modern accommodations, private pools, and amazing
-                  views. Exciting excursions like snorkeling, diving, and
-                  fishing are just steps away from the beach access.
+                  {card.description || "No description available."}
                 </p>
                 <h4 className="text-[17px] font-bold mb-1">Social links</h4>
                 <ul>
-                  <li>one</li>
-                  <li>one</li>
+                  {card.socialLinks?.map((link, index) => (
+                    <li key={index}>{link}</li>
+                  )) || <li>No social links available.</li>}
                 </ul>
               </div>
               <div className="col-span-12 md:col-span-3">
                 <h4 className="text-[17px] font-bold mb-1">Cuisine</h4>
                 <p className="mb-6 text-sm">
-                  {card?.kitchens.map((name) => name.name).join(", ") ||
-                    "No cuisine information available"}
+                {extractCuisineNames(card).join(", ") ||
+                    "No cuisine available"}
                 </p>
                 <h4 className="text-[17px] font-bold mb-1">Meals</h4>
-                <p className="mb-6 text-sm">Lunch & Dinner</p>
+                <p className="mb-6 text-sm">
+                  {card.meals || "No meal information available."}
+                </p>
                 <h4 className="text-[17px] font-bold mb-1">Contact</h4>
                 <p className="mb-6 text-sm">
-                  {card?.phone || "No contact information available"}
+                  {card.phone || "No contact information available"}
                 </p>
               </div>
               <div className="col-span-12 md:col-span-3">
                 <h4 className="text-[17px] font-bold mb-1">Opening Hours</h4>
-                <p className="mb-6 text-sm">7:30 AM - 8:30 PM</p>
+                <p className="mb-6 text-sm">
+                  {card.openingHours || "No opening hours available."}
+                </p>
                 <h4 className="text-[17px] font-bold mb-1">Features</h4>
                 <p className="mb-6 text-sm">
-                  {card?.atmospheres
-                    .map((atmosphere) => atmosphere.name)
-                    .join(", ") || "No features available"}
+                  {extractFacilitiesNames(card).join(", ") ||
+                    "No facilities available"}
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-12 gap-4 mt-4 overflow-hidden">
               <div className="">
-                <h4 className="text-[17px] font-bold mb-1">location</h4>
+                <h4 className="text-[17px] font-bold mb-1">Location</h4>
                 <div className="w-[800px] h-[250px]">
                   <MapComponent
-                    latitude={card?.latitude}
-                    longitude={card?.longitude}
+                    latitude={card.latitude}
+                    longitude={card.longitude}
                   />
                 </div>
               </div>
@@ -129,47 +240,91 @@ export default function RestuarantDetail() {
               <h3 className="text-black text-[26px] font-bold mb-3">
                 For Reservation
               </h3>
-              <form onSubmit={handleSubmit(Reservation)}>
-                <SelectOption
-                  label="Select Date"
-                  options={dates}
-                  className="mb-2 mx-auto"
-                  selectClassName="ml-0"
-                  style={{border:'1px solid #DDDDDD', padding: '5px', fontSize: '14px', borderRadius: '5px'}}
-                  {...register("date", {
-                    required: true,
-                  })}
-                />
-                <SelectOption
-                  label="Select Time"
-                  options={times}
-                  className="mb-2 mx-auto"
-                  selectClassName="ml-0"
-                  style={{border:'1px solid #DDDDDD', padding: '5px', fontSize: '14px', borderRadius: '5px'}}
-                  {...register("time", {
-                    required: true,
-                  })}
-                />
-                <SelectOption
-                  label="Number of People"
-                  options={people}
-                  className="mb-2 mx-auto"
-                  selectClassName="ml-0"
-                  style={{border:'1px solid #DDDDDD', padding: '5px', fontSize: '14px', borderRadius: '5px'}}
-                  {...register("people", {
-                    required: true,
-                  })}
-                />
-                <Button children={'Make Reservation'} className="w-full mt-4"/>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {futureDates.length > 0 ? (
+                  <>
+                    <SelectOption
+                      label="Date"
+                      className="mb-6 mx-auto"
+                      options={
+                        futureDates.map((calendar) => ({
+                          name: calendar.date,
+                          id: calendar.date,
+                        })) || []
+                      }
+                      {...register("date", { required: true })}
+                      style={{
+                        border: "1px solid #DDDDDD",
+                        padding: "5px",
+                        fontSize: "14px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    {availableTimes.length > 0 ? (
+                      <>
+                        <SelectOption
+                          label="Time"
+                          className="mb-6 mx-auto"
+                          options={availableTimes || []}
+                          {...register("time", { required: true })}
+                          style={{
+                            border: "1px solid #DDDDDD",
+                            padding: "5px",
+                            fontSize: "14px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                        {availableSeats.length > 0 ? (
+                          <SelectOption
+                            label="Seats"
+                            className="mb-6 mx-auto"
+                            options={availableSeats || []}
+                            {...register("seats", { required: true })}
+                            style={{
+                              border: "1px solid #DDDDDD",
+                              padding: "5px",
+                              fontSize: "14px",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        ) : (
+                          <p className="text-sm text-red-600">
+                            No seats available for the selected time.
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm text-red-600">
+                        No times available for the selected date.
+                      </p>
+                    )}
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={
+                        !selectedDate || !selectedTime || !selectedSeats
+                      }
+                    >
+                      Book Now
+                    </Button>
+                  </>
+                ) : (
+                  <p className="text-sm text-red-600">No dates available.</p>
+                )}
               </form>
-              <p className="text-center text-tn_text_grey text-xs mt-2 mb-4">You won’t be charged yet</p>
-              <Button children={'See Restaurant’s Menu'} className="w-full border border-black" bgColor="transparnet" textColor="text-black"/>
+              {/* <p className="text-center text-tn_text_grey text-xs mt-2 mb-4">
+                You won’t be charged yet
+              </p>
+              <Button
+                children={"See Restaurant’s Menu"}
+                className="w-full border border-black"
+                bgColor="transparnet"
+                textColor="text-black"
+              /> */}
             </div>
           </div>
         </div>
       </div>
-
-      
       <div className="border-t-2 border-tn_light_grey" />
       <div className="container mx-auto ">
         <div className="mt-14 mb-8">

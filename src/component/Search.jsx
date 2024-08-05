@@ -22,7 +22,7 @@ const Search = ({ data, className }) => {
 
   // Function to navigate to the selected card
   const navigateToCard = (id) => {
-    navigate(`/restaurant/${id}`); // Navigate to restaurant detail page
+    navigate(`/resdetail/${id}`); // Navigate to restaurant detail page
     setSearchTerm(""); // Clear search input after navigation
     setSuggestions([]); // Clear suggestions after navigation
   };

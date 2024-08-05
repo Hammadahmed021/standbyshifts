@@ -20,3 +20,4 @@ export { default as MenuCard } from "./MenuCard";
 export { default as Modal } from "./Modal";
 export { default as LanguageSelector } from "./LanguageSelector";
 export { default as Checkbox } from "./Checkbox";
+export { default as Filter } from "./Filter";

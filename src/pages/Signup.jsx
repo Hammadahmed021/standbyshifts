@@ -38,6 +38,7 @@ const Signup = () => {
               uid: user.uid,
               displayName: user.displayName,
               email: user.email,
+              password: user.password,
             },
           })
         );
