@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 // const TOKEN = "CUso6eFZl1LmPsUGrFMKf15tcS5FElsqOoWXBbtj2PUxRAI5HTVuxOPZyLmL";
 
-export const getListDetails = async (url, params, signal) => {
+export const getListDetails = async (url, params) => {
   try {
     const { data } = await axios.get(`${BASE_URL}${url}`, {
       params: {
@@ -15,7 +15,7 @@ export const getListDetails = async (url, params, signal) => {
       // headers: {
       //   Authorization: `Bearer ${TOKEN}`, // Send the token in the Authorization header
       // },
-      signal
+      // signal
     });
     return data;
   } catch (error) {

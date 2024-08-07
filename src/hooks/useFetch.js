@@ -4,7 +4,10 @@ import { fetchApiData } from "../store/homeSlice";
 
 const useFetch = (url) => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.home.url[url]);
+  const data = useSelector((state) => {
+    console.log(state.home);  // Debugging: Check if the home state exists and is structured correctly
+    return state.home.url ? state.home.url[url] : undefined;
+  });
   const loading = useSelector((state) => state.home.loading);
   const error = useSelector((state) => state.home.error);
 
@@ -14,7 +17,7 @@ const useFetch = (url) => {
     }
   }, [url, data, dispatch]);
 
-  return { data, error, loading };
+  return { data, loading, error };
 };
 
 export default useFetch;

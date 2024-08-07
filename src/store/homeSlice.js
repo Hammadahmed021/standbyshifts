@@ -1,3 +1,5 @@
+// store/homeSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getListDetails } from "../utils/Api";
 
@@ -8,7 +10,7 @@ const initialState = {
 };
 
 export const fetchApiData = createAsyncThunk(
-  'restaurant/fetchApiData',
+  'home/fetchApiData',  // Changed to match slice name
   async (url, { rejectWithValue }) => {
     try {
       const data = await getListDetails(url);
