@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/",
+        path: "/", // Home route at /tablenow-web
         element: <Home />,
       },
       {
@@ -53,7 +53,6 @@ const router = createBrowserRouter([
         path: "/restaurant/:id",
         element: <RestuarantDetail />,
       },
-
       {
         path: "/partner",
         element: <Partner />,
@@ -86,7 +85,6 @@ const router = createBrowserRouter([
         path: "/thankyou",
         element: <Thankyou />,
       },
-
       {
         path: "/reservation/:id",
         element: <RestaurantReservation />,
