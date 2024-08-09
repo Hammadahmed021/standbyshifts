@@ -4,7 +4,7 @@ import { clearBookingById, clearAllBookings } from "../store/bookingSlice";
 import { updateUserData } from "../store/authSlice";
 import { fallback } from "../assets";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { LoadMore } from "../component";
+import { Button, LoadMore } from "../component";
 
 const Profile = () => {
   const { id } = useParams();
@@ -12,10 +12,11 @@ const Profile = () => {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
   const bookings = useSelector((state) => state.bookings);
-  
+
   const userBookings = useMemo(() => {
     return bookings.filter((booking) => booking.user === userData?.uid);
   }, [bookings, userData?.uid]);
+  console.log(userBookings, "userBookings");
 
   const [displayedBookings, setDisplayedBookings] = useState(4); // Display first 4 bookings
   const [selectedFile, setSelectedFile] = useState(null);
@@ -84,7 +85,7 @@ const Profile = () => {
           Welcome {userData?.displayName || userData?.user?.name}
         </p>
         <p className="mt-1 text-base text-tn_dark mb-0">{userData?.email}</p>
-        <div className="mt-4">
+        <div className="mt-4 mb-4 w-1/3">
           <label className="block text-sm font-medium text-gray-700">
             Phone
           </label>
@@ -96,16 +97,12 @@ const Profile = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-        <button
-          onClick={handleSave}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
-        >
-          Save Changes
-        </button>
+
+        <Button children={"Save Changes"} onClick={handleSave} />
       </div>
-      
+
       <div className="container mx-auto p-4">
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-3xl font-extrabold mb-4">
               Your Booking History
@@ -115,52 +112,79 @@ const Profile = () => {
               reservation history here.
             </p>
           </div>
-          <button
+
+          <Button
+            children={" Clear All Bookings"}
+            bgColor="transparent"
+            className="border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
+            textColor="text-black"
             onClick={handleClearAllBookings}
-            className="bg-red-500 text-white px-4 py-2 rounded-md mb-4"
-          >
-            Clear All Bookings
-          </button>
+          />
         </div>
 
         {userBookings.length === 0 ? (
           <p className="text-lg text-tn_dark">No bookings to display.</p>
         ) : (
           userBookings.slice(0, displayedBookings).map((booking, index) => (
-            <div key={`${booking.id}-${index}`} className="border rounded-md p-4 mb-4">
-              <img
-                src={booking.restaurant?.photoURL || fallback}
-                className="w-10 h-10 rounded-sm"
-                alt="restaurant"
-              />
-              <p>
-                <strong>Restaurant:</strong> {booking.restaurant.name}
-              </p>
-              <p>
-                <strong>Date:</strong> {booking.date}
-              </p>
-              <p>
-                <strong>Time:</strong> {booking.time}
-              </p>
-              <p>
-                <strong>People:</strong> {booking.seats}
-              </p>
-              <p>
-                <strong>Total Price:</strong> ${booking.totalPrice}
-              </p>
-              <div className="flex">
+            <div
+              key={`${booking.id}-${index}`}
+              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between"
+            >
+              <div className="flex items-start justify-between">
+                <img
+                  src={
+                    booking.restaurant?.profile_image ||
+                    booking.restaurant?.galleries[0]?.image ||
+                    fallback
+                  }
+                  className="w-20 h-16 rounded-md"
+                  alt="restaurant"
+                />
+                <div className="ml-2">
+                  <p>{booking?.restaurant?.type}</p>
+                  <p className="font-bold text-xl capitalize">
+                    {booking?.restaurant?.name}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
+                  <span className="underline mr-2">Date </span> {booking?.date}
+                </p>
+                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
+                  <span className="underline mr-2">Time</span> {booking?.time}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
+                  <span className="underline mr-2">Number of Persons</span>
+                  {booking?.seats}
+                </p>
+                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
+                  <span className="underline mr-2">Total Price</span> Dkk{" "}
+                  {booking?.totalPrice}
+                </p>
+              </div>
+
+              <div className="flex space-x-2">
                 <Link
-                  to={`/resdetail/${booking.restaurant.id}`}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md inline-block mt-2"
+                  to={`/restaurant/${booking.restaurant.id}`}
+                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-sm px-4 py-2 rounded-lg inline-block duration-200 transition-all"
                 >
                   Rebook
                 </Link>
-                <button
+
+                <Button
+                  children={"X"}
                   onClick={() => handleClearBooking(booking.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md ml-2"
-                >
-                  Clear Booking
-                </button>
+                  textSize={"text-base"}
+                  padX={"px-2"}
+                  padY={"py-0"}
+                  bgColor="transparent"
+                  textColor="text-black"
+                  className="font-bold hover:bg-tn_pink duration-200 transition-all hover:text-white"
+                />
               </div>
             </div>
           ))

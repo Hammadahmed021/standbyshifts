@@ -1,11 +1,11 @@
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "../App";
 import {
   Home,
   About,
   Login,
-  RestuarantDetail,
+  RestaurantDetail,
   Partner,
   PrivacyPolicy,
   TradingCondition,
@@ -17,88 +17,40 @@ import {
   Signup,
   Profile,
   Thankyou,
+  NotFound,
 } from "../pages";
 import { AuthLayout } from "../component";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "/", // Home route at /tablenow-web
-        element: <Home />,
-      },
-      {
-        path: "/login",
-        element: (
-          <AuthLayout authentication={false}>
-            <Login />
-          </AuthLayout>
-        ),
-      },
-      {
-        path: "/signup",
-        element: (
-          <AuthLayout authentication={false}>
-            <Signup />
-          </AuthLayout>
-        ),
-      },
-      {
-        path: "/about",
-        element: <About />,
-      },
-      {
-        path: "/restaurant/:id",
-        element: <RestuarantDetail />,
-      },
-      {
-        path: "/partner",
-        element: <Partner />,
-      },
-      {
-        path: "/privacy-policy",
-        element: <PrivacyPolicy />,
-      },
-      {
-        path: "/terms-of-service",
-        element: <TradingCondition />,
-      },
-      {
-        path: "/press",
-        element: <Press />,
-      },
-      {
-        path: "/faq",
-        element: <FAQs />,
-      },
-      {
-        path: "/contact",
-        element: <Contact />,
-      },
-      {
-        path: "/listing",
-        element: <Listing />,
-      },
-      {
-        path: "/thankyou",
-        element: <Thankyou />,
-      },
-      {
-        path: "/reservation/:id",
-        element: <RestaurantReservation />,
-      },
-      {
-        path: "/profile",
-        element: (
-          <AuthLayout authentication={true}>
-            <Profile />
-          </AuthLayout>
-        ),
-      },
-    ],
-  },
-]);
+// Determine base path based on environment
+const baseURL = import.meta.env.MODE === 'production'
+  ? import.meta.env.VITE_BASE_URL_PRODUCTION
+  : import.meta.env.VITE_BASE_URL_LOCAL;
 
-export default router;
+function BaseRouter() {
+  return (
+    <BrowserRouter basename={baseURL}>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route index element={<Home />} />
+          <Route path="login" element={<AuthLayout authentication={false}><Login /></AuthLayout>} />
+          <Route path="signup" element={<AuthLayout authentication={false}><Signup /></AuthLayout>} />
+          <Route path="about" element={<About />} />
+          <Route path="restaurant/:id" element={<RestaurantDetail />} />
+          <Route path="partner" element={<Partner />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms-of-service" element={<TradingCondition />} />
+          <Route path="press" element={<Press />} />
+          <Route path="faq" element={<FAQs />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="listing" element={<Listing />} />
+          <Route path="thankyou" element={<Thankyou />} />
+          <Route path="reservation/:id" element={<RestaurantReservation />} />
+          <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default BaseRouter;

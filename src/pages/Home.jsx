@@ -152,7 +152,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container mx-auto ">
+      <div className="container mx-auto">
         <div className="bg-appbanner sm:h-[439px] h-[220px] my-16 bg-no-repeat bg-cover px-2 lg:px-8 flex flex-wrap items-center justify-center sm:justify-between bg-right">
           <div className="w-2/5 h-full pt-4 hidden lg:block">
             <img

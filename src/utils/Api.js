@@ -98,7 +98,7 @@ export const fetchFilteredData = async (filters) => {
 
 // Function to fetch bookings data
 
-export const fetchBookings = async (booking) => {
+export const fetchBookings = async (booking, token) => {
   console.log("Booking object before API call:", booking);
   try {
     const response = await axios.post(
@@ -106,7 +106,7 @@ export const fetchBookings = async (booking) => {
       booking,
       {
         headers: {
-          Authorization: `Bearer ${TOKEN}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       }

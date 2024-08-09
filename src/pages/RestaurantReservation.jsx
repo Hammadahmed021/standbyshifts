@@ -119,7 +119,7 @@ export default function RestaurantReservation() {
         time,
         date,
       };
-
+      const token = user?.token;
       console.log(newBooking, " booking details");
       console.log(booking, " booking details");
       if (!user?.uid) {
@@ -127,11 +127,14 @@ export default function RestaurantReservation() {
           JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
+        // localStorage.setItem("lastBookingRestaurant", newBooking);
+        // console.log(newBooking, 'newBooking');
+        
       }
       try {
-        const result = await fetchBookings(booking);
+        const result = await fetchBookings(booking, token);
         console.log(result, "booking");
-         dispatch(addBooking(newBooking));
+        dispatch(addBooking(newBooking));
       } catch (error) {
         console.log(error, "error while sending bookings");
         throw new Error("something went wrong");

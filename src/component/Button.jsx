@@ -5,11 +5,14 @@ export default function Button({
     bgColor = 'bg-tn_pink',
     textColor = 'text-white',
     type = 'button',
+    textSize = 'text-lg',
+    padX = 'px-4',
+    padY = 'py-3',
     className = '',
     ...props
 }) {
   return (
-    <button className={`px-4 py-3 rounded-lg text-lg ${className} ${bgColor} ${textColor}`} {...props}>
+    <button className={`${padX} ${padY} rounded-lg ${textSize} ${className} ${bgColor} ${textColor}`} {...props}>
         {children}
     </button>
   )

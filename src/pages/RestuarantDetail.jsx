@@ -11,7 +11,7 @@ import {
 } from "../component";
 import { fallback } from "../assets";
 
-export default function ResDetail() {
+export default function RestaurantDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, loading, error } = useFetch("hotels");
@@ -31,7 +31,6 @@ export default function ResDetail() {
     if (!data) return;
 
     const foundCard = data.find((card) => card.id === parseInt(id, 10));
-    // console.log(foundCard, "foundCard");
 
     if (foundCard) {
       setCard(foundCard);
@@ -56,22 +55,20 @@ export default function ResDetail() {
       const dateCalendar = card.calendars.find(
         (calendar) => calendar.date === selectedDate
       );
-      console.log(dateCalendar, "dateCalendar");
 
       if (dateCalendar) {
         const times = dateCalendar.calendar_details.map((detail) => ({
           name: detail.time,
           id: detail.time,
         }));
-        console.log(times, "times");
 
         setAvailableTimes(times || []);
         resetField("time");
         resetField("seats");
         setAvailableSeats([]);
 
-        if (times.length === 1) {
-          setValue("time", times[0].id);
+        if (times.length > 0) {
+          setValue("time", times[0].id); // Automatically select first available time
         }
       } else {
         setAvailableTimes([]);
@@ -84,7 +81,6 @@ export default function ResDetail() {
       const dateCalendar = card.calendars.find(
         (calendar) => calendar.date === selectedDate
       );
-      console.log(dateCalendar, "dateCalendar");
 
       if (dateCalendar) {
         const timeDetail = dateCalendar.calendar_details.find(
@@ -102,8 +98,8 @@ export default function ResDetail() {
 
           setAvailableSeats(seats);
 
-          if (seats.length === 1) {
-            setValue("seats", seats[0].id);
+          if (seats.length > 0) {
+            setValue("seats", seats[0].id); // Automatically select first available seats
           }
         } else {
           setAvailableSeats([]);
@@ -113,10 +109,15 @@ export default function ResDetail() {
   }, [selectedTime, selectedDate, card, setValue]);
 
   useEffect(() => {
-    if (card?.calendars && card.calendars.length === 1) {
-      setValue("date", card.calendars[0].date);
+    if (card?.calendars && card.calendars.length > 0) {
+      const firstDate = card.calendars.find(
+        (calendar) => new Date(calendar.date) >= new Date(today)
+      );
+      if (firstDate) {
+        setValue("date", firstDate.date); // Automatically select first available date
+      }
     }
-  }, [card, setValue]);
+  }, [card, setValue, today]);
 
   const onSubmit = (formData) => {
     const { date, time, seats } = formData;
@@ -137,9 +138,8 @@ export default function ResDetail() {
     );
 
   const futureDates = card.calendars.filter(
-    (calendar) => new Date(calendar.date) >= new Date(today) 
+    (calendar) => new Date(calendar.date) >= new Date(today)
   );
-  console.log(futureDates, "futureDates");
 
   function extractFacilitiesNames(card) {
     const facilityNames = new Set();
@@ -305,7 +305,7 @@ export default function ResDetail() {
                         !selectedDate || !selectedTime || !selectedSeats
                       }
                     >
-                      Book Now
+                      Make a Reservation
                     </Button>
                   </>
                 ) : (
