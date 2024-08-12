@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SelectOption, Button } from "./index";
+import { SelectOption, Button, Loader } from "./index";
 import useFetch from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 
@@ -70,7 +70,7 @@ const Filter = ({ onFilterChange }) => {
     console.log(selectedOptions, "filter options");
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p><Loader /></p>;
 
   const personOptions = [
     { id: 1, name: "1" },

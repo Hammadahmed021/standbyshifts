@@ -98,7 +98,8 @@ export const fetchFilteredData = async (filters) => {
 
 // Function to fetch bookings data
 
-export const fetchBookings = async (booking, token) => {
+export const fetchBookings = async (booking) => {
+  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
   console.log("Booking object before API call:", booking);
   try {
     const response = await axios.post(
@@ -116,18 +117,16 @@ export const fetchBookings = async (booking, token) => {
     return response.data;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
       console.error("Error response data:", error.response.data);
       console.error("Error response status:", error.response.status);
       console.error("Error response headers:", error.response.headers);
     } else if (error.request) {
-      // The request was made but no response was received
       console.error("Error request data:", error.request);
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error("Error message:", error.message);
     }
     throw error;
   }
 };
+
 

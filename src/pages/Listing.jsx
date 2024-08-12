@@ -7,6 +7,7 @@ import Checkbox from "../component/Checkbox";
 import SelectOption from "../component/SelectOption";
 import { fetchFilteredData } from "../utils/Api";
 import { transformSingleImageData } from "../utils/HelperFun";
+import { Loader } from "../component";
 
 const Listing = () => {
   const location = useLocation();
@@ -173,7 +174,7 @@ const Listing = () => {
           </div>
           <div className="col-span-12 md:col-span-9">
             {loading ? (
-              <p>Loading...</p>
+              <Loader />
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">

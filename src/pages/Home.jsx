@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import useMediaQuery from "../hooks/useQuery";
-import { Button, CardCarousel, LoadMore, Carousel, Search, Filter } from "../component";
-import { Fav, App, storeBtn, fallback } from "../assets";
+import {
+  Button,
+  CardCarousel,
+  LoadMore,
+  Carousel,
+  Search,
+  Filter,
+  Loader,
+} from "../component";
+import { Fav, App, storeBtn } from "../assets";
 import { localDB } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData } from "../utils/HelperFun";
@@ -24,15 +32,15 @@ export default function Home() {
     setFilterValues(selectedOptions);
   };
 
-    const { data, loading,  error } = useFetch("hotels");
-    console.log(data, 'data');
-    
+  const { data, loading, error, refetch } = useFetch("hotels");
 
-    if (loading) return <p className="p-4 text-center container mx-auto">Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+  useEffect(() => {
+    if (location.pathname === "/") {
+      refetch();
+    }
+  }, [location.pathname, refetch]);
 
-    const transformedData = data ? transformData(data) : [];
-    console.log(transformedData, 'home comp');
+  const transformedData = data ? transformData(data) : [];
 
   const hasMore = visibleCards < transformedData.length;
   const hasAllMore = visibleAllCards < transformedData.length;
@@ -51,9 +59,10 @@ export default function Home() {
         Discover and Book the Best
         <span className="text-tn_pink"> Restaurant</span>
       </h1>
+      
       {isDesktop ? (
         <div className="container w-[95%] mx-auto relative">
-          <Search data={data} className={'ml-0'}/>
+          <Search data={data} className={"ml-0"} />
         </div>
       ) : (
         <div className="container mx-auto">
@@ -77,7 +86,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container mx-auto ">
+      <div className="container mx-auto">
         <div className="flex justify-between mb-10 sm:mb-14 flex-col sm:flex-row items-end">
           <div className="text-center sm:text-start">
             <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold ">
@@ -96,25 +105,35 @@ export default function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 ">
-          {transformedData.slice(0, visibleCards).map((data) => (
-            <CardCarousel
-              key={data.id}
-              id={data.id}
-              title={data.title}
-              location={data.location}
-              images={data.images}
-              rating={data.rating}
-              cuisine={data.cuisine}
-              timeline={data.timeline}
+        {loading ? (
+          <p className="p-4 text-center container mx-auto">
+            <Loader />
+          </p>
+        ) : error ? (
+          <p>Error: {error.message}</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+              {transformedData.slice(0, visibleCards).map((data) => (
+                <CardCarousel
+                  key={data.id}
+                  id={data.id}
+                  title={data.title}
+                  location={data.location}
+                  images={data.images}
+                  rating={data.rating}
+                  cuisine={data.cuisine}
+                  timeline={data.timeline}
+                />
+              ))}
+            </div>
+            <LoadMore
+              onLoadMore={handleLoadMore}
+              hasMore={hasMore}
+              className={"mt-5"}
             />
-          ))}
-        </div>
-        <LoadMore
-          onLoadMore={handleLoadMore}
-          hasMore={hasMore}
-          className={"mt-5"}
-        />
+          </>
+        )}
 
         {/* Featured Carousel */}
         <div className="mt-20 pointer-events-none">
@@ -172,6 +191,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+
       <div className="container mx-auto pb-10">
         <div className="flex justify-between mb-10 sm:mb-14 flex-col sm:flex-row items-end">
           <div className="text-center sm:text-start ">
@@ -192,25 +212,35 @@ export default function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 ">
-          {transformedData.slice(0, visibleAllCards).map((data, index) => (
-            <CardCarousel
-              key={index} // Assuming data.id is a unique identifier for each item
-              id={data.id}
-              title={data.title}
-              location={data.location}
-              images={data.images}
-              rating={data.rating}
-              cuisine={data.cuisine}
-              timeline={data.timeline}
+        {loading ? (
+          <p className="p-4 text-center container mx-auto">
+            <Loader />
+          </p>
+        ) : error ? (
+          <p>Error: {error.message}</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+              {transformedData.slice(0, visibleAllCards).map((data) => (
+                <CardCarousel
+                  key={data.id}
+                  id={data.id}
+                  title={data.title}
+                  location={data.location}
+                  images={data.images}
+                  rating={data.rating}
+                  cuisine={data.cuisine}
+                  timeline={data.timeline}
+                />
+              ))}
+            </div>
+            <LoadMore
+              onLoadMore={handleAllLoadMore}
+              hasMore={hasAllMore}
+              className={"mt-5"}
             />
-          ))}
-        </div>
-        <LoadMore
-          onLoadMore={handleAllLoadMore}
-          hasMore={hasAllMore}
-          className={"mt-5"}
-        />
+          </>
+        )}
       </div>
     </>
   );

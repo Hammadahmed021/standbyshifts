@@ -18,6 +18,7 @@ import {
   Profile,
   Thankyou,
   NotFound,
+  ForgotPassword,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -33,6 +34,7 @@ function BaseRouter() {
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
           <Route path="login" element={<AuthLayout authentication={false}><Login /></AuthLayout>} />
+          <Route path="forgot" element={<AuthLayout authentication={false}><ForgotPassword /></AuthLayout>} />
           <Route path="signup" element={<AuthLayout authentication={false}><Signup /></AuthLayout>} />
           <Route path="about" element={<About />} />
           <Route path="restaurant/:id" element={<RestaurantDetail />} />

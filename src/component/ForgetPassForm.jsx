@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
 
-export default function Login() {
+export default function ForgotPassForm() {
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function Login() {
       {/* {errors && <p className="text-red-600 mt-8 text-center">{errors}</p>} */}
 
       <form onSubmit={handleSubmit(LoginSubmit)} className="mt-8">
-        <div className="">
+        <div className="space-y-2">
           <span className="mb-6 block">
             <Input
               mainInput={"sm:w-full w-full"}
@@ -78,26 +78,10 @@ export default function Login() {
               </p>
             )}
           </span>
-          <span className="mb-1 block">
-            <Input
-              mainInput={"sm:w-full w-full"}
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: true,
-              })}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
-                Enter correct password
-              </p>
-            )}
-          </span>
+        
           {error && (
-            <p className="text-start text-red-500 text-xs pb-2">{error}</p>
+            <p className="text-start text-red-500 text-sm pb-2">{error}</p>
           )}
-          <p className=" text-xs mb-6 text-tn_pink text-end font-semibold"><Link to={"/forgot"}>Forgot Password? </Link></p>
           <Button
             type="submit"
             className={`w-full ${
@@ -105,7 +89,7 @@ export default function Login() {
             }`}
             disabled={isSigning} // Disable button while signing
           >
-            {isSigning ? "Logging in..." : "Log in"}
+            {isSigning ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { menus } from "../utils/localDB";
-import { Button, MenuCard, Input } from "../component";
+import { Button, MenuCard, Input, Loader } from "../component";
 import { FaCheck } from "react-icons/fa";
 import { Logo, fallback, relatedFallback } from "../assets";
 import { addBooking, clearAllBookings } from "../store/bookingSlice";
@@ -97,40 +97,33 @@ export default function RestaurantReservation() {
   const handlePayment = async () => {
     setIsSigning(true);
     if (totalPrice > 0) {
-      // if (!phone) {
-      //   setPhoneError("Please enter phone number");
-      //   return;
-      // }
-
       const newBooking = {
-        user: user?.uid || "guest", // Use guest if user is not logged in
+        user: user?.uid || "guest",
         restaurant,
         date,
         time,
         seats,
         selectedMenus,
-        totalPrice: totalPrice,
-        name: user?.displayName || name, // Use user's name if logged in, otherwise use input name
+        totalPrice,
+        name: user?.displayName || name,
         phone,
       };
+      
       const booking = {
         hotel_id,
         seats,
         time,
         date,
       };
-      const token = user?.token;
-      console.log(newBooking, " booking details");
-      console.log(booking, " booking details");
+  
+      const token =  localStorage.getItem("webToken") || user?.token;
+  
       if (!user?.uid) {
-        const guestBookings =
-          JSON.parse(localStorage.getItem("guestBookings")) || [];
+        const guestBookings = JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
-        // localStorage.setItem("lastBookingRestaurant", newBooking);
-        // console.log(newBooking, 'newBooking');
-        
       }
+  
       try {
         const result = await fetchBookings(booking, token);
         console.log(result, "booking");
@@ -141,7 +134,7 @@ export default function RestaurantReservation() {
       } finally {
         setIsSigning(false);
       }
-
+  
       if (user?.uid) {
         navigate("/profile");
       } else {
@@ -149,6 +142,7 @@ export default function RestaurantReservation() {
       }
     }
   };
+  
 
   const handleLogin = () => {
     // Save current state to sessionStorage (or localStorage)
@@ -167,7 +161,7 @@ export default function RestaurantReservation() {
   };
 
   if (!restaurant || !date || !time || !seats) {
-    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+    return <div className="container mx-auto p-4 text-center"><Loader /></div>;
   }
   console.log(restaurant, "restaurant");
 

@@ -38,12 +38,14 @@ export const signupUser = createAsyncThunk(
 
       const response = await Signup(signupData);
 
+       // Store token in localStorage
+      localStorage.setItem("webToken", response?.token);
+        
       return {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
         phone: phone,
-        token,
         ...response,
       };
     } catch (error) {
@@ -78,13 +80,15 @@ export const loginUser = createAsyncThunk(
       };
 
       const response = await ApiLogin({ email, password });
-      console.log("API Login Response:", response);
+       // Store token in localStorage
+     localStorage.setItem("webToken", response?.token);
+
+ 
 
       return {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        token,
         ...response,
       };
     } catch (error) {
@@ -111,6 +115,8 @@ const authSlice = createSlice({
       state.userData = null;
       state.loading = false;
       state.error = null;
+       // remove token in localStorage
+       localStorage.removeItem("webToken");
     },
     updateUserData: (state, action) => {
       state.userData = {
@@ -153,3 +159,5 @@ const authSlice = createSlice({
 export const { login, logout, updateUserData } = authSlice.actions;
 
 export default authSlice.reducer;
+
+

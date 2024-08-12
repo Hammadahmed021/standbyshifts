@@ -14,3 +14,4 @@ export { default as Signup } from "./Signup";
 export { default as Profile } from "./Profile";
 export { default as Thankyou } from "./Thankyou";
 export { default as NotFound } from "./NotFound";
+export { default as ForgotPassword } from "./ForgotPassword";

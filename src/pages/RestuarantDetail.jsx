@@ -6,6 +6,7 @@ import {
   Button,
   CardCarousel,
   Gallery,
+  Loader,
   MapComponent,
   SelectOption,
 } from "../component";
@@ -127,7 +128,7 @@ export default function RestaurantDetail() {
   };
 
   if (loading)
-    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+    return <div className="container mx-auto p-4 text-center"><Loader /></div>;
   if (error)
     return <div className="container mx-auto p-4 text-center">{error}</div>;
   if (!card)

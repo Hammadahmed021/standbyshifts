@@ -4,9 +4,12 @@ import { useSelector } from "react-redux";
 
 function App() {
   const location = useLocation();
-  const hideHeaderFooterRoutes = ["/login", "/signup"];
+  const hideHeaderFooterRoutes = ["/login", "/signup", "/forgot"];
   const userData = useSelector((state) => state.auth.userData);
-  console.log(userData, "app js");
+  console.log(userData?.token, "app js");
+  console.log(userData, "app js user");
+  console.log(localStorage.getItem("webToken"), "app js webToken");
+  
 
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(
     location.pathname
