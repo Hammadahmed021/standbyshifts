@@ -40,7 +40,12 @@ export default function Home() {
     }
   }, [location.pathname, refetch]);
 
+  // const transformedData = data ? transformData(data) : [];
+  // Transform and filter the data
   const transformedData = data ? transformData(data) : [];
+  const approvedData = transformedData.filter(
+    item => item.is_approved && item.status === "active"
+  );
 
   const hasMore = visibleCards < transformedData.length;
   const hasAllMore = visibleAllCards < transformedData.length;
@@ -114,7 +119,7 @@ export default function Home() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-              {transformedData.slice(0, visibleCards).map((data) => (
+              {approvedData.slice(0, visibleCards).map((data) => (
                 <CardCarousel
                   key={data.id}
                   id={data.id}
@@ -221,7 +226,7 @@ export default function Home() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-              {transformedData.slice(0, visibleAllCards).map((data) => (
+              {approvedData.slice(0, visibleAllCards).map((data) => (
                 <CardCarousel
                   key={data.id}
                   id={data.id}

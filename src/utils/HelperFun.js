@@ -24,6 +24,9 @@ export const transformData = (apiResponse) => {
     facilities: item?.facilities || [],
     areas: item?.areas || [],
     menuTypes: item?.menuTypes || [],
+    // Convert `is_approved` to boolean
+    is_approved: item?.is_approved === 1,
+    status: item?.status,
   }));
 };
 
@@ -50,5 +53,8 @@ export const transformSingleImageData = (apiResponse) => {
     facilities: item?.facilities || [],
     areas: item?.areas || [],
     menuTypes: item?.menuTypes || [],
+    // Convert `is_approved` to boolean
+    is_approved: item?.is_approved === 1,
+    status: item?.status,
   }));
 };

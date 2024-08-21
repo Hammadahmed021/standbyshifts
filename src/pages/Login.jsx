@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SignUpWithGoogle } from "../service";
 import { signupUser, login as loginFunc } from "../store/authSlice";
 import { auth } from "../service/firebase";
+import { getUserFromGmailLogin } from "../utils/Api";
 
 // const images = [login, signup];
 
@@ -20,7 +21,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user.displayName);
+      console.log("User logged in:", user);
 
       // Check if the user is already logged in
       // const currentUser = auth.currentUser;
@@ -33,6 +34,15 @@ const Login = () => {
       // }
 
       // Proceed with login if it's a different user or not logged in
+      const userEmail = user?.email;
+
+      if (userEmail) {
+        const response = await getUserFromGmailLogin(userEmail);
+        const token = response.data.token;
+        // Store token in localStorage
+        localStorage.setItem("webToken", token);
+      }
+
       if (user) {
         dispatch(
           loginFunc({
@@ -41,6 +51,7 @@ const Login = () => {
               displayName: user.displayName,
               email: user.email,
               photo: user.photoURL,
+              loginType: user.providerData?.[0]?.providerId
             },
           })
         );

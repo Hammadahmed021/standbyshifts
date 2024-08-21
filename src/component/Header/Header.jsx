@@ -19,10 +19,12 @@ import LogoutBtn from "./LogoutBtn";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../LanguageSelector";
+import { verifyUser } from "../../utils/Api";
 
 const Header = () => {
   const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState([]);
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
   const isDesktop = useMediaQuery("(max-width: 991px)");
@@ -34,7 +36,21 @@ const Header = () => {
   };
   const { t } = useTranslation();
 
+  const fetchCurrentUserData = async () => {
+    try {
+      const response = await verifyUser();
+      const data = await response.data;
+      console.log(data, "data on fetch");
+
+      setCurrentUser(data);
+      
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchCurrentUserData()
      // Function to handle click outside
      const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -59,6 +75,9 @@ const Header = () => {
     };
   }, [toggle]);
 
+  console.log(userData, 'userData header');
+  
+
   return (
     <header className="border-b-2 relative">
       <div className="container mx-auto">
@@ -79,12 +98,12 @@ const Header = () => {
                   <div className="relative inline-block">
                     <div className="flex items-center cursor-pointer">
                       <img
-                        src={userData?.photoURL || userData?.userData?.photo || fallback}
+                        src={currentUser?.profile_image || userData?.profile_image?.name  || fallback}
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
                       />
                       <span className="text-tn_dark text-base font-medium ml-2">
-                        {userData?.userData?.displayName || userData?.user?.name || userData?.displayName}
+                        {userData?.name || userData?.user?.name || userData?.displayName}
                       </span>
                       <span className="p-2" onClick={toggleDropdown}>
                         {isDropdownOpen ? (

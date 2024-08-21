@@ -24,6 +24,7 @@ const Listing = () => {
   const [error, setError] = useState(null);
 
   const { data: filterData } = useFetch("data-for-filter");
+console.log(filterData, 'filterData');
 
   useEffect(() => {
     const fetchFilteredDataAndUpdateState = async () => {
@@ -76,12 +77,11 @@ const Listing = () => {
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
+    
     const formatTime = (hours, minutes) => {
-      const period = hours >= 12 ? 'PM' : 'AM';
-      const hourIn12 = hours % 12 || 12; // Convert to 12-hour format
       return {
         id: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`,
-        name: `${hourIn12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`
+        name: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
       };
     };
   

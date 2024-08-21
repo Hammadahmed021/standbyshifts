@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { menus } from "../utils/localDB";
-import { Button, MenuCard, Input, Loader } from "../component";
+import { Button, MenuCard, Input, Loader, CheckoutForm } from "../component";
 import { FaCheck } from "react-icons/fa";
 import { Logo, fallback, relatedFallback } from "../assets";
 import { addBooking, clearAllBookings } from "../store/bookingSlice";
-import { fetchBookings } from "../utils/Api";
+import { fetchBookings, verifyUser } from "../utils/Api";
+import { Elements } from "@stripe/react-stripe-js";
+import { stripePromise } from "../component/StrpeCheckOut";
 
 export default function RestaurantReservation() {
   // const SERVICE_CHARGE = 150;
@@ -21,11 +23,24 @@ export default function RestaurantReservation() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [isSigning, setIsSigning] = useState(false);
+  const [Id, setId] = useState(false);
 
   const user = useSelector((state) => state.auth.userData);
   const isLoggedIn = !user;
+  console.log(user, "user");
 
   const { restaurant, date, time, seats, hotel_id } = location.state || {};
+
+  const fetchUserData = async () => {
+    try {
+      const response = await verifyUser();
+      const data = await response.data;
+      setId(data?.id)
+      console.log(data, "data on fetch");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   useEffect(() => {
     const guestState = localStorage.getItem("guestState");
@@ -35,6 +50,7 @@ export default function RestaurantReservation() {
   }, []);
 
   useEffect(() => {
+    fetchUserData()
     localStorage.setItem("guestState", JSON.stringify(isGuest));
   }, [isGuest]);
 
@@ -93,8 +109,9 @@ export default function RestaurantReservation() {
   };
 
   const totalPrice = calculateTotalPrice();
+  console.log(totalPrice, "totalPrice");
 
-  const handlePayment = async () => {
+  const handlePayment = async (paymentIntentId) => {
     setIsSigning(true);
     if (totalPrice > 0) {
       const newBooking = {
@@ -107,23 +124,28 @@ export default function RestaurantReservation() {
         totalPrice,
         name: user?.displayName || name,
         phone,
+        paymentIntentId,
       };
-      
+
       const booking = {
+        user_id: user?.user?.id || Id || null,
         hotel_id,
         seats,
         time,
         date,
+        paymentIntentId,
       };
-  
-      const token =  localStorage.getItem("webToken") || user?.token;
-  
+
+      const token = localStorage.getItem("webToken") || user?.token;
+      console.log(token, "token reservation");
+
       if (!user?.uid) {
-        const guestBookings = JSON.parse(localStorage.getItem("guestBookings")) || [];
+        const guestBookings =
+          JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
       }
-  
+
       try {
         const result = await fetchBookings(booking, token);
         console.log(result, "booking");
@@ -134,7 +156,7 @@ export default function RestaurantReservation() {
       } finally {
         setIsSigning(false);
       }
-  
+
       if (user?.uid) {
         navigate("/profile");
       } else {
@@ -142,7 +164,6 @@ export default function RestaurantReservation() {
       }
     }
   };
-  
 
   const handleLogin = () => {
     // Save current state to sessionStorage (or localStorage)
@@ -161,7 +182,11 @@ export default function RestaurantReservation() {
   };
 
   if (!restaurant || !date || !time || !seats) {
-    return <div className="container mx-auto p-4 text-center"><Loader /></div>;
+    return (
+      <div className="container mx-auto p-4 text-center">
+        <Loader />
+      </div>
+    );
   }
   console.log(restaurant, "restaurant");
 
@@ -446,14 +471,22 @@ export default function RestaurantReservation() {
                 aute irure dolor in reprehenderit in voluptate velit esse cillum
                 dolore utemien.
               </p>
-              <Button
+              <Elements stripe={stripePromise}>
+                <CheckoutForm
+                  amount={totalPrice}
+                  handlePayment={handlePayment}
+                  buttonDis={totalPrice}
+                />
+              </Elements>
+
+              {/* <Button
                 children={isSigning ? "Payment..." : "Confirm Payment"}
                 className={`w-full ${
                   totalPrice === 0 ? "opacity-50 cursor-not-allowed" : ""
                 } ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
                 onClick={handlePayment}
                 disabled={totalPrice === 0 || isSigning}
-              />
+              /> */}
             </div>
           </div>
         </div>

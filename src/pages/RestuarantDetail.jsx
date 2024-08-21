@@ -27,6 +27,7 @@ export default function RestaurantDetail() {
   const selectedSeats = watch("seats");
 
   const today = new Date().toISOString().split('T')[0];
+  const currentTime = new Date().getHours();
 
   useEffect(() => {
     if (!data) return;
@@ -52,16 +53,35 @@ export default function RestaurantDetail() {
   }, [data, id]);
 
   useEffect(() => {
-    if (selectedDate && card?.calendars) {
+    if (!data) return;
+
+    const foundCard = data.find((card) => card.id === parseInt(id, 10));
+
+    if (foundCard) {
+      setCard(foundCard);
+      setValue("date", today); // Automatically select current date
+    } else {
+      setCard(null);
+    }
+  }, [data, id, setValue, today]);
+
+  useEffect(() => {
+    if (card?.calendars) {
       const dateCalendar = card.calendars.find(
-        (calendar) => calendar.date === selectedDate
+        (calendar) => calendar.date === today
       );
 
       if (dateCalendar) {
-        const times = dateCalendar.calendar_details.map((detail) => ({
-          name: detail.time,
-          id: detail.time,
-        }));
+        const times = dateCalendar.calendar_details
+          .map((detail) => ({
+            name: detail.time,
+            id: detail.time,
+          }))
+          .filter((time) => {
+            // Filter out past times for today
+            const hour = parseInt(time.id.split(":")[0], 10);
+            return hour >= currentTime;
+          });
 
         setAvailableTimes(times || []);
         resetField("time");
@@ -75,12 +95,12 @@ export default function RestaurantDetail() {
         setAvailableTimes([]);
       }
     }
-  }, [selectedDate, card, resetField, setValue]);
+  }, [card, resetField, setValue, today, currentTime]);
 
   useEffect(() => {
-    if (selectedTime && selectedDate && card?.calendars) {
+    if (selectedTime && card?.calendars) {
       const dateCalendar = card.calendars.find(
-        (calendar) => calendar.date === selectedDate
+        (calendar) => calendar.date === today
       );
 
       if (dateCalendar) {
@@ -107,18 +127,9 @@ export default function RestaurantDetail() {
         }
       }
     }
-  }, [selectedTime, selectedDate, card, setValue]);
+  }, [selectedTime, card, setValue, today]);
 
-  useEffect(() => {
-    if (card?.calendars && card.calendars.length > 0) {
-      const firstDate = card.calendars.find(
-        (calendar) => new Date(calendar.date) >= new Date(today)
-      );
-      if (firstDate) {
-        setValue("date", firstDate.date); // Automatically select first available date
-      }
-    }
-  }, [card, setValue, today]);
+
 
   const onSubmit = (formData) => {
     const { date, time, seats } = formData;
@@ -145,7 +156,6 @@ export default function RestaurantDetail() {
   function extractFacilitiesNames(card) {
     const facilityNames = new Set();
 
-    // Extract from calendars -> calendar_details
     card.calendars?.forEach((calendar) => {
       calendar.menus?.forEach((menu) => {
         menu.facilities?.forEach((facility) => {
@@ -153,13 +163,12 @@ export default function RestaurantDetail() {
         });
       });
     });
-    return Array.from(facilityNames); // Convert Set to Array
+    return Array.from(facilityNames); 
   }
 
   function extractCuisineNames(card) {
     const facilityNames = new Set();
 
-    // Extract from calendars -> calendar_details
     card.calendars?.forEach((calendar) => {
       calendar.menus?.forEach((menu) => {
         menu.kitchens?.forEach((facility) => {
@@ -167,7 +176,7 @@ export default function RestaurantDetail() {
         });
       });
     });
-    return Array.from(facilityNames); // Convert Set to Array
+    return Array.from(facilityNames); 
   }
 
   return (
@@ -242,77 +251,72 @@ export default function RestaurantDetail() {
                 For Reservation
               </h3>
               <form onSubmit={handleSubmit(onSubmit)}>
-                {futureDates.length > 0 ? (
-                  <>
-                    <SelectOption
-                      label="Date"
-                      className="mb-6 mx-auto"
-                      options={
-                        futureDates.map((calendar) => ({
-                          name: calendar.date,
-                          id: calendar.date,
-                        })) || []
-                      }
-                      {...register("date", { required: true })}
-                      style={{
-                        border: "1px solid #DDDDDD",
-                        padding: "5px",
-                        fontSize: "14px",
-                        borderRadius: "5px",
-                      }}
-                    />
-                    {availableTimes.length > 0 ? (
-                      <>
-                        <SelectOption
-                          label="Time"
-                          className="mb-6 mx-auto"
-                          options={availableTimes || []}
-                          {...register("time", { required: true })}
-                          style={{
-                            border: "1px solid #DDDDDD",
-                            padding: "5px",
-                            fontSize: "14px",
-                            borderRadius: "5px",
-                          }}
-                        />
-                        {availableSeats.length > 0 ? (
-                          <SelectOption
-                            label="Seats"
-                            className="mb-6 mx-auto"
-                            options={availableSeats || []}
-                            {...register("seats", { required: true })}
-                            style={{
-                              border: "1px solid #DDDDDD",
-                              padding: "5px",
-                              fontSize: "14px",
-                              borderRadius: "5px",
-                            }}
-                          />
-                        ) : (
-                          <p className="text-sm text-red-600">
-                            No seats available for the selected time.
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-sm text-red-600">
-                        No times available for the selected date.
-                      </p>
-                    )}
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={
-                        !selectedDate || !selectedTime || !selectedSeats
-                      }
-                    >
-                      Make a Reservation
-                    </Button>
-                  </>
+            {availableTimes.length > 0 ? (
+              <>
+                {/* Date Dropdown - Only Current Date */}
+                <SelectOption
+                  label="Date"
+                  className="mb-6 mx-auto"
+                  options={[{ id: today, name: today }]}
+                  {...register("date", { required: true })}
+                  style={{
+                    border: "1px solid #DDDDDD",
+                    padding: "5px",
+                    fontSize: "14px",
+                    borderRadius: "5px",
+                  }}
+                  disabled
+                />
+
+                {/* Time Dropdown */}
+                <SelectOption
+                  label="Time"
+                  className="mb-6 mx-auto"
+                  options={availableTimes || []}
+                  {...register("time", { required: true })}
+                  style={{
+                    border: "1px solid #DDDDDD",
+                    padding: "5px",
+                    fontSize: "14px",
+                    borderRadius: "5px",
+                  }}
+                />
+
+                {/* Seats Dropdown */}
+                {availableSeats.length > 0 ? (
+                  <SelectOption
+                    label="Seats"
+                    className="mb-6 mx-auto"
+                    options={availableSeats || []}
+                    {...register("seats", { required: true })}
+                    style={{
+                      border: "1px solid #DDDDDD",
+                      padding: "5px",
+                      fontSize: "14px",
+                      borderRadius: "5px",
+                    }}
+                  />
                 ) : (
-                  <p className="text-sm text-red-600">No dates available.</p>
+                  <p className="text-sm text-red-600">
+                    No seats available for the selected time.
+                  </p>
                 )}
-              </form>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={
+                    !selectedDate || !selectedTime || !selectedSeats
+                  }
+                >
+                  Make a Reservation
+                </Button>
+              </>
+            ) : (
+              <p className="text-sm text-red-600">
+                No times available for the selected date.
+              </p>
+            )}
+          </form>
               {/* <p className="text-center text-tn_text_grey text-xs mt-2 mb-4">
                 You won’t be charged yet
               </p>

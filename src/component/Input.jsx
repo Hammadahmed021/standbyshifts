@@ -39,6 +39,7 @@ const Input = forwardRef(function Input(
         className={`appearance-none w-full px-3 py-3 border border-tn_dark_field outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 ${className}`}
         ref={ref}
         placeholder={placeholder}
+        
         onChange={onChange} // Attach onChange prop
         {...props}
         id={id}

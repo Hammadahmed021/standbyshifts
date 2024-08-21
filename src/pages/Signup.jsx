@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { signupUser, login as loginFunc } from "../store/authSlice";
 import { SignUpWithGoogle } from "../service";
 import { auth } from "../service/firebase";
+import { getUserFromGmailSignup } from "../utils/Api";
 
 // const images = [login, signup];
 
@@ -20,17 +21,20 @@ const Signup = () => {
       const { user } = await SignUpWithGoogle();
       console.log("User logged in:", user.displayName);
 
-      // Check if the user is already logged in
-      // const currentUser = auth.currentUser;
-      // if (currentUser && currentUser.uid === user.uid) {
-      //   setError("User has already sign up.");
-      //   setTimeout(() => {
-      //     navigate("/login");
-      //   }, 2000);
-      //   return; // Stop further execution
-      // }
-
       // Proceed with login if it's a different user or not logged in
+      const userData = {
+        name: user?.displayName,
+        email: user?.email,
+      };
+
+      if (userData){
+      const response = await getUserFromGmailSignup(userData);
+      const token = response.data.token;
+
+      // Store token in localStorage
+      localStorage.setItem("webToken", token);
+      }
+
       if (user) {
         dispatch(
           loginFunc({
@@ -39,6 +43,7 @@ const Signup = () => {
               displayName: user.displayName,
               email: user.email,
               password: user.password,
+              loginType: user.providerData?.[0]?.providerId
             },
           })
         );
@@ -48,7 +53,6 @@ const Signup = () => {
       console.error("Login failed:", error.message);
     }
   };
-  
 
   return (
     <div className="container mx-auto flex sm:items-center justify-center min-h-screen p-2 relative flex-col sm:flex-col items-start">

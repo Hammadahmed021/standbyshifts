@@ -43,7 +43,7 @@ export default function Login() {
       } else if (error == "auth/user-not-found") {
         setError("User does not exist");
       } else {
-        setError("Login failed. Please try again."); // Generic error message
+        setError("Please enter correct email or password."); // Generic error message
       }
       // Handle error, show error message or retry
     } finally {

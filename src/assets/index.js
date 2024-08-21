@@ -11,6 +11,7 @@ export { default as relatedFallback} from './Images/restaurant-image.png';
 export { default as menu} from './Images/menu.png';
 export { default as login} from './Images/login.png';
 export { default as signup} from './Images/signup.png';
+export { default as notfound} from './Images/notfound.jpg';
 
 
 /* Icons */

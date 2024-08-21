@@ -1,61 +1,39 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../component";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../store/authSlice";
+import { resetPassword } from "../service"; // Ensure this import path is correct
 
 export default function ForgotPassForm() {
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [successMessage, setSuccessMessage] = useState(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // const Login = async (data) => {
-  //     setError("");
-  //     try {
-  //       const session = await authService.login(data);
-  //       if (session) {
-  //         const userData = await authService.getCurrentUser();
-  //         if (userData) dispatch(authLogin(userData));
-  //         navigate("/");
-  //       }
-  //     } catch (error) {
-  //       console.log("unable to login", error);
-  //     }
-  //   };
+  const onSubmit = async (data) => {
+    setIsSigning(true);
+    setError(null);
+    setSuccessMessage(null);
+    console.log(data, 'data');
 
-  const LoginSubmit = async (data) => {
-    setIsSigning(true); // Assuming you have setIsSigning state
-    try {
-      const loginResponse = await dispatch(loginUser(data)).unwrap();
-      console.log("Login Response:", loginResponse);
-      // Handle success, navigate user or update UI
-    } catch (error) {
-      console.error("Login failed:", error);
-      if (error == "auth/wrong-password") {
-        setError("Password is wrong");
-      } else if (error == "auth/user-not-found") {
-        setError("User does not exist");
-      } else {
-        setError("Login failed. Please try again."); // Generic error message
-      }
-      // Handle error, show error message or retry
-    } finally {
-      setIsSigning(false); // Reset signing state
+    const response = await resetPassword(data.email);
+    console.log(response, 'response');
+
+    if (response.success) {
+      setSuccessMessage(response.message);
+    } else {
+      setError(response.message);
     }
+
+    setIsSigning(false); // Stop button processing
   };
 
   return (
     <>
-      {/* {errors && <p className="text-red-600 mt-8 text-center">{errors}</p>} */}
-
-      <form onSubmit={handleSubmit(LoginSubmit)} className="mt-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
         <div className="space-y-2">
           <span className="mb-6 block">
             <Input
@@ -64,9 +42,9 @@ export default function ForgotPassForm() {
               placeholder="Enter your email"
               type="email"
               {...register("email", {
-                required: true,
+                required: "Email is required",
                 validate: {
-                  matchPatern: (value) =>
+                  matchPattern: (value) =>
                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
                     "Email address must be a valid address",
                 },
@@ -74,20 +52,22 @@ export default function ForgotPassForm() {
             />
             {errors.email && (
               <p className="text-red-500 text-xs mt-1">
-                Enter valid email address
+                {errors.email.message}
               </p>
             )}
           </span>
-        
           {error && (
             <p className="text-start text-red-500 text-sm pb-2">{error}</p>
           )}
+          {successMessage && (
+            <p className="text-start text-green-500 text-sm pb-2">
+              {successMessage}
+            </p>
+          )}
           <Button
             type="submit"
-            className={`w-full ${
-              isSigning ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-            disabled={isSigning} // Disable button while signing
+            className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
+            disabled={isSigning}
           >
             {isSigning ? "Submitting..." : "Submit"}
           </Button>

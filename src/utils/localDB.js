@@ -85,7 +85,7 @@ export const localDB = [
 ];
 
 export const infoLinks = {
-  "Restaurant Login": "/login",
+  "Restaurant Login": "https://tablenow.dk/tablenow-restaurant",
   "Become a Partner": "/partner",
   "About TableNow": "/about",
   "Download Free": "/",
