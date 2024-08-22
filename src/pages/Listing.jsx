@@ -26,32 +26,38 @@ const Listing = () => {
   const { data: filterData } = useFetch("data-for-filter");
 console.log(filterData, 'filterData');
 
-  useEffect(() => {
-    const fetchFilteredDataAndUpdateState = async () => {
-      if (!filterData) return;
-      const requestBody = {
-        // kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
-        // facility_ids: filters.facility_ids || [],
-        // menu_type_ids: filters.menu_type_ids || [],
-        // person: filters.person || 1,
-        startTime: filters.startTime ,
-        endTime: filters.endTime,
-      };
-      console.log(requestBody, "requestBody");
-      try {
-        setLoading(true);
-        const result = await fetchFilteredData(requestBody);
-        console.log(result, "result");
-        setFilteredData(Array.isArray(result) ? result : [result]);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchFilteredDataAndUpdateState = async () => {
+    if (!filterData) return;
+    
+    console.log('Current filters:', filters);
 
-    fetchFilteredDataAndUpdateState();
-  }, [filters, filterData]);
+    const requestBody = {
+      kitchen_ids: filters.kitchen_ids ? filters.kitchen_ids.map((res) => Number(res)) : [],
+      facility_ids: filters.facility_ids ? filters.facility_ids.map((res) => Number(res)) : [],
+      // menu_type_ids: filters.menu_type_ids || [],
+      // person: filters.person || 1,
+      startTime: filters.startTime,
+      endTime: filters.endTime,
+    };
+    
+    console.log(requestBody, "requestBody");
+    
+    try {
+      setLoading(true);
+      const result = await fetchFilteredData(requestBody);
+      console.log(result, "result");
+      setFilteredData(Array.isArray(result) ? result : [result]);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFilteredDataAndUpdateState();
+}, [filters, filterData]);
+
 
   const handleLoadMore = () => setVisibleCards((prev) => prev + 4);
   const hasMore = visibleCards < filteredData.length;

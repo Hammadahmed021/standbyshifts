@@ -26,9 +26,9 @@ export default function RestaurantDetail() {
   const selectedTime = watch("time");
   const selectedSeats = watch("seats");
 
-  const today = new Date().toISOString().split('T')[0];
-  const currentTime = new Date().getHours();
+  const today = new Date().toISOString().split("T")[0];
 
+  // Fetch and update card and related restaurants
   useEffect(() => {
     if (!data) return;
 
@@ -51,20 +51,16 @@ export default function RestaurantDetail() {
       setCard(null);
     }
   }, [data, id]);
+  const getCurrentTimeIn24HourFormat = () => {
+    const date = new Date();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
 
-  useEffect(() => {
-    if (!data) return;
+  const currentTime = getCurrentTimeIn24HourFormat();
 
-    const foundCard = data.find((card) => card.id === parseInt(id, 10));
-
-    if (foundCard) {
-      setCard(foundCard);
-      setValue("date", today); // Automatically select current date
-    } else {
-      setCard(null);
-    }
-  }, [data, id, setValue, today]);
-
+  // Update available times based on today's date and current time
   useEffect(() => {
     if (card?.calendars) {
       const dateCalendar = card.calendars.find(
@@ -77,11 +73,7 @@ export default function RestaurantDetail() {
             name: detail.time,
             id: detail.time,
           }))
-          .filter((time) => {
-            // Filter out past times for today
-            const hour = parseInt(time.id.split(":")[0], 10);
-            return hour >= currentTime;
-          });
+          .filter((time) => time.id >= currentTime);
 
         setAvailableTimes(times || []);
         resetField("time");
@@ -97,6 +89,7 @@ export default function RestaurantDetail() {
     }
   }, [card, resetField, setValue, today, currentTime]);
 
+  // Update available seats based on selected time and booked seats
   useEffect(() => {
     if (selectedTime && card?.calendars) {
       const dateCalendar = card.calendars.find(
@@ -107,20 +100,25 @@ export default function RestaurantDetail() {
         const timeDetail = dateCalendar.calendar_details.find(
           (detail) => detail.time === selectedTime
         );
+
         if (timeDetail) {
+          const bookedSeats = timeDetail.bookedSeats || [];
+
           const seats = Array.from(
             { length: timeDetail.seats },
             (_, index) => index + 1
-          ).map((seat) => ({
-            name: seat,
-            label: seat,
-            id: seat,
-          }));
+          )
+            .filter((seat) => !bookedSeats.includes(seat))
+            .map((seat) => ({
+              name: seat,
+              label: seat,
+              id: seat,
+            }));
 
           setAvailableSeats(seats);
 
           if (seats.length > 0) {
-            setValue("seats", seats[0].id); // Automatically select first available seats
+            setValue("seats", seats[0].id); // Automatically select first available seat
           }
         } else {
           setAvailableSeats([]);
@@ -128,9 +126,7 @@ export default function RestaurantDetail() {
       }
     }
   }, [selectedTime, card, setValue, today]);
-
-
-
+  
   const onSubmit = (formData) => {
     const { date, time, seats } = formData;
     navigate(`/reservation/${id}`, {
@@ -139,7 +135,11 @@ export default function RestaurantDetail() {
   };
 
   if (loading)
-    return <div className="container mx-auto p-4 text-center"><Loader /></div>;
+    return (
+      <div className="container mx-auto p-4 text-center">
+        <Loader />
+      </div>
+    );
   if (error)
     return <div className="container mx-auto p-4 text-center">{error}</div>;
   if (!card)
@@ -163,7 +163,7 @@ export default function RestaurantDetail() {
         });
       });
     });
-    return Array.from(facilityNames); 
+    return Array.from(facilityNames);
   }
 
   function extractCuisineNames(card) {
@@ -176,9 +176,8 @@ export default function RestaurantDetail() {
         });
       });
     });
-    return Array.from(facilityNames); 
+    return Array.from(facilityNames);
   }
-
   return (
     <>
       <div className="container mx-auto p-4">
@@ -208,7 +207,7 @@ export default function RestaurantDetail() {
               <div className="col-span-12 md:col-span-3">
                 <h4 className="text-[17px] font-bold mb-1">Cuisine</h4>
                 <p className="mb-6 text-sm">
-                {extractCuisineNames(card).join(", ") ||
+                  {extractCuisineNames(card).join(", ") ||
                     "No cuisine available"}
                 </p>
                 <h4 className="text-[17px] font-bold mb-1">Meals</h4>
@@ -251,72 +250,87 @@ export default function RestaurantDetail() {
                 For Reservation
               </h3>
               <form onSubmit={handleSubmit(onSubmit)}>
-            {availableTimes.length > 0 ? (
-              <>
-                {/* Date Dropdown - Only Current Date */}
-                <SelectOption
-                  label="Date"
-                  className="mb-6 mx-auto"
-                  options={[{ id: today, name: today }]}
-                  {...register("date", { required: true })}
-                  style={{
-                    border: "1px solid #DDDDDD",
-                    padding: "5px",
-                    fontSize: "14px",
-                    borderRadius: "5px",
-                  }}
-                  disabled
-                />
+                {availableTimes.length > 0 ? (
+                  <>
+                    {/* Date Dropdown */}
+                    <div className="mb-6">
+                      <SelectOption
+                        label="Date"
+                        options={[{ name: today, id: today }]} // Only show today
+                        {...register("date")}
+                        onChange={(e) => {
+                          const date = e.target.value;
+                          setValue("date", date);
+                          resetField("time");
+                          resetField("seats");
+                        }}
+                        style={{
+                          border: "1px solid #DDDDDD",
+                          padding: "5px",
+                          fontSize: "14px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </div>
 
-                {/* Time Dropdown */}
-                <SelectOption
-                  label="Time"
-                  className="mb-6 mx-auto"
-                  options={availableTimes || []}
-                  {...register("time", { required: true })}
-                  style={{
-                    border: "1px solid #DDDDDD",
-                    padding: "5px",
-                    fontSize: "14px",
-                    borderRadius: "5px",
-                  }}
-                />
+                    {/* Time Dropdown */}
+                    <div className="mb-6">
+                      <SelectOption
+                        label="Time"
+                        options={availableTimes}
+                        {...register("time")}
+                        onChange={(e) => {
+                          const time = e.target.value;
+                          setValue("time", time);
+                          resetField("seats");
+                        }}
+                        style={{
+                          border: "1px solid #DDDDDD",
+                          padding: "5px",
+                          fontSize: "14px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </div>
 
-                {/* Seats Dropdown */}
-                {availableSeats.length > 0 ? (
-                  <SelectOption
-                    label="Seats"
-                    className="mb-6 mx-auto"
-                    options={availableSeats || []}
-                    {...register("seats", { required: true })}
-                    style={{
-                      border: "1px solid #DDDDDD",
-                      padding: "5px",
-                      fontSize: "14px",
-                      borderRadius: "5px",
-                    }}
-                  />
+                    {/* Seats Dropdown or Message */}
+                    <div className="mb-6">
+                      {availableSeats.length > 0 ? (
+                        <SelectOption
+                          label="Seats"
+                          options={availableSeats}
+                          {...register("seats")}
+                          style={{
+                            border: "1px solid #DDDDDD",
+                            padding: "5px",
+                            fontSize: "14px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      ) : (
+                        <p className="text-sm text-red-600">
+                          No seats available for the selected time.
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className={`w-full ${
+                        !selectedSeats && "opacity-75 cursor-not-allowed"
+                      }`}
+                      disabled={!selectedSeats || availableSeats.length === 0}
+                    >
+                      Make a Reservation
+                    </Button>
+                  </>
                 ) : (
                   <p className="text-sm text-red-600">
-                    No seats available for the selected time.
+                    No times available for the selected date.
                   </p>
                 )}
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={
-                    !selectedDate || !selectedTime || !selectedSeats
-                  }
-                >
-                  Make a Reservation
-                </Button>
-              </>
-            ) : (
-              <p className="text-sm text-red-600">
-                No times available for the selected date.
-              </p>
-            )}
-          </form>
+              </form>
+
               {/* <p className="text-center text-tn_text_grey text-xs mt-2 mb-4">
                 You won’t be charged yet
               </p>

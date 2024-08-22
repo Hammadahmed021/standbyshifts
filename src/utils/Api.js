@@ -183,6 +183,30 @@ export const deleteUserBooking = async (booking_id) => {
   }
 };
 
+export const deleteAllUserBookings = async () => {
+  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
+
+  try {
+    const { data } = await axios.put(
+      `${BASE_URL}updateUserAllBookingsStatus`,
+      null,
+      {
+        params: {
+          // ...params,
+          api_key: API_KEY,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
 
@@ -265,7 +289,7 @@ export const getUserFromGmailSignup = async (userData) => {
   const { email, name } = userData;
   const payload = {
     name,
-    email
+    email,
   };
   try {
     const response = await axios.post(`${BASE_URL}socialSignup`, payload);

@@ -47,8 +47,8 @@ export default function Home() {
     item => item.is_approved && item.status === "active"
   );
 
-  const hasMore = visibleCards < transformedData.length;
-  const hasAllMore = visibleAllCards < transformedData.length;
+  const hasMore = visibleCards < approvedData.length;
+  const hasAllMore = visibleAllCards < approvedData.length;
 
   const handleAllLoadMore = () => {
     setVisibleAllCards((prevVisibleCards) => prevVisibleCards + 4);

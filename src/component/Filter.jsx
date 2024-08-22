@@ -23,10 +23,10 @@ const Filter = ({ onFilterChange }) => {
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
         kitchens: prevSelectedOptions.kitchens.length > 0 ? prevSelectedOptions.kitchens : [data.kitchens?.[0]?.id || 1],
-        atmospheres: data.atmospheres || [],
-        facilities: data.facilities || [],
-        areas: data.areas || [],
-        menuTypes: data.menuTypes || [],
+        atmospheres: prevSelectedOptions.atmospheres.length > 0 ? prevSelectedOptions.atmospheres : [data.atmospheres?.[0]?.id || 1],
+        facilities: prevSelectedOptions.facilities.length > 0 ? prevSelectedOptions.facilities : [data.facilities?.[0]?.id || 1],
+        areas: prevSelectedOptions.areas.length > 0 ? prevSelectedOptions.areas : [data.areas?.[0]?.id || 1],
+        menuTypes: prevSelectedOptions.menuTypes.length > 0 ? prevSelectedOptions.menuTypes : [data.menuTypes?.[0]?.id || 1],
       }));
     }
   }, [data]);
@@ -120,11 +120,11 @@ const Filter = ({ onFilterChange }) => {
           options={data?.areas || []}
         />
         <SelectOption
-          label="Menu"
-          value={selectedOptions.menuTypes}
-          onChange={(e) => handleFilterChange(e, "menuTypes")}
+          label="Facilities"
+          value={selectedOptions.facilities}
+          onChange={(e) => handleFilterChange(e, "facilities")}
           className="border-r-2 pr-1 mx-5"
-          options={data?.menuTypes || []}
+          options={data?.facilities || []}
         />
         <SelectOption
           label="Persons"

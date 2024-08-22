@@ -7,6 +7,7 @@ import { fallback, relatedFallback } from "../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Loader, LoadMore, Input } from "../component";
 import {
+  deleteAllUserBookings,
   deleteUserBooking,
   getUserBookings,
   updateUserProfile,
@@ -33,6 +34,7 @@ const Profile = () => {
   const [showError, setShowError] = useState("");
   const [isSigning, setIsSigning] = useState(false);
   const [isClearBooking, setIsClearBooking] = useState({});
+  const [isClearingAllBookings, setIsClearingAllBookings] = useState(false);
 
   const {
     register,
@@ -73,13 +75,25 @@ const Profile = () => {
     }
   };
 
-  const handleClearAllBookings = () => {
-    dispatch(clearAllBookings());
+  const handleClearAllBookings = async () => {
+    setIsClearingAllBookings(true); // Set loading state to true
+    try {
+      const response = await deleteAllUserBookings();
+      console.log(response, "response success");
+
+      dispatch(clearAllBookings()); // Update Redux state
+      setUserBooking([]); // Clear local state
+    } catch (error) {
+      console.error("Unable to delete all bookings:", error);
+    } finally {
+      setIsClearingAllBookings(false); // Reset loading state
+    }
   };
 
   const handleLoadMore = () => {
     setDisplayedBookings(displayedBookings + 4);
   };
+  const hasMore = displayedBookings < userBooking.length;
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -308,15 +322,18 @@ const Profile = () => {
               reservation history here.
             </p>
           </div>
-
           <Button
             bgColor="transparent"
-            className="border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
+            className={`border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0 ${
+              isClearingAllBookings ? "opacity-80 cursor-not-allowed" : ""
+            }`}
             textColor="text-black"
             onClick={handleClearAllBookings}
+            disabled={isClearingAllBookings} // Disable the button when clearing
           >
-            Clear All Bookings
+            {isClearingAllBookings ? "Clearing..." : "Clear All Bookings"}
           </Button>
+          
         </div>
 
         {loading ? (
@@ -392,8 +409,8 @@ const Profile = () => {
           ))
         )}
 
-        {userBooking.length > displayedBookings && !loading && (
-          <LoadMore onClick={handleLoadMore} />
+        {userBooking.length >= displayedBookings && (
+          <LoadMore onLoadMore={handleLoadMore} hasMore={hasMore} />
         )}
       </div>
     </>
