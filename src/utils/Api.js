@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 // const TOKEN = "CUso6eFZl1LmPsUGrFMKf15tcS5FElsqOoWXBbtj2PUxRAI5HTVuxOPZyLmL";
 
+
 export const getListDetails = async (url, params) => {
   try {
     const { data } = await axios.get(`${BASE_URL}${url}`, {
@@ -84,8 +85,8 @@ export const fetchFilteredData = async (filters) => {
 // Function to fetch bookings data
 
 export const fetchBookings = async (booking) => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
-  console.log("Booking object before API call:", booking);
+  const token = localStorage.getItem("webToken");
+
   try {
     const response = await axios.post(
       `${BASE_URL}save-table-booking`,
@@ -138,7 +139,8 @@ export const getPayment = async (paymentData) => {
 };
 
 export const getUserBookings = async (params) => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
+  const token = localStorage.getItem("webToken");
+
 
   try {
     const { data } = await axios.get(`${BASE_URL}getUserBookings`, {
@@ -159,8 +161,8 @@ export const getUserBookings = async (params) => {
 };
 
 export const deleteUserBooking = async (booking_id) => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
-  console.log(booking_id, "booking_id");
+  const token = localStorage.getItem("webToken");
+
 
   try {
     const { data } = await axios.put(
@@ -184,7 +186,8 @@ export const deleteUserBooking = async (booking_id) => {
 };
 
 export const deleteAllUserBookings = async () => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
+  const token = localStorage.getItem("webToken");
+
 
   try {
     const { data } = await axios.put(
@@ -208,7 +211,8 @@ export const deleteAllUserBookings = async () => {
 };
 
 export const updateUserProfile = async (userData) => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
+  const token = localStorage.getItem("webToken");
+ 
 
   const { name, phone, profile_image, user_id } = userData;
   console.log(userData, "userData api");
@@ -247,7 +251,8 @@ export const updateUserProfile = async (userData) => {
 };
 
 export const verifyUser = async () => {
-  const token = localStorage.getItem("webToken"); // Retrieve token from localStorage
+  const token = localStorage.getItem("webToken");
+
 
   try {
     const data = await axios.get(`${BASE_URL}verify`, {

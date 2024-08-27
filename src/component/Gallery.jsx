@@ -29,7 +29,7 @@ const Gallery = ({ images, address, name, loading }) => {
       <div className="flex flex-wrap items-start justify-between mb-8 sm:mb-6">
         <div className="">
           <p className="text-gray-700 text-base text-start">{address}</p>
-          <h1 className="text-start text-3xl font-extrabold capitalize">{name}</h1>
+          <h1 className="text-start text-3xl font-extrabold capitalize mb-4 sm:mb-0">{name}</h1>
         </div>
 
         <button

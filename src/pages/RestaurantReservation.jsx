@@ -8,7 +8,7 @@ import { Logo, fallback, relatedFallback } from "../assets";
 import { addBooking, clearAllBookings } from "../store/bookingSlice";
 import { fetchBookings, verifyUser } from "../utils/Api";
 import { Elements } from "@stripe/react-stripe-js";
-import { stripePromise } from "../component/StrpeCheckOut";
+import { stripePromise } from "../component/StripeCheckOut";
 
 export default function RestaurantReservation() {
   // const SERVICE_CHARGE = 150;
@@ -249,7 +249,7 @@ export default function RestaurantReservation() {
                       "No Type"
                     }
                   />
-                  <div className="relative ml-12 h-7 w-7">
+                  <div className="relative ml-3 sm:ml-12 h-7 w-7">
                     <input
                       type="checkbox"
                       className="appearance-none h-7 w-7 border-4 border-tn_dark rounded-md checked:bg-tn_dark checked:border-transparent focus:ring-tn_dark"
@@ -273,7 +273,7 @@ export default function RestaurantReservation() {
           </div>
 
           <div className="col-span-12 md:col-span-4">
-            <div className="relative border border-tn_light_grey rounded-md shadow-md p-4 overflow-hidden">
+            <div className="relative border border-tn_light_grey rounded-md shadow-md p-4 overflow-hidden mt-4 sm:mt-0">
               <div className="flex items-start border-b border-b-tn_light_grey pb-6">
                 <div className="size-16">
                   <img
@@ -297,9 +297,9 @@ export default function RestaurantReservation() {
                 </div>
               </div>
               <div className="border-b border-b-tn_light_grey py-4">
-                <p className="inline-flex items-center m-0">
+                <p className="inline-flex sm:flex-nowrap flex-wrap items-center m-0">
                   Your booking is protected by
-                  <img src={Logo} className="w-[100px] ml-2" alt="" />
+                  <img src={Logo} className="w-[100px] ml-0 mt-2 sm:mt-0 sm:ml-2" alt="" />
                 </p>
               </div>
               <div className="border-b border-b-tn_light_grey py-4">

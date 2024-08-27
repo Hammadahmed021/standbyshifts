@@ -33,6 +33,7 @@ const Profile = () => {
   const [fileError, setFileError] = useState("");
   const [showError, setShowError] = useState("");
   const [isSigning, setIsSigning] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [isClearBooking, setIsClearBooking] = useState({});
   const [isClearingAllBookings, setIsClearingAllBookings] = useState(false);
 
@@ -129,9 +130,11 @@ const Profile = () => {
 
   const onSave = async (data) => {
     setIsSigning(true);
+    setSuccessMessage(""); // Clear previous success message
     try {
       const { newPassword, confirmPassword } = data;
-      let profileImageURL = currentUser?.profile_image;
+      // let profileImageURL = currentUser?.profile_image;
+      let profileImageFile = selectedFile;
 
       // Ensure newPassword and confirmPassword match
       if (newPassword && confirmPassword) {
@@ -154,43 +157,42 @@ const Profile = () => {
         }
       }
 
+      // If a new image is selected, prepare to upload it
       if (selectedFile) {
-        // No need to upload the image separately; it will be sent in the form data
-        profileImageURL = selectedFile;
+        profileImageFile = selectedFile;
       }
-      console.log(data, "data");
 
+      // Construct the updated user data object
       const updatedUserData = {
         user_id: currentUser?.id || userData?.user?.id,
         name: data?.name,
         phone: data?.phone,
-        profile_image: profileImageURL,
+        // Add the profile_image key only if a new image was uploaded
+        ...(profileImageFile !== currentUser?.profile_image && {
+          profile_image: profileImageFile,
+        }),
       };
+
       console.log(updatedUserData, "updatedUserData");
 
+      // Update user profile on the server
       await updateUserProfile(updatedUserData);
 
+      // Update Redux state with the new user data
       dispatch(updateUserData(updatedUserData));
 
-      // Optionally, you can refetch the user data after a successful update
+      // Optionally, refetch the user data after a successful update
       fetchUserData();
+      setSuccessMessage("Profile updated successfully!");
+      setTimeout(() => {
+        setSuccessMessage(""); // Clear the success message after 5 seconds
+      }, 3000);
     } catch (error) {
       console.error("Error saving profile:", error);
     } finally {
       setIsSigning(false);
     }
   };
-
-  // Fetch the updated user data from API after successful update
-  // const response = await verifyUser();
-  // const updatedUser = response.data; // Ensure response.data is used correctly
-  // console.log(updatedUser, "updatedUser on save");
-
-  // setCurrentUser(updatedUser);
-
-  // setValue("name", updatedUser?.name || "");
-  // setValue("phone", updatedUser?.phone || "");
-  // setImagePreview("profile_image", updatedUser?.profile_image || fallback);
 
   const showBookings = async () => {
     try {
@@ -235,13 +237,31 @@ const Profile = () => {
     };
   }, [imagePreview]);
 
+  // Prevent numbers in text fields
+  const handleNameKeyPress = (e) => {
+    const charCode = e.keyCode || e.which;
+    const charStr = String.fromCharCode(charCode);
+    if (!/^[a-zA-Z]+$/.test(charStr)) {
+      e.preventDefault();
+    }
+  };
+
+  // Prevent non-numeric input in phone number and limit length
+  const handlePhoneKeyPress = (e) => {
+    const charCode = e.keyCode || e.which;
+    const charStr = String.fromCharCode(charCode);
+    if (!/^[0-9]+$/.test(charStr)) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-1/2">
             <div className="flex flex-col">
-              <div className="flex items-center">
+              <div className="flex items-center overflow-hidden">
                 <img
                   src={imagePreview}
                   alt="user profile"
@@ -261,9 +281,10 @@ const Profile = () => {
               </div>
             </div>
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
-              <span className="flex space-x-2">
+              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                 <Input
                   label="Name"
+                  onKeyPress={handleNameKeyPress} // Prevent numbers
                   {...register("name")}
                   placeholder="Enter your name"
                   className="mb-6"
@@ -271,29 +292,44 @@ const Profile = () => {
                 <Input
                   label="Phone"
                   type="tel"
-                  {...register("phone")}
+                  maxLength={15} // Restrict length to 15 digits
+                  onKeyPress={handlePhoneKeyPress} // Prevent alphabets
+                  {...register("phone", {
+                    validate: {
+                      lengthCheck: (value) =>
+                        (value.length >= 11 && value.length <= 15) ||
+                        "Phone number must be between 11 and 15 digits",
+                    },
+                  })}
                   placeholder="Enter your phone number"
+                  className="mb-6 sm:mb-0"
                 />
               </span>
               {!isGmailUser && (
-                <span className="flex space-x-2 mb-6">
-                  <Input
-                    label="New Password"
-                    type="password"
-                    {...register("newPassword")}
-                    placeholder="Enter new password"
-                    // disabled={isGmailUser}
-                  />
-                  <Input
-                    label="Confirm Password"
-                    type="password"
-                    {...register("confirmPassword")}
-                    placeholder="Confirm new password"
-                    // disabled={isGmailUser}
-                  />
+                <span className="mb-6 block">
+                  <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                    <Input
+                      label="New Password"
+                      type="password"
+                      {...register("newPassword")}
+                      placeholder="Enter new password"
+                      // disabled={isGmailUser}
+                      className="mb-6 sm:mb-0"
+                    />
+                    <Input
+                      label="Confirm Password"
+                      type="password"
+                      {...register("confirmPassword")}
+                      placeholder="Confirm new password"
+                      // disabled={isGmailUser}
+                    />
+                  </span>
+                  {showError && (
+                    <p className="text-red-500 text-sm">{showError}</p>
+                  )}
                 </span>
               )}
-              {showError && <p className="text-red-500 text-sm">{showError}</p>}
+
               <Button
                 type="submit"
                 className={`w-full  ${
@@ -303,6 +339,9 @@ const Profile = () => {
               >
                 {isSigning ? "Saving..." : "Save changes"}
               </Button>
+              {successMessage && (
+                <p className="text-green-500 mt-3">{successMessage}</p>
+              )}
             </form>
           </div>
           <div className="w-full md:w-1/2 hidden md:flex md:ml-8  justify-end">
@@ -312,7 +351,7 @@ const Profile = () => {
       </div>
 
       <div className="container mx-auto p-4">
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between mb-4 flex-wrap sm:flex-nowrap">
           <div>
             <h2 className="text-3xl font-extrabold mb-4">
               Your Booking History
@@ -324,7 +363,7 @@ const Profile = () => {
           </div>
           <Button
             bgColor="transparent"
-            className={`border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0 ${
+            className={`border border-black h-min mt-3 sm:mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0 ${
               isClearingAllBookings ? "opacity-80 cursor-not-allowed" : ""
             }`}
             textColor="text-black"
@@ -333,7 +372,6 @@ const Profile = () => {
           >
             {isClearingAllBookings ? "Clearing..." : "Clear All Bookings"}
           </Button>
-          
         </div>
 
         {loading ? (
@@ -344,9 +382,9 @@ const Profile = () => {
           userBooking.slice(0, displayedBookings).map((booking, index) => (
             <div
               key={`${booking?.id}-${index}`}
-              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between"
+              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between flex-wrap relative"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-start w-full sm:w-auto mb-2 sm:mb-0">
                 <img
                   src={
                     booking.hotel?.profile_image ||
@@ -383,10 +421,10 @@ const Profile = () => {
                 </p>
               </div>
 
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4">
                 <Link
                   to={`/restaurant/${booking?.hotel?.id}`}
-                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all"
+                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
                 >
                   Rebook
                 </Link>
@@ -395,7 +433,7 @@ const Profile = () => {
                   onClick={() => handleClearBooking(booking?.id)}
                   padX={"px-2"}
                   padY={"py-2"}
-                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink ${
+                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
                     isClearBooking[booking?.id]
                       ? "opacity-70 cursor-not-allowed"
                       : ""

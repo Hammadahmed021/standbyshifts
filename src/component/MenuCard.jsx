@@ -8,8 +8,8 @@ const MenuCard  = ({ image, fallbackText, name, detail, duration, price, type })
     };
   
     return (
-        <div className="max-w-xl w-full sm:w-[100%] overflow-hidden rounded-xl flex mb-6 bg-tn_light">
-        <div className="w-1/2">
+        <div className="max-w-xl w-full sm:w-[100%] overflow-hidden rounded-xl flex mb-4 sm:mb-6 bg-tn_light">
+        <div className="sm:w-1/2 w-3/12">
           {!imgError ? (
             <img
               className="w-full h-full object-cover"
@@ -23,7 +23,7 @@ const MenuCard  = ({ image, fallbackText, name, detail, duration, price, type })
             </div>
           )}
         </div>
-        <div className="w-1/2 px-6 py-4 flex flex-col justify-between">
+        <div className="sm:px-6 sm:py-4 p-3 flex flex-col justify-between sm:w-1/2 w-9/12">
           <p className="font-medium text-md mb-2">{type}</p>
           <div>
           <h4 className="font-bold text-xl mb-2 ellipsis">{name}</h4>
@@ -32,7 +32,7 @@ const MenuCard  = ({ image, fallbackText, name, detail, duration, price, type })
           
           <div className="flex justify-between items-center">
           <p className=" text-sm">{duration}</p>
-          <p className=" text-lg font-bold">Dkk   {price}</p>
+          <p className="text-base sm:text-lg font-bold">Dkk   {price}</p>
           </div>
           
         </div>

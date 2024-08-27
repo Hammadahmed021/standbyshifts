@@ -9,6 +9,7 @@ import {
   Loader,
   MapComponent,
   SelectOption,
+  RelatedCard
 } from "../component";
 import { fallback } from "../assets";
 
@@ -28,29 +29,50 @@ export default function RestaurantDetail() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Fetch and update card and related restaurants
-  useEffect(() => {
-    if (!data) return;
+ // Fetch and update card and related restaurants
+useEffect(() => {
+  if (!data) return;
+  console.log(data, 'data');
+  
+  const foundCard = data.find((card) => card.id === parseInt(id, 10));
 
-    const foundCard = data.find((card) => card.id === parseInt(id, 10));
+  if (foundCard) {
+    setCard(foundCard);
 
-    if (foundCard) {
-      setCard(foundCard);
+    // Extract kitchen names from the nested structure
+    const foundKitchens = [];
+    
+    foundCard.calendars?.forEach((calendar) => {
+      calendar.menus?.forEach((menu) => {
+        menu.kitchens?.forEach((kitchen) => {
+          if (kitchen.name) {
+            foundKitchens.push(kitchen.name);
+          }
+        });
+      });
+    });
 
-      const foundKitchens =
-        foundCard.kitchens?.map((kitchen) => kitchen.name) || [];
-      const filteredRestaurants = data.filter(
-        (restaurant) =>
-          restaurant.id !== parseInt(id, 10) &&
-          restaurant.kitchens?.some((kitchen) =>
-            foundKitchens.includes(kitchen.name)
+    // Filter restaurants that have matching kitchens and exclude the current one
+    const filteredRestaurants = data.filter(
+      (restaurant) =>
+        restaurant.id !== parseInt(id, 10) &&
+        restaurant.calendars?.some((calendar) =>
+          calendar.menus?.some((menu) =>
+            menu.kitchens?.some((kitchen) =>
+              foundKitchens.includes(kitchen.name)
+            )
           )
-      );
-      setRelatedRestaurants(filteredRestaurants.slice(0, 4));
-    } else {
-      setCard(null);
-    }
-  }, [data, id]);
+        )
+    );
+
+    console.log(filteredRestaurants, foundCard, 'filteredRestaurants');
+
+    setRelatedRestaurants(filteredRestaurants.slice(0, 4));
+  } else {
+    setCard(null);
+  }
+}, [data, id]);
+
   const getCurrentTimeIn24HourFormat = () => {
     const date = new Date();
     const hours = date.getHours().toString().padStart(2, "0");

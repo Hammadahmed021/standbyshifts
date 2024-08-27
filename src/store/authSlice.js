@@ -35,7 +35,7 @@ export const signupUser = createAsyncThunk(
         fname,
         password
       };
-
+      // if(user){}
       const response = await Signup(signupData);
 
        // Store token in localStorage

@@ -146,7 +146,7 @@ const Header = () => {
               className=""
             />
             {toggle && (
-              <ul className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0 w-full h-screen duration-200 justify-center z-10 overflow-y-auto">
+              <ul className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto">
                 <div className="relative w-full min-h-screen p-3">
                   <div className="flex justify-between items-start">
                     <LuX
@@ -158,7 +158,7 @@ const Header = () => {
                       <li className="inline-block">
                         <span className="text-tn_dark text-lg font-medium">
                           <img
-                            src={userData?.photoURL || fallback}
+                            src={currentUser?.profile_image || userData?.profile_image?.name  || fallback}
                             alt="user profile"
                             className="w-16 h-16 rounded-full"
                           />

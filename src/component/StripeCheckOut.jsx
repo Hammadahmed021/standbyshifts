@@ -75,7 +75,7 @@ const CheckoutForm = ({ amount, handlePayment, buttonDis }) => {
         } ${processing ? "opacity-70 cursor-not-allowed" : ""}`}
         disabled={!stripe || processing}
       />
-      {error && <div>{error}</div>}
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </form>
   );
 };

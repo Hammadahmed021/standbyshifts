@@ -7,22 +7,51 @@ import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [isSigning, setIsSigning] = useState(false);
+  const [showError, setShowError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  // const handleSignup = async (userData) => {
+  //   console.log(userData, 'signup form');
+  //   setIsSigning(true);
+  //   try {
+  //     const response = await dispatch(signupUser(userData)).unwrap();
+  //     console.log("Signup response:", response);
+  //     // navigate("/");
+  //   } catch (error) {
+  //     console.error("API Signup failed:", error.message);
+  //     setIsSigning(false);
+  //   }
+  // };
+  // SignupComponent.js or wherever handleSignup is used
 
   const handleSignup = async (userData) => {
-    console.log(userData, 'signup form');
+    console.log(userData, "signup form");
     setIsSigning(true);
+    setShowError(""); // Clear any previous error message
     try {
       const response = await dispatch(signupUser(userData)).unwrap();
       console.log("Signup response:", response);
+      // Navigate to home or another page
       // navigate("/");
     } catch (error) {
-      console.error("API Signup failed:", error.message);
+      console.error("API Signup failed:", error);  
+      // Check the specific error code and display the appropriate error message
+      if (error = "auth/email-already-in-use") {
+        setShowError("User already exists with this email.");
+      } 
+       
+    } finally {
       setIsSigning(false);
     }
   };
+  
 
   const password = watch("password");
 
@@ -97,7 +126,9 @@ export default function Signup() {
               })}
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.email.message}
+              </p>
             )}
           </span>
           <span className="w-full">
@@ -118,7 +149,9 @@ export default function Signup() {
               })}
             />
             {errors.phone && (
-              <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.phone.message}
+              </p>
             )}
           </span>
         </span>
@@ -128,13 +161,17 @@ export default function Signup() {
             mainInput={"sm:w-full w-full"}
             label="Password"
             type="password"
+            maxLength={10}
+            minLength={6}
             placeholder="Enter your password"
             {...register("password", {
               required: "Password is required",
             })}
           />
           {errors.password && (
-            <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
           )}
         </span>
 
@@ -143,6 +180,8 @@ export default function Signup() {
             mainInput={"sm:w-full w-full"}
             label="Confirm Password"
             type="password"
+            maxLength={10}
+            minLength={6}
             placeholder="Re-enter your password"
             {...register("confirmPassword", {
               required: "Confirm Password is required",
@@ -151,7 +190,9 @@ export default function Signup() {
             })}
           />
           {errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
+            <p className="text-red-500 text-xs mt-1">
+              {errors.confirmPassword.message}
+            </p>
           )}
         </span>
 
@@ -165,16 +206,21 @@ export default function Signup() {
                 required: "You must agree to the terms and privacy policies",
               })}
             />
-            <p className="text-sm">I agree to all the Terms and Privacy Policies</p>
+            <p className="text-sm">
+              I agree to all the Terms and Privacy Policies
+            </p>
           </div>
           {errors.terms && (
             <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
           )}
+        {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>}
         </div>
 
         <Button
           type="submit"
-          className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
+          className={`w-full ${
+            isSigning ? "opacity-70 cursor-not-allowed" : ""
+          }`}
           disabled={isSigning}
         >
           {isSigning ? "Registering user..." : "Sign up"}
