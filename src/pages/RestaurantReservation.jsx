@@ -24,6 +24,11 @@ export default function RestaurantReservation() {
   const [phone, setPhone] = useState("");
   const [isSigning, setIsSigning] = useState(false);
   const [Id, setId] = useState(false);
+  const [openCardIndex, setOpenCardIndex] = useState(null);
+
+  const handleCardToggle = (index) => {
+    setOpenCardIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
 
   const user = useSelector((state) => state.auth.userData);
   const isLoggedIn = !user;
@@ -35,7 +40,7 @@ export default function RestaurantReservation() {
     try {
       const response = await verifyUser();
       const data = await response.data;
-      setId(data?.id)
+      setId(data?.id);
       console.log(data, "data on fetch");
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -50,7 +55,7 @@ export default function RestaurantReservation() {
   }, []);
 
   useEffect(() => {
-    fetchUserData()
+    fetchUserData();
     localStorage.setItem("guestState", JSON.stringify(isGuest));
   }, [isGuest]);
 
@@ -248,6 +253,12 @@ export default function RestaurantReservation() {
                       menu.menu_types.map((type) => type.name).join(", ") ||
                       "No Type"
                     }
+                    extraDetails={menu.menu_items.map((item) => ({
+                      title: item.title,
+                      description: item.description,
+                    }))}
+                    isOpen={openCardIndex === menu.id}
+                    onToggle={() => handleCardToggle(menu.id)}
                   />
                   <div className="relative ml-3 sm:ml-12 h-7 w-7">
                     <input
@@ -299,7 +310,11 @@ export default function RestaurantReservation() {
               <div className="border-b border-b-tn_light_grey py-4">
                 <p className="inline-flex sm:flex-nowrap flex-wrap items-center m-0">
                   Your booking is protected by
-                  <img src={Logo} className="w-[100px] ml-0 mt-2 sm:mt-0 sm:ml-2" alt="" />
+                  <img
+                    src={Logo}
+                    className="w-[100px] ml-0 mt-2 sm:mt-0 sm:ml-2"
+                    alt=""
+                  />
                 </p>
               </div>
               <div className="border-b border-b-tn_light_grey py-4">

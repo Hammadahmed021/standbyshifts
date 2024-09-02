@@ -71,8 +71,8 @@ const CheckoutForm = ({ amount, handlePayment, buttonDis }) => {
       <Button
         children={processing ? "Processing..." : "Confirm Payment"}
         className={`w-full mt-6 ${
-          buttonDis === 0 ? "opacity-50 cursor-not-allowed" : ""
-        } ${processing ? "opacity-70 cursor-not-allowed" : ""}`}
+          buttonDis === 0 ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+        } ${processing ? "opacity-70 cursor-not-allowed pointer-events-none" : ""}`}
         disabled={!stripe || processing}
       />
       {error && <p className="text-sm text-red-500 mt-1">{error}</p>}

@@ -376,10 +376,10 @@ const Profile = () => {
 
         {loading ? (
           <Loader />
-        ) : userBooking.length === 0 ? (
+        ) : userBooking?.length === 0 ? (
           <p className="text-lg text-tn_dark">No bookings to display.</p>
         ) : (
-          userBooking.slice(0, displayedBookings).map((booking, index) => (
+          userBooking?.slice(0, displayedBookings).map((booking, index) => (
             <div
               key={`${booking?.id}-${index}`}
               className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between flex-wrap relative"

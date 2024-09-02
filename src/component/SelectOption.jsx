@@ -5,6 +5,8 @@ const SelectOption = forwardRef(function Input(
   ref
 ) {
   const id = useId();
+  // console.log(options, 'options');
+  
   return (
     <div className={`w-full ${className}`}>
       {label && (
@@ -16,7 +18,7 @@ const SelectOption = forwardRef(function Input(
         ref={ref}
         id={id}
         {...props}
-        className={`-ml-1 w-full duration-200 focus:none outline-none text-tn_text_grey text-lg font-medium ${selectClassName}`}
+        className={`-ml-1 w-full duration-200 focus:none outline-none text-tn_text_grey text-lg font-medium bg-transparent ${selectClassName}`}
       >
         {options?.map(({ id, name, index }) => (
           <option key={index} value={id}>

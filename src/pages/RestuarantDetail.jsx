@@ -65,7 +65,7 @@ useEffect(() => {
         )
     );
 
-    console.log(filteredRestaurants, foundCard, 'filteredRestaurants');
+    console.log(filteredRestaurants, 'filteredRestaurants');
 
     setRelatedRestaurants(filteredRestaurants.slice(0, 4));
   } else {
@@ -394,7 +394,7 @@ useEffect(() => {
                   id={restaurant.id}
                   title={restaurant.name}
                   location={restaurant.address}
-                  images={restaurant.images}
+                  images={restaurant.galleries.map(gallery => gallery.image)}
                 />
               ))
             ) : (

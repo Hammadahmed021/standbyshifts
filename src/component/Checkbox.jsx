@@ -2,7 +2,8 @@ import React from "react";
 import { FaCheck } from "react-icons/fa";
 
 const Checkbox = ({ label, options, selectedOptions, onChange }) => {
-  console.log('label: ', label, selectedOptions, options);
+  console.log('label: ', selectedOptions, options);
+  console.log('options: ', selectedOptions, options);
   
   return (
     <div className="my-4">

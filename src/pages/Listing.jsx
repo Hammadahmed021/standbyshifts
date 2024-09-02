@@ -12,10 +12,10 @@ import { Loader } from "../component";
 const Listing = () => {
   const location = useLocation();
   const [filters, setFilters] = useState({
-    kitchen_ids: [location.state?.filters?.kitchens],
+    kitchen_ids: location.state?.filters?.kitchens,
     endTime: location.state?.filters?.endTime,
     startTime: location.state?.filters?.startTime,
-    // facility_ids: [...location.state?.filters?.kitchens],
+    // facility_ids: [location.state?.filters?.kitchens],
     // menu_type_ids: [...location.state?.filters?.kitchens],
   });
   const [filteredData, setFilteredData] = useState([]);
@@ -24,7 +24,7 @@ const Listing = () => {
   const [error, setError] = useState(null);
 
   const { data: filterData } = useFetch("data-for-filter");
-console.log(filterData, 'filterData');
+console.log(filters.kitchen_ids, 'kitchen_ids filterData');
 
 useEffect(() => {
   const fetchFilteredDataAndUpdateState = async () => {
@@ -83,23 +83,27 @@ useEffect(() => {
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
-    
+
     const formatTime = (hours, minutes) => {
+      const period = hours >= 12 ? "PM" : "AM";
+      const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
+      const displayTime = `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
       return {
-        id: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`,
-        name: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+        id: valueTime,
+        name: displayTime,
       };
     };
-  
+
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 5) {
         options.push(formatTime(hour, minute));
       }
     }
-  
+
     return options;
   };
-  
+
   const timeOptions = generateTimeOptionsWithAMPM();
   
 
@@ -126,9 +130,10 @@ useEffect(() => {
                 options={filterData?.kitchens || []}
                 selectedOptions={filters.kitchen_ids || []}
                 onChange={(id) => updateFilter("kitchen_ids", id)}
+
               />
             </div>
-            <div className="block mb-6">
+            {/* <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Facilities</h3>
               <Checkbox
                 options={filterData?.facilities || []}
@@ -143,7 +148,7 @@ useEffect(() => {
                 selectedOptions={filters.menu_type_ids || []}
                 onChange={(id) => updateFilter("menu_type_ids", id)}
               />
-            </div>
+            </div> */}
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
               <SelectOption

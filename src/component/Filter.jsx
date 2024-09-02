@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Filter = ({ onFilterChange }) => {
   const [selectedOptions, setSelectedOptions] = useState({
-    kitchens: [1], // Default to first kitchen
+    kitchens: 1, // Default to first kitchen
     atmospheres: [],
     facilities: [],
     areas: [],
@@ -22,13 +22,15 @@ const Filter = ({ onFilterChange }) => {
     if (data) {
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
-        kitchens: prevSelectedOptions.kitchens.length > 0 ? prevSelectedOptions.kitchens : [data.kitchens?.[0]?.id || 1],
+        kitchens: prevSelectedOptions.kitchens.length > 0 ? prevSelectedOptions.kitchens : [data.kitchens?.[0]?.id.toString() ||"1"],
         atmospheres: prevSelectedOptions.atmospheres.length > 0 ? prevSelectedOptions.atmospheres : [data.atmospheres?.[0]?.id || 1],
         facilities: prevSelectedOptions.facilities.length > 0 ? prevSelectedOptions.facilities : [data.facilities?.[0]?.id || 1],
         areas: prevSelectedOptions.areas.length > 0 ? prevSelectedOptions.areas : [data.areas?.[0]?.id || 1],
         menuTypes: prevSelectedOptions.menuTypes.length > 0 ? prevSelectedOptions.menuTypes : [data.menuTypes?.[0]?.id || 1],
       }));
+      console.log(selectedOptions?.kitchens, 'kitchens filter page');
     }
+    
   }, [data]);
 
   const handleFilterChange = (e, category) => { 
@@ -82,23 +84,26 @@ const Filter = ({ onFilterChange }) => {
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
-    
+
     const formatTime = (hours, minutes) => {
+      const period = hours >= 12 ? "PM" : "AM";
+      const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
+      const displayTime = `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
       return {
-        id: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`,
-        name: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+        id: valueTime,
+        name: displayTime,
       };
     };
-  
+
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 5) {
         options.push(formatTime(hour, minute));
       }
     }
-  
+
     return options;
   };
-  
 
   const timeOptions = generateTimeOptionsWithAMPM();
 
