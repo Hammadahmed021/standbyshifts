@@ -29,10 +29,11 @@ const CardCarousel = ({
   type,
   cuisine,
   timeline,
+  is_favorite,
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [inWishlist, setInWishlist] = useState(false);
+  const [inWishlist, setInWishlist] = useState(is_favorite);
 
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.items);
@@ -185,5 +186,6 @@ const CardCarousel = ({
     </div>
   );
 };
+
 
 export default CardCarousel;
