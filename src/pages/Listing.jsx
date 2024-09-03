@@ -12,11 +12,17 @@ import { Loader } from "../component";
 const Listing = () => {
   const location = useLocation();
   const [filters, setFilters] = useState({
-    kitchen_ids: location.state?.filters?.kitchens,
+    kitchen_ids: Array.isArray(location.state?.filters?.kitchens)
+      ? location.state?.filters?.kitchens
+      : [location.state?.filters?.kitchens],
+    facility_ids: Array.isArray(location.state?.filters?.facilities)
+      ? location.state?.filters?.facilities
+      : [location.state?.filters?.facilities],
+    areas_ids: Array.isArray(location.state?.filters?.areas)
+      ? location.state?.filters?.areas
+      : [location.state?.filters?.areas],
     endTime: location.state?.filters?.endTime,
     startTime: location.state?.filters?.startTime,
-    // facility_ids: [location.state?.filters?.kitchens],
-    // menu_type_ids: [...location.state?.filters?.kitchens],
   });
   const [filteredData, setFilteredData] = useState([]);
   const [visibleCards, setVisibleCards] = useState(6);
@@ -24,40 +30,36 @@ const Listing = () => {
   const [error, setError] = useState(null);
 
   const { data: filterData } = useFetch("data-for-filter");
-console.log(filters.kitchen_ids, 'kitchen_ids filterData');
+  console.log(filters, "filters");
 
-useEffect(() => {
-  const fetchFilteredDataAndUpdateState = async () => {
-    if (!filterData) return;
-    
-    console.log('Current filters:', filters);
+  useEffect(() => {
+    const fetchFilteredDataAndUpdateState = async () => {
+      if (!filterData) return;
 
-    const requestBody = {
-      kitchen_ids: filters.kitchen_ids ? filters.kitchen_ids.map((res) => Number(res)) : [],
-      facility_ids: filters.facility_ids ? filters.facility_ids.map((res) => Number(res)) : [],
-      // menu_type_ids: filters.menu_type_ids || [],
-      // person: filters.person || 1,
-      startTime: filters.startTime,
-      endTime: filters.endTime,
+      const requestBody = {
+        kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
+        facility_ids: filters.facility_ids.map((res) => Number(res)) || [],
+        areas_ids: filters.areas_ids.map((res) => Number(res)) || [],
+        // menu_type_ids: filters.menu_type_ids || [],
+        // person: filters.person || 1,
+        startTime: filters.startTime,
+        endTime: filters.endTime,
+      };
+
+      try {
+        setLoading(true);
+        const result = await fetchFilteredData(requestBody);
+        console.log(result, "result");
+        setFilteredData(Array.isArray(result) ? result : [result]);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
     };
-    
-    console.log(requestBody, "requestBody");
-    
-    try {
-      setLoading(true);
-      const result = await fetchFilteredData(requestBody);
-      console.log(result, "result");
-      setFilteredData(Array.isArray(result) ? result : [result]);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchFilteredDataAndUpdateState();
-}, [filters, filterData]);
-
+    fetchFilteredDataAndUpdateState();
+  }, [filters, filterData]);
 
   const handleLoadMore = () => setVisibleCards((prev) => prev + 4);
   const hasMore = visibleCards < filteredData.length;
@@ -79,7 +81,6 @@ useEffect(() => {
 
   // Ensure the data is always an array before transformation
   const transformedData = transformSingleImageData(filteredData);
-  console.log(transformedData, 'transformedData');
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
@@ -87,8 +88,12 @@ useEffect(() => {
     const formatTime = (hours, minutes) => {
       const period = hours >= 12 ? "PM" : "AM";
       const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
-      const displayTime = `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
+      const displayTime = `${adjustedHours}:${minutes
+        .toString()
+        .padStart(2, "0")} ${period}`;
+      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:00`;
       return {
         id: valueTime,
         name: displayTime,
@@ -105,7 +110,6 @@ useEffect(() => {
   };
 
   const timeOptions = generateTimeOptionsWithAMPM();
-  
 
   return (
     <>
@@ -130,10 +134,9 @@ useEffect(() => {
                 options={filterData?.kitchens || []}
                 selectedOptions={filters.kitchen_ids || []}
                 onChange={(id) => updateFilter("kitchen_ids", id)}
-
               />
             </div>
-            {/* <div className="block mb-6">
+            <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Facilities</h3>
               <Checkbox
                 options={filterData?.facilities || []}
@@ -142,13 +145,13 @@ useEffect(() => {
               />
             </div>
             <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Menu Types</h3>
+              <h3 className="text-2xl font-bold text-tn_dark">Areas</h3>
               <Checkbox
-                options={filterData?.menuTypes || []}
-                selectedOptions={filters.menu_type_ids || []}
-                onChange={(id) => updateFilter("menu_type_ids", id)}
+                options={filterData?.areas || []}
+                selectedOptions={filters.areas_ids || []}
+                onChange={(id) => updateFilter("areas_ids", id)}
               />
-            </div> */}
+            </div>
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
               <SelectOption
@@ -175,7 +178,7 @@ useEffect(() => {
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">End Time</h3>
               <SelectOption
-               options={timeOptions}
+                options={timeOptions}
                 value={filters.endTime || "10:00:00"}
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, endTime: e.target.value }))
@@ -188,19 +191,25 @@ useEffect(() => {
               <Loader />
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
-                  {transformedData.slice(0, visibleCards).map((data) => (
-                    <CardCarousel
-                      key={data.id}
-                      id={data.id}
-                      title={data.title}
-                      location={data.location}
-                      images={data.images}
-                      cuisine={data.cuisine}
-                      timeline={data.timeline}
-                    />
-                  ))}
-                </div>
+                {transformedData.length === 0 ? (
+                  <div className="text-start text-gray-500 mt-5">
+                    No restaurants available for the selected filters.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
+                    {transformedData.slice(0, visibleCards).map((data) => (
+                      <CardCarousel
+                        key={data.id}
+                        id={data.id}
+                        title={data.title}
+                        location={data.location}
+                        images={data.images}
+                        cuisine={data.cuisine}
+                        timeline={data.timeline}
+                      />
+                    ))}
+                  </div>
+                )}
                 <LoadMore
                   onLoadMore={handleLoadMore}
                   hasMore={hasMore}

@@ -10,6 +10,7 @@ import {
   deleteAllUserBookings,
   deleteUserBooking,
   getUserBookings,
+  showFavorite,
   updateUserProfile,
   verifyUser,
 } from "../utils/Api";
@@ -27,7 +28,9 @@ const Profile = () => {
   const [userBooking, setUserBooking] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadingFavorites, setLoadingFavorites] = useState(true);
   const [displayedBookings, setDisplayedBookings] = useState(4);
+  const [displayedFavorites, setDisplayedFavorites] = useState(4);
   const [imagePreview, setImagePreview] = useState(fallback);
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
@@ -36,6 +39,7 @@ const Profile = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isClearBooking, setIsClearBooking] = useState({});
   const [isClearingAllBookings, setIsClearingAllBookings] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const {
     register,
@@ -95,6 +99,11 @@ const Profile = () => {
     setDisplayedBookings(displayedBookings + 4);
   };
   const hasMore = displayedBookings < userBooking.length;
+
+  const handleLoadMoreFav = () => {
+    setDisplayedFavorites(displayedFavorites + 4);
+  };
+  const hasMoreFav = displayedFavorites < favorites.length;
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -227,6 +236,23 @@ const Profile = () => {
   useEffect(() => {
     fetchUserData();
   }, [setValue]);
+
+  useEffect(() => {
+    // Fetch favorites when component mounts
+    const fetchFavorites = async () => {
+      try {
+        const data = await showFavorite();
+        setFavorites(data);
+        setLoadingFavorites(false);
+      } catch (error) {
+        setError(error.message);
+        setLoadingFavorites(false);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+  console.log(favorites, "fav");
 
   useEffect(() => {
     showBookings();
@@ -449,6 +475,79 @@ const Profile = () => {
 
         {userBooking.length >= displayedBookings && (
           <LoadMore onLoadMore={handleLoadMore} hasMore={hasMore} />
+        )}
+      </div>
+
+      <div className="container mx-auto p-4">
+        <div className="flex items-start justify-between mb-4 flex-wrap sm:flex-nowrap">
+          <div>
+            <h2 className="text-3xl font-extrabold mb-4">Your Favorites</h2>
+            <p>
+              Check your past and upcoming restaurant easily by viewing them
+              here.
+            </p>
+          </div>
+        </div>
+
+        {loadingFavorites ? (
+          <Loader />
+        ) : favorites?.length === 0 ? (
+          <p className="text-lg text-tn_dark">No favorites to display.</p>
+        ) : (
+          favorites?.slice(0, displayedFavorites).map((favorite, index) => (
+            <div
+              key={`${favorite?.id}-${index}`}
+              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between flex-wrap relative"
+            >
+              <div className="flex items-start justify-start w-full sm:w-auto mb-2 sm:mb-0">
+                <img
+                  src={
+                    favorite?.profile_image ||
+                    // favorite?.galleries[0]?.image ||
+                    fallback
+                  }
+                  className="w-20 h-16 rounded-md"
+                  alt="hotel"
+                />
+                <div className="ml-2">
+                  <p>{favorite?.type}</p>
+                  <Link
+                    to={`/restaurant/${favorite?.id}`}
+                    className="font-bold text-xl capitalize"
+                  >
+                    {favorite?.name}
+                  </Link>
+                </div>
+              </div>
+
+              {/* <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4">
+                <Link
+                  to={`/restaurant/${booking?.hotel?.id}`}
+                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
+                >
+                  Rebook
+                </Link>
+
+                <Button
+                  onClick={() => handleClearBooking(booking?.id)}
+                  padX={"px-2"}
+                  padY={"py-2"}
+                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
+                    isClearBooking[booking?.id]
+                      ? "opacity-70 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={isClearBooking[booking?.id]}
+                >
+                  {isClearBooking[booking?.id] ? "..." : "X"}
+                </Button>
+              </div> */}
+            </div>
+          ))
+        )}
+
+        {favorites.length >= displayedFavorites && (
+          <LoadMore onLoadMore={handleLoadMoreFav} hasMore={hasMoreFav} />
         )}
       </div>
     </>

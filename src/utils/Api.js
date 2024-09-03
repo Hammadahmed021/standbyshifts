@@ -4,7 +4,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 // const TOKEN = "CUso6eFZl1LmPsUGrFMKf15tcS5FElsqOoWXBbtj2PUxRAI5HTVuxOPZyLmL";
 
-
 export const getListDetails = async (url, params) => {
   try {
     const { data } = await axios.get(`${BASE_URL}${url}`, {
@@ -141,7 +140,6 @@ export const getPayment = async (paymentData) => {
 export const getUserBookings = async (params) => {
   const token = localStorage.getItem("webToken");
 
-
   try {
     const { data } = await axios.get(`${BASE_URL}getUserBookings`, {
       params: {
@@ -162,7 +160,6 @@ export const getUserBookings = async (params) => {
 
 export const deleteUserBooking = async (booking_id) => {
   const token = localStorage.getItem("webToken");
-
 
   try {
     const { data } = await axios.put(
@@ -188,7 +185,6 @@ export const deleteUserBooking = async (booking_id) => {
 export const deleteAllUserBookings = async () => {
   const token = localStorage.getItem("webToken");
 
-
   try {
     const { data } = await axios.put(
       `${BASE_URL}updateUserAllBookingsStatus`,
@@ -212,7 +208,6 @@ export const deleteAllUserBookings = async () => {
 
 export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken");
- 
 
   const { name, phone, profile_image, user_id } = userData;
   console.log(userData, "userData api");
@@ -252,7 +247,6 @@ export const updateUserProfile = async (userData) => {
 
 export const verifyUser = async () => {
   const token = localStorage.getItem("webToken");
-
 
   try {
     const data = await axios.get(`${BASE_URL}verify`, {
@@ -305,5 +299,45 @@ export const getUserFromGmailSignup = async (userData) => {
     console.log(error, "error getting user from gmail");
 
     throw new Error("something went wrong");
+  }
+};
+
+/* Favorites */
+export const addFavorite = async (hotel_id) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}favorite`,
+      { hotel_id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(response, "response add favorite");
+
+    return response.data;
+  } catch (error) {
+    throw new Error("unable to add favorites:", error?.message);
+  }
+};
+export const showFavorite = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}user-favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response, "response show list of favorite");
+
+    return response.data;
+  } catch (error) {
+    throw new Error("unable to add favorites:", error?.message);
   }
 };

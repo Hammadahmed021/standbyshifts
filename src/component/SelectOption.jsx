@@ -8,7 +8,7 @@ const SelectOption = forwardRef(function Input(
   // console.log(options, 'options');
   
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full ${className} bg-transparent`}>
       {label && (
         <label className="text-sm font-semibold" htmlFor={id}>
           {label}

@@ -13,6 +13,7 @@ import { Fav, App, storeBtn } from "../assets";
 import { localDB } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData } from "../utils/HelperFun";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const isDesktop = useMediaQuery("(max-width: 991px)");
@@ -44,7 +45,7 @@ export default function Home() {
   // Transform and filter the data
   const transformedData = data ? transformData(data) : [];
   const approvedData = transformedData.filter(
-    item => item.is_approved && item.status === "active"
+    (item) => item.is_approved && item.status === "active"
   );
 
   const hasMore = visibleCards < approvedData.length;
@@ -64,7 +65,7 @@ export default function Home() {
         Discover and Book the Best
         <span className="text-tn_pink"> Restaurant</span>
       </h1>
-      
+
       {isDesktop ? (
         <div className="container w-[95%] mx-auto relative">
           <Search data={data} className={"ml-0"} />
@@ -101,13 +102,12 @@ export default function Home() {
               Popular types of food & restaurants near you
             </p>
           </div>
-          <Button
-            children={"View All"}
-            bgColor="transparent"
-            className="border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-            textColor="text-black"
-            onClick={() => alert("test")}
-          />
+          <Link
+            to="/listing"
+            className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
+          >
+            View All
+          </Link>
         </div>
 
         {loading ? (
@@ -151,13 +151,12 @@ export default function Home() {
                 Checkout some of our Best Featured Restaurants of all the time
               </p>
             </div>
-            <Button
-              children={"View All"}
-              bgColor="transparent"
-              className="border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-              textColor="text-black"
-              onClick={() => alert("test")}
-            />
+            <Link
+              to="/listing"
+              className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
+            >
+              View All
+            </Link>
           </div>
           <Carousel>
             {localDB
@@ -208,13 +207,12 @@ export default function Home() {
               restaurants near you
             </p>
           </div>
-          <Button
-            children={"View All"}
-            bgColor="transparent"
-            className="border border-black h-min mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-            textColor="text-black"
-            onClick={() => alert("test")}
-          />
+          <Link
+            to="/listing"
+            className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
+          >
+            View All
+          </Link>
         </div>
 
         {loading ? (

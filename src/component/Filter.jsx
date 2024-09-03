@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 const Filter = ({ onFilterChange }) => {
   const [selectedOptions, setSelectedOptions] = useState({
-    kitchens: 1, // Default to first kitchen
-    atmospheres: [],
+    kitchens: [], // Default to first kitchen
+    // atmospheres: [],
     facilities: [],
     areas: [],
-    menuTypes: [],
+    // menuTypes: [],
     person: 1,
     startTime: "00:00:00",
     endTime: "01:00:00",
@@ -22,19 +22,26 @@ const Filter = ({ onFilterChange }) => {
     if (data) {
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
-        kitchens: prevSelectedOptions.kitchens.length > 0 ? prevSelectedOptions.kitchens : [data.kitchens?.[0]?.id.toString() ||"1"],
-        atmospheres: prevSelectedOptions.atmospheres.length > 0 ? prevSelectedOptions.atmospheres : [data.atmospheres?.[0]?.id || 1],
-        facilities: prevSelectedOptions.facilities.length > 0 ? prevSelectedOptions.facilities : [data.facilities?.[0]?.id || 1],
-        areas: prevSelectedOptions.areas.length > 0 ? prevSelectedOptions.areas : [data.areas?.[0]?.id || 1],
-        menuTypes: prevSelectedOptions.menuTypes.length > 0 ? prevSelectedOptions.menuTypes : [data.menuTypes?.[0]?.id || 1],
+        kitchens:
+          prevSelectedOptions.kitchens.length > 0
+            ? prevSelectedOptions.kitchens
+            : [data.kitchens?.[0]?.id],
+        facilities:
+          prevSelectedOptions.facilities.length > 0
+            ? prevSelectedOptions.facilities
+            : [data.facilities?.[0]?.id],
+            areas: 
+            prevSelectedOptions.areas.length > 0
+            ? prevSelectedOptions.areas
+            : [data.areas?.[0]?.id],
       }));
-      console.log(selectedOptions?.kitchens, 'kitchens filter page');
     }
-    
   }, [data]);
 
-  const handleFilterChange = (e, category) => { 
-    const value = e.target.value;
+  const handleFilterChange = (e, category) => {
+    const value = Array.isArray(e.target.value)
+      ? e.target.value
+      : [e.target.value]; // Ensure it's an array
     setSelectedOptions((prevSelectedOptions) => ({
       ...prevSelectedOptions,
       [category]: value,
@@ -44,6 +51,8 @@ const Filter = ({ onFilterChange }) => {
       [category]: value,
     });
   };
+ 
+  
 
   const handleTimeChange = (e, isStartTime) => {
     const value = e.target.value;
@@ -52,7 +61,9 @@ const Filter = ({ onFilterChange }) => {
     if (isStartTime) {
       const [hours, minutes] = value.split(":").map(Number);
       const newHours = (hours + 1) % 24;
-      newEndTime = `${newHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+      newEndTime = `${newHours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:00`;
 
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
@@ -69,10 +80,14 @@ const Filter = ({ onFilterChange }) => {
 
   const handleSearch = () => {
     navigate("/listing", { state: { filters: selectedOptions } });
-    console.log(selectedOptions, "filter options");
   };
 
-  if (loading) return <p><Loader /></p>;
+  if (loading)
+    return (
+      <p>
+        <Loader />
+      </p>
+    );
 
   const personOptions = [
     { id: 1, name: "1" },
@@ -88,8 +103,12 @@ const Filter = ({ onFilterChange }) => {
     const formatTime = (hours, minutes) => {
       const period = hours >= 12 ? "PM" : "AM";
       const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
-      const displayTime = `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
+      const displayTime = `${adjustedHours}:${minutes
+        .toString()
+        .padStart(2, "0")} ${period}`;
+      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:00`;
       return {
         id: valueTime,
         name: displayTime,

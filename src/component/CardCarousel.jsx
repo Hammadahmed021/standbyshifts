@@ -3,8 +3,10 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import { WishlistButton } from "../component";
 import { fallback } from "../assets";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleFavorite } from "../store/favoriteSlice";
+import { addFavorite } from "../utils/Api";
 
-// Skeleton Loader Component
 const SkeletonLoader = () => {
   return (
     <div className="max-w-sm rounded overflow-hidden relative mx-2 mb-6 sm:mb-8 animate-pulse">
@@ -28,14 +30,15 @@ const CardCarousel = ({
   cuisine,
   timeline,
 }) => {
-  const [data, setData] = useState(null); // State to store fetched data
-  const [loading, setLoading] = useState(true); // State to manage loading state
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [inWishlist, setInWishlist] = useState(false);
 
-  // Simulate fetching data from an API
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites.items);
+
   useEffect(() => {
-    // Replace this with your actual API call
     const fetchData = async () => {
-      // Simulate API call with setTimeout
       setTimeout(() => {
         setData({
           id,
@@ -47,12 +50,31 @@ const CardCarousel = ({
           cuisine,
           timeline,
         });
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }, 1000);
     };
 
     fetchData();
   }, [id, title, location, images, rating, type, cuisine, timeline]);
+
+  useEffect(() => {
+    setInWishlist(favorites.includes(id));
+  }, [favorites, id]);
+
+  const isLoggedIn = useSelector((state) => state.auth.userData);
+
+  const handleWishlistClick = async () => {
+    if (data) {
+      try {
+        await addFavorite(data.id); // Toggle favorite status in backend
+        dispatch(toggleFavorite(data.id)); // Update local state
+        setInWishlist(!inWishlist); // Toggle local state
+        alert(inWishlist ? "Removed from favorites!" : "Added to favorites!");
+      } catch (error) {
+        console.error("Error toggling favorites:", error.message);
+      }
+    }
+  };
 
   const settings = {
     dots: true,
@@ -89,7 +111,6 @@ const CardCarousel = ({
     return <SkeletonLoader />;
   }
 
-  // const isSingleImage = data.images.length === 1;
   const isSingleImage = Array.isArray(data?.images) && data.images.length === 1;
 
   return (
@@ -113,15 +134,18 @@ const CardCarousel = ({
           ))}
         </Slider>
       )}
-      {/* {data.type === "featured" ? (
-        <div className="absolute top-2 right-5 bg-white rounded-full w-7 h-7 flex items-center justify-center">
-          <WishlistButton />
+      {isLoggedIn && (
+        <div
+          className={`absolute top-2 ${
+            data.type === "featured" ? "right-5" : "right-2"
+          } bg-white rounded-full w-7 h-7 flex items-center justify-center shadow-sm`}
+        >
+          <WishlistButton
+            defaultInWishlist={inWishlist}
+            onToggleWishlist={handleWishlistClick}
+          />
         </div>
-      ) : (
-        <div className="absolute top-2 right-2 bg-white rounded-full w-7 h-7 flex items-center justify-center">
-          <WishlistButton />
-        </div>
-      )} */}
+      )}
       {data.type === "featured" && (
         <div className="px-2 py-2 absolute bottom-0 left-0 w-full z-10">
           <p className="text-white text-base">{data.location}</p>
@@ -138,14 +162,11 @@ const CardCarousel = ({
             <p className="text-black text-sm font-medium ellipsis mr-1">
               {data.location}
             </p>
-            {/* <Ratings rating={data.rating} /> */}
           </div>
           <div
             className="font-bold text-md text-tn_dark ellipsis"
             style={{ maxWidth: "100%" }}
           >
-            {/* had to change this after api alteration */}
-            {/* <Link to={`/restaurant/${data.id}`} className="hover:opacity-80"> */}
             <Link to={`/restaurant/${data.id}`} className="hover:opacity-80">
               {data.title}
             </Link>

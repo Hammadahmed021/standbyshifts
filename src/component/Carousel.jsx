@@ -1,7 +1,10 @@
 import React from 'react';
 import Slider from 'react-slick';
+import useMediaQuery from '../hooks/useQuery';
 
 const Carousel = ({ children, slidesToShow, responsiveSettings }) => {
+  const isMobile = useMediaQuery('(max-width: 768px)'); // Query to check if the screen is mobile-sized
+
   const defaultSettings = {
     dots: true,
     infinite: true,
@@ -15,14 +18,15 @@ const Carousel = ({ children, slidesToShow, responsiveSettings }) => {
           width: "100%",
           display: "flex",
           justifyContent: "center",
+          background: 'red'
         }}
       >
         <ul>{dots}</ul>
       </div>
     ),
-    arrows: true,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />,
+    arrows: isMobile, // Show arrows only if `isMobile` is true
+    prevArrow: isMobile ? <PrevArrow /> : null,
+    nextArrow: isMobile ? <NextArrow /> : null,
     responsive: responsiveSettings || [
       {
         breakpoint: 1024,
@@ -38,6 +42,7 @@ const Carousel = ({ children, slidesToShow, responsiveSettings }) => {
           slidesToShow: 2,
           slidesToScroll: 1,
           dots: true,
+          arrows: true,
         },
       },
       {
@@ -46,6 +51,7 @@ const Carousel = ({ children, slidesToShow, responsiveSettings }) => {
           slidesToShow: 1,
           slidesToScroll: 1,
           dots: true,
+          arrows: true,
         },
       },
     ],
@@ -57,7 +63,7 @@ const Carousel = ({ children, slidesToShow, responsiveSettings }) => {
   };
 
   return (
-    <Slider {...settings} className='featured-carousel max-w-[100%] mx-auto overflow-hidden'>
+    <Slider {...settings} className="featured-carousel max-w-[100%] mx-auto overflow-hidden">
       {children}
     </Slider>
   );

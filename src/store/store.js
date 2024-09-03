@@ -6,7 +6,7 @@ import rootReducer from './rootReducer';
 const persistConfig = {
     key: `root`,
     storage,
-    whitelist:["auth", "home", "bookings"]
+    whitelist:["auth", "home", "bookings", "favorite"]
   };
   
   const persistedReducer = persistReducer(persistConfig, rootReducer);
