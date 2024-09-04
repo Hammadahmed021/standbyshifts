@@ -5,7 +5,7 @@ import { signOut } from "../../service";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 
-export default function LogoutBtn({className}) {
+export default function LogoutBtn({ className }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ export default function LogoutBtn({className}) {
     try {
       await signOut(); // Call Firebase signOut function
       dispatch(logout()); // Dispatch your logout action
+      localStorage.removeItem("webToken");
     } catch (error) {
       console.error("Logout failed:", error.message);
       // Handle logout failure if needed
@@ -37,7 +38,11 @@ export default function LogoutBtn({className}) {
         Logout
       </button>
       {isModalOpen && (
-        <Modal title="Are you sure you want to log out?" onYes={handleYes} onClose={handleClose} />
+        <Modal
+          title="Are you sure you want to log out?"
+          onYes={handleYes}
+          onClose={handleClose}
+        />
       )}
     </>
   );

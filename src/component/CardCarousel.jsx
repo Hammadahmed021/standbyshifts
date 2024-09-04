@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import { WishlistButton } from "../component";
+import { Ratings, WishlistButton } from "../component";
 import { fallback } from "../assets";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleFavorite } from "../store/favoriteSlice";
@@ -23,7 +23,7 @@ const SkeletonLoader = () => {
 const CardCarousel = ({
   id,
   title,
-  location,
+  address,
   images,
   rating,
   type,
@@ -44,7 +44,7 @@ const CardCarousel = ({
         setData({
           id,
           title,
-          location,
+          address,
           images,
           rating,
           type,
@@ -56,20 +56,19 @@ const CardCarousel = ({
     };
 
     fetchData();
-  }, [id, title, location, images, rating, type, cuisine, timeline]);
+  }, [id, title, address, images, rating, type, cuisine, timeline]);
+  const isLoggedIn = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
     setInWishlist(favorites.includes(id));
   }, [favorites, id]);
-
-  const isLoggedIn = useSelector((state) => state.auth.userData);
 
   const handleWishlistClick = async () => {
     if (data) {
       try {
         await addFavorite(data.id); // Toggle favorite status in backend
         dispatch(toggleFavorite(data.id)); // Update local state
-        setInWishlist(!inWishlist); // Toggle local state
+        setInWishlist((prev) => !prev); // Toggle local state
         alert(inWishlist ? "Removed from favorites!" : "Added to favorites!");
       } catch (error) {
         console.error("Error toggling favorites:", error.message);
@@ -149,7 +148,7 @@ const CardCarousel = ({
       )}
       {data.type === "featured" && (
         <div className="px-2 py-2 absolute bottom-0 left-0 w-full z-10">
-          <p className="text-white text-base">{data.location}</p>
+          <p className="text-white text-base">{data.address}</p>
           <div className="font-bold text-2xl mb-2 text-white ellipsis-2-lines">
             <Link to={`/restaurant/${data.id}`} className="hover:opacity-80">
               {data.title}
@@ -157,12 +156,13 @@ const CardCarousel = ({
           </div>
         </div>
       )}
-      {!data.type && (
+      {data.type !== "featured" && (
         <div className="px-2 py-2">
           <div className="flex justify-between items-center">
             <p className="text-black text-sm font-medium ellipsis mr-1">
-              {data.location}
+              {data.address}
             </p>
+            <Ratings rating={data.rating} />
           </div>
           <div
             className="font-bold text-md text-tn_dark ellipsis"
@@ -172,20 +172,19 @@ const CardCarousel = ({
               {data.title}
             </Link>
           </div>
-          <p className="text-black text-sm font-light">{data.cuisine}</p>
-          <ul className="flex items-center mt-1">
+          <p className="text-black text-sm font-light">{data.type}  </p>
+          {/* <ul className="flex items-center mt-1">
             {data?.timeline?.map((item, index) => (
               <li className="text-black text-sm font-medium" key={index}>
                 {item}
                 {index < data.timeline.length - 1 && <span>,&nbsp;</span>}
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       )}
     </div>
   );
 };
-
 
 export default CardCarousel;

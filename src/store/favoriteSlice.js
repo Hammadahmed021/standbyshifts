@@ -1,5 +1,3 @@
-// features/favorites/favoriteSlice.js
-
 import { createSlice } from '@reduxjs/toolkit';
 
 const favoriteSlice = createSlice({
@@ -11,17 +9,16 @@ const favoriteSlice = createSlice({
     toggleFavorite(state, action) {
       const itemId = action.payload;
       if (state.items.includes(itemId)) {
+        // Remove item if it is already in the favorites
         state.items = state.items.filter(id => id !== itemId);
       } else {
-        state.items.push(itemId);
+        // Add item to the favorites
+        state.items = [...state.items, itemId];
       }
-    },
-    setFavorites(state, action) {
-      state.items = action.payload;
     },
   },
 });
 
-export const { toggleFavorite, setFavorites } = favoriteSlice.actions;
+export const { toggleFavorite } = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

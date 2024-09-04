@@ -2,7 +2,7 @@ import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchApiData } from "../store/homeSlice";
 
-const useFetch = (url) => {
+const useFetch = (url, user_id) => {
   const dispatch = useDispatch();
 
   // Safely access the data in the Redux state
@@ -12,12 +12,12 @@ const useFetch = (url) => {
   const error = useSelector((state) => state.home.error);
 
   const refetch = useCallback(() => {
-    dispatch(fetchApiData(url));
+    dispatch(fetchApiData({url, user_id}));
   }, [url, dispatch]);
 
   useEffect(() => {
     if (!data) {
-      dispatch(fetchApiData(url));
+      dispatch(fetchApiData({url, user_id}));
     }
   }, [url, data, dispatch]);
 

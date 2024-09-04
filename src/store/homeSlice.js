@@ -9,9 +9,9 @@ const initialState = {
 
 export const fetchApiData = createAsyncThunk(
   "home/fetchApiData",
-  async (url, { rejectWithValue }) => {
+  async ({url,user_id}, { rejectWithValue }) => {
     try {
-      const data = await getListDetails(url);
+      const data = await getListDetails(url, user_id);
       return { url, data };
     } catch (error) {
       return rejectWithValue(error.message);

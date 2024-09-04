@@ -14,12 +14,16 @@ import { localDB } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData } from "../utils/HelperFun";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { verifyUser } from "../utils/Api";
 
 export default function Home() {
   const isDesktop = useMediaQuery("(max-width: 991px)");
+  const userData = useSelector((state) => state.auth.userData);
 
   const [visibleCards, setVisibleCards] = useState(4);
   const [visibleAllCards, setVisibleAllCards] = useState(4);
+  const [currentUser, setCurrentUser] = useState({});
 
   const [filterValues, setFilterValues] = useState({
     kitchens: "",
@@ -32,14 +36,30 @@ export default function Home() {
   const handleFilterChange = (selectedOptions) => {
     setFilterValues(selectedOptions);
   };
+  const user_id = userData?.user?.id || currentUser?.id;
 
-  const { data, loading, error, refetch } = useFetch("hotels");
+
+
+  const { data, loading, error, refetch } = useFetch("hotels", user_id);
+  
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
+    if (location.pathname === "/" || !user_id) {
       refetch();
     }
-  }, [location.pathname, refetch]);
+    const fetchUserData = async () => {
+      try {
+        const response = await verifyUser();
+        const data = await response.data;
+  
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData()
+  }, [location.pathname, user_id, refetch]);
 
   // const transformedData = data ? transformData(data) : [];
   // Transform and filter the data
@@ -58,6 +78,8 @@ export default function Home() {
   const handleLoadMore = () => {
     setVisibleCards((prevVisibleCards) => prevVisibleCards + 4);
   };
+
+  
 
   return (
     <>
@@ -124,11 +146,12 @@ export default function Home() {
                   key={data.id}
                   id={data.id}
                   title={data.title}
-                  location={data.location}
+                  address={data.location}
                   images={data.images}
                   rating={data.rating}
-                  cuisine={data.cuisine}
+                  type={data.type}
                   timeline={data.timeline}
+                  is_favorite={data.is_favorite}
                 />
               ))}
             </div>
@@ -166,7 +189,7 @@ export default function Home() {
                   key={index}
                   id={data.id}
                   title={data.title}
-                  location={data.location}
+                  address={data.address}
                   images={data.images}
                   type={data.type}
                 />
@@ -229,10 +252,11 @@ export default function Home() {
                   key={data.id}
                   id={data.id}
                   title={data.title}
-                  location={data.location}
+                  address={data.location}
                   images={data.images}
                   rating={data.rating}
                   cuisine={data.cuisine}
+                  type={data.type}
                   timeline={data.timeline}
                 />
               ))}

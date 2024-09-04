@@ -18,6 +18,8 @@ const Login = () => {
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
 
+  
+
   const handleLogin = async () => {
     try {
       const { user } = await SignUpWithGoogle();
@@ -39,6 +41,8 @@ const Login = () => {
       if (userEmail) {
         const response = await getUserFromGmailLogin(userEmail);
         const token = response.data.token;
+        console.log(token, 'token jhan');
+        
         // Store token in localStorage
         localStorage.setItem("webToken", token);
       }
@@ -51,7 +55,7 @@ const Login = () => {
               displayName: user.displayName,
               email: user.email,
               photo: user.photoURL,
-              loginType: user.providerData?.[0]?.providerId
+              loginType: user.providerData?.[0]?.providerId,
             },
           })
         );

@@ -4,11 +4,12 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 // const TOKEN = "CUso6eFZl1LmPsUGrFMKf15tcS5FElsqOoWXBbtj2PUxRAI5HTVuxOPZyLmL";
 
-export const getListDetails = async (url, params) => {
+export const getListDetails = async (url, user_id) => {
   try {
-    const { data } = await axios.get(`${BASE_URL}${url}`, {
+    const fullUrl = user_id ? `${BASE_URL}${url}/${user_id}` : `${BASE_URL}${url}`;
+    const { data } = await axios.get(`${fullUrl}`, {
       params: {
-        ...params,
+        // ...params,
         api_key: API_KEY,
       },
       // have to delete this one
@@ -274,7 +275,7 @@ export const getUserFromGmailLogin = async (email) => {
   };
   try {
     const response = await axios.post(`${BASE_URL}socialLogin`, payload);
-    console.log(response, "response");
+    console.log(response.data, "response");
 
     return response;
   } catch (error) {
@@ -341,3 +342,20 @@ export const showFavorite = async () => {
     throw new Error("unable to add favorites:", error?.message);
   }
 };
+
+/* Rate */
+export const giveRateToHotel = async (rateData) => {
+  const token = localStorage.getItem("webToken");
+  const {table_booking_id, hotel_id, user_id, rating, review} = rateData;
+  try {
+      const response = await axios.post(`${BASE_URL}rate`, rateData,  {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+  } catch (error) {
+    throw new Error(error.message || "unable to give ratings")
+  }
+}

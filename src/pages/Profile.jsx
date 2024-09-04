@@ -5,11 +5,12 @@ import { clearAllBookings } from "../store/bookingSlice";
 import { updateUserData } from "../store/authSlice";
 import { fallback, relatedFallback } from "../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Loader, LoadMore, Input } from "../component";
+import { Button, Loader, LoadMore, Input, RatingModal } from "../component";
 import {
   deleteAllUserBookings,
   deleteUserBooking,
   getUserBookings,
+  giveRateToHotel,
   showFavorite,
   updateUserProfile,
   verifyUser,
@@ -40,6 +41,7 @@ const Profile = () => {
   const [isClearBooking, setIsClearBooking] = useState({});
   const [isClearingAllBookings, setIsClearingAllBookings] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const {
     register,
@@ -58,8 +60,7 @@ const Profile = () => {
 
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType === "google.com";
-  console.log(isGmailUser, "isGmailUser");
-  console.log(userData?.loginType, "userData?.loginType");
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const userBookings = bookings.filter(
     (booking) => booking.user === userData?.uid
@@ -281,6 +282,31 @@ const Profile = () => {
     }
   };
 
+  const handleRatingSubmit = async ({ rating, feedback }) => {
+    if (!selectedBooking) return;
+
+    const rateData = {
+      table_booking_id: selectedBooking.id,
+      hotel_id: selectedBooking.hotel?.id,
+      user_id: currentUser?.id, // Assuming `user.id` is available from the logged-in user
+      rating,
+      review: feedback,
+    };
+    console.log(rateData, 'rateData');
+    
+
+    try {
+      const response = await giveRateToHotel(rateData);
+      console.log("Rating submitted successfully:", response);
+      // Optionally, handle success (e.g., show a toast, update state)
+    } catch (error) {
+      console.error("Error submitting rating:", error.message);
+    } finally {
+      setIsRatingModalOpen(false);
+      setSelectedBooking(null);
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -448,6 +474,15 @@ const Profile = () => {
               </div>
 
               <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4">
+                <button
+                  onClick={() => {
+                    setSelectedBooking(booking);
+                    setIsRatingModalOpen(true);
+                  }}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                >
+                  Rate Now
+                </button>
                 <Link
                   to={`/restaurant/${booking?.hotel?.id}`}
                   className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
@@ -472,6 +507,11 @@ const Profile = () => {
             </div>
           ))
         )}
+        <RatingModal
+          isOpen={isRatingModalOpen}
+          onClose={() => setIsRatingModalOpen(false)}
+          onSubmit={handleRatingSubmit}
+        />
 
         {userBooking.length >= displayedBookings && (
           <LoadMore onLoadMore={handleLoadMore} hasMore={hasMore} />

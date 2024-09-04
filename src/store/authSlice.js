@@ -115,7 +115,7 @@ const authSlice = createSlice({
       state.userData = null;
       state.loading = false;
       state.error = null;
-       // remove token in localStorage
+       // remove token in localStorage 
        localStorage.removeItem("webToken");
     },
     updateUserData: (state, action) => {
