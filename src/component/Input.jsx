@@ -24,7 +24,6 @@ const Input = forwardRef(function Input(
   const placeholderStyles = {
     color: 'text-tn_light_grey',
     fontSize: 'text-xs',
-    textTransform: 'capitalize'
   };
 
   return (
@@ -36,7 +35,7 @@ const Input = forwardRef(function Input(
       )}
       <input
         type={type === "password" && showPassword ? "text" : type}
-        className={`appearance-none w-full px-3 py-3 border border-tn_dark_field outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 ${className}`}
+        className={`appearance-none w-full px-3 py-3 border normal-case border-tn_dark_field outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 ${className}`}
         ref={ref}
         placeholder={placeholder}
         

@@ -5,7 +5,7 @@ import CardCarousel from "../component/CardCarousel";
 import LoadMore from "../component/Loadmore";
 import Checkbox from "../component/Checkbox";
 import SelectOption from "../component/SelectOption";
-import { fetchFilteredData } from "../utils/Api";
+import { dataForFilter, fetchFilteredData } from "../utils/Api";
 import { transformSingleImageData } from "../utils/HelperFun";
 import { Loader } from "../component";
 
@@ -25,12 +25,25 @@ const Listing = () => {
     startTime: location.state?.filters?.startTime,
   });
   const [filteredData, setFilteredData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [visibleCards, setVisibleCards] = useState(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { data: filterData } = useFetch("data-for-filter");
-  console.log(filters, "filters");
+  // const { data: filterData } = useFetch("data-for-filter");
+  console.log(filterData, "filterData");
+  useEffect(() => {
+    const showFilter = async () => {
+      try {
+        const response = await dataForFilter("data-for-filter");
+        setFilterData(response);
+      } catch (error) {
+        return error;
+      }
+      
+    };
+    showFilter();
+  }, []);
 
   useEffect(() => {
     const fetchFilteredDataAndUpdateState = async () => {
@@ -81,6 +94,9 @@ const Listing = () => {
 
   // Ensure the data is always an array before transformation
   const transformedData = transformSingleImageData(filteredData);
+
+  console.log(transformedData, 'transformedData');
+  
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
@@ -198,14 +214,15 @@ const Listing = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
                     {transformedData.slice(0, visibleCards).map((data) => (
-                      <CardCarousel
+                        <CardCarousel
                         key={data.id}
                         id={data.id}
                         title={data.title}
-                        location={data.location}
+                        address={data.location}
                         images={data.images}
-                        cuisine={data.cuisine}
-                        timeline={data.timeline}
+                        rating={data.rating}
+                        type={data.type}
+                        timeline={data.timeline}                       
                       />
                     ))}
                   </div>

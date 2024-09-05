@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { SelectOption, Button, Loader } from "./index";
 import useFetch from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import { dataForFilter } from "../utils/Api";
 
 const Filter = ({ onFilterChange }) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({
     kitchens: [], // Default to first kitchen
     // atmospheres: [],
@@ -16,7 +19,24 @@ const Filter = ({ onFilterChange }) => {
   });
 
   const navigate = useNavigate();
-  const { data, loading } = useFetch("data-for-filter");
+  // const { data, loading } = useFetch("data-for-filter");
+  useEffect(() => {
+    const showFilter = async () => {
+      setLoading(true)
+      try {
+        const response = await dataForFilter("data-for-filter");
+        setData(response);
+      } catch (error) {
+        return error;
+      }
+      finally{
+      setLoading(false)
+
+      }
+    };
+    showFilter();
+  }, []);
+
 
   useEffect(() => {
     if (data) {
@@ -30,8 +50,8 @@ const Filter = ({ onFilterChange }) => {
           prevSelectedOptions.facilities.length > 0
             ? prevSelectedOptions.facilities
             : [data.facilities?.[0]?.id],
-            areas: 
-            prevSelectedOptions.areas.length > 0
+        areas:
+          prevSelectedOptions.areas.length > 0
             ? prevSelectedOptions.areas
             : [data.areas?.[0]?.id],
       }));
@@ -51,8 +71,6 @@ const Filter = ({ onFilterChange }) => {
       [category]: value,
     });
   };
- 
-  
 
   const handleTimeChange = (e, isStartTime) => {
     const value = e.target.value;
@@ -130,21 +148,21 @@ const Filter = ({ onFilterChange }) => {
     <div className="flex">
       <div className="flex items-center border rounded-lg p-2">
         <SelectOption
-          label="Kitchens"
+          label="All Kitchens"
           value={selectedOptions.kitchens}
           onChange={(e) => handleFilterChange(e, "kitchens")}
           className="border-r-2 pr-1 mx-5"
           options={data?.kitchens || []}
         />
         <SelectOption
-          label="Areas"
+          label="All Areas"
           value={selectedOptions.areas}
           onChange={(e) => handleFilterChange(e, "areas")}
           className="border-r-2 pr-1 mx-5"
           options={data?.areas || []}
         />
         <SelectOption
-          label="Facilities"
+          label="All Facilities"
           value={selectedOptions.facilities}
           onChange={(e) => handleFilterChange(e, "facilities")}
           className="border-r-2 pr-1 mx-5"

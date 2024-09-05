@@ -6,7 +6,11 @@ const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 
 export const getListDetails = async (url, user_id) => {
   try {
-    const fullUrl = user_id ? `${BASE_URL}${url}/${user_id}` : `${BASE_URL}${url}`;
+    const fullUrl = user_id
+      ? `${BASE_URL}${url}/${user_id}`
+      : `${BASE_URL}${url}`;
+    console.log(fullUrl, user_id, "fullUrl");
+
     const { data } = await axios.get(`${fullUrl}`, {
       params: {
         // ...params,
@@ -21,6 +25,19 @@ export const getListDetails = async (url, user_id) => {
     return data;
   } catch (error) {
     return error;
+  }
+};
+
+export const dataForFilter = async (url) => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}${url}`, {
+      params: {
+        api_key: API_KEY,
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "unable to find filters");
   }
 };
 
@@ -346,16 +363,16 @@ export const showFavorite = async () => {
 /* Rate */
 export const giveRateToHotel = async (rateData) => {
   const token = localStorage.getItem("webToken");
-  const {table_booking_id, hotel_id, user_id, rating, review} = rateData;
+  const { table_booking_id, hotel_id, user_id, rating, review } = rateData;
   try {
-      const response = await axios.post(`${BASE_URL}rate`, rateData,  {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      return response.data;
+    const response = await axios.post(`${BASE_URL}rate`, rateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
   } catch (error) {
-    throw new Error(error.message || "unable to give ratings")
+    throw new Error(error.message || "unable to give ratings");
   }
-}
+};

@@ -9,69 +9,97 @@ import {
   Loader,
   MapComponent,
   SelectOption,
-  RelatedCard
+  RelatedCard,
 } from "../component";
 import { fallback } from "../assets";
+import {
+  FaFacebook,
+  FaGoogle,
+  FaInstagram,
+  FaTripadvisor,
+} from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { verifyUser } from "../utils/Api";
 
 export default function RestaurantDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data, loading, error } = useFetch("hotels");
   const [card, setCard] = useState(null);
   const [relatedRestaurants, setRelatedRestaurants] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
   const [availableSeats, setAvailableSeats] = useState([]);
   const { register, handleSubmit, watch, resetField, setValue } = useForm();
+  const [currentUser, setCurrentUser] = useState({});
+
+  const userData = useSelector((state) => state.auth.userData);
 
   const selectedDate = watch("date");
   const selectedTime = watch("time");
   const selectedSeats = watch("seats");
 
+  const user_id = currentUser?.id || userData?.user?.id;
+
+  // const handleWishlistChange = () => {
+  //   refetch();
+  // };
+
+  const { data, loading, error, refetch } = useFetch("hotels", user_id);
   const today = new Date().toISOString().split("T")[0];
-
- // Fetch and update card and related restaurants
-useEffect(() => {
-  if (!data) return;
-  console.log(data, 'data');
   
-  const foundCard = data.find((card) => card.id === parseInt(id, 10));
 
-  if (foundCard) {
-    setCard(foundCard);
+  // Fetch and update card and related restaurants
+  useEffect(() => {
+    if (!data) return;
 
-    // Extract kitchen names from the nested structure
-    const foundKitchens = [];
-    
-    foundCard.calendars?.forEach((calendar) => {
-      calendar.menus?.forEach((menu) => {
-        menu.kitchens?.forEach((kitchen) => {
-          if (kitchen.name) {
-            foundKitchens.push(kitchen.name);
-          }
+    const foundCard = data.find((card) => card.id === parseInt(id, 10));
+
+    if (foundCard) {
+      setCard(foundCard);
+
+      // Extract kitchen names from the nested structure
+      const foundKitchens = [];
+
+      foundCard.calendars?.forEach((calendar) => {
+        calendar.menus?.forEach((menu) => {
+          menu.kitchens?.forEach((kitchen) => {
+            if (kitchen.name) {
+              foundKitchens.push(kitchen.name);
+            }
+          });
         });
       });
-    });
 
-    // Filter restaurants that have matching kitchens and exclude the current one
-    const filteredRestaurants = data.filter(
-      (restaurant) =>
-        restaurant.id !== parseInt(id, 10) &&
-        restaurant.calendars?.some((calendar) =>
-          calendar.menus?.some((menu) =>
-            menu.kitchens?.some((kitchen) =>
-              foundKitchens.includes(kitchen.name)
+      // Filter restaurants that have matching kitchens and exclude the current one
+      const filteredRestaurants = data.filter(
+        (restaurant) =>
+          restaurant.id !== parseInt(id, 10) &&
+          restaurant.calendars?.some((calendar) =>
+            calendar.menus?.some((menu) =>
+              menu.kitchens?.some((kitchen) =>
+                foundKitchens.includes(kitchen.name)
+              )
             )
           )
-        )
-    );
+      );
 
-    console.log(filteredRestaurants, 'filteredRestaurants');
+      console.log(filteredRestaurants, "filteredRestaurants");
 
-    setRelatedRestaurants(filteredRestaurants.slice(0, 4));
-  } else {
-    setCard(null);
-  }
-}, [data, id]);
+      setRelatedRestaurants(filteredRestaurants.slice(0, 4));
+    } else {
+      setCard(null);
+    }
+    const fetchUserData = async () => {
+      try {
+        const response = await verifyUser();
+        const data = await response.data;
+
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, [data, id]);
 
   const getCurrentTimeIn24HourFormat = () => {
     const date = new Date();
@@ -81,6 +109,13 @@ useEffect(() => {
   };
 
   const currentTime = getCurrentTimeIn24HourFormat();
+
+  useEffect(() => {
+    // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
+    if (location.pathname === `/restaurant/${id}` || !user_id) {
+      refetch();
+    }
+  }, [refetch, id]);
 
   // Update available times based on today's date and current time
   useEffect(() => {
@@ -148,7 +183,7 @@ useEffect(() => {
       }
     }
   }, [selectedTime, card, setValue, today]);
-  
+
   const onSubmit = (formData) => {
     const { date, time, seats } = formData;
     navigate(`/reservation/${id}`, {
@@ -200,6 +235,14 @@ useEffect(() => {
     });
     return Array.from(facilityNames);
   }
+
+  const convertTo12HourFormat = (time) => {
+    let [hours, minutes] = time.split(":");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert 0 -> 12 for 12 AM
+    return `${hours}:${minutes} ${ampm}`;
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -220,10 +263,77 @@ useEffect(() => {
                   {card.description || "No description available."}
                 </p>
                 <h4 className="text-[17px] font-bold mb-1">Social links</h4>
-                <ul>
-                  {card.socialLinks?.map((link, index) => (
-                    <li key={index}>{link}</li>
-                  )) || <li>No social links available.</li>}
+                <ul className="flex flex-col text-sm">
+                  {card.facebook && (
+                    <li>
+                      <p className="mb-2 text-sm flex items-start">
+                        <span className="w-4">
+                          <FaFacebook size={14} />
+                        </span>{" "}
+                        <span className="ml-1">
+                          {(
+                            <a href={card.facebook} target="_blank">
+                              {card.facebook}
+                            </a>
+                          ) || "No contact information available"}
+                        </span>
+                      </p>
+                    </li>
+                  )}
+                  {card.instagram && (
+                    <li>
+                      <p className="mb-2 text-sm flex items-start">
+                        <span className="w-4">
+                          <FaInstagram size={14} />
+                        </span>{" "}
+                        <span className="ml-1">
+                          {(
+                            <a href={card.instagram} target="_blank">
+                              {card.instagram}
+                            </a>
+                          ) || "No contact information available"}
+                        </span>
+                      </p>
+                    </li>
+                  )}
+                  {card.google && (
+                    <li>
+                      <p className="mb-2 text-sm flex items-start">
+                        <span className="w-4">
+                          <FaGoogle size={14} />
+                        </span>{" "}
+                        <span className="ml-1">
+                          {(
+                            <a href={card.google} target="_blank">
+                              {card.google}
+                            </a>
+                          ) || "No contact information available"}
+                        </span>
+                      </p>
+                    </li>
+                  )}
+                  {card.tripAdvisor && (
+                    <li>
+                      <p className="mb-2 text-sm flex items-start">
+                        <span className="w-4">
+                          <FaTripadvisor size={14} />
+                        </span>{" "}
+                        <span className="ml-1">
+                          {(
+                            <a href={card.tripAdvisor} target="_blank">
+                              {card.tripAdvisor}
+                            </a>
+                          ) || "No contact information available"}
+                        </span>
+                      </p>
+                    </li>
+                  )}
+                  {!(
+                    card.facebook ||
+                    card.tripAdvisor ||
+                    card.google ||
+                    card.instagram
+                  ) && <p>No social links available</p>}
                 </ul>
               </div>
               <div className="col-span-12 md:col-span-3">
@@ -299,11 +409,14 @@ useEffect(() => {
                     <div className="mb-6">
                       <SelectOption
                         label="Time"
-                        options={availableTimes}
+                        options={availableTimes.map((time) => ({
+                          ...time,
+                          name: convertTo12HourFormat(time.name), // Convert 24-hour format to 12-hour format for display
+                        }))}
                         {...register("time")}
                         onChange={(e) => {
                           const time = e.target.value;
-                          setValue("time", time);
+                          setValue("time", time); // Store 24-hour format in the form state
                           resetField("seats");
                         }}
                         style={{
@@ -394,7 +507,9 @@ useEffect(() => {
                   id={restaurant.id}
                   title={restaurant.name}
                   location={restaurant.address}
-                  images={restaurant.galleries.map(gallery => gallery.image)}
+                  images={restaurant.galleries.map((gallery) => gallery.image)}
+                  // is_favorite={restaurant.is_favorite}
+                  // onWishlistChange={handleWishlistChange}
                 />
               ))
             ) : (

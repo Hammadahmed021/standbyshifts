@@ -57,9 +57,13 @@ const Profile = () => {
     },
   });
   console.log(currentUser, "currentUser");
+  console.log(userData, "userData");
 
   // Check if the user logged in via Gmail
-  const isGmailUser = userData?.loginType === "google.com";
+  const isGmailUser = userData?.loginType && currentUser.id;
+
+
+
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const userBookings = bookings.filter(
@@ -288,23 +292,33 @@ const Profile = () => {
     const rateData = {
       table_booking_id: selectedBooking.id,
       hotel_id: selectedBooking.hotel?.id,
-      user_id: currentUser?.id, // Assuming `user.id` is available from the logged-in user
+      user_id: currentUser?.id,
       rating,
       review: feedback,
     };
-    console.log(rateData, 'rateData');
-    
 
     try {
       const response = await giveRateToHotel(rateData);
       console.log("Rating submitted successfully:", response);
-      // Optionally, handle success (e.g., show a toast, update state)
+      // Refresh or update the bookings to show the rated state
+      showBookings();
     } catch (error) {
       console.error("Error submitting rating:", error.message);
     } finally {
       setIsRatingModalOpen(false);
       setSelectedBooking(null);
     }
+  };
+
+  const convertTo12HourFormat = (time24) => {
+    const [hours, minutes, seconds] = time24.split(":"); // Split the time string into hours, minutes, and seconds
+    const date = new Date();
+    date.setHours(hours, minutes, seconds);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -459,7 +473,8 @@ const Profile = () => {
                   <span className="underline mr-2">Date </span> {booking?.date}
                 </p>
                 <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline mr-2">Time</span> {booking?.time}
+                  <span className="underline mr-2">Time</span>{" "}
+                  {convertTo12HourFormat(booking?.time)}
                 </p>
               </div>
               <div>
@@ -473,19 +488,32 @@ const Profile = () => {
                 </p>
               </div>
 
-              <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4">
-                <button
-                  onClick={() => {
-                    setSelectedBooking(booking);
-                    setIsRatingModalOpen(true);
-                  }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                >
-                  Rate Now
-                </button>
+              <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4 items-center">
+                {booking.is_eligible_to_rate ? (
+                  booking.ratings && booking.ratings.length > 0 ? (
+                    <span className="text-green-500 text-sm sm:text-base">
+                      Rated
+                    </span>
+                  ) : (
+                    <span
+                      className="text-lg sm:text-base hover:opacity-80 text-tn_pink cursor-pointer"
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setIsRatingModalOpen(true);
+                      }}
+                    >
+                      Leave a review
+                    </span>
+                  )
+                ) : (
+                  <span className="text-gray-500 text-sm sm:text-base">
+                    Unable to rate
+                  </span>
+                )}
+
                 <Link
                   to={`/restaurant/${booking?.hotel?.id}`}
-                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
+                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-2 py-1 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
                 >
                   Rebook
                 </Link>
@@ -493,8 +521,8 @@ const Profile = () => {
                 <Button
                   onClick={() => handleClearBooking(booking?.id)}
                   padX={"px-2"}
-                  padY={"py-2"}
-                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
+                  padY={"py-1"}
+                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink hover:opacity-80 text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
                     isClearBooking[booking?.id]
                       ? "opacity-70 cursor-not-allowed"
                       : ""
@@ -511,6 +539,7 @@ const Profile = () => {
           isOpen={isRatingModalOpen}
           onClose={() => setIsRatingModalOpen(false)}
           onSubmit={handleRatingSubmit}
+          booking={selectedBooking} // Pass the selected booking object
         />
 
         {userBooking.length >= displayedBookings && (
@@ -543,7 +572,7 @@ const Profile = () => {
                 <img
                   src={
                     favorite?.profile_image ||
-                    // favorite?.galleries[0]?.image ||
+                    favorite?.galleries[0]?.image ||
                     fallback
                   }
                   className="w-20 h-16 rounded-md"

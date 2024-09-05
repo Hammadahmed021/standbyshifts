@@ -34,7 +34,7 @@ export const transformData = (apiResponse) => {
     menuTypes: item?.menuTypes || [],
     // Convert `is_approved` to boolean
     is_approved: item?.is_approved === 1,
-    is_favorite: item?.is_favorite === 0,
+    is_favorite: item?.is_favorite || false,
     status: item?.status,
     type: item?.type,
   }));
@@ -75,7 +75,7 @@ export const transformSingleImageData = (apiResponse) => {
     menuTypes: item?.menuTypes || [],
     // Convert `is_approved` to boolean
     is_approved: item?.is_approved === 1,
-    is_favorite: item?.is_favorite === 1,
+    is_favorite: item?.is_favorite || false,
     status: item?.status,
     type: item?.type,
   }));

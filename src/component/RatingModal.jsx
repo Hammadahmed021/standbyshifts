@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
+import Button from './Button';
 
-const RatingModal = ({ isOpen, onClose, onSubmit }) => {
+const RatingModal = ({ isOpen, onClose, onSubmit, booking }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [feedback, setFeedback] = useState('');
 
   const handleSubmit = () => {
-    onSubmit({ rating, feedback });
+    onSubmit({ rating, feedback, bookingId: booking.id }); // Include booking info in the submit
     onClose();
     setRating(0);
     setFeedback('');
@@ -18,7 +19,7 @@ const RatingModal = ({ isOpen, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-8 shadow-lg w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Rate the Restaurant</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center capitalize">Rate {booking?.hotel?.name || booking?.name}</h2> {/* Display booking info */}
         <div className="flex justify-center mb-6">
           {[...Array(5)].map((_, index) => {
             const starValue = index + 1;
@@ -48,12 +49,12 @@ const RatingModal = ({ isOpen, onClose, onSubmit }) => {
           >
             Cancel
           </button>
-          <button
+          <Button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+            // className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
           >
             Submit
-          </button>
+          </Button>
         </div>
       </div>
     </div>

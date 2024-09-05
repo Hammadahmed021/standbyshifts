@@ -105,9 +105,9 @@ const RelatedCard = ({
         </Slider>
       )}
 
-      <div className="absolute top-2 right-5 bg-white rounded-full w-7 h-7 flex items-center justify-center">
+      {/* <div className="absolute top-2 right-5 bg-white rounded-full w-7 h-7 flex items-center justify-center">
         <WishlistButton />
-      </div>
+      </div> */}
 
       <div className="px-2 py-2 absolute bottom-0 left-0 w-full z-10">
         <p className="text-white text-base">{data.location}</p>

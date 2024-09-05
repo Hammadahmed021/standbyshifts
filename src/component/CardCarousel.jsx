@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Ratings, WishlistButton } from "../component";
 import { fallback } from "../assets";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleFavorite } from "../store/favoriteSlice";
 import { addFavorite } from "../utils/Api";
+import { showSuccessToast } from "../utils/Toast";
 
 const SkeletonLoader = () => {
   return (
@@ -29,13 +30,15 @@ const CardCarousel = ({
   type,
   cuisine,
   timeline,
-  is_favorite,
+  is_favorite, // Key passed to control heart icon
+  onWishlistChange, // Callback prop for parent to handle refetch
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [inWishlist, setInWishlist] = useState(is_favorite);
+  const [inWishlist, setInWishlist] = useState(is_favorite); // Initial value comes from is_favorite
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const favorites = useSelector((state) => state.favorites.items);
 
   useEffect(() => {
@@ -50,26 +53,42 @@ const CardCarousel = ({
           type,
           cuisine,
           timeline,
+          is_favorite,
         });
         setLoading(false);
       }, 1000);
     };
 
     fetchData();
-  }, [id, title, address, images, rating, type, cuisine, timeline]);
-  const isLoggedIn = useSelector((state) => state.auth.userData);
+  }, [
+    id,
+    title,
+    address,
+    images,
+    rating,
+    type,
+    cuisine,
+    timeline,
+    is_favorite,
+  ]);
+
+  const isLoggedIn = useSelector((state) => state.auth.userData); 
 
   useEffect(() => {
-    setInWishlist(favorites.includes(id));
-  }, [favorites, id]);
+    setInWishlist(is_favorite);
+  }, [is_favorite]); // Re-run whenever is_favorite changes
 
   const handleWishlistClick = async () => {
     if (data) {
       try {
-        await addFavorite(data.id); // Toggle favorite status in backend
-        dispatch(toggleFavorite(data.id)); // Update local state
-        setInWishlist((prev) => !prev); // Toggle local state
-        alert(inWishlist ? "Removed from favorites!" : "Added to favorites!");
+        await addFavorite(data.id); // Toggle favorite status in the backend
+        dispatch(toggleFavorite(data.id)); // Update the Redux state
+        setInWishlist((prev) => !prev); // Toggle the local state
+        onWishlistChange(); // Notify parent to trigger refetch
+        // Use toast instead of alert
+        showSuccessToast(
+          inWishlist ? "Removed from favorites!" : "Added to favorites!"
+        );
       } catch (error) {
         console.error("Error toggling favorites:", error.message);
       }
@@ -113,28 +132,38 @@ const CardCarousel = ({
 
   const isSingleImage = Array.isArray(data?.images) && data.images.length === 1;
 
+  const isListingPage = location.pathname === "/listing" ;
+  
   return (
     <div className="max-w-sm rounded overflow-hidden relative mx-2 mb-6 sm:mb-8">
       {isSingleImage ? (
-        <img
-          className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
-          src={data.images[0] || fallback}
-          alt={`Slide 1`}
-        />
+        <>
+          <Link to={`/restaurant/${data.id}`} className="hover:opacity-80">
+            <img
+              className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
+              src={data.images[0] || fallback}
+              alt={`Slide 1`}
+            />
+          </Link>
+        </>
       ) : (
-        <Slider {...settings}>
-          {data?.images?.map((image, index) => (
-            <div key={index}>
-              <img
-                className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
-                src={image || fallback}
-                alt={`Slide ${index + 1}`}
-              />
-            </div>
-          ))}
-        </Slider>
+        <>
+          <Link to={`/restaurant/${data.id}`} className="hover:opacity-80">
+            <Slider {...settings}>
+              {data?.images?.map((image, index) => (
+                <div key={index}>
+                  <img
+                    className="w-full h-[329px] object-cover focus-visible:outline-none focus:outline-none rounded-2xl"
+                    src={image || fallback}
+                    alt={`Slide ${index + 1}`}
+                  />
+                </div>
+              ))}
+            </Slider>
+          </Link>
+        </>
       )}
-      {isLoggedIn && (
+      {(isLoggedIn && !isListingPage) && (
         <div
           className={`absolute top-2 ${
             data.type === "featured" ? "right-5" : "right-2"
@@ -172,15 +201,7 @@ const CardCarousel = ({
               {data.title}
             </Link>
           </div>
-          <p className="text-black text-sm font-light">{data.type}  </p>
-          {/* <ul className="flex items-center mt-1">
-            {data?.timeline?.map((item, index) => (
-              <li className="text-black text-sm font-medium" key={index}>
-                {item}
-                {index < data.timeline.length - 1 && <span>,&nbsp;</span>}
-              </li>
-            ))}
-          </ul> */}
+          <p className="text-black text-sm font-light">{data.type} </p>
         </div>
       )}
     </div>

@@ -7,19 +7,23 @@ const useFetch = (url, user_id) => {
 
   // Safely access the data in the Redux state
   const data = useSelector((state) => state.home.url?.[url]);
-
   const loading = useSelector((state) => state.home.loading);
   const error = useSelector((state) => state.home.error);
 
+  // Callback to refetch data
   const refetch = useCallback(() => {
-    dispatch(fetchApiData({url, user_id}));
-  }, [url, dispatch]);
+    if (user_id) {
+      dispatch(fetchApiData({ url, user_id }));
+    }
+  }, [url, user_id, dispatch]);
 
   useEffect(() => {
-    if (!data) {
-      dispatch(fetchApiData({url, user_id}));
+    if (user_id) {
+      if (!data) {
+        dispatch(fetchApiData({ url, user_id }));
+      }
     }
-  }, [url, data, dispatch]);
+  }, [url, user_id, data, dispatch]);
 
   return { data, loading, error, refetch };
 };

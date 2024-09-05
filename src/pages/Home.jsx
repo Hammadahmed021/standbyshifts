@@ -32,15 +32,17 @@ export default function Home() {
     areas: "",
     menuTypes: "",
   });
+  
 
   const handleFilterChange = (selectedOptions) => {
     setFilterValues(selectedOptions);
   };
-  const user_id = userData?.user?.id || currentUser?.id;
+  const user_id = currentUser?.id || userData?.user?.id;
 
 
 
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
+  console.log(user_id, 'data');
   
 
   useEffect(() => {
@@ -64,6 +66,8 @@ export default function Home() {
   // const transformedData = data ? transformData(data) : [];
   // Transform and filter the data
   const transformedData = data ? transformData(data) : [];
+  console.log(transformedData, 'transformedData');
+  
   const approvedData = transformedData.filter(
     (item) => item.is_approved && item.status === "active"
   );
@@ -79,7 +83,10 @@ export default function Home() {
     setVisibleCards((prevVisibleCards) => prevVisibleCards + 4);
   };
 
-  
+   // Callback function to trigger refetch
+   const handleWishlistChange = () => {
+    refetch();
+  };
 
   return (
     <>
@@ -152,6 +159,7 @@ export default function Home() {
                   type={data.type}
                   timeline={data.timeline}
                   is_favorite={data.is_favorite}
+                  onWishlistChange={handleWishlistChange} // Pass the refetch trigger
                 />
               ))}
             </div>
@@ -249,16 +257,17 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
               {approvedData.slice(0, visibleAllCards).map((data) => (
                 <CardCarousel
-                  key={data.id}
-                  id={data.id}
-                  title={data.title}
-                  address={data.location}
-                  images={data.images}
-                  rating={data.rating}
-                  cuisine={data.cuisine}
-                  type={data.type}
-                  timeline={data.timeline}
-                />
+                key={data.id}
+                id={data.id}
+                title={data.title}
+                address={data.location}
+                images={data.images}
+                rating={data.rating}
+                type={data.type}
+                timeline={data.timeline}
+                is_favorite={data.is_favorite}
+                onWishlistChange={handleWishlistChange} // Pass the refetch trigger
+              />
               ))}
             </div>
             <LoadMore
