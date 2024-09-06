@@ -132,7 +132,7 @@ const CardCarousel = ({
 
   const isSingleImage = Array.isArray(data?.images) && data.images.length === 1;
 
-  const isListingPage = location.pathname === "/listing" ;
+  const isListingPage = location.pathname === "/listing";
   
   return (
     <div className="max-w-sm rounded overflow-hidden relative mx-2 mb-6 sm:mb-8">
@@ -163,7 +163,7 @@ const CardCarousel = ({
           </Link>
         </>
       )}
-      {(isLoggedIn && !isListingPage) && (
+      {(isLoggedIn) && (
         <div
           className={`absolute top-2 ${
             data.type === "featured" ? "right-5" : "right-2"

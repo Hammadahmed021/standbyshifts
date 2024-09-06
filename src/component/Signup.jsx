@@ -4,10 +4,15 @@ import { useDispatch } from "react-redux";
 import { signupUser } from "../store/authSlice";
 import { Input, Button } from "../component";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
 
 export default function Signup() {
   const [isSigning, setIsSigning] = useState(false);
   const [showError, setShowError] = useState("");
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -17,43 +22,37 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
-  // const handleSignup = async (userData) => {
-  //   console.log(userData, 'signup form');
-  //   setIsSigning(true);
-  //   try {
-  //     const response = await dispatch(signupUser(userData)).unwrap();
-  //     console.log("Signup response:", response);
-  //     // navigate("/");
-  //   } catch (error) {
-  //     console.error("API Signup failed:", error.message);
-  //     setIsSigning(false);
-  //   }
-  // };
-  // SignupComponent.js or wherever handleSignup is used
-
   const handleSignup = async (userData) => {
     console.log(userData, "signup form");
     setIsSigning(true);
     setShowError(""); // Clear any previous error message
+    if (!recaptchaToken) {
+      setShowError("Please complete the reCAPTCHA.");
+      setIsSigning(false);
+      return;
+    }
     try {
-      const response = await dispatch(signupUser(userData)).unwrap();
+      const response = await dispatch(signupUser({ ...userData, recaptchaToken })).unwrap();
       console.log("Signup response:", response);
       // Navigate to home or another page
-      // navigate("/");
+      navigate("/"); // Adjust the navigation as needed
     } catch (error) {
       console.error("API Signup failed:", error);  
-      // Check the specific error code and display the appropriate error message
-      if (error = "auth/email-already-in-use") {
+      if (error == "Firebase: Error (auth/email-already-in-use).") {
         setShowError("User already exists with this email.");
-      } 
-       
+      } else {
+        setShowError(error || "Signup failed. Please try again.");
+      }
     } finally {
       setIsSigning(false);
     }
   };
-  
 
   const password = watch("password");
+
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaToken(value);
+  };
 
   // Prevent numbers in text fields
   const handleNameKeyPress = (e) => {
@@ -213,7 +212,15 @@ export default function Signup() {
           {errors.terms && (
             <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
           )}
-        {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>}
+          {/* {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>} */}
+        </div>
+
+        <div className="mb-6">
+          <ReCAPTCHA
+            sitekey={RECAPTCHA_SITE_KEY}
+            onChange={handleRecaptchaChange}
+          />
+          {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>}
         </div>
 
         <Button

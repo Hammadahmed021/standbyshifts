@@ -12,16 +12,12 @@ const useFetch = (url, user_id) => {
 
   // Callback to refetch data
   const refetch = useCallback(() => {
-    if (user_id) {
-      dispatch(fetchApiData({ url, user_id }));
-    }
+    dispatch(fetchApiData({ url, user_id: user_id || '' })); // Pass user_id if available
   }, [url, user_id, dispatch]);
 
   useEffect(() => {
-    if (user_id) {
-      if (!data) {
-        dispatch(fetchApiData({ url, user_id }));
-      }
+    if (!data) {
+      dispatch(fetchApiData({ url, user_id: user_id || '' })); // Pass user_id if available
     }
   }, [url, user_id, data, dispatch]);
 

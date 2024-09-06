@@ -7,7 +7,8 @@ import Checkbox from "../component/Checkbox";
 import SelectOption from "../component/SelectOption";
 import { dataForFilter, fetchFilteredData } from "../utils/Api";
 import { transformSingleImageData } from "../utils/HelperFun";
-import { Loader } from "../component";
+import { Button, Loader, MapComponent } from "../component";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 const Listing = () => {
   const location = useLocation();
@@ -29,9 +30,8 @@ const Listing = () => {
   const [visibleCards, setVisibleCards] = useState(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMapView, setIsMapView] = useState(false); // New state for view toggle
 
-  // const { data: filterData } = useFetch("data-for-filter");
-  console.log(filterData, "filterData");
   useEffect(() => {
     const showFilter = async () => {
       try {
@@ -40,7 +40,6 @@ const Listing = () => {
       } catch (error) {
         return error;
       }
-      
     };
     showFilter();
   }, []);
@@ -53,8 +52,6 @@ const Listing = () => {
         kitchen_ids: filters.kitchen_ids.map((res) => Number(res)) || [],
         facility_ids: filters.facility_ids.map((res) => Number(res)) || [],
         areas_ids: filters.areas_ids.map((res) => Number(res)) || [],
-        // menu_type_ids: filters.menu_type_ids || [],
-        // person: filters.person || 1,
         startTime: filters.startTime,
         endTime: filters.endTime,
       };
@@ -62,7 +59,6 @@ const Listing = () => {
       try {
         setLoading(true);
         const result = await fetchFilteredData(requestBody);
-        console.log(result, "result");
         setFilteredData(Array.isArray(result) ? result : [result]);
       } catch (error) {
         setError(error);
@@ -89,39 +85,23 @@ const Listing = () => {
     });
   };
 
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>Error loading data.</p>;
-
-  // Ensure the data is always an array before transformation
   const transformedData = transformSingleImageData(filteredData);
-
-  console.log(transformedData, 'transformedData');
-  
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
-
-    const formatTime = (hours, minutes) => {
-      const period = hours >= 12 ? "PM" : "AM";
-      const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
-      const displayTime = `${adjustedHours}:${minutes
-        .toString()
-        .padStart(2, "0")} ${period}`;
-      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:00`;
-      return {
-        id: valueTime,
-        name: displayTime,
-      };
-    };
-
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 5) {
-        options.push(formatTime(hour, minute));
+        const period = hour >= 12 ? "PM" : "AM";
+        const adjustedHours = hour % 12 || 12;
+        const displayTime = `${adjustedHours}:${minute
+          .toString()
+          .padStart(2, "0")} ${period}`;
+        const valueTime = `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}:00`;
+        options.push({ id: valueTime, name: displayTime });
       }
     }
-
     return options;
   };
 
@@ -202,9 +182,39 @@ const Listing = () => {
               />
             </div>
           </div>
-          <div className="col-span-12 md:col-span-9">
+          <div className="col-span-12 md:col-span-9 p-2">
+            {/* Toggle Switch for Cards/Map View */}
+            <div className="flex justify-start mb-4 space-x-2">
+              <button
+                onClick={() => setIsMapView(false)}
+                className={`px-4 py-1 rounded-md ${
+                  !isMapView
+                    ? "bg-tn_pink text-white hover:opacity-80"
+                    : "bg-gray-200 text-black hover:opacity-80"
+                }`}
+              >
+                View List
+              </button>
+              <button
+                onClick={() => setIsMapView(true)}
+                className={`px-4 py-1 rounded-md ${
+                  isMapView
+                    ? "bg-tn_pink text-white hover:opacity-80"
+                    : "bg-gray-200 text-black hover:opacity-80"
+                }`}
+              >
+                View Map
+              </button>
+            </div>
+
             {loading ? (
               <Loader />
+            ) : isMapView ? (
+              <>
+                {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}> */}
+                <MapComponent data={transformedData} />
+                {/* </APIProvider> */}
+              </>
             ) : (
               <>
                 {transformedData.length === 0 ? (
@@ -214,7 +224,7 @@ const Listing = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
                     {transformedData.slice(0, visibleCards).map((data) => (
-                        <CardCarousel
+                      <CardCarousel
                         key={data.id}
                         id={data.id}
                         title={data.title}
@@ -222,7 +232,7 @@ const Listing = () => {
                         images={data.images}
                         rating={data.rating}
                         type={data.type}
-                        timeline={data.timeline}                       
+                        timeline={data.timeline}
                       />
                     ))}
                   </div>

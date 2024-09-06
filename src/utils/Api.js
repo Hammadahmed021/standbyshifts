@@ -6,12 +6,12 @@ const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
 
 export const getListDetails = async (url, user_id) => {
   try {
-    const fullUrl = user_id
-      ? `${BASE_URL}${url}/${user_id}`
-      : `${BASE_URL}${url}`;
-    console.log(fullUrl, user_id, "fullUrl");
+    // const fullUrl = user_id
+    //   ? `${BASE_URL}${url}/${user_id}`
+    //   : `${BASE_URL}${url}`;
+    // console.log(fullUrl, user_id, "fullUrl");
 
-    const { data } = await axios.get(`${fullUrl}`, {
+    const { data } = await axios.get(`${BASE_URL}${url}/${user_id}`, {
       params: {
         // ...params,
         api_key: API_KEY,
