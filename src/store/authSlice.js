@@ -10,7 +10,7 @@ import { auth } from "../service/firebase";
 
 const initialState = {
   status: false,
-  userData: null,
+  userDataWeb: null,
   loading: false,
   error: null,
 };
@@ -108,19 +108,20 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.status = true;
-      state.userData = action.payload.userData; // Set userData from action payload
+      state.userDataWeb = action.payload.userDataWeb; // Set userData from action payload
     },
     logout: (state) => {
       state.status = false;
-      state.userData = null;
+      state.userDataWeb = null;
       state.loading = false;
       state.error = null;
        // remove token in localStorage 
        localStorage.removeItem("webToken");
+       
     },
     updateUserData: (state, action) => {
-      state.userData = {
-        ...state.userData,
+      state.userDataWeb = {
+        ...state.userDataWeb,
         ...action.payload,
       };
     },
@@ -133,7 +134,7 @@ const authSlice = createSlice({
       })
       .addCase(signupUser.fulfilled, (state, action) => {
         state.status = true;
-        state.userData = action.payload;
+        state.userDataWeb = action.payload;
         state.loading = false;
       })
       .addCase(signupUser.rejected, (state, action) => {
@@ -146,7 +147,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = true;
-        state.userData = action.payload;
+        state.userDataWeb = action.payload;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {

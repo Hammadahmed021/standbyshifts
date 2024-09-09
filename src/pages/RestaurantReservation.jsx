@@ -165,7 +165,11 @@ export default function RestaurantReservation() {
       if (user?.uid) {
         navigate("/profile");
       } else {
-        navigate("/thankyou");
+        navigate("/thankyou", {
+          state: {
+            restaurant, // Make sure restaurant is correctly defined
+          },
+        });
       }
     }
   };

@@ -1,9 +1,11 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Thankyou() {
-  // const restaurantName = localStorage.getItem("lastBookingRestaurant");
-  // console.log(restaurantName, 'restaurantName');
-  let restaurantName = "test"
+  const location = useLocation()
+  const { restaurant } = location.state || {};
+
+  
   
   return (
     <>
@@ -17,9 +19,9 @@ export default function Thankyou() {
         </h2>
         <h5 className="text-sm text-tn_dark">Dear Valued Guest,</h5>
         <p className="text-sm text-tn_dark">
-          Thank you for choosing {restaurantName} for your dining experience.
+          Thank you for choosing {restaurant?.name} for your dining experience.
           We are delighted to have received your reservation and look forward to
-          welcoming you soon! At {restaurantName}, we take pride in providing
+          welcoming you soon! At {restaurant?.name}, we take pride in providing
           our guests with exceptional cuisine, a warm atmosphere, and
           outstanding service. Your reservation is important to us, and we are
           committed to making your visit a memorable one.

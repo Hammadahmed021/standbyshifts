@@ -37,6 +37,8 @@ export const transformData = (apiResponse) => {
     is_favorite: item?.is_favorite || false,
     status: item?.status,
     type: item?.type,
+    latitude: item.latitude || null,
+    longitude: item.longitude || null,
   }));
 };
 

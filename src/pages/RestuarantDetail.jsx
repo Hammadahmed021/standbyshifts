@@ -30,7 +30,6 @@ export default function RestaurantDetail() {
   const [availableSeats, setAvailableSeats] = useState([]);
   const { register, handleSubmit, watch, resetField, setValue } = useForm();
   const [currentUser, setCurrentUser] = useState({});
-
   const userData = useSelector((state) => state.auth.userData);
 
   const selectedDate = watch("date");
@@ -38,15 +37,9 @@ export default function RestaurantDetail() {
   const selectedSeats = watch("seats");
 
   const user_id = currentUser?.id || userData?.user?.id;
-
-  // const handleWishlistChange = () => {
-  //   refetch();
-  // };
-
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
   const today = new Date().toISOString().split("T")[0];
   
-
   // Fetch and update card and related restaurants
   useEffect(() => {
     if (!data) return;
@@ -81,18 +74,16 @@ export default function RestaurantDetail() {
             )
           )
       );
-
-      console.log(filteredRestaurants, "filteredRestaurants");
-
       setRelatedRestaurants(filteredRestaurants.slice(0, 4));
     } else {
       setCard(null);
     }
+
+    // Fetch user data
     const fetchUserData = async () => {
       try {
         const response = await verifyUser();
         const data = await response.data;
-
         setCurrentUser(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -111,7 +102,6 @@ export default function RestaurantDetail() {
   const currentTime = getCurrentTimeIn24HourFormat();
 
   useEffect(() => {
-    // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
     if (location.pathname === `/restaurant/${id}` || !user_id) {
       refetch();
     }
@@ -368,8 +358,7 @@ export default function RestaurantDetail() {
                 <h4 className="text-[17px] font-bold mb-1">Location</h4>
                 <div className="w-[800px] h-[250px]">
                   <MapComponent
-                    latitude={card.latitude}
-                    longitude={card.longitude}
+                   data={[card]}
                   />
                 </div>
               </div>

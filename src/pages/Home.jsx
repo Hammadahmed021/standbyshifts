@@ -39,8 +39,13 @@ export default function Home() {
   };
   const user_id = currentUser?.id || userData?.user?.id;
 
-
-
+  const printCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition();
+  
+    console.log('Current position:', coordinates);
+  };
+    
+    useEffect(() => printCurrentPosition(), [])
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
   console.log(user_id, 'data');
   

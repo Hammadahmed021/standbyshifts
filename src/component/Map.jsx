@@ -36,8 +36,8 @@ const MapComponent = ({ data }) => {
 
   const validCoordinates = data
     .map((item) => ({
-      lat: parseFloat(item.longitude.trim()),
-      lng: parseFloat(item.latitude.trim()),
+      lat: parseFloat(item.longitude),
+      lng: parseFloat(item.latitude),
       title: item.title,
       location: item.location,
       id: item.id, // Assuming each item has an ID for navigation
