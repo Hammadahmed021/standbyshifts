@@ -9,6 +9,7 @@ import { addBooking, clearAllBookings } from "../store/bookingSlice";
 import { fetchBookings, verifyUser } from "../utils/Api";
 import { Elements } from "@stripe/react-stripe-js";
 import { stripePromise } from "../component/StripeCheckOut";
+import { showInfoToast, showSuccessToast } from "../utils/Toast";
 
 export default function RestaurantReservation() {
   // const SERVICE_CHARGE = 150;
@@ -20,6 +21,7 @@ export default function RestaurantReservation() {
   const [selectedMenus, setSelectedMenus] = useState({});
   const [curMenus, setCurMenus] = useState({});
   const [isGuest, setIsGuest] = useState(true);
+  const [isUser, setIsUser] = useState();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [isSigning, setIsSigning] = useState(false);
@@ -30,8 +32,8 @@ export default function RestaurantReservation() {
     setOpenCardIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  const user = useSelector((state) => state.auth.userData);
-  const isLoggedIn = !user;
+  const user = isUser;
+  // const isLoggedIn = !user;
   console.log(user, "user");
 
   const { restaurant, date, time, seats, hotel_id } = location.state || {};
@@ -41,6 +43,7 @@ export default function RestaurantReservation() {
       const response = await verifyUser();
       const data = await response.data;
       setId(data?.id);
+      setIsUser(data);
       console.log(data, "data on fetch");
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -131,7 +134,6 @@ export default function RestaurantReservation() {
         phone,
         paymentIntentId,
       };
-
       const booking = {
         user_id: user?.user?.id || Id || null,
         hotel_id,
@@ -140,17 +142,13 @@ export default function RestaurantReservation() {
         date,
         paymentIntentId,
       };
-
       const token = localStorage.getItem("webToken") || user?.token;
-      console.log(token, "token reservation");
-
       if (!user?.uid) {
         const guestBookings =
           JSON.parse(localStorage.getItem("guestBookings")) || [];
         guestBookings.push(newBooking);
         localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
       }
-
       try {
         const result = await fetchBookings(booking, token);
         console.log(result, "booking");
@@ -160,9 +158,9 @@ export default function RestaurantReservation() {
         throw new Error("something went wrong");
       } finally {
         setIsSigning(false);
+        showSuccessToast("Booking created successfully");
       }
-
-      if (user?.uid) {
+      if (user?.uid || Id) {
         navigate("/profile");
       } else {
         navigate("/thankyou", {
@@ -225,6 +223,13 @@ export default function RestaurantReservation() {
   //   setMenuPrices(prices);
   // }, [curMenus]);
   console.log(selectedMenus, "selectedMenus");
+
+  const convertTo12HourFormat = (time) => {
+    let [hours, minutes] = time.split(":");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert 0 -> 12 for 12 AM
+    return `${hours}:${minutes} ${ampm}`;
+  };
 
   return (
     <div className="container mx-auto">
@@ -327,7 +332,8 @@ export default function RestaurantReservation() {
                   <span className="underline">Date:</span> <span>{date}</span>
                 </p>
                 <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline">Time:</span> <span>{time}</span>
+                  <span className="underline">Time:</span>{" "}
+                  <span>{convertTo12HourFormat(time)}</span>
                 </p>
                 <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
                   <span className="underline">Number of People:</span>{" "}
@@ -444,7 +450,8 @@ export default function RestaurantReservation() {
                       ? `Welcome, ${
                           user?.userData?.displayName ||
                           user?.user?.name ||
-                          user?.displayName
+                          user?.displayName ||
+                          user?.name
                         }`
                       : "Guest Details"}
                   </h4>

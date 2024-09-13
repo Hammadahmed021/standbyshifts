@@ -20,3 +20,5 @@ export { default as fb} from './Icons/fb.png';
 export { default as instagram} from './Icons/instagram.png';
 export { default as twitter} from './Icons/twitter.png';
 export { default as youtube} from './Icons/youtube.png';
+export { default as marker} from './Icons/marker-primary.svg';
+export { default as markerSec} from './Icons/marker-secondary.svg';

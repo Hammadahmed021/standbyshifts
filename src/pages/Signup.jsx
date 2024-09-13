@@ -8,6 +8,7 @@ import { signupUser, login as loginFunc } from "../store/authSlice";
 import { SignUpWithGoogle } from "../service";
 import { auth } from "../service/firebase";
 import { getUserFromGmailSignup } from "../utils/Api";
+import { Capacitor } from "@capacitor/core";
 
 // const images = [login, signup];
 
@@ -15,6 +16,8 @@ const Signup = () => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isApp = Capacitor.isNativePlatform();
 
   const handleGoogleSignup = async () => {
     try {
@@ -27,12 +30,12 @@ const Signup = () => {
         email: user?.email,
       };
 
-      if (userData){
-      const response = await getUserFromGmailSignup(userData);
-      const token = response.data.token;
+      if (userData) {
+        const response = await getUserFromGmailSignup(userData);
+        const token = response.data.token;
 
-      // Store token in localStorage
-      localStorage.setItem("webToken", token);
+        // Store token in localStorage
+        localStorage.setItem("webToken", token);
       }
 
       if (user) {
@@ -43,7 +46,7 @@ const Signup = () => {
               displayName: user.displayName,
               email: user.email,
               password: user.password,
-              loginType: user.providerData?.[0]?.providerId
+              loginType: user.providerData?.[0]?.providerId,
             },
           })
         );
@@ -55,11 +58,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="container mx-auto flex sm:items-center justify-center min-h-screen p-2 relative flex-col sm:flex-col items-start">
+    <div className="container mx-auto flex sm:items-center justify-center min-h-screen p-0 sm:p-2 relative flex-col sm:flex-col items-start">
       <Link to={"/"}>
         <img
           src={Logo}
-          className="w-fit relative sm:absolute top-4 left-4 mb-8 sm:mb-0"
+          className={` ${
+            isApp
+              ? "w-fit absolute top-8 left-4"
+              : "w-fit relative sm:absolute top-4 left-4 mb-8 sm:mb-0"
+          }`}
         />
       </Link>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -78,35 +85,38 @@ const Signup = () => {
               Log In
             </Link>
           </p>
-          <div className="relative py-4 mt-5 mb-8">
-            <hr className="bg-tn_light_grey" />
-            <p className="absolute top-1 left-0 right-0 mx-auto text-center sm:w-[20%] w-[40%] bg-white text-tn_text_grey text-sm">
-              Or login with
-            </p>
-          </div>
-          <div className="flex justify-between items-center space-x-3">
-            <span
-              className="p-3 flex justify-center border w-full border-tn_light_grey rounded-lg"
-              onClick={() => {}}
-            >
-              <FaFacebook size={24} />
-            </span>
-            <span
-              className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
-              onClick={handleGoogleSignup}
-            >
-              <FaGoogle size={24} />
-            </span>
-            <span
-              className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
-              onClick={() => {}}
-            >
-              <FaApple size={24} />
-            </span>
-          </div>
+          {!isApp && (
+            <>
+              <div className="relative py-4 mt-5 mb-8">
+                <hr className="bg-tn_light_grey" />
+                <p className="absolute top-1 left-0 right-0 mx-auto text-center sm:w-[20%] w-[40%] bg-white text-tn_text_grey text-sm">
+                  Or login with
+                </p>
+              </div>
+              <div className="flex justify-between items-center space-x-3">
+                <span
+                  className="p-3 flex justify-center border w-full border-tn_light_grey rounded-lg"
+                  onClick={() => {}}
+                >
+                  <FaFacebook size={24} />
+                </span>
+                <span
+                  className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
+                  onClick={handleGoogleSignup}
+                >
+                  <FaGoogle size={24} />
+                </span>
+                <span
+                  className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
+                  onClick={() => {}}
+                >
+                  <FaApple size={24} />
+                </span>
+              </div>
+            </>
+          )}
           {error && <p className="mt-3 text-center text-base">{error}</p>}
         </div>
-
         {/* Right Column: Image Slider */}
         <div className="relative hidden md:block">
           <img src={login} alt={`login`} className="w-full" />

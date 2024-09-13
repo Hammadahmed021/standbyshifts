@@ -9,6 +9,8 @@ import { dataForFilter, fetchFilteredData } from "../utils/Api";
 import { transformSingleImageData } from "../utils/HelperFun";
 import { Button, Loader, MapComponent } from "../component";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { Capacitor } from "@capacitor/core";
+import { Geolocation } from "@capacitor/geolocation";
 
 const Listing = () => {
   const location = useLocation();
@@ -24,13 +26,58 @@ const Listing = () => {
       : [location.state?.filters?.areas],
     endTime: location.state?.filters?.endTime,
     startTime: location.state?.filters?.startTime,
+    person: location.state?.filters?.person,
   });
+  console.log(filters, "filters");
+
   const [filteredData, setFilteredData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [visibleCards, setVisibleCards] = useState(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [isMapView, setIsMapView] = useState(false); // New state for view toggle
+  console.log(filterData, "filterData");
+
+  const getLocation = async () => {
+    if (
+      Capacitor.getPlatform() === "android" ||
+      Capacitor.getPlatform() === "ios"
+    ) {
+      try {
+        const permissionStatus = await Geolocation.requestPermissions();
+        if (permissionStatus.location === "granted") {
+          const coordinates = await Geolocation.getCurrentPosition();
+          console.log("User location:", coordinates);
+          setUserLocation({
+            lat: coordinates.coords.latitude,
+            lng: coordinates.coords.longitude,
+          });
+        } else {
+          alert("Please enable location services in your app settings.");
+        }
+      } catch (error) {
+        console.error(
+          "Error requesting geolocation permissions or getting position:",
+          error
+        );
+      }
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
 
   useEffect(() => {
     const showFilter = async () => {
@@ -54,6 +101,7 @@ const Listing = () => {
         areas_ids: filters.areas_ids.map((res) => Number(res)) || [],
         startTime: filters.startTime,
         endTime: filters.endTime,
+        person: filters.person,
       };
 
       try {
@@ -86,11 +134,12 @@ const Listing = () => {
   };
 
   const transformedData = transformSingleImageData(filteredData);
+  console.log(transformedData, "transformedData");
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
+      for (let minute = 0; minute < 60; minute += 15) {
         const period = hour >= 12 ? "PM" : "AM";
         const adjustedHours = hour % 12 || 12;
         const displayTime = `${adjustedHours}:${minute
@@ -151,7 +200,7 @@ const Listing = () => {
             <div className="block mb-6">
               <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
               <SelectOption
-                options={Array.from({ length: 5 }, (_, i) => ({
+                options={Array.from({ length: 8 }, (_, i) => ({
                   id: i + 1,
                   name: (i + 1).toString(),
                 }))}
@@ -196,7 +245,9 @@ const Listing = () => {
                 View List
               </button>
               <button
-                onClick={() => setIsMapView(true)}
+                onClick={() => {
+                  setIsMapView(true), getLocation();
+                }}
                 className={`px-4 py-1 rounded-md ${
                   isMapView
                     ? "bg-tn_pink text-white hover:opacity-80"
@@ -212,7 +263,11 @@ const Listing = () => {
             ) : isMapView ? (
               <>
                 {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}> */}
-                <MapComponent data={transformedData} />
+                {/* <MapComponent data={transformedData} /> */}
+                <MapComponent
+                  data={transformedData}
+                  requestUserLocation={true} // Ask for location on the listing page
+                />
                 {/* </APIProvider> */}
               </>
             ) : (

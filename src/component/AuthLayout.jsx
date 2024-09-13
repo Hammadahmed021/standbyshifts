@@ -5,25 +5,25 @@ import { useNavigate } from "react-router-dom";
 const AuthLayout = ({ children, authentication = true }) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(true);
-  const authStatusWeb = useSelector((state) => state.auth.status);
+  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
     const redirectState = JSON.parse(localStorage.getItem("redirectState"));
 
-    if (authentication && !authStatusWeb) {
+    if (authentication && !authStatus) {
       // If authentication is required and user is not logged in, redirect to login
       navigate("/login");
-    } else if (!authentication && authStatusWeb) {
+    } else if (!authentication && authStatus) {
       // If authentication is not required and user is logged in, redirect to home
       navigate("/profile");
-    } else if (redirectState && redirectState.fromReservation && authStatusWeb) {
+    } else if (redirectState && redirectState.fromReservation && authStatus) {
       // If redirected from reservation and user is logged in, navigate back to reservation
       localStorage.removeItem("redirectState");
       navigate(redirectState.location.pathname, { state: redirectState.location.state });
     }
     
     setLoader(false);
-  }, [authentication, authStatusWeb, navigate]);
+  }, [authentication, authStatus, navigate]);
 
   return loader ? <h2>Loading...</h2> : <>{children}</>;
 };

@@ -163,7 +163,7 @@ const CardCarousel = ({
           </Link>
         </>
       )}
-      {(isLoggedIn) && (
+      {(isLoggedIn && !isListingPage) && (
         <div
           className={`absolute top-2 ${
             data.type === "featured" ? "right-5" : "right-2"
@@ -201,7 +201,7 @@ const CardCarousel = ({
               {data.title}
             </Link>
           </div>
-          <p className="text-black text-sm font-light">{data.type} </p>
+          {/* <p className="text-black text-sm font-light">{data.type} </p> */}
         </div>
       )}
     </div>

@@ -92,41 +92,42 @@ export default function RestaurantDetail() {
     fetchUserData();
   }, [data, id]);
 
+  // Get current time in 24-hour format
   const getCurrentTimeIn24HourFormat = () => {
     const date = new Date();
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   };
+  
+  
 
   const currentTime = getCurrentTimeIn24HourFormat();
 
-  useEffect(() => {
-    if (location.pathname === `/restaurant/${id}` || !user_id) {
-      refetch();
-    }
-  }, [refetch, id]);
-
-  // Update available times based on today's date and current time
   useEffect(() => {
     if (card?.calendars) {
       const dateCalendar = card.calendars.find(
         (calendar) => calendar.date === today
       );
-
+  
       if (dateCalendar) {
         const times = dateCalendar.calendar_details
           .map((detail) => ({
             name: detail.time,
             id: detail.time,
           }))
-          .filter((time) => time.id >= currentTime);
-
+          .filter((time) => {
+            console.log('Comparing:', time.id, 'with', currentTime);
+            return time.id > currentTime; // Exclude past times
+          });
+  
+        console.log('Filtered Times:', times);
+  
         setAvailableTimes(times || []);
         resetField("time");
         resetField("seats");
         setAvailableSeats([]);
-
+  
         if (times.length > 0) {
           setValue("time", times[0].id); // Automatically select first available time
         }
@@ -135,6 +136,7 @@ export default function RestaurantDetail() {
       }
     }
   }, [card, resetField, setValue, today, currentTime]);
+  
 
   // Update available seats based on selected time and booked seats
   useEffect(() => {
@@ -359,6 +361,7 @@ export default function RestaurantDetail() {
                 <div className="w-[800px] h-[250px]">
                   <MapComponent
                    data={[card]}
+                   requestUserLocation={false}
                   />
                 </div>
               </div>

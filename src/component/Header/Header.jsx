@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Logo, fallback, fb, instagram, twitter, youtube } from "../../assets";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { useSelector } from "react-redux";
 import {
   LuBackpack,
@@ -20,8 +20,9 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../LanguageSelector";
 import { verifyUser } from "../../utils/Api";
+import { Capacitor } from "@capacitor/core";
 
-const Header = () => {
+const Header = ({ style }) => {
   const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState([]);
@@ -30,38 +31,38 @@ const Header = () => {
   const isDesktop = useMediaQuery("(max-width: 991px)");
   const [toggle, setToggle] = useState(false);
   const { data } = useFetch("hotels"); // Example useFetch hook, adjust as needed
-  // console.log(data, 'data search');
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
   const { t } = useTranslation();
+  const location = useLocation(); // Hook to get the current route
+  const isApp = Capacitor.isNativePlatform();
 
   const fetchCurrentUserData = async () => {
     try {
       const response = await verifyUser();
       const data = await response.data;
-      console.log(data, "data on fetch");
-
       setCurrentUser(data);
-      
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
 
+  // Close menu on route change
   useEffect(() => {
-    fetchCurrentUserData()
-     // Function to handle click outside
-     const handleClickOutside = (event) => {
+    if (toggle) {
+      setToggle(false); // Close menu when navigating
+    }
+  }, [location]); // Trigger when the route changes
+
+  useEffect(() => {
+    fetchCurrentUserData();
+
+    const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
 
-    // Attach the event listener on mount
     document.addEventListener("mousedown", handleClickOutside);
 
-   
     if (toggle) {
       document.body.classList.add("overflow-hidden");
     } else {
@@ -71,15 +72,11 @@ const Header = () => {
     return () => {
       document.body.classList.remove("overflow-hidden");
       document.removeEventListener("mousedown", handleClickOutside);
-
     };
   }, [toggle]);
 
-  console.log(userData, 'userData header');
-  
-
   return (
-    <header className="border-b-2 relative">
+    <header className="border-b-2 relative" style={style}>
       <div className="container mx-auto">
         {!isDesktop ? (
           <nav className="flex py-4 items-center">
@@ -91,21 +88,29 @@ const Header = () => {
             </div>
             <ul className="flex ml-auto items-center">
               <LanguageSelector />
-              {/* <LuGlobe size={18} /> */}
               <span className="mx-4">|</span>
               {authStatus ? (
                 <li className="inline-flex space-x-2">
                   <div className="relative inline-block">
                     <div className="flex items-center cursor-pointer">
                       <img
-                        src={currentUser?.profile_image || userData?.profile_image?.name  || fallback}
+                        src={
+                          currentUser?.profile_image ||
+                          userData?.profile_image?.name ||
+                          fallback
+                        }
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
                       />
                       <span className="text-tn_dark text-base font-medium ml-2">
-                        {currentUser?.name || userData?.user?.name || userData?.displayName}
+                        {currentUser?.name ||
+                          userData?.user?.name ||
+                          userData?.displayName}
                       </span>
-                      <span className="p-2" onClick={toggleDropdown}>
+                      <span
+                        className="p-2"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      >
                         {isDropdownOpen ? (
                           <FaChevronUp className="text-tn_pink" size={12} />
                         ) : (
@@ -114,7 +119,10 @@ const Header = () => {
                       </span>
                     </div>
                     {isDropdownOpen && (
-                      <div ref={dropdownRef} className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10">
+                      <div
+                        ref={dropdownRef}
+                        className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10"
+                      >
                         <Link
                           to="/profile"
                           className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
@@ -146,7 +154,10 @@ const Header = () => {
               className=""
             />
             {toggle && (
-              <ul className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto">
+              <ul
+                className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto"
+                style={{ paddingTop: isApp ? "20px" : "0" }}
+              >
                 <div className="relative w-full min-h-screen p-3">
                   <div className="flex justify-between items-start">
                     <LuX
@@ -158,16 +169,22 @@ const Header = () => {
                       <li className="inline-block">
                         <span className="text-tn_dark text-lg font-medium">
                           <img
-                            src={currentUser?.profile_image || userData?.profile_image?.name  || fallback}
+                            src={
+                              currentUser?.profile_image ||
+                              userData?.profile_image?.name ||
+                              fallback
+                            }
                             alt="user profile"
                             className="w-16 h-16 rounded-full"
                           />
                         </span>
-                        {/* <LogoutBtn /> */}
                       </li>
                     ) : (
                       <>
-                        <li className="inline-block px-7 rounded-md text-lg bg-tn_pink text-white py-1">
+                        <li
+                          className="inline-block px-7 rounded-md text-lg bg-tn_pink text-white py-1"
+                          style={{ marginTop: isApp ? "10px" : "10px" }}
+                        >
                           <Link to={"/login"}>Login</Link>
                         </li>
                       </>
@@ -190,15 +207,17 @@ const Header = () => {
                     <li>
                       <Link to={"/"}>Secure Payment</Link>
                     </li>
-                    <li>
-                      <LogoutBtn className="inline" />
-                    </li>
+                    {authStatus && (
+                      <li>
+                        <LogoutBtn className="inline" />
+                      </li>
+                    )}
                   </ul>
 
                   <h4 className="text-xl font-bold text-tn_pink mt-10 mb-4">
                     Contact
                   </h4>
-                  <ul className=" text-base text-tn_dark font-medium">
+                  <ul className="text-base text-tn_dark font-medium">
                     <li>+12 345 678 000</li>
                     <li>info@tablenow.com</li>
 
@@ -212,16 +231,13 @@ const Header = () => {
                       <a href="#1">
                         <img
                           src={instagram}
-                          className="w-7 h-7  object-contain"
+                          className="w-7 h-7 object-contain"
                         />
                       </a>
                     </li>
                     <li>
                       <a href="#1">
-                        <img
-                          src={twitter}
-                          className="w-7 h-7  object-contain"
-                        />
+                        <img src={twitter} className="w-7 h-7 object-contain" />
                       </a>
                     </li>
                     <li>
@@ -231,10 +247,7 @@ const Header = () => {
                     </li>
                     <li>
                       <a href="#1">
-                        <img
-                          src={youtube}
-                          className="w-7 h-7  object-contain"
-                        />
+                        <img src={youtube} className="w-7 h-7 object-contain" />
                       </a>
                     </li>
                   </ul>
@@ -247,7 +260,11 @@ const Header = () => {
                 <img src={Logo} alt="" className="w-36 sm:w-48" />
               </Link>
             </div>
-            <LuShoppingBag onClick={() => {}} size={24} className="" />
+            <div className="space-x-2">
+              <Link to={"/profile"} className="text-tn_dark">
+                <LuShoppingBag size={26} />
+              </Link>
+            </div>
           </nav>
         )}
       </div>

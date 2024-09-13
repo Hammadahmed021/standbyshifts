@@ -16,6 +16,8 @@ import {
   verifyUser,
 } from "../utils/Api";
 import { updateFirebasePassword } from "../service";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -62,13 +64,12 @@ const Profile = () => {
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
 
-
-
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const userBookings = bookings.filter(
     (booking) => booking.user === userData?.uid
   );
+  const isApp = Capacitor.isNativePlatform();
 
   const handleClearBooking = async (bookingId) => {
     setIsClearBooking((prev) => ({ ...prev, [bookingId]: true }));
@@ -129,6 +130,70 @@ const Profile = () => {
     }
   };
 
+  const handlePickImage = async () => {
+    if (isApp) {
+      try {
+        // Request permissions for camera and photos
+        const permissions = await Camera.requestPermissions({
+          permissions: ["camera", "photos"],
+        });
+
+        // Check if camera or gallery access is granted
+        if (
+          permissions.camera !== "granted" ||
+          permissions.photos !== "granted"
+        ) {
+          alert("Please grant camera and photo library permissions.");
+          return;
+        }
+
+        // Pick an image from the gallery
+        const image = await Camera.getPhoto({
+          quality: 90,
+          allowEditing: false,
+          resultType: CameraResultType.Uri,
+          source: CameraSource.Photos,
+        });
+
+        if (image && image.webPath) {
+          // Convert the image URI to Blob
+          const response = await fetch(image.webPath);
+          if (!response.ok) {
+            throw new Error("Failed to fetch image");
+          }
+          const blob = await response.blob();
+
+          // Validate image type and size
+          if (!VALID_IMAGE_TYPES.includes(blob.type)) {
+            setFileError(
+              "Invalid file type. Only JPEG, PNG, and JPG files are allowed."
+            );
+            return;
+          }
+          if (blob.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            setFileError(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
+            return;
+          }
+
+          // Convert Blob to File, which is compatible with your API
+          const file = new File([blob], `profile.${blob.type.split("/")[1]}`, {
+            type: blob.type,
+          });
+
+          // Set the file for upload
+          setSelectedFile(file);
+          setFileError("");
+          setImagePreview(URL.createObjectURL(file)); // Show image preview
+        }
+      } catch (error) {
+        console.error("Error picking image:", error);
+      }
+    } else {
+      // Fallback to traditional file input if running in the browser
+      document.querySelector('input[type="file"]').click();
+    }
+  };
+
   const uploadProfileImage = async (file) => {
     try {
       // Implement your image upload logic here
@@ -147,7 +212,6 @@ const Profile = () => {
     setSuccessMessage(""); // Clear previous success message
     try {
       const { newPassword, confirmPassword } = data;
-      // let profileImageURL = currentUser?.profile_image;
       let profileImageFile = selectedFile;
 
       // Ensure newPassword and confirmPassword match
@@ -157,7 +221,6 @@ const Profile = () => {
           return;
         }
 
-        // Ensure newPassword is provided
         if (!newPassword) {
           setShowError("New password is required.");
           return;
@@ -171,22 +234,21 @@ const Profile = () => {
         }
       }
 
-      // If a new image is selected, prepare to upload it
-      if (selectedFile) {
-        profileImageFile = selectedFile;
-      }
-
       // Construct the updated user data object
       const updatedUserData = {
         user_id: currentUser?.id || userData?.user?.id,
         name: data?.name,
         phone: data?.phone,
-        // Add the profile_image key only if a new image was uploaded
-        ...(profileImageFile !== currentUser?.profile_image && {
-          profile_image: profileImageFile,
-        }),
+        ...(profileImageFile &&
+          profileImageFile !== currentUser?.profile_image && {
+            profile_image: profileImageFile,
+          }),
       };
-
+      // if (profileImageFile != "") {
+      //   alert("profileImageFile========>", JSON.stringify(profileImageFile));
+      // } else {
+      //   alert("its empty");
+      // }
       console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
@@ -208,15 +270,35 @@ const Profile = () => {
     }
   };
 
+  // const showBookings = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await getUserBookings();
+  //     console.log(response, "user bookings");
+
+  //     setUserBooking(response);
+  //   } catch (error) {
+  //     console.error("Error fetching bookings:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const showBookings = async () => {
     try {
       setLoading(true);
       const response = await getUserBookings();
       console.log(response, "user bookings");
 
-      setUserBooking(response);
+      // Check if response is an array
+      if (Array.isArray(response)) {
+        setUserBooking(response);
+      } else {
+        console.error("Expected an array, but got:", response);
+        setUserBooking([]); // Set as empty array if response is not an array
+      }
     } catch (error) {
       console.error("Error fetching bookings:", error);
+      setUserBooking([]); // Set as empty array in case of an error
     } finally {
       setLoading(false);
     }
@@ -257,7 +339,6 @@ const Profile = () => {
 
     fetchFavorites();
   }, []);
-  console.log(favorites, "fav");
 
   useEffect(() => {
     showBookings();
@@ -334,7 +415,20 @@ const Profile = () => {
                   className="w-16 h-16 rounded-full"
                 />
                 <div className="ml-4">
-                  <input type="file" onChange={handleFileChange} />
+                  {isApp ? (
+                    <button
+                      onClick={handlePickImage}
+                      className="bg-tn_pink p-2 rounded-md text-xs text-white"
+                    >
+                      Pick an Image
+                    </button>
+                  ) : (
+                    <input
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={handleFileChange}
+                    />
+                  )}
                   {fileError && <p className="text-red-500">{fileError}</p>}
                 </div>
               </div>
@@ -496,7 +590,7 @@ const Profile = () => {
                     </span>
                   ) : (
                     <span
-                      className="text-lg sm:text-base hover:opacity-80 text-tn_pink cursor-pointer"
+                      className="text-sm sm:text-base hover:opacity-80 text-tn_pink cursor-pointer"
                       onClick={() => {
                         setSelectedBooking(booking);
                         setIsRatingModalOpen(true);

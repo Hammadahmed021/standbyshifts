@@ -13,7 +13,7 @@ const Filter = ({ onFilterChange }) => {
     facilities: [],
     areas: [],
     // menuTypes: [],
-    person: 1,
+    person: [],
     startTime: "00:00:00",
     endTime: "01:00:00",
   });
@@ -113,6 +113,9 @@ const Filter = ({ onFilterChange }) => {
     { id: 3, name: "3" },
     { id: 4, name: "4" },
     { id: 5, name: "5" },
+    { id: 6, name: "6" },
+    { id: 7, name: "7" },
+    { id: 8, name: "8" },
   ];
 
   const generateTimeOptionsWithAMPM = () => {
@@ -134,7 +137,7 @@ const Filter = ({ onFilterChange }) => {
     };
 
     for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
+      for (let minute = 0; minute < 60; minute += 15) {
         options.push(formatTime(hour, minute));
       }
     }

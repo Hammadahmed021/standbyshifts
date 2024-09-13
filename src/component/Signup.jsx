@@ -5,9 +5,11 @@ import { signupUser } from "../store/authSlice";
 import { Input, Button } from "../component";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
+import { Capacitor } from "@capacitor/core";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
+const isApp = Capacitor.isNativePlatform();
 
 export default function Signup() {
   const [isSigning, setIsSigning] = useState(false);
@@ -26,18 +28,21 @@ export default function Signup() {
     console.log(userData, "signup form");
     setIsSigning(true);
     setShowError(""); // Clear any previous error message
-    if (!recaptchaToken) {
+
+    // Skip recaptcha validation if running in native app (isApp)
+    if (!isApp && !recaptchaToken) {
       setShowError("Please complete the reCAPTCHA.");
       setIsSigning(false);
       return;
     }
+
     try {
       const response = await dispatch(signupUser({ ...userData, recaptchaToken })).unwrap();
       console.log("Signup response:", response);
       // Navigate to home or another page
       navigate("/"); // Adjust the navigation as needed
     } catch (error) {
-      console.error("API Signup failed:", error);  
+      console.error("API Signup failed:", error);
       if (error == "Firebase: Error (auth/email-already-in-use).") {
         setShowError("User already exists with this email.");
       } else {
@@ -212,22 +217,24 @@ export default function Signup() {
           {errors.terms && (
             <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
           )}
-          {/* {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>} */}
         </div>
 
-        <div className="mb-6">
-          <ReCAPTCHA
-            sitekey={RECAPTCHA_SITE_KEY}
-            onChange={handleRecaptchaChange}
-          />
-          {showError && <p className="text-red-500 text-xs mt-1">{showError}</p>}
-        </div>
+        {/* Conditionally render ReCAPTCHA based on isApp */}
+        {!isApp && (
+          <div className="mb-6">
+            <ReCAPTCHA
+              sitekey={RECAPTCHA_SITE_KEY}
+              onChange={handleRecaptchaChange}
+            />
+            {showError && (
+              <p className="text-red-500 text-xs mt-1">{showError}</p>
+            )}
+          </div>
+        )}
 
         <Button
           type="submit"
-          className={`w-full ${
-            isSigning ? "opacity-70 cursor-not-allowed" : ""
-          }`}
+          className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
           disabled={isSigning}
         >
           {isSigning ? "Registering user..." : "Sign up"}
