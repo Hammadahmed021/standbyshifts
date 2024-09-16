@@ -74,7 +74,7 @@ export const Login = async (userData) => {
     console.log(payload, "payload");
 
     const response = await axios.post(`${BASE_URL}login`, payload);
-    console.log(response, "payload");
+    console.log(response, "payload login");
 
     return response.data;
   } catch (error) {

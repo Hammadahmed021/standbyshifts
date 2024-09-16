@@ -9,6 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from '@capacitor/status-bar'; // Import StatusBar from Capacitor
 import { App as CapacitorApp } from "@capacitor/app";
 import { logout } from "./store/authSlice";
+import { PushNotifications } from '@capacitor/push-notifications';
 
 function App() {
   const location = useLocation();
@@ -115,6 +116,27 @@ function App() {
   }, [userId, dispatch]);
 
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(location.pathname);
+  useEffect(() => {
+    // Request permission to use push notifications
+    PushNotifications.requestPermissions().then(result => {
+        if (result.receive === 'granted') {
+            // Register with FCM
+            PushNotifications.register();
+        } else {
+            console.log('Push notifications permission denied');
+        }
+    });
+
+    // Handle background notifications
+    PushNotifications.addListener('pushNotificationReceived', (notification) => {
+        console.log('Push notification received:', notification);
+    });
+
+    // Handle foreground notifications
+    PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+        console.log('Push notification action performed:', notification);
+    });
+}, []);
 
   return (
     <>

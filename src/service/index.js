@@ -8,7 +8,9 @@ import {
   EmailAuthProvider,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, messaging } from "./firebase";
+import { getToken } from "firebase/messaging";
+
 
 // Function to sign in with Google
 export const SignUpWithGoogle = async () => {
@@ -68,21 +70,6 @@ export const signOut = async () => {
   }
 };
 
-export const testFirebaseAuth = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-    const token = await user.getIdToken();
-    console.log("Successfully signed in:", user);
-    console.log("Firebase ID Token:", token);
-  } catch (error) {
-    console.error("Firebase Authentication Error:", error.code, error.message);
-  }
-};
 
 // Replace with your test email and password
 
@@ -139,3 +126,23 @@ export const updateFirebasePassword = async (newPassword) => {
     return false;
   }
 };
+
+// Function to retrieve FCM token
+export const getFCMToken = async () => {
+  try {
+    const token = await getToken(messaging, { vapidKey: import.meta.env.VITE_APIKEY_FB });
+    if (token) {
+      console.log("FCM Token:", token);
+      return token;
+    } else {
+      console.error("No registration token available.");
+      return null;
+    }
+  } catch (error) {
+    console.error("An error occurred while retrieving FCM token.", error);
+    return null;
+  }
+};
+
+
+

@@ -7,6 +7,7 @@ import {
   AuthErrorCodes,
 } from "firebase/auth";
 import { auth } from "../service/firebase";
+import { getFCMToken } from "../service";
 
 const initialState = {
   status: false,
@@ -14,7 +15,6 @@ const initialState = {
   loading: false,
   error: null,
 };
-
 
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
@@ -26,21 +26,21 @@ export const signupUser = createAsyncThunk(
         email,
         password
       );
-      
+
       const user = userCredential.user;
       const token = await getIdToken(user);
 
       const signupData = {
         email,
         fname,
-        password
+        password,
       };
       // if(user){}
       const response = await Signup(signupData);
 
-       // Store token in localStorage
+      // Store token in localStorage
       localStorage.setItem("webToken", response?.token);
-        
+
       return {
         uid: user.uid,
         email: user.email,
@@ -71,19 +71,28 @@ export const loginUser = createAsyncThunk(
       const user = userCredential.user;
       const token = await getIdToken(user);
 
-
       console.log("User Credential:", userCredential);
 
       const signupData = {
         email,
         fname,
       };
+      // Optionally get FCM token
+      let fcmToken = null;
+      try {
+        fcmToken = await getFCMToken();
+        if (fcmToken) {
+          console.log("FCM Token:", fcmToken);
+        } else {
+          console.log("No FCM Token available.");
+        }
+      } catch (error) {
+        console.warn("Skipping FCM token retrieval, no service worker setup.");
+      }
 
       const response = await ApiLogin({ email, password });
-       // Store token in localStorage
-     localStorage.setItem("webToken", response?.token);
-
- 
+      // Store token in localStorage
+      localStorage.setItem("webToken", response?.token);
 
       return {
         uid: user.uid,
@@ -115,9 +124,8 @@ const authSlice = createSlice({
       state.userData = null;
       state.loading = false;
       state.error = null;
-       // remove token in localStorage 
-       localStorage.removeItem("webToken");
-       
+      // remove token in localStorage
+      localStorage.removeItem("webToken");
     },
     updateUserData: (state, action) => {
       state.userData = {
@@ -160,5 +168,3 @@ const authSlice = createSlice({
 export const { login, logout, updateUserData } = authSlice.actions;
 
 export default authSlice.reducer;
-
-

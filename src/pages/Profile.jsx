@@ -259,14 +259,14 @@ const Profile = () => {
 
       // Optionally, refetch the user data after a successful update
       fetchUserData();
-      setSuccessMessage("Profile updated successfully!");
-      setTimeout(() => {
-        setSuccessMessage(""); // Clear the success message after 5 seconds
-      }, 3000);
     } catch (error) {
       console.error("Error saving profile:", error);
     } finally {
       setIsSigning(false);
+      setSuccessMessage("Profile updated successfully!");
+      setTimeout(() => {
+        setSuccessMessage(""); // Clear the success message after 5 seconds
+      }, 3000);
     }
   };
 
