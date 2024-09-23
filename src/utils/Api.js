@@ -64,12 +64,13 @@ export const Signup = async (userData) => {
 export const Login = async (userData) => {
   console.log(userData, "userData");
   try {
-    const { email, fname, password } = userData;
+    const { email, fname, password, fcm_token } = userData;
     const payload = {
       // name: fname,
       email,
       password,
       type: "user",
+      fcm_token,
     };
     console.log(payload, "payload");
 
@@ -374,5 +375,16 @@ export const giveRateToHotel = async (rateData) => {
     return response.data;
   } catch (error) {
     throw new Error(error.message || "unable to give ratings");
+  }
+};
+
+export const sendFCMToken = async (fcm_token) => {
+  console.log(fcm_token, 'fcm_token');
+  
+  try {
+    const data = await axios.post(`${BASE_URL}add-fcm-token`, fcm_token);
+    return data.data;
+  } catch (error) {
+    throw new Error(error.message || "unable to find filters");
   }
 };

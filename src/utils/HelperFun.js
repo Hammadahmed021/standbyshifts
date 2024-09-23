@@ -33,7 +33,9 @@ export const transformData = (apiResponse) => {
     areas: item?.areas || [],
     menuTypes: item?.menuTypes || [],
     // Convert `is_approved` to boolean
+
     is_approved: item?.is_approved === 1,
+    is_featured: item?.is_featured === 1,
     is_favorite: item?.is_favorite || false,
     status: item?.status,
     type: item?.type,
@@ -77,6 +79,7 @@ export const transformSingleImageData = (apiResponse) => {
     menuTypes: item?.menuTypes || [],
     // Convert `is_approved` to boolean
     is_approved: item?.is_approved === 1,
+    is_featured: item?.is_featured === 1,
     is_favorite: item?.is_favorite || false,
     status: item?.status,
     type: item?.type,
@@ -84,3 +87,37 @@ export const transformSingleImageData = (apiResponse) => {
     longitude: item.longitude || null,
   }));
 };
+
+export const getDistance = (lat1, lon1, lat2, lon2) => {
+  // Convert to numbers in case they are passed as strings
+  lat1 = parseFloat(lat1);
+  lon1 = parseFloat(lon1);
+  lat2 = parseFloat(lat2);
+  lon2 = parseFloat(lon2);
+
+  // Check if coordinates are valid
+  if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+    console.error('Invalid coordinates:', { lat1, lon1, lat2, lon2 });
+    return Infinity; // Return an infinite distance if coordinates are invalid
+  }
+
+  const R = 6371e3; // Radius of the Earth in meters
+  const φ1 = lat1 * Math.PI / 180;
+  const φ2 = lat2 * Math.PI / 180;
+  const Δφ = (lat2 - lat1) * Math.PI / 180;
+  const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // Distance in meters
+
+  console.log('Calculated distance:', distance);
+  return distance;
+}
+
+
+

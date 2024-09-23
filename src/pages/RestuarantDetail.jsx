@@ -39,7 +39,7 @@ export default function RestaurantDetail() {
   const user_id = currentUser?.id || userData?.user?.id;
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
   const today = new Date().toISOString().split("T")[0];
-  
+
   // Fetch and update card and related restaurants
   useEffect(() => {
     if (!data) return;
@@ -99,8 +99,6 @@ export default function RestaurantDetail() {
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   };
-  
-  
 
   const currentTime = getCurrentTimeIn24HourFormat();
 
@@ -109,7 +107,7 @@ export default function RestaurantDetail() {
       const dateCalendar = card.calendars.find(
         (calendar) => calendar.date === today
       );
-  
+
       if (dateCalendar) {
         const times = dateCalendar.calendar_details
           .map((detail) => ({
@@ -117,17 +115,17 @@ export default function RestaurantDetail() {
             id: detail.time,
           }))
           .filter((time) => {
-            console.log('Comparing:', time.id, 'with', currentTime);
+            console.log("Comparing:", time.id, "with", currentTime);
             return time.id > currentTime; // Exclude past times
           });
-  
-        console.log('Filtered Times:', times);
-  
+
+        console.log("Filtered Times:", times);
+
         setAvailableTimes(times || []);
         resetField("time");
         resetField("seats");
         setAvailableSeats([]);
-  
+
         if (times.length > 0) {
           setValue("time", times[0].id); // Automatically select first available time
         }
@@ -136,7 +134,6 @@ export default function RestaurantDetail() {
       }
     }
   }, [card, resetField, setValue, today, currentTime]);
-  
 
   // Update available seats based on selected time and booked seats
   useEffect(() => {
@@ -256,7 +253,7 @@ export default function RestaurantDetail() {
                 </p>
                 <h4 className="text-[17px] font-bold mb-1">Social links</h4>
                 <ul className="flex flex-col text-sm">
-                  {card.facebook && (
+                  {/* {card.facebook && (
                     <li>
                       <p className="mb-2 text-sm flex items-start">
                         <span className="w-4">
@@ -271,19 +268,47 @@ export default function RestaurantDetail() {
                         </span>
                       </p>
                     </li>
+                  )} */}
+                  {card.facebook && (
+                    <li>
+                      <p className="mb-2 text-sm flex items-start">
+                        <span className="w-4">
+                          <FaFacebook size={14} />
+                        </span>
+                        <span className="ml-1">
+                          <a
+                            href={
+                              card.facebook.startsWith("http")
+                                ? card.facebook
+                                : `https://${card.facebook}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {card.facebook}
+                          </a>
+                        </span>
+                      </p>
+                    </li>
                   )}
                   {card.instagram && (
                     <li>
                       <p className="mb-2 text-sm flex items-start">
                         <span className="w-4">
                           <FaInstagram size={14} />
-                        </span>{" "}
+                        </span>
                         <span className="ml-1">
-                          {(
-                            <a href={card.instagram} target="_blank">
-                              {card.instagram}
-                            </a>
-                          ) || "No contact information available"}
+                          <a
+                            href={
+                              card.instagram.startsWith("http")
+                                ? card.instagram
+                                : `https://${card.instagram}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {card.instagram}
+                          </a>
                         </span>
                       </p>
                     </li>
@@ -293,13 +318,19 @@ export default function RestaurantDetail() {
                       <p className="mb-2 text-sm flex items-start">
                         <span className="w-4">
                           <FaGoogle size={14} />
-                        </span>{" "}
+                        </span>
                         <span className="ml-1">
-                          {(
-                            <a href={card.google} target="_blank">
-                              {card.google}
-                            </a>
-                          ) || "No contact information available"}
+                          <a
+                            href={
+                              card.google.startsWith("http")
+                                ? card.google
+                                : `https://${card.google}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {card.google}
+                          </a>
                         </span>
                       </p>
                     </li>
@@ -309,17 +340,25 @@ export default function RestaurantDetail() {
                       <p className="mb-2 text-sm flex items-start">
                         <span className="w-4">
                           <FaTripadvisor size={14} />
-                        </span>{" "}
+                        </span>
                         <span className="ml-1">
-                          {(
-                            <a href={card.tripAdvisor} target="_blank">
-                              {card.tripAdvisor}
-                            </a>
-                          ) || "No contact information available"}
+                          <a
+                            href={
+                              card.tripAdvisor.startsWith("http")
+                                ? card.tripAdvisor
+                                : `https://${card.tripAdvisor}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {card.tripAdvisor}
+                          </a>
                         </span>
                       </p>
                     </li>
                   )}
+
+                 
                   {!(
                     card.facebook ||
                     card.tripAdvisor ||
@@ -359,10 +398,7 @@ export default function RestaurantDetail() {
               <div className="">
                 <h4 className="text-[17px] font-bold mb-1">Location</h4>
                 <div className="w-[800px] h-[250px]">
-                  <MapComponent
-                   data={[card]}
-                   requestUserLocation={false}
-                  />
+                  <MapComponent data={[card]} requestUserLocation={false} />
                 </div>
               </div>
             </div>

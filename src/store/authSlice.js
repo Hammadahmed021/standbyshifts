@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Signup, Login as ApiLogin } from "../utils/Api";
+import { Signup, Login as ApiLogin, sendFCMToken } from "../utils/Api";
 import {
   createUserWithEmailAndPassword,
   getIdToken,
@@ -8,12 +8,55 @@ import {
 } from "firebase/auth";
 import { auth } from "../service/firebase";
 import { getFCMToken } from "../service";
+import { setNotification } from "./notificationSlice";
+import { PushNotifications } from "@capacitor/push-notifications";
+import { Capacitor } from "@capacitor/core";
 
 const initialState = {
   status: false,
   userData: null,
   loading: false,
   error: null,
+};
+// Function to request push notification permissions and get FCM token
+const requestPushNotificationPermission = async () => {
+  try {
+    const permission = await PushNotifications.requestPermissions();
+    if (permission.receive === "granted") {
+      console.log("Push Notification permission granted");
+
+      // Register the device for push notifications
+      await PushNotifications.register();
+
+      return new Promise((resolve, reject) => {
+        // Handle the registration of the device
+        const registrationListener = PushNotifications.addListener(
+          "registration",
+          (token) => {
+            console.log(
+              "Device registered for push notifications, token:",
+              token.value
+            );
+            registrationListener.remove(); // Remove the listener after getting the token
+            resolve(token.value); // Resolve the promise with the token
+          }
+        );
+
+        // Handle errors
+        PushNotifications.addListener("registrationError", (error) => {
+          console.error("Push notification registration error:", error);
+          registrationListener.remove(); // Remove the listener
+          reject(error); // Reject the promise
+        });
+      });
+    } else {
+      console.log("Push Notification permission denied");
+      return null;
+    }
+  } catch (err) {
+    console.error("Error requesting push notification permission", err);
+    return null;
+  }
 };
 
 export const signupUser = createAsyncThunk(
@@ -70,28 +113,15 @@ export const loginUser = createAsyncThunk(
       );
       const user = userCredential.user;
       const token = await getIdToken(user);
+      const fcm_token = await requestPushNotificationPermission(); // Fetch the FCM token
 
       console.log("User Credential:", userCredential);
+      console.log("User ID Token:", token);
+      console.log("FCM Token:", fcm_token);
 
-      const signupData = {
-        email,
-        fname,
-      };
-      // Optionally get FCM token
-      let fcmToken = null;
-      try {
-        fcmToken = await getFCMToken();
-        if (fcmToken) {
-          console.log("FCM Token:", fcmToken);
-        } else {
-          console.log("No FCM Token available.");
-        }
-      } catch (error) {
-        console.warn("Skipping FCM token retrieval, no service worker setup.");
-      }
+      const response = await ApiLogin({ email, password, fcm_token });
+      // console.log(response, "response");
 
-      const response = await ApiLogin({ email, password });
-      // Store token in localStorage
       localStorage.setItem("webToken", response?.token);
 
       return {

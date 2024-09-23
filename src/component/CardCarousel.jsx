@@ -31,6 +31,9 @@ const CardCarousel = ({
   cuisine,
   timeline,
   is_favorite, // Key passed to control heart icon
+  is_featured,
+  longitude,
+  latitude,
   onWishlistChange, // Callback prop for parent to handle refetch
 }) => {
   const [loading, setLoading] = useState(true);
@@ -54,6 +57,9 @@ const CardCarousel = ({
           cuisine,
           timeline,
           is_favorite,
+          is_featured,
+          longitude,
+          latitude
         });
         setLoading(false);
       }, 1000);
@@ -70,6 +76,9 @@ const CardCarousel = ({
     cuisine,
     timeline,
     is_favorite,
+    is_featured,
+    longitude,
+    latitude
   ]);
 
   const isLoggedIn = useSelector((state) => state.auth.userData); 
@@ -163,7 +172,7 @@ const CardCarousel = ({
           </Link>
         </>
       )}
-      {(isLoggedIn && !isListingPage) && (
+      {((isLoggedIn && !isListingPage) || (isLoggedIn && data.is_featured)) && (
         <div
           className={`absolute top-2 ${
             data.type === "featured" ? "right-5" : "right-2"
@@ -175,7 +184,7 @@ const CardCarousel = ({
           />
         </div>
       )}
-      {data.type === "featured" && (
+      {data.is_featured === true ? (
         <div className="px-2 py-2 absolute bottom-0 left-0 w-full z-10">
           <p className="text-white text-base">{data.address}</p>
           <div className="font-bold text-2xl mb-2 text-white ellipsis-2-lines">
@@ -184,8 +193,7 @@ const CardCarousel = ({
             </Link>
           </div>
         </div>
-      )}
-      {data.type !== "featured" && (
+      ) : (
         <div className="px-2 py-2">
           <div className="flex justify-between items-center">
             <p className="text-black text-sm font-medium ellipsis mr-1">

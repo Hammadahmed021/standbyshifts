@@ -32,7 +32,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 3em; /* Adjust based on line-height */
+  height: 2em; /* Adjust based on line-height */
   line-height: 1.5rem !important; /* Adjust based on font-size */
 }
 

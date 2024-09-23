@@ -156,7 +156,7 @@ const Header = ({ style }) => {
             {toggle && (
               <ul
                 className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto"
-                style={{ paddingTop: isApp ? "20px" : "0" }}
+                // style={{ paddingTop: isApp ? "20px" : "0" }}
               >
                 <div className="relative w-full min-h-screen p-3">
                   <div className="flex justify-between items-start">
