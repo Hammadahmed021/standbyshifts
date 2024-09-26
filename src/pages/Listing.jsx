@@ -5,8 +5,8 @@ import CardCarousel from "../component/CardCarousel";
 import LoadMore from "../component/Loadmore";
 import Checkbox from "../component/Checkbox";
 import SelectOption from "../component/SelectOption";
-import { dataForFilter, fetchFilteredData } from "../utils/Api";
-import { transformSingleImageData } from "../utils/HelperFun";
+import { dataForFilter, fetchFilteredData, fetchUserNearByRestaurants } from "../utils/Api";
+import { transformSingleImageData, transformData } from "../utils/HelperFun";
 import { Button, Loader, MapComponent } from "../component";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Capacitor } from "@capacitor/core";
@@ -28,7 +28,6 @@ const Listing = () => {
     startTime: location.state?.filters?.startTime,
     person: location.state?.filters?.person,
   });
-  console.log(filters, "filters");
 
   const [filteredData, setFilteredData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -36,38 +35,69 @@ const Listing = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [isMapView, setIsMapView] = useState(false); // New state for view toggle
-  console.log(filterData, "filterData");
+  const [isMapView, setIsMapView] = useState(false); 
+  const param = location?.state?.heading;
+  // const [nearByData, setNearByData] = useState([]);
+  console.log(param, 'param');
+  
+  const payload = {
+    // id: user_id,
+    latitude: userLocation?.longitude,
+    longitude: userLocation?.latitude,
+  };
 
+  // Function to get nearby restaurants if location is allowed
+  const getNearbyRestaurant = async () => {
+    setLoading(true);  // Start loading
+    try {
+      const response = await fetchUserNearByRestaurants({ payload });
+      const data = await response;
+      const nearbyData = data ? transformData(data) : [];
+      const approveNearbyData = nearbyData.filter(
+        (item) => item.is_approved && item.status === "active"
+      );
+      setFilteredData(approveNearbyData);
+      console.log(approveNearbyData, "response of nearby home");
+      return response;
+    } catch (error) {
+      console.log(error, "error");
+    } finally{
+      setLoading(false);  // end loading
+    }
+  };
+  console.log(filteredData, 'filteredData >>>>>>');
+  
+
+  // Trigger fetching nearby restaurants when userLocation is available and param is 'nearby'
+  useEffect(() => {
+    if (userLocation && param === "nearby") {
+      getNearbyRestaurant();
+    }
+  }, [userLocation, param]);
+
+  // Function to get user's location
   const getLocation = async () => {
-    if (
-      Capacitor.getPlatform() === "android" ||
-      Capacitor.getPlatform() === "ios"
-    ) {
+    if (Capacitor.getPlatform() === "android" || Capacitor.getPlatform() === "ios") {
       try {
         const permissionStatus = await Geolocation.requestPermissions();
         if (permissionStatus.location === "granted") {
           const coordinates = await Geolocation.getCurrentPosition();
-          console.log("User location:", coordinates);
           setUserLocation({
-            lat: coordinates.coords.latitude,
-            lng: coordinates.coords.longitude,
+            latitude: coordinates.coords.latitude,
+            longitude: coordinates.coords.longitude,
           });
         } else {
           alert("Please enable location services in your app settings.");
         }
       } catch (error) {
-        console.error(
-          "Error requesting geolocation permissions or getting position:",
-          error
-        );
+        console.error("Error requesting geolocation permissions or getting position:", error);
       }
     } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
         },
         (error) => {
@@ -78,6 +108,13 @@ const Listing = () => {
       console.log("Geolocation is not supported by this browser.");
     }
   };
+
+  useEffect(() => {
+    const getLoca = async () => {
+      await getLocation();
+    };
+    getLoca();
+  }, []);
 
   useEffect(() => {
     const showFilter = async () => {
@@ -91,6 +128,10 @@ const Listing = () => {
     showFilter();
   }, []);
 
+
+  const { data } = useFetch("hotels");
+
+  // Fetch restaurants based on filters or handle 'featured' restaurants
   useEffect(() => {
     const fetchFilteredDataAndUpdateState = async () => {
       if (!filterData) return;
@@ -106,8 +147,22 @@ const Listing = () => {
 
       try {
         setLoading(true);
-        const result = await fetchFilteredData(requestBody);
-        setFilteredData(Array.isArray(result) ? result : [result]);
+
+        if (param === "featured") {
+          // Fetch featured restaurants by filtering on `is_featured` flag
+          const result = await data;
+          const featuredData = result.filter((item) => item.is_featured);
+          console.log(featuredData, 'featuredData ');
+          console.log(result, 'featuredData result');
+          
+          setFilteredData(featuredData);
+        } else if(param === "all restaurant") {
+          const allData = await data;
+          setFilteredData(allData);
+        } else {
+          const result = await fetchFilteredData(requestBody);
+          setFilteredData(Array.isArray(result) ? result : [result]);
+        }
       } catch (error) {
         setError(error);
       } finally {
@@ -115,8 +170,10 @@ const Listing = () => {
       }
     };
 
-    fetchFilteredDataAndUpdateState();
-  }, [filters, filterData]);
+    if (param !== "nearby") {
+      fetchFilteredDataAndUpdateState();
+    }
+  }, [filters, filterData, param]);
 
   const handleLoadMore = () => setVisibleCards((prev) => prev + 4);
   const hasMore = visibleCards < filteredData.length;
@@ -246,7 +303,7 @@ const Listing = () => {
               </button>
               <button
                 onClick={() => {
-                  setIsMapView(true), getLocation();
+                  setIsMapView(true);
                 }}
                 className={`px-4 py-1 rounded-md ${
                   isMapView
@@ -282,7 +339,7 @@ const Listing = () => {
                       <CardCarousel
                         key={data.id}
                         id={data.id}
-                        title={data.title}
+                        title={data.title || data?.name}
                         address={data.location}
                         images={data.images}
                         rating={data.rating}

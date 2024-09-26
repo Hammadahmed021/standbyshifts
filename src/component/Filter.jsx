@@ -8,67 +8,45 @@ const Filter = ({ onFilterChange }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({
-    kitchens: [], // Default to first kitchen
-    // atmospheres: [],
-    facilities: [],
-    areas: [],
-    // menuTypes: [],
-    person: [],
-    startTime: "00:00:00",
-    endTime: "01:00:00",
+    kitchens: [], // Default to "All Kitchens"
+    facilities: [], // Default to "All Facilities"
+    areas: [], // Default to "All Areas"
+    person: [], // No default for person
+    startTime: "",
+    endTime: "",
   });
 
   const navigate = useNavigate();
-  // const { data, loading } = useFetch("data-for-filter");
+
   useEffect(() => {
     const showFilter = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const response = await dataForFilter("data-for-filter");
         setData(response);
       } catch (error) {
-        return error;
-      }
-      finally{
-      setLoading(false)
-
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     showFilter();
   }, []);
 
-
-  useEffect(() => {
-    if (data) {
-      setSelectedOptions((prevSelectedOptions) => ({
-        ...prevSelectedOptions,
-        kitchens:
-          prevSelectedOptions.kitchens.length > 0
-            ? prevSelectedOptions.kitchens
-            : [data.kitchens?.[0]?.id],
-        facilities:
-          prevSelectedOptions.facilities.length > 0
-            ? prevSelectedOptions.facilities
-            : [data.facilities?.[0]?.id],
-        areas:
-          prevSelectedOptions.areas.length > 0
-            ? prevSelectedOptions.areas
-            : [data.areas?.[0]?.id],
-      }));
-    }
-  }, [data]);
-
   const handleFilterChange = (e, category) => {
     const value = Array.isArray(e.target.value)
       ? e.target.value
       : [e.target.value]; // Ensure it's an array
+
     setSelectedOptions((prevSelectedOptions) => ({
       ...prevSelectedOptions,
       [category]: value,
     }));
+
+    // Pass the empty array for filtering if "All" is selected
     onFilterChange({
       ...selectedOptions,
-      [category]: value,
+      [category]: value.includes() ? [] : value,
     });
   };
 
@@ -147,38 +125,47 @@ const Filter = ({ onFilterChange }) => {
 
   const timeOptions = generateTimeOptionsWithAMPM();
 
+  const addAllOption = (options, label) => [
+    { id: "all", name: label },
+    ...options,
+  ];
+
   return (
     <div className="flex">
       <div className="flex items-center border rounded-lg p-2">
         <SelectOption
-          label="All Kitchens"
+          label="Kitchens"
           value={selectedOptions.kitchens}
           onChange={(e) => handleFilterChange(e, "kitchens")}
           className="border-r-2 pr-1 mx-5"
-          options={data?.kitchens || []}
+          options={addAllOption(data?.kitchens || [], "All Kitchens")}
         />
         <SelectOption
-          label="All Areas"
+          label="Areas"
           value={selectedOptions.areas}
           onChange={(e) => handleFilterChange(e, "areas")}
           className="border-r-2 pr-1 mx-5"
-          options={data?.areas || []}
+          options={addAllOption(data?.areas || [], "All Areas")}
         />
         <SelectOption
-          label="All Facilities"
+          label="Facilities"
           value={selectedOptions.facilities}
           onChange={(e) => handleFilterChange(e, "facilities")}
           className="border-r-2 pr-1 mx-5"
-          options={data?.facilities || []}
+          options={addAllOption(data?.facilities || [], "All Facilities")}
         />
         <SelectOption
           label="Persons"
           value={selectedOptions.person}
           onChange={(e) => handleFilterChange(e, "person")}
           className="border-r-2 pr-1 mx-5"
-          options={personOptions}
+          // options={personOptions}
+          options={personOptions.map(option => ({
+            ...option,
+            name: `Any ${option.name}`, // Prepend "Any" to the name only for display
+          }))}
         />
-        <SelectOption
+        <SelectOption 
           label="Start Time"
           value={selectedOptions.startTime}
           onChange={(e) => handleTimeChange(e, true)}

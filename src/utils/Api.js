@@ -133,6 +133,7 @@ export const fetchBookings = async (booking) => {
   }
 };
 
+// Functions to fetch payment stripe payment intent
 export const getPayment = async (paymentData) => {
   console.log("Booking object before API call:", paymentData);
   try {
@@ -156,6 +157,7 @@ export const getPayment = async (paymentData) => {
   }
 };
 
+// Function to show all user bookings
 export const getUserBookings = async (params) => {
   const token = localStorage.getItem("webToken");
 
@@ -177,6 +179,7 @@ export const getUserBookings = async (params) => {
   }
 };
 
+// Function to delete user booking
 export const deleteUserBooking = async (booking_id) => {
   const token = localStorage.getItem("webToken");
 
@@ -201,6 +204,7 @@ export const deleteUserBooking = async (booking_id) => {
   }
 };
 
+// Function to delete all user bookings
 export const deleteAllUserBookings = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -225,6 +229,7 @@ export const deleteAllUserBookings = async () => {
   }
 };
 
+// Function to update user profile
 export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken");
 
@@ -264,6 +269,7 @@ export const updateUserProfile = async (userData) => {
   }
 };
 
+// Function to verify if user is logged In or not
 export const verifyUser = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -286,6 +292,7 @@ export const verifyUser = async () => {
   }
 };
 
+// Function to get user from gmail to login
 export const getUserFromGmailLogin = async (email) => {
   // const { email } = userData;
   const payload = {
@@ -303,6 +310,7 @@ export const getUserFromGmailLogin = async (email) => {
   }
 };
 
+// Function to get user from gmail to signup
 export const getUserFromGmailSignup = async (userData) => {
   const { email, name } = userData;
   const payload = {
@@ -343,6 +351,7 @@ export const addFavorite = async (hotel_id) => {
     throw new Error("unable to add favorites:", error?.message);
   }
 };
+
 export const showFavorite = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -379,8 +388,7 @@ export const giveRateToHotel = async (rateData) => {
 };
 
 export const sendFCMToken = async (fcm_token) => {
-  console.log(fcm_token, 'fcm_token');
-  
+  console.log(fcm_token, 'fcm_token');  
   try {
     const data = await axios.post(`${BASE_URL}add-fcm-token`, fcm_token);
     return data.data;
@@ -388,3 +396,17 @@ export const sendFCMToken = async (fcm_token) => {
     throw new Error(error.message || "unable to find filters");
   }
 };
+
+
+// Function to show near by hotels if user allow location
+export const fetchUserNearByRestaurants = async ({payload}) => {
+  const {id, latitude, longitude } = payload;
+  console.log(id, latitude, longitude, 'id, latitude, longitude');  
+  try {
+    const response = await axios.post(`${BASE_URL}nearby-hotels`, {id, latitude, longitude })
+    console.log(response, 'nearby restaurant');    
+    return response.data;    
+  } catch (error) {
+    throw new Error(error || "unable to fetch nearby restaurants")
+  }
+}

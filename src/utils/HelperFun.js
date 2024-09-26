@@ -50,8 +50,8 @@ export const transformSingleImageData = (apiResponse) => {
 
   return data.map((item) => ({
     id: item?.id,
-    title: item?.name,
-    location: item?.address || "N/A",
+    title: item?.name || item?.title,
+    location: item?.address || item?.location || "N/A",
     images:
       item?.galleries && item.galleries.length > 0
         ? [item.galleries[0]?.image] // Use only the first image from galleries

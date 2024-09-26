@@ -46,7 +46,7 @@ const Footer = () => {
                 <ul className="flex flex-col">
                   {Object.entries(infoLinks).map(([name, url], index) => (
                     <li key={index} className="mb-2 lg:text-base md:text-sm ">
-                      <Link to={url} className="hover:underline">
+                      <Link to={url} target="_blank" className="hover:underline">
                         {name}
                       </Link>
                     </li>
