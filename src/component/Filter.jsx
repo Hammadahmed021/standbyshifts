@@ -50,21 +50,55 @@ const Filter = ({ onFilterChange }) => {
     });
   };
 
+  // const handleTimeChange = (e, isStartTime) => {
+  //   const value = e.target.value;
+  //   let newEndTime = selectedOptions.endTime;
+
+  //   if (isStartTime) {
+  //     const [hours, minutes] = value.split(":").map(Number);
+  //     const newHours = (hours + 1) % 24;
+  //     newEndTime = `${newHours.toString().padStart(2, "0")}:${minutes
+  //       .toString()
+  //       .padStart(2, "0")}:00`;
+
+  //     setSelectedOptions((prevSelectedOptions) => ({
+  //       ...prevSelectedOptions,
+  //       startTime: value === "" ? "--:--" : value,
+  //       endTime: newEndTime,
+  //     }));
+  //   } else {
+  //     setSelectedOptions((prevSelectedOptions) => ({
+  //       ...prevSelectedOptions,
+  //       endTime: value,
+  //     }));
+  //   }
+  // };
+
   const handleTimeChange = (e, isStartTime) => {
     const value = e.target.value;
-    let newEndTime = selectedOptions.endTime;
-
+  
+    // If "--:--" is selected, reset both start and end times to "--:--"
+    if (value === "") {
+      setSelectedOptions((prevSelectedOptions) => ({
+        ...prevSelectedOptions,
+        startTime: "",
+        endTime: "",  // Reset end time as well if no valid time is selected
+      }));
+      return;
+    }
+  
+    // If a valid time is selected
     if (isStartTime) {
       const [hours, minutes] = value.split(":").map(Number);
-      const newHours = (hours + 1) % 24;
-      newEndTime = `${newHours.toString().padStart(2, "0")}:${minutes
+      const newHours = (hours + 1) % 24;  // Increment the hour for end time calculation
+      const newEndTime = `${newHours.toString().padStart(2, "0")}:${minutes
         .toString()
         .padStart(2, "0")}:00`;
-
+  
       setSelectedOptions((prevSelectedOptions) => ({
         ...prevSelectedOptions,
         startTime: value,
-        endTime: newEndTime,
+        endTime: newEndTime,  // Automatically set the new end time
       }));
     } else {
       setSelectedOptions((prevSelectedOptions) => ({
@@ -73,6 +107,7 @@ const Filter = ({ onFilterChange }) => {
       }));
     }
   };
+  
 
   const handleSearch = () => {
     navigate("/listing", { state: { filters: selectedOptions } });
@@ -98,30 +133,33 @@ const Filter = ({ onFilterChange }) => {
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];
-
+  
     const formatTime = (hours, minutes) => {
       const period = hours >= 12 ? "PM" : "AM";
       const adjustedHours = hours % 12 || 12; // Convert 24-hour time to 12-hour time
-      const displayTime = `${adjustedHours}:${minutes
-        .toString()
-        .padStart(2, "0")} ${period}`;
-      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:00`;
+      const displayTime = `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+      const valueTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
       return {
         id: valueTime,
         name: displayTime,
       };
     };
-
+  
+    // Add --:-- as the first option
+    options.push({
+      id: "",
+      name: "--:--",
+    });
+  
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
         options.push(formatTime(hour, minute));
       }
     }
-
+  
     return options;
   };
+  
 
   const timeOptions = generateTimeOptionsWithAMPM();
 
@@ -168,6 +206,7 @@ const Filter = ({ onFilterChange }) => {
         <SelectOption 
           label="Start Time"
           value={selectedOptions.startTime}
+          // value={selectedOptions.startTime}
           onChange={(e) => handleTimeChange(e, true)}
           className="border-r-2 pr-1 mx-5"
           options={timeOptions}

@@ -1,11 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { infoLinks, supportLinks } from "../../utils/localDB";
 import { Logo, fb, instagram, twitter, youtube } from "../../assets";
 import { Button, Input } from "../../component";
 import { LuGlobe } from "react-icons/lu";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { sendNewsletter } from "../../utils/Api";
+import { showErrorToast, showSuccessToast } from "../../utils/Toast";
 
 const Footer = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const Form = () => {
+    const {
+      register,
+      handleSubmit,
+      watch,
+      reset,
+      formState: { errors },
+    } = useForm();
+
+    const handleNewsletter = async (email) => {
+      setIsSubmitting(true); // Disable the button
+      try {
+        const response = await sendNewsletter(email);
+
+        showSuccessToast(response.message || "Subscribed successfully!");
+        reset();
+      } catch (error) {
+        showErrorToast("Email already exist or invalid");
+        throw new Error(error.message || "unale to send newsletter");
+      } finally {
+        setIsSubmitting(false); // Re-enable the button after submission
+      }
+    };
+    return (
+      <>
+        <form onSubmit={handleSubmit(handleNewsletter)}>
+          <div className="left-inner flex flex-wrap justify-between items-center w-full sm:w-auto">
+            <div className=" border-gray-200 rounded-lg sm:w-[300px] w-full">
+              {/* <Input type={"email"} placeholder={"Enter your email address"} className="border rounded-lg border-tn_light_grey" /> */}
+              <Input
+                // mainInput={"sm:w-full w-full"}
+                // label="Email"
+                className="border rounded-lg border-tn_light_grey"
+                placeholder="Enter your email"
+                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+               </div>
+              <Button
+                children={isSubmitting ? "Subscribing..." : "Submit"}
+                type="submit"
+                disabled={isSubmitting}
+                className={`ml-0 sm:ml-2 block w-full sm:w-auto sm:inline-block mt-2 sm:mt-0 ${
+                  isSubmitting ? "opacity-80" : ""
+                }`}
+              />
+           
+          </div>
+        </form>
+      </>
+    );
+  };
+
   return (
     <footer>
       <div className="border-t-2 border-b-2 border-tn_light_grey py-16 ">
@@ -46,7 +116,11 @@ const Footer = () => {
                 <ul className="flex flex-col">
                   {Object.entries(infoLinks).map(([name, url], index) => (
                     <li key={index} className="mb-2 lg:text-base md:text-sm ">
-                      <Link to={url} target="_blank" className="hover:underline">
+                      <Link
+                        to={url}
+                        target="_blank"
+                        className="hover:underline"
+                      >
                         {name}
                       </Link>
                     </li>
@@ -69,16 +143,8 @@ const Footer = () => {
           </div>
         </div>
         <div class="flex flex-wrap container mx-auto justify-between items-start mt-0 sm:mt-8">
-          <div className="left-inner flex flex-wrap justify-between items-center w-full sm:w-auto">
-            <div className="border border-gray-200 rounded-lg sm:w-[300px] w-full">
+          <Form />
 
-            <Input type={"email"} placeholder={"Enter your email address"} className="border rounded-lg border-tn_light_grey" />
-            </div>
-            <Button
-              children={"Submit"}
-              className="ml-0 sm:ml-2 block w-full sm:w-auto sm:inline-block mt-2 sm:mt-0"
-            />
-          </div>
           <ul className="flex flex-wrap justify-between space-x-4 mt-6 sm:mt-0">
             <li>
               <a href="#1">

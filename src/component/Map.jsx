@@ -50,8 +50,8 @@ const MapComponent = ({ data, requestUserLocation }) => {
 
   const validCoordinates = data
     .map((item) => ({
-      lat: parseFloat(item.longitude),
-      lng: parseFloat(item.latitude),
+      lat: parseFloat(item.latitude),
+      lng: parseFloat(item.longitude),
       title: item.title,
       location: item.location,
       id: item.id,
@@ -68,7 +68,7 @@ const MapComponent = ({ data, requestUserLocation }) => {
           item.lat,
           item.lng
         );
-        return distance <= 5; // Show restaurants within 5 kilometers
+        return distance <= 15; // Show restaurants within 5 kilometers
       })
     : [];
 

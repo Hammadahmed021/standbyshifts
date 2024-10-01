@@ -18,7 +18,7 @@ const SelectOption = forwardRef(function Input(
         ref={ref}
         id={id}
         {...props}
-        className={`-ml-1 w-full duration-200 focus:none outline-none text-tn_text_grey text-lg font-medium bg-transparent ${selectClassName}`}
+        className={`-ml-1 w-full duration-200 focus:none outline-none text-tn_text_grey text-base font-normal bg-transparent ${selectClassName}`}
       >
         {options?.map(({ id, name, index }) => (
           <option key={index} value={id}>

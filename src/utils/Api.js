@@ -388,7 +388,7 @@ export const giveRateToHotel = async (rateData) => {
 };
 
 export const sendFCMToken = async (fcm_token) => {
-  console.log(fcm_token, 'fcm_token');  
+  console.log(fcm_token, "fcm_token");
   try {
     const data = await axios.post(`${BASE_URL}add-fcm-token`, fcm_token);
     return data.data;
@@ -397,16 +397,33 @@ export const sendFCMToken = async (fcm_token) => {
   }
 };
 
-
 // Function to show near by hotels if user allow location
-export const fetchUserNearByRestaurants = async ({payload}) => {
-  const {id, latitude, longitude } = payload;
-  console.log(id, latitude, longitude, 'id, latitude, longitude');  
+export const fetchUserNearByRestaurants = async ({ payload }) => {
+  const { id, latitude, longitude, page } = payload;
+  console.log(id, latitude, longitude, "id, latitude, longitude");
   try {
-    const response = await axios.post(`${BASE_URL}nearby-hotels`, {id, latitude, longitude })
-    console.log(response, 'nearby restaurant');    
-    return response.data;    
+    const response = await axios.post(`${BASE_URL}nearby-hotels`, {
+      id,
+      latitude,
+      longitude,
+      page
+    });
+    console.log(response, "nearby restaurant");
+    return response.data;
   } catch (error) {
-    throw new Error(error || "unable to fetch nearby restaurants")
+    throw new Error(error || "unable to fetch nearby restaurants");
   }
-}
+};
+
+/* Send newsletter */
+
+export const sendNewsletter = async (newsEmail) => {
+  const email = newsEmail.email;
+  console.log(newsEmail, "email api newsletter");
+  try {
+    const response = await axios.get(`${BASE_URL}subscribe-newsletter/${email}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || "unale to send newsletter");
+  }
+};

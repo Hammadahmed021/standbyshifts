@@ -219,6 +219,23 @@ export default function Signup() {
           )}
         </div>
 
+        <div className="form-control mb-4">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="newsletter"
+              className="mr-2"
+              {...register("newsletter")}
+            />
+            <p className="text-sm">
+              Send me newsletter
+            </p>
+          </div>
+          {errors.terms && (
+            <p className="text-red-500 text-xs mt-1">{errors.newsletter.message}</p>
+          )}
+        </div>
+
         {/* Conditionally render ReCAPTCHA based on isApp */}
         {!isApp && (
           <div className="mb-6">

@@ -5,7 +5,11 @@ import CardCarousel from "../component/CardCarousel";
 import LoadMore from "../component/Loadmore";
 import Checkbox from "../component/Checkbox";
 import SelectOption from "../component/SelectOption";
-import { dataForFilter, fetchFilteredData, fetchUserNearByRestaurants } from "../utils/Api";
+import {
+  dataForFilter,
+  fetchFilteredData,
+  fetchUserNearByRestaurants,
+} from "../utils/Api";
 import { transformSingleImageData, transformData } from "../utils/HelperFun";
 import { Button, Loader, MapComponent } from "../component";
 import { APIProvider } from "@vis.gl/react-google-maps";
@@ -31,29 +35,31 @@ const Listing = () => {
 
   const [filteredData, setFilteredData] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [visibleCards, setVisibleCards] = useState(6);
+  const [visibleCards, setVisibleCards] = useState(8);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [isMapView, setIsMapView] = useState(false); 
+  const [isMapView, setIsMapView] = useState(false);
   const param = location?.state?.heading;
   // const [nearByData, setNearByData] = useState([]);
-  console.log(param, 'param');
-  
+  console.log(param, "param");
+
   const payload = {
     // id: user_id,
-    latitude: userLocation?.longitude,
-    longitude: userLocation?.latitude,
+    latitude: userLocation?.latitude,
+    longitude: userLocation?.longitude,
   };
 
   // Function to get nearby restaurants if location is allowed
   const getNearbyRestaurant = async () => {
-    setLoading(true);  // Start loading
+    setLoading(true); // Start loading
     try {
       const response = await fetchUserNearByRestaurants({ payload });
+      console.log(response, "response");
+
       const data = await response;
-      const nearbyData = data ? transformData(data) : [];
-      const approveNearbyData = nearbyData.filter(
+
+      const approveNearbyData = data.filter(
         (item) => item.is_approved && item.status === "active"
       );
       setFilteredData(approveNearbyData);
@@ -61,12 +67,11 @@ const Listing = () => {
       return response;
     } catch (error) {
       console.log(error, "error");
-    } finally{
-      setLoading(false);  // end loading
+    } finally {
+      setLoading(false); // end loading
     }
   };
-  console.log(filteredData, 'filteredData >>>>>>');
-  
+  console.log(filteredData, "filteredData >>>>>>");
 
   // Trigger fetching nearby restaurants when userLocation is available and param is 'nearby'
   useEffect(() => {
@@ -77,7 +82,10 @@ const Listing = () => {
 
   // Function to get user's location
   const getLocation = async () => {
-    if (Capacitor.getPlatform() === "android" || Capacitor.getPlatform() === "ios") {
+    if (
+      Capacitor.getPlatform() === "android" ||
+      Capacitor.getPlatform() === "ios"
+    ) {
       try {
         const permissionStatus = await Geolocation.requestPermissions();
         if (permissionStatus.location === "granted") {
@@ -90,7 +98,10 @@ const Listing = () => {
           alert("Please enable location services in your app settings.");
         }
       } catch (error) {
-        console.error("Error requesting geolocation permissions or getting position:", error);
+        console.error(
+          "Error requesting geolocation permissions or getting position:",
+          error
+        );
       }
     } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -128,7 +139,6 @@ const Listing = () => {
     showFilter();
   }, []);
 
-
   const { data } = useFetch("hotels");
 
   // Fetch restaurants based on filters or handle 'featured' restaurants
@@ -152,11 +162,11 @@ const Listing = () => {
           // Fetch featured restaurants by filtering on `is_featured` flag
           const result = await data;
           const featuredData = result.filter((item) => item.is_featured);
-          console.log(featuredData, 'featuredData ');
-          console.log(result, 'featuredData result');
-          
+          console.log(featuredData, "featuredData ");
+          console.log(result, "featuredData result");
+
           setFilteredData(featuredData);
-        } else if(param === "all restaurant") {
+        } else if (param === "all restaurant") {
           const allData = await data;
           setFilteredData(allData);
         } else {
@@ -228,136 +238,214 @@ const Listing = () => {
         </div>
       </div>
       <div className="container mx-auto p-4">
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 md:col-span-3 p-2">
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Kitchens</h3>
-              <Checkbox
-                options={filterData?.kitchens || []}
-                selectedOptions={filters.kitchen_ids || []}
-                onChange={(id) => updateFilter("kitchen_ids", id)}
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Facilities</h3>
-              <Checkbox
-                options={filterData?.facilities || []}
-                selectedOptions={filters.facility_ids || []}
-                onChange={(id) => updateFilter("facility_ids", id)}
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Areas</h3>
-              <Checkbox
-                options={filterData?.areas || []}
-                selectedOptions={filters.areas_ids || []}
-                onChange={(id) => updateFilter("areas_ids", id)}
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
-              <SelectOption
-                options={Array.from({ length: 8 }, (_, i) => ({
-                  id: i + 1,
-                  name: (i + 1).toString(),
-                }))}
-                value={filters.person || 1}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, person: e.target.value }))
-                }
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">Start Time</h3>
-              <SelectOption
-                options={timeOptions}
-                value={filters.startTime || "05:00:00"}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, startTime: e.target.value }))
-                }
-              />
-            </div>
-            <div className="block mb-6">
-              <h3 className="text-2xl font-bold text-tn_dark">End Time</h3>
-              <SelectOption
-                options={timeOptions}
-                value={filters.endTime || "10:00:00"}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, endTime: e.target.value }))
-                }
-              />
-            </div>
-          </div>
-          <div className="col-span-12 md:col-span-9 p-2">
-            {/* Toggle Switch for Cards/Map View */}
-            <div className="flex justify-start mb-4 space-x-2">
-              <button
-                onClick={() => setIsMapView(false)}
-                className={`px-4 py-1 rounded-md ${
-                  !isMapView
-                    ? "bg-tn_pink text-white hover:opacity-80"
-                    : "bg-gray-200 text-black hover:opacity-80"
-                }`}
-              >
-                View List
-              </button>
-              <button
-                onClick={() => {
-                  setIsMapView(true);
-                }}
-                className={`px-4 py-1 rounded-md ${
-                  isMapView
-                    ? "bg-tn_pink text-white hover:opacity-80"
-                    : "bg-gray-200 text-black hover:opacity-80"
-                }`}
-              >
-                View Map
-              </button>
+        {!param ? (
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-12 md:col-span-3 p-2">
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">Kitchens</h3>
+                <Checkbox
+                  options={filterData?.kitchens || []}
+                  selectedOptions={filters.kitchen_ids || []}
+                  onChange={(id) => updateFilter("kitchen_ids", id)}
+                />
+              </div>
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">Facilities</h3>
+                <Checkbox
+                  options={filterData?.facilities || []}
+                  selectedOptions={filters.facility_ids || []}
+                  onChange={(id) => updateFilter("facility_ids", id)}
+                />
+              </div>
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">Areas</h3>
+                <Checkbox
+                  options={filterData?.areas || []}
+                  selectedOptions={filters.areas_ids || []}
+                  onChange={(id) => updateFilter("areas_ids", id)}
+                />
+              </div>
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">Persons</h3>
+                <SelectOption
+                  options={Array.from({ length: 8 }, (_, i) => ({
+                    id: i + 1,
+                    name: `Any ${i + 1}`.toString(),
+                  }))}
+                  value={filters.person || 1}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, person: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">Start Time</h3>
+                <SelectOption
+                  options={timeOptions}
+                  value={filters.startTime || "05:00:00"}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      startTime: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="block mb-6">
+                <h3 className="text-2xl font-bold text-tn_dark">End Time</h3>
+                <SelectOption
+                  options={timeOptions}
+                  value={filters.endTime || "10:00:00"}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, endTime: e.target.value }))
+                  }
+                />
+              </div>
             </div>
 
-            {loading ? (
-              <Loader />
-            ) : isMapView ? (
-              <>
-                {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}> */}
-                {/* <MapComponent data={transformedData} /> */}
-                <MapComponent
-                  data={transformedData}
-                  requestUserLocation={true} // Ask for location on the listing page
-                />
-                {/* </APIProvider> */}
-              </>
-            ) : (
-              <>
-                {transformedData.length === 0 ? (
-                  <div className="text-start text-gray-500 mt-5">
-                    No restaurants available for the selected filters.
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
-                    {transformedData.slice(0, visibleCards).map((data) => (
-                      <CardCarousel
-                        key={data.id}
-                        id={data.id}
-                        title={data.title || data?.name}
-                        address={data.location}
-                        images={data.images}
-                        rating={data.rating}
-                        type={data.type}
-                        timeline={data.timeline}
-                      />
-                    ))}
-                  </div>
-                )}
-                <LoadMore
-                  onLoadMore={handleLoadMore}
-                  hasMore={hasMore}
-                  className={"mt-5"}
-                />
-              </>
-            )}
+            <div className="col-span-12 md:col-span-9 p-2">
+              {/* Toggle Switch for Cards/Map View */}
+              <div className="flex justify-start mb-4 space-x-2">
+                <button
+                  onClick={() => setIsMapView(false)}
+                  className={`px-4 py-1 rounded-md ${
+                    !isMapView
+                      ? "bg-tn_pink text-white hover:opacity-80"
+                      : "bg-gray-200 text-black hover:opacity-80"
+                  }`}
+                >
+                  View List
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMapView(true);
+                  }}
+                  className={`px-4 py-1 rounded-md ${
+                    isMapView
+                      ? "bg-tn_pink text-white hover:opacity-80"
+                      : "bg-gray-200 text-black hover:opacity-80"
+                  }`}
+                >
+                  View Map
+                </button>
+              </div>
+
+              {loading ? (
+                <Loader />
+              ) : isMapView ? (
+                <>
+                  {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}> */}
+                  {/* <MapComponent data={transformedData} /> */}
+                  <MapComponent
+                    data={transformedData}
+                    requestUserLocation={true} // Ask for location on the listing page
+                  />
+                  {/* </APIProvider> */}
+                </>
+              ) : (
+                <>
+                  {transformedData.length === 0 ? (
+                    <div className="text-start text-gray-500 mt-5">
+                      No restaurants available for the selected filters.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-0">
+                      {transformedData.slice(0, visibleCards).map((data) => (
+                        <CardCarousel
+                          key={data.id}
+                          id={data.id}
+                          title={data.title || data?.name}
+                          address={data.location}
+                          images={data.images}
+                          rating={data.rating}
+                          type={data.type}
+                          timeline={data.timeline}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <LoadMore
+                    onLoadMore={handleLoadMore}
+                    hasMore={hasMore}
+                    className={"mt-5"}
+                  />
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-12 md:col-span-12 p-2">
+              {/* Toggle Switch for Cards/Map View */}
+              <div className="flex justify-start mb-4 space-x-2">
+                <button
+                  onClick={() => setIsMapView(false)}
+                  className={`px-4 py-1 rounded-md ${
+                    !isMapView
+                      ? "bg-tn_pink text-white hover:opacity-80"
+                      : "bg-gray-200 text-black hover:opacity-80"
+                  }`}
+                >
+                  View List
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMapView(true);
+                  }}
+                  className={`px-4 py-1 rounded-md ${
+                    isMapView
+                      ? "bg-tn_pink text-white hover:opacity-80"
+                      : "bg-gray-200 text-black hover:opacity-80"
+                  }`}
+                >
+                  View Map
+                </button>
+              </div>
+
+              {loading ? (
+                <Loader />
+              ) : isMapView ? (
+                <>
+                  {/* <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}> */}
+                  {/* <MapComponent data={transformedData} /> */}
+                  <MapComponent
+                    data={transformedData}
+                    requestUserLocation={true} // Ask for location on the listing page
+                  />
+                  {/* </APIProvider> */}
+                </>
+              ) : (
+                <>
+                  {transformedData.length === 0 ? (
+                    <div className="text-start text-gray-500 mt-5">
+                      No restaurants available for the selected filters.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+                      {transformedData.slice(0, visibleCards).map((data) => (
+                        <CardCarousel
+                          key={data.id}
+                          id={data.id}
+                          title={data.title}
+                          address={data.location}
+                          images={data.images}
+                          rating={data.rating}
+                          type={data.type}
+                          timeline={data.timeline}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <LoadMore
+                    onLoadMore={handleLoadMore}
+                    hasMore={hasMore}
+                    className={"mt-5"}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

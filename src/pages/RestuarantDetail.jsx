@@ -110,10 +110,14 @@ export default function RestaurantDetail() {
 
       if (dateCalendar) {
         const times = dateCalendar.calendar_details
-          .map((detail) => ({
-            name: detail.time,
-            id: detail.time,
-          }))
+          .map((detail) => {
+            // Ensure time format is HH:mm
+            const timeWithoutSeconds = detail.time.substring(0, 5); // Trim ":ss" if present
+            return {
+              name: timeWithoutSeconds,
+              id: timeWithoutSeconds,
+            };
+          })
           .filter((time) => {
             console.log("Comparing:", time.id, "with", currentTime);
             return time.id > currentTime; // Exclude past times
@@ -231,6 +235,8 @@ export default function RestaurantDetail() {
     hours = hours % 12 || 12; // Convert 0 -> 12 for 12 AM
     return `${hours}:${minutes} ${ampm}`;
   };
+
+  console.log(card, "card");
 
   return (
     <>
@@ -358,7 +364,6 @@ export default function RestaurantDetail() {
                     </li>
                   )}
 
-                 
                   {!(
                     card.facebook ||
                     card.tripAdvisor ||
@@ -373,20 +378,52 @@ export default function RestaurantDetail() {
                   {extractCuisineNames(card).join(", ") ||
                     "No cuisine available"}
                 </p>
-                <h4 className="text-[17px] font-bold mb-1">Meals</h4>
+                {/* <h4 className="text-[17px] font-bold mb-1">Meals</h4>
                 <p className="mb-6 text-sm">
                   {card.meals || "No meal information available."}
-                </p>
+                </p> */}
                 <h4 className="text-[17px] font-bold mb-1">Contact</h4>
                 <p className="mb-6 text-sm">
                   {card.phone || "No contact information available"}
                 </p>
+                {card.phone2 && (
+                  <>
+                    <h4 className="text-[17px] font-bold mb-1">Contact 2</h4>
+                    <p className="mb-6 text-sm">
+                      {card.phone2 || "No contact information available"}
+                    </p>
+                  </>
+                )}
+
+                {card.phone3 && (
+                  <>
+                    <h4 className="text-[17px] font-bold mb-1">Contact 3</h4>
+                    <p className="mb-6 text-sm">
+                      {card.phone3 || "No contact information available"}
+                    </p>
+                  </>
+                )}
               </div>
               <div className="col-span-12 md:col-span-3">
                 <h4 className="text-[17px] font-bold mb-1">Opening Hours</h4>
-                <p className="mb-6 text-sm">
-                  {card.openingHours || "No opening hours available."}
-                </p>
+
+                {card.timings && card.timings.length > 0 ? (
+                  <ul className="mb-6 text-sm">
+                    {card.timings.map((timing) => (
+                      <li key={timing.id} className="mb-2">
+                        <span className="font-semibold capitalize">
+                          {timing.day}:{" "}
+                        </span>
+                        <span>
+                          {timing.open} - {timing.close}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mb-6 text-sm">No opening hours available.</p>
+                )}
+
                 <h4 className="text-[17px] font-bold mb-1">Features</h4>
                 <p className="mb-6 text-sm">
                   {extractFacilitiesNames(card).join(", ") ||

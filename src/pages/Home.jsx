@@ -121,11 +121,22 @@ export default function Home() {
     fetchLocation();
   }, []);
 
+  const pathname = location.pathname;
+  let page = ''; // Default page value
+  
+  if (pathname === '/') {
+    page = 'home'; // Set 'home' when the path is '/'
+  } else {
+    console.log(pathname, 'name path'); // Log for other paths
+  }
+  
   const payload = {
     id: user_id,
     latitude: userLocation?.longitude,
     longitude: userLocation?.latitude,
+    page, // Add 'home' or the page name in the payload
   };
+  
   console.log(userLocation, "userLocation");
 
   const getNearbyRestaurant = async () => {
