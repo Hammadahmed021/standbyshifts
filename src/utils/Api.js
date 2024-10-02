@@ -249,62 +249,69 @@ export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken");
 
   const {
-    user_id,
     name,
     phone,
-    industries,
-    skills,
-    work_histories,
-    employee,
+    location,
+    zip_code,
+    industries, // Ensure this is always an array
+    skills, // Default to an empty array if undefined
+    work_history, // Default to an empty array if undefined
+    profile_picture,
   } = userData;
 
-  const profile_image = employee?.profile_picture; // Extract profile picture from employee object
-  const location = employee?.location; // Extract location (address)
-  const zip_code = employee?.zip_code; // Extract zip code
-
-  // Create FormData object
   const formData = new FormData();
-  formData.append("user_id", user_id);
   formData.append("name", name);
   formData.append("phone", phone);
-  formData.append("location", location || "");
-  formData.append("zip_code", zip_code || "");
+  formData.append("location", location || ""); // Directly use userData
+  formData.append("zip_code", zip_code || ""); // Directly use userData
 
-  // Append industries (assuming it's an array of IDs)
-  industries.forEach((industryId) => formData.append("industry_id[]", industryId));
+  // Ensure industries is always an array
+  const selectedIndustry =
+    Array.isArray(industries) && industries.length > 0
+      ? industries[0].id
+      : null;
 
-  // Append skills (array of titles)
+  if (selectedIndustry) {
+    formData.append("industry_id", selectedIndustry);
+  }
+
+  // Append skills
   skills.forEach((skill) => formData.append("skills[]", skill));
 
-  // Append expertise (array of titles)
-  const expertise = skills; // Assuming expertise is derived from skills
-  expertise.forEach((exp) => formData.append("expertise[]", exp));
-
-  // Append work history (array of objects)
-  work_histories.forEach((work) => {
-    formData.append("work_history[][title]", work.title);
-    formData.append("work_history[][description]", work.description);
-    formData.append("work_history[][start_month]", work.start_month);
-    formData.append("work_history[][end_month]", work.end_month);
-    formData.append("work_history[][start_year]", work.start_year);
-    formData.append("work_history[][end_year]", work.end_year);
+  // Append work history
+  work_history.forEach((work, index) => {
+    formData.append(`work_history[${index}][title]`, work.title);
+    formData.append(`work_history[${index}][description]`, work.description);
+    formData.append(`work_history[${index}][start_month]`, work.start_month);
+    formData.append(`work_history[${index}][end_month]`, work.end_month);
+    formData.append(`work_history[${index}][start_year]`, work.start_year);
+    formData.append(`work_history[${index}][end_year]`, work.end_year);
   });
 
   // Append profile image if present
-  if (profile_image) {
-    formData.append("profile_picture", profile_image);
+  if (profile_picture) {
+    formData.append("profile_picture", profile_picture);
+  }
+
+  // Log form data for debugging
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ": " + pair[1]);
   }
 
   try {
-    const response = await axios.post(`${BASE_URL}employee/profile/update`, formData, {
-      params: {
-        api_key: API_KEY,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axios.post(
+      `${BASE_URL}employee/profile/update`,
+      formData,
+      {
+        params: {
+          api_key: API_KEY,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
     console.log(response.data.user, "Updated user profile data");
     return response;
@@ -313,7 +320,6 @@ export const updateUserProfile = async (userData) => {
     throw new Error("Error in updating user profile");
   }
 };
-
 
 // Function to verify if user is logged In or not
 export const verifyUser = async (payload) => {
@@ -483,9 +489,8 @@ export const fetchProfileData = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data, 'profile data');
-    return response.data
-    
+    console.log(response.data, "profile data");
+    return response.data;
   } catch (error) {
     throw new Error(
       error || "something went wrong while fetching profile data"

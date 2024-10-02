@@ -182,13 +182,13 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
-    console.log(data, 'form data');
-    
+    console.log(data, "form data");
+  
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
   
     try {
-      const { newPassword, confirmPassword } = data; // Removed industries, skills, workHistories
+      const { newPassword, confirmPassword, address, zip } = data; // Pull address and zip from form data
       let profileImageFile = selectedFile;
   
       // Ensure newPassword and confirmPassword match
@@ -211,28 +211,33 @@ const Profile = () => {
         }
       }
   
+      // Validate work history entries
+      const validWorkHistories = savedExperiences.filter((exp) => exp.jobDesc && exp.jobTitle); // Only keep valid entries
+  
+      if (validWorkHistories.length === 0) {
+        setShowError("At least one work history entry is required.");
+        return;
+      }
+  
       // Construct the updated user data object
       const updatedUserData = {
-        user_id: currentUser?.id || userData?.user?.id,
         name: data.name,
         phone: data.phone,
-        employee: {
-          location: address || "", // Add address to employee location
-          zip_code: zip || "", // Add zip code to employee details
-          profile_picture: profileImageFile || currentUser?.profile_picture || null, // Use existing if not updated
-        },
-        industries: selectedIndustries.map(industry => industry.id) || [], // Assuming you need IDs
+        profile_picture: profileImageFile || currentUser?.profile_picture || null, // Use existing profile picture if not updated
+        location: address || "", // Use the address from form data
+        zip_code: zip || "", // Use zip code from form data
+        industry_id: selectedIndustries.map((industry) => industry.id) || [], // Get industry IDs
         skills: tags || [], // Use tags state for skills
-        work_histories: savedExperiences.map(exp => ({
+        work_history: validWorkHistories.map((exp) => ({
           title: exp.jobTitle,
-          description: exp.jobDesc,
+          description: exp.jobDesc, // Ensure this is not empty
           start_month: exp.startMonth,
           end_month: exp.endMonth,
           start_year: exp.startYear,
           end_year: exp.endYear,
-        })) || [], // Construct work histories from savedExperiences
+        })), // Construct work histories from savedExperiences
       };
-      
+  
       console.log(updatedUserData, "updatedUserData");
   
       // Update user profile on the server
@@ -242,17 +247,18 @@ const Profile = () => {
       dispatch(updateUserData(updatedUserData));
   
       // Optionally, refetch the user data after a successful update
-      // fetchUserData();
     } catch (error) {
       console.error("Error saving profile:", error);
     } finally {
       setIsSigning(false);
       setSuccessMessage("Profile updated successfully!");
       setTimeout(() => {
-        setSuccessMessage(""); // Clear the success message after 5 seconds
+        setSuccessMessage(""); // Clear the success message after 3 seconds
       }, 3000);
     }
   };
+  
+  
   
 
   const getUserIP = async () => {
@@ -281,9 +287,9 @@ const Profile = () => {
       // dispatch(updateUserData(data));
       setValue("name", data?.name || "");
       setValue("phone", data?.phone || "");
-      setValue("address", fetchUser?.employee?.location || ""); // Adjusted to map to employee location
-    setValue("zip", fetchUser?.employee?.zip_code || ""); // Adjusted to map to employee zip code
-    setImagePreview(fetchUser?.employee?.profile_picture || fallback);
+      setValue("address", data?.employee?.location || "");
+      setValue("zip", data?.employee?.zip_code || "");
+    
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -328,24 +334,19 @@ const Profile = () => {
   }, []);
   const handleFilterChange = (event) => {
     const selectedValue = event.target.value; // Extract value from event
-
+  
     // Find the selected industry based on the value
     const selectedIndustry = fetchUser?.industries.find(
       (industry) =>
-        industry.title === selectedValue ||
-        industry.id.toString() === selectedValue
+        industry.title === selectedValue || industry.id.toString() === selectedValue
     );
-
+  
     if (selectedIndustry) {
-      setSelectedIndustries((prevSelected) => {
-        // Check if the industry is already selected
-        if (!prevSelected.some((ind) => ind.id === selectedIndustry.id)) {
-          return [...prevSelected, selectedIndustry]; // Add if not already selected
-        }
-        return prevSelected; // Return unchanged if already selected
-      });
+      // Set only the selected industry (allowing only one selection at a time)
+      setSelectedIndustries([selectedIndustry]); // Replace the entire array with the selected one
     }
   };
+  
 
   // Helper function to add "All Industries" option
   const addAllOption = (options, label) => {
@@ -468,7 +469,7 @@ const Profile = () => {
                   {...register("zip", {
                     validate: {
                       lengthCheck: (value) =>
-                        (value.length >= 11 && value.length <= 15) ||
+                        (value.length >= 5 && value.length <= 10) ||
                         "Phone number must be between 11 and 15 digits",
                     },
                   })}

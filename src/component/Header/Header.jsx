@@ -131,7 +131,7 @@ const Header = ({ style }) => {
                     <div className="flex items-center cursor-pointer">
                       <img
                         src={
-                          currentUser?.profile_image ||
+                          currentUser?.employee?.profile_image ||
                           userData?.profile_image?.name ||
                           fallback
                         }
