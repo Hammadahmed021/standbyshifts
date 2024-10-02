@@ -81,10 +81,28 @@ function App() {
     }
   }, [isApp]);
 
+  const getUserIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
+      const userAgent = navigator.userAgent;
+      const ipAddress = await getUserIP();
+
+      const payload = {
+        userAgent,
+        ipAddress,        
+      };
       try {
-        const response = await verifyUser();
+        const response = await verifyUser(payload);
         if (response.status === 200) {
           const data = await response.data;
           setCurrentUser(data);
@@ -173,9 +191,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      {!shouldHideHeaderFooter && (
-        <Header />
-      )}
+      {!shouldHideHeaderFooter && <Header />}
       <main className="relative">{loading ? <Loader /> : <Outlet />}</main>
       {!shouldHideHeaderFooter && <Footer />}
       <NotificationModal />

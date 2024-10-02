@@ -35,9 +35,27 @@ const Header = ({ style }) => {
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
 
-  const fetchCurrentUserData = async () => {
+  const getUserIP = async () => {
     try {
-      const response = await verifyUser();
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+
+  const fetchCurrentUserData = async () => {
+    const userAgent = navigator.userAgent;
+    const ipAddress = await getUserIP();
+
+    const payload = {
+      userAgent,
+      ipAddress,
+    };
+    try {
+      const response = await verifyUser(payload);
       const data = await response.data;
       setCurrentUser(data);
     } catch (error) {
@@ -76,20 +94,38 @@ const Header = ({ style }) => {
   }, [toggle]);
 
   return (
-    <header className="border-b-2 relative" style={style}>
-      <div className="container mx-auto">
+    <header className="relative" style={style}>
+      <div className="container sm:px-0 mx-auto">
         {!isDesktop ? (
           <nav className="flex py-4 items-center">
             <div className="flex items-center relative">
               <Link to={"/"}>
-                <img src={Logo} alt="" className="w-64" />
+                <img src={Logo} alt="" className="w-28" />
               </Link>
-              <Search data={data} />
+              {/* <Search data={data} /> */}
             </div>
-            <ul className="flex ml-auto items-center">
-              <LanguageSelector />
-              <span className="mx-4">|</span>
-              {authStatus ? (
+            <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
+           
+                    <li>
+                      <Link to={"/"}>Home</Link>
+                    </li>
+                    <li>
+                      <Link to={"/"}>Post Job</Link>
+                    </li>
+                    <li>
+                      <Link to={"/"}>Find Job</Link>
+                    </li>
+                    <li>
+                      <Link to={"/"}>Contact</Link>
+                    </li>
+                    <li>
+                      <Link to={"/about"}>About</Link>
+                    </li>
+                   
+                    
+                  
+              {/* <span className="mx-4">|</span> */}
+              {authStatus && (
                 <li className="inline-flex space-x-2">
                   <div className="relative inline-block">
                     <div className="flex items-center cursor-pointer">
@@ -134,16 +170,7 @@ const Header = ({ style }) => {
                     )}
                   </div>
                 </li>
-              ) : (
-                <>
-                  <li className="inline-block text-tn_dark text-lg font-medium">
-                    <Link to={"/signup"}>{t("Signup")}</Link>
-                  </li>
-                  <li className="inline-block ml-4 rounded-md text-lg bg-black text-white py-1 px-4">
-                    <Link to={"/login"}>Login</Link>
-                  </li>
-                </>
-              )}
+              ) }
             </ul>
           </nav>
         ) : (

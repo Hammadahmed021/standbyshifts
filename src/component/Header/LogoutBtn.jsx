@@ -14,6 +14,8 @@ export default function LogoutBtn({ className }) {
       await signOut(); // Call Firebase signOut function
       dispatch(logout()); // Dispatch your logout action
       localStorage.removeItem("webToken");
+      localStorage.removeItem("userType");
+
     } catch (error) {
       console.error("Logout failed:", error.message);
       // Handle logout failure if needed

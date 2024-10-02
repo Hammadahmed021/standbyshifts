@@ -41,17 +41,27 @@ export const dataForFilter = async (url) => {
   }
 };
 
-export const Signup = async (userData) => {
+export const Signup = async (payload) => {
   try {
-    const { email, fname, password } = userData;
-    const payload = {
-      name: fname,
+    const {
       email,
-      password,
-      type: "user",
+      name,
+      token,
+      type, // Include types in the payload
+      userAgent, // Include userAgent in the payload
+      ipAddress,
+    } = payload;
+
+    const signupData = {
+      email,
+      name,
+      token,
+      type, // Include types in the payload
+      userAgent, // Include userAgent in the payload
+      ipAddress, // Include ipAddress in the payload
     };
 
-    const response = await axios.post(`${BASE_URL}signup`, payload);
+    const response = await axios.post(`${BASE_URL}signup`, signupData);
     console.log(response, "response");
 
     return response.data;
@@ -61,20 +71,25 @@ export const Signup = async (userData) => {
   }
 };
 
-export const Login = async (userData) => {
-  console.log(userData, "userData");
+export const Login = async (payload) => {
   try {
-    const { email, fname, password, fcm_token } = userData;
-    const payload = {
-      // name: fname,
+    const {
       email,
-      password,
-      type: "user",
-      fcm_token,
-    };
-    console.log(payload, "payload");
+      token,
+      type, // Include types in the payload
+      userAgent, // Include userAgent in the payload
+      ipAddress,
+    } = payload;
 
-    const response = await axios.post(`${BASE_URL}login`, payload);
+    const signupData = {
+      email,
+      token,
+      type, // Include types in the payload
+      userAgent, // Include userAgent in the payload
+      ipAddress, // Include ipAddress in the payload
+    };
+
+    const response = await axios.post(`${BASE_URL}login`, signupData);
     console.log(response, "payload login");
 
     return response.data;
@@ -233,25 +248,55 @@ export const deleteAllUserBookings = async () => {
 export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken");
 
-  const { name, phone, profile_image, user_id } = userData;
-  console.log(userData, "userData api");
+  const {
+    user_id,
+    name,
+    phone,
+    industries,
+    skills,
+    work_histories,
+    employee,
+  } = userData;
+
+  const profile_image = employee?.profile_picture; // Extract profile picture from employee object
+  const location = employee?.location; // Extract location (address)
+  const zip_code = employee?.zip_code; // Extract zip code
 
   // Create FormData object
   const formData = new FormData();
   formData.append("user_id", user_id);
   formData.append("name", name);
   formData.append("phone", phone);
+  formData.append("location", location || "");
+  formData.append("zip_code", zip_code || "");
 
-  // Append the profile image only if it's present
+  // Append industries (assuming it's an array of IDs)
+  industries.forEach((industryId) => formData.append("industry_id[]", industryId));
+
+  // Append skills (array of titles)
+  skills.forEach((skill) => formData.append("skills[]", skill));
+
+  // Append expertise (array of titles)
+  const expertise = skills; // Assuming expertise is derived from skills
+  expertise.forEach((exp) => formData.append("expertise[]", exp));
+
+  // Append work history (array of objects)
+  work_histories.forEach((work) => {
+    formData.append("work_history[][title]", work.title);
+    formData.append("work_history[][description]", work.description);
+    formData.append("work_history[][start_month]", work.start_month);
+    formData.append("work_history[][end_month]", work.end_month);
+    formData.append("work_history[][start_year]", work.start_year);
+    formData.append("work_history[][end_year]", work.end_year);
+  });
+
+  // Append profile image if present
   if (profile_image) {
-    formData.append("profile_image", profile_image);
+    formData.append("profile_picture", profile_image);
   }
 
-  // Log the FormData content as a JSON object
-  console.log(Object.fromEntries(formData), "form data from api");
-
   try {
-    const data = await axios.post(`${BASE_URL}update-profile`, formData, {
+    const response = await axios.post(`${BASE_URL}employee/profile/update`, formData, {
       params: {
         api_key: API_KEY,
       },
@@ -260,24 +305,22 @@ export const updateUserProfile = async (userData) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(data.data.user, "data for api");
 
-    return data;
+    console.log(response.data.user, "Updated user profile data");
+    return response;
   } catch (error) {
-    console.log("Error in updating user profile: ", error);
+    console.error("Error in updating user profile: ", error);
     throw new Error("Error in updating user profile");
   }
 };
 
+
 // Function to verify if user is logged In or not
-export const verifyUser = async () => {
+export const verifyUser = async (payload) => {
   const token = localStorage.getItem("webToken");
 
   try {
-    const data = await axios.get(`${BASE_URL}verify`, {
-      params: {
-        api_key: API_KEY,
-      },
+    const data = await axios.post(`${BASE_URL}verify`, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -406,7 +449,7 @@ export const fetchUserNearByRestaurants = async ({ payload }) => {
       id,
       latitude,
       longitude,
-      page
+      page,
     });
     console.log(response, "nearby restaurant");
     return response.data;
@@ -421,9 +464,31 @@ export const sendNewsletter = async (newsEmail) => {
   const email = newsEmail.email;
   console.log(newsEmail, "email api newsletter");
   try {
-    const response = await axios.get(`${BASE_URL}subscribe-newsletter/${email}`);
+    const response = await axios.get(
+      `${BASE_URL}subscribe-newsletter/${email}`
+    );
     return response.data;
   } catch (error) {
     throw new Error(error.message || "unale to send newsletter");
+  }
+};
+
+export const fetchProfileData = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employee/profile/fetch`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data, 'profile data');
+    return response.data
+    
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching profile data"
+    );
   }
 };

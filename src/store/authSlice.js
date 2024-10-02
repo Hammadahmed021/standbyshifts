@@ -61,35 +61,40 @@ const requestPushNotificationPermission = async () => {
 
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
-  async (userData, { rejectWithValue }) => {
+  async ({ payload }, { rejectWithValue }) => {
     try {
-      const { email, password, fname, phone } = userData;
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const { email, password, name, type, userAgent, ipAddress } = payload;
 
+      // Firebase authentication: create a new user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const token = await getIdToken(user);
 
+      // Fetch Firebase token for the user
+      const token = await getIdToken(user);
+      localStorage.setItem("webToken", token);
+
+
+      // Prepare the data to be sent to your backend
       const signupData = {
         email,
-        fname,
-        password,
+        name,
+        token,
+        type,        // Include types in the payload
+        userAgent,    // Include userAgent in the payload
+        ipAddress,    // Include ipAddress in the payload
       };
-      // if(user){}
+
+      // Send signupData to your backend API
       const response = await Signup(signupData);
 
-      // Store token in localStorage
-      localStorage.setItem("webToken", response?.token);
+      // Store the token locally if needed
 
+      // Return necessary user information for Redux store
       return {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        phone: phone,
-        ...response,
+        ...response, // Include any other relevant response data
       };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -97,14 +102,14 @@ export const signupUser = createAsyncThunk(
   }
 );
 
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (userData, { rejectWithValue }) => {
+  async ({payload}, { rejectWithValue }) => {
     try {
-      const { email, password, fname } = userData;
-      console.log("Starting login process...");
-      console.log("Email:", email);
-      console.log("Password:", password);
+      const { email, password, type, userAgent, ipAddress } = payload;
+     console.log(email, 'email');
+     
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -112,17 +117,21 @@ export const loginUser = createAsyncThunk(
         password
       );
       const user = userCredential.user;
-      const token = await getIdToken(user);
-      const fcm_token = await requestPushNotificationPermission(); // Fetch the FCM token
+      const token = await getIdToken(user);  
+      localStorage.setItem("webToken", token);
 
-      console.log("User Credential:", userCredential);
-      console.log("User ID Token:", token);
-      console.log("FCM Token:", fcm_token);
 
-      const response = await ApiLogin({ email, password, fcm_token });
+      const signinData = {
+        email,
+        token,
+        type,        // Include types in the payload
+        userAgent,    // Include userAgent in the payload
+        ipAddress,    // Include ipAddress in the payload
+      };
+
+      const response = await ApiLogin(signinData);
       // console.log(response, "response");
 
-      localStorage.setItem("webToken", response?.token);
 
       return {
         uid: user.uid,

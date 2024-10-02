@@ -19,6 +19,9 @@ import {
   Thankyou,
   NotFound,
   ForgotPassword,
+  HomeNew,
+  Employer,
+  Employee,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -32,10 +35,12 @@ function BaseRouter() {
     <BrowserRouter basename={baseURL}>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<Home />} />
+          <Route index element={<HomeNew />} />
           <Route path="login" element={<AuthLayout authentication={false}><Login /></AuthLayout>} />
           <Route path="forgot" element={<AuthLayout authentication={false}><ForgotPassword /></AuthLayout>} />
           <Route path="signup" element={<AuthLayout authentication={false}><Signup /></AuthLayout>} />
+          <Route path="employer" element={<AuthLayout authentication={true}><Employer /></AuthLayout>} />
+          <Route path="employee" element={<AuthLayout authentication={true}><Employee /></AuthLayout>} />
           <Route path="about" element={<About />} />
           <Route path="restaurant/:id" element={<RestaurantDetail />} />
           <Route path="partner" element={<Partner />} />
@@ -47,7 +52,8 @@ function BaseRouter() {
           <Route path="listing" element={<Listing />} />
           <Route path="thankyou" element={<Thankyou />} />
           <Route path="reservation/:id" element={<RestaurantReservation />} />
-          <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} />
+          {/* <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} /> */}
+          <Route path="profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

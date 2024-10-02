@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { clearAllBookings } from "../store/bookingSlice";
 import { updateUserData } from "../store/authSlice";
 import { fallback, relatedFallback } from "../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Loader, LoadMore, Input, RatingModal } from "../component";
+import {
+  Button,
+  Loader,
+  LoadMore,
+  Input,
+  RatingModal,
+  AutoComplete,
+  SelectOption,
+} from "../component";
 import {
   deleteAllUserBookings,
   deleteUserBooking,
+  fetchProfileData,
   getUserBookings,
   giveRateToHotel,
   showFavorite,
@@ -44,72 +53,101 @@ const Profile = () => {
   const [isClearingAllBookings, setIsClearingAllBookings] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [tags, setTags] = useState([]);
+  const [fetchUser, setFetchUser] = useState([]);
+  const [selectedIndustries, setSelectedIndustries] = useState([]);
+  const [savedExperiences, setSavedExperiences] = useState([]);
+
+  // Predefined options for the autocomplete dropdown
+  // const options = tags;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchProfileData();
+        setFetchUser(data);
+
+        // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
+        setTags(data.skills ? data.skills.map((skill) => skill.title) : []);
+
+        // Set selected industries based on fetched industries, ensuring it's an empty array if industries are undefined
+        setSelectedIndustries(data.industries ? [] : []);
+      } catch (error) {
+        console.error(error.message || "Unable to fetch data");
+      }
+    };
+
+    fetchData(); // Call the async function
+  }, []); // Runs once when the component mounts
+
+  // Log tags whenever they change
+  useEffect(() => {
+    console.log(tags, "all tags");
+  }, [tags]);
+
+  const handleAddTag = (newTag) => {
+    if (!tags.includes(newTag)) {
+      setTags((prevTags) => [...prevTags, newTag]);
+    }
+  };
 
   const {
     register,
     handleSubmit,
     setValue,
+    control,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
       name: currentUser?.name || "",
       phone: currentUser?.phone || "",
+      address: fetchUser?.employee?.address || "",
+      zip: fetchUser?.employee?.zip_code || "",
       newPassword: "",
       confirmPassword: "",
+      experiences: [
+        {
+          jobTitle: "", // Job title
+          jobDesc: "", // Job description
+          startYear: "", // Start year
+          startMonth: "", // Start month
+          endYear: "", // End year
+          endMonth: "", // End month
+        },
+      ],
     },
   });
   console.log(currentUser, "currentUser");
   console.log(userData, "userData");
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "experiences", // This should match the default values above
+  });
+  const currentYear = new Date().getFullYear(); // Get the current year
+  const years = Array.from(
+    { length: currentYear - 1990 + 1 },
+    (_, i) => 1990 + i
+  );
+
+  // Month options for select
+  const months = [
+    { id: 1, name: "January" },
+    { id: 2, name: "February" },
+    { id: 3, name: "March" },
+    { id: 4, name: "April" },
+    { id: 5, name: "May" },
+    { id: 6, name: "June" },
+    { id: 7, name: "July" },
+    { id: 8, name: "August" },
+    { id: 9, name: "September" },
+    { id: 10, name: "October" },
+    { id: 11, name: "November" },
+    { id: 12, name: "December" },
+  ];
 
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
-
-  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-
-  const userBookings = bookings.filter(
-    (booking) => booking.user === userData?.uid
-  );
-  const isApp = Capacitor.isNativePlatform();
-
-  const handleClearBooking = async (bookingId) => {
-    setIsClearBooking((prev) => ({ ...prev, [bookingId]: true }));
-
-    try {
-      const response = await deleteUserBooking(bookingId);
-      if (response.message === "Booking Status Changed Successfully") {
-        showBookings(); // Refresh or update the bookings list
-      }
-    } catch (error) {
-      console.error("Error clearing booking:", error);
-    } finally {
-      setIsClearBooking((prev) => ({ ...prev, [bookingId]: false }));
-    }
-  };
-
-  const handleClearAllBookings = async () => {
-    setIsClearingAllBookings(true); // Set loading state to true
-    try {
-      const response = await deleteAllUserBookings();
-      console.log(response, "response success");
-
-      dispatch(clearAllBookings()); // Update Redux state
-      setUserBooking([]); // Clear local state
-    } catch (error) {
-      console.error("Unable to delete all bookings:", error);
-    } finally {
-      setIsClearingAllBookings(false); // Reset loading state
-    }
-  };
-
-  const handleLoadMore = () => {
-    setDisplayedBookings(displayedBookings + 4);
-  };
-  const hasMore = displayedBookings < userBooking.length;
-
-  const handleLoadMoreFav = () => {
-    setDisplayedFavorites(displayedFavorites + 4);
-  };
-  const hasMoreFav = displayedFavorites < favorites.length;
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -130,70 +168,6 @@ const Profile = () => {
     }
   };
 
-  const handlePickImage = async () => {
-    if (isApp) {
-      try {
-        // Request permissions for camera and photos
-        const permissions = await Camera.requestPermissions({
-          permissions: ["camera", "photos"],
-        });
-
-        // Check if camera or gallery access is granted
-        if (
-          permissions.camera !== "granted" ||
-          permissions.photos !== "granted"
-        ) {
-          alert("Please grant camera and photo library permissions.");
-          return;
-        }
-
-        // Pick an image from the gallery
-        const image = await Camera.getPhoto({
-          quality: 90,
-          allowEditing: false,
-          resultType: CameraResultType.Uri,
-          source: CameraSource.Photos,
-        });
-
-        if (image && image.webPath) {
-          // Convert the image URI to Blob
-          const response = await fetch(image.webPath);
-          if (!response.ok) {
-            throw new Error("Failed to fetch image");
-          }
-          const blob = await response.blob();
-
-          // Validate image type and size
-          if (!VALID_IMAGE_TYPES.includes(blob.type)) {
-            setFileError(
-              "Invalid file type. Only JPEG, PNG, and JPG files are allowed."
-            );
-            return;
-          }
-          if (blob.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-            setFileError(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
-            return;
-          }
-
-          // Convert Blob to File, which is compatible with your API
-          const file = new File([blob], `profile.${blob.type.split("/")[1]}`, {
-            type: blob.type,
-          });
-
-          // Set the file for upload
-          setSelectedFile(file);
-          setFileError("");
-          setImagePreview(URL.createObjectURL(file)); // Show image preview
-        }
-      } catch (error) {
-        console.error("Error picking image:", error);
-      }
-    } else {
-      // Fallback to traditional file input if running in the browser
-      document.querySelector('input[type="file"]').click();
-    }
-  };
-
   const uploadProfileImage = async (file) => {
     try {
       // Implement your image upload logic here
@@ -208,24 +182,27 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
+    console.log(data, 'form data');
+    
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
+  
     try {
-      const { newPassword, confirmPassword } = data;
+      const { newPassword, confirmPassword } = data; // Removed industries, skills, workHistories
       let profileImageFile = selectedFile;
-
+  
       // Ensure newPassword and confirmPassword match
       if (newPassword && confirmPassword) {
         if (newPassword !== confirmPassword) {
           setShowError("Passwords do not match.");
           return;
         }
-
+  
         if (!newPassword) {
           setShowError("New password is required.");
           return;
         }
-
+  
         // Update Firebase password
         const passwordUpdated = await updateFirebasePassword(newPassword);
         if (!passwordUpdated) {
@@ -233,32 +210,39 @@ const Profile = () => {
           return;
         }
       }
-
+  
       // Construct the updated user data object
       const updatedUserData = {
         user_id: currentUser?.id || userData?.user?.id,
-        name: data?.name,
-        phone: data?.phone,
-        ...(profileImageFile &&
-          profileImageFile !== currentUser?.profile_image && {
-            profile_image: profileImageFile,
-          }),
+        name: data.name,
+        phone: data.phone,
+        employee: {
+          location: address || "", // Add address to employee location
+          zip_code: zip || "", // Add zip code to employee details
+          profile_picture: profileImageFile || currentUser?.profile_picture || null, // Use existing if not updated
+        },
+        industries: selectedIndustries.map(industry => industry.id) || [], // Assuming you need IDs
+        skills: tags || [], // Use tags state for skills
+        work_histories: savedExperiences.map(exp => ({
+          title: exp.jobTitle,
+          description: exp.jobDesc,
+          start_month: exp.startMonth,
+          end_month: exp.endMonth,
+          start_year: exp.startYear,
+          end_year: exp.endYear,
+        })) || [], // Construct work histories from savedExperiences
       };
-      // if (profileImageFile != "") {
-      //   alert("profileImageFile========>", JSON.stringify(profileImageFile));
-      // } else {
-      //   alert("its empty");
-      // }
+      
       console.log(updatedUserData, "updatedUserData");
-
+  
       // Update user profile on the server
       await updateUserProfile(updatedUserData);
-
+  
       // Update Redux state with the new user data
       dispatch(updateUserData(updatedUserData));
-
+  
       // Optionally, refetch the user data after a successful update
-      fetchUserData();
+      // fetchUserData();
     } catch (error) {
       console.error("Error saving profile:", error);
     } finally {
@@ -269,52 +253,37 @@ const Profile = () => {
       }, 3000);
     }
   };
+  
 
-  // const showBookings = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await getUserBookings();
-  //     console.log(response, "user bookings");
-
-  //     setUserBooking(response);
-  //   } catch (error) {
-  //     console.error("Error fetching bookings:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const showBookings = async () => {
+  const getUserIP = async () => {
     try {
-      setLoading(true);
-      const response = await getUserBookings();
-      console.log(response, "user bookings");
-
-      // Check if response is an array
-      if (Array.isArray(response)) {
-        setUserBooking(response);
-      } else {
-        console.error("Expected an array, but got:", response);
-        setUserBooking([]); // Set as empty array if response is not an array
-      }
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
     } catch (error) {
-      console.error("Error fetching bookings:", error);
-      setUserBooking([]); // Set as empty array in case of an error
-    } finally {
-      setLoading(false);
+      console.error("Failed to fetch IP address:", error);
+      return null;
     }
   };
-
   const fetchUserData = async () => {
+    const userAgent = navigator.userAgent;
+    const ipAddress = await getUserIP();
+
+    const payload = {
+      userAgent,
+      ipAddress,
+    };
     try {
-      const response = await verifyUser();
+      const response = await verifyUser(payload);
       const data = await response.data;
-      console.log(data, "data on fetch");
 
       setCurrentUser(data);
       // dispatch(updateUserData(data));
       setValue("name", data?.name || "");
       setValue("phone", data?.phone || "");
-      setImagePreview(data?.profile_image || fallback);
+      setValue("address", fetchUser?.employee?.location || ""); // Adjusted to map to employee location
+    setValue("zip", fetchUser?.employee?.zip_code || ""); // Adjusted to map to employee zip code
+    setImagePreview(fetchUser?.employee?.profile_picture || fallback);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -325,23 +294,6 @@ const Profile = () => {
   }, [setValue]);
 
   useEffect(() => {
-    // Fetch favorites when component mounts
-    const fetchFavorites = async () => {
-      try {
-        const data = await showFavorite();
-        setFavorites(data);
-        setLoadingFavorites(false);
-      } catch (error) {
-        setError(error.message);
-        setLoadingFavorites(false);
-      }
-    };
-
-    fetchFavorites();
-  }, []);
-
-  useEffect(() => {
-    showBookings();
     return () => {
       if (imagePreview && imagePreview.startsWith("blob:")) {
         URL.revokeObjectURL(imagePreview);
@@ -367,41 +319,61 @@ const Profile = () => {
     }
   };
 
-  const handleRatingSubmit = async ({ rating, feedback }) => {
-    if (!selectedBooking) return;
+  // Set initial state when the component loads
+  useEffect(() => {
+    if (fetchUser?.industries) {
+      // Set default industries to empty or preselected values as needed
+      setSelectedIndustries([]);
+    }
+  }, []);
+  const handleFilterChange = (event) => {
+    const selectedValue = event.target.value; // Extract value from event
 
-    const rateData = {
-      table_booking_id: selectedBooking.id,
-      hotel_id: selectedBooking.hotel?.id,
-      user_id: currentUser?.id,
-      rating,
-      review: feedback,
-    };
+    // Find the selected industry based on the value
+    const selectedIndustry = fetchUser?.industries.find(
+      (industry) =>
+        industry.title === selectedValue ||
+        industry.id.toString() === selectedValue
+    );
 
-    try {
-      const response = await giveRateToHotel(rateData);
-      console.log("Rating submitted successfully:", response);
-      // Refresh or update the bookings to show the rated state
-      showBookings();
-    } catch (error) {
-      console.error("Error submitting rating:", error.message);
-    } finally {
-      setIsRatingModalOpen(false);
-      setSelectedBooking(null);
+    if (selectedIndustry) {
+      setSelectedIndustries((prevSelected) => {
+        // Check if the industry is already selected
+        if (!prevSelected.some((ind) => ind.id === selectedIndustry.id)) {
+          return [...prevSelected, selectedIndustry]; // Add if not already selected
+        }
+        return prevSelected; // Return unchanged if already selected
+      });
     }
   };
 
-  const convertTo12HourFormat = (time24) => {
-    const [hours, minutes, seconds] = time24.split(":"); // Split the time string into hours, minutes, and seconds
-    const date = new Date();
-    date.setHours(hours, minutes, seconds);
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+  // Helper function to add "All Industries" option
+  const addAllOption = (options, label) => {
+    const safeOptions = options || []; // Default to an empty array if options is undefined
+    return [
+      { id: "all", name: label },
+      ...safeOptions.map((opt) => ({ id: opt.id, name: opt.title })),
+    ];
   };
 
+  const saveExperience = (index) => {
+    // Use getValues to get the current form values
+    const values = getValues(`experiences.${index}`);
+    
+    const experience = {
+      jobTitle: values.jobTitle,
+      jobDesc: values.jobDesc,
+      startMonth: values.startMonth,
+      startYear: values.startYear,
+      endMonth: values.endMonth,
+      endYear: values.endYear,
+    };
+
+    // Add the current experience to saved experiences
+    setSavedExperiences((prev) => [...prev, experience]);
+    console.log(savedExperiences, 'savedExperiences'); // This will log the previous state
+  };
+  
   return (
     <>
       <div className="container mx-auto p-4">
@@ -415,27 +387,19 @@ const Profile = () => {
                   className="w-16 h-16 rounded-full"
                 />
                 <div className="ml-4">
-                  {isApp ? (
-                    <button
-                      onClick={handlePickImage}
-                      className="bg-tn_pink p-2 rounded-md text-xs text-white"
-                    >
-                      Pick an Image
-                    </button>
-                  ) : (
-                    <input
-                      type="file"
-                      accept=".jpg, .jpeg, .png"
-                      onChange={handleFileChange}
-                    />
-                  )}
+                  <input
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    onChange={handleFileChange}
+                  />
+
                   {fileError && <p className="text-red-500">{fileError}</p>}
                 </div>
               </div>
 
               <div className="my-6">
                 <h2 className="text-3xl font-black text-tn_dark">
-                  Welcome {currentUser?.name || "N/A"}
+                  Welcome {fetchUser?.profile?.name || "N/A"}
                 </h2>
                 <p>You can change your profile information here.</p>
               </div>
@@ -489,7 +453,244 @@ const Profile = () => {
                   )}
                 </span>
               )}
+              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                <Input
+                  label="Address"
+                  {...register("address")}
+                  placeholder="Enter your address"
+                  className="mb-6"
+                  type="text"
+                />
+                <Input
+                  label="Zip Code"
+                  type="text"
+                  maxLength={15} // Restrict length to 15 digits
+                  {...register("zip", {
+                    validate: {
+                      lengthCheck: (value) =>
+                        (value.length >= 11 && value.length <= 15) ||
+                        "Phone number must be between 11 and 15 digits",
+                    },
+                  })}
+                  placeholder="Zip code"
+                  className="mb-6 sm:mb-0"
+                />
+              </span>
 
+              <div className="mb-6">
+                <label className="block mb-2">Tags</label>
+                <AutoComplete options={tags} onAddTag={handleAddTag} />
+                <h3>Add new skills</h3>
+                <ul className="mt-2">
+                  {tags.map((tag, index) => (
+                    <li
+                      key={index}
+                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <h3>My skills</h3>
+                <ul className="mt-2">
+                  {fetchUser?.skills?.map((tag, index) => (
+                    <li
+                      key={index}
+                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
+                    >
+                      {tag.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mb-6">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="mb-4 border p-4 rounded bg-gray-50"
+                  >
+                    <h3 className="font-semibold mb-2">
+                      Experience {index + 1}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="mb-2 text-red-500 hover:underline"
+                    >
+                      Remove Experience
+                    </button>
+
+                    <div className="mb-2">
+                      <label className="block mb-1">Job Title</label>
+                      <input
+                        {...register(`experiences.${index}.jobTitle`)}
+                        placeholder="Enter your job title"
+                        className="border p-2 w-full rounded"
+                      />
+                    </div>
+
+                    <div className="mb-2">
+                      <label className="block mb-1">Job Description</label>
+                      <textarea
+                        {...register(`experiences.${index}.jobDesc`)}
+                        placeholder="Enter your job description"
+                        className="border p-2 w-full rounded"
+                      />
+                    </div>
+
+                    <div className="mb-2">
+                      <label className="block mb-1">Start Date</label>
+                      <span className="flex space-x-2">
+                        <select
+                          className="border p-2 rounded"
+                          {...register(`experiences.${index}.startMonth`)}
+                        >
+                          <option value="">Select Month</option>
+                          {months.map((month) => (
+                            <option key={month.id} value={month.id}>
+                              {month.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className="border p-2 rounded"
+                          {...register(`experiences.${index}.startYear`)}
+                        >
+                          <option value="">Select Year</option>
+                          {years.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </div>
+
+                    <div className="mb-2">
+                      <label className="block mb-1">End Date</label>
+                      <span className="flex space-x-2">
+                        <select
+                          className="border p-2 rounded"
+                          {...register(`experiences.${index}.endMonth`)}
+                        >
+                          <option value="">Select Month</option>
+                          {months.map((month) => (
+                            <option key={month.id} value={month.id}>
+                              {month.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className="border p-2 rounded"
+                          {...register(`experiences.${index}.endYear`)}
+                        >
+                          <option value="">Select Year</option>
+                          {years.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </div>
+
+                    {/* Save Experience Button */}
+                    <button
+                      type="button"
+                      onClick={() => saveExperience(index)}
+                      className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >
+                      Save Experience
+                    </button>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    append({
+                      jobTitle: "",
+                      jobDesc: "",
+                      startYear: "",
+                      startMonth: "",
+                      endYear: "",
+                      endMonth: "",
+                    })
+                  }
+                  className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Add More Experience
+                </button>
+              </div>
+              <div>
+                <strong className="mt-4 block">Saved Experiences:</strong>
+                {savedExperiences.length > 0 ? (
+                  <ul>
+                    {savedExperiences.map((experience, index) => (
+                      <li key={index} className="mb-4">
+                        <h2 className="font-bold">{experience.jobTitle}</h2>
+                        <p>{experience.jobDesc}</p>
+                        <p>
+                          {experience.startMonth}/{experience.startYear} -{" "}
+                          {experience.endMonth}/{experience.endYear}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No saved experiences.</p>
+                )}
+              </div>
+              <div>
+                {fetchUser?.profile?.work_histories &&
+                fetchUser.profile.work_histories.length > 0 ? (
+                  <ul>
+                    {fetchUser.profile.work_histories.map((work, index) => (
+                      <li key={work.id} className="mb-4">
+                        <h2 className="font-bold">{work.title}</h2>
+                        <p>{work.description}</p>
+                        <p>
+                          {work.start_month}/{work.start_year} -{" "}
+                          {work.end_month}/{work.end_year}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No work history found.</p> // Handle the case where there are no work histories
+                )}
+              </div>
+              <div className="mb-6">
+                <SelectOption
+                  label="Industries"
+                  value={selectedIndustries.map((industry) => industry.title)}
+                  onChange={handleFilterChange}
+                  options={addAllOption(
+                    fetchUser?.industries,
+                    "All Industries"
+                  )}
+                />
+                <ul>
+                  {selectedIndustries.map((industry) => (
+                    <li key={industry.id}>{industry.title}</li>
+                  ))}
+                </ul>
+                <strong className="mt-4 block">Selected Industries:</strong>
+                {/* <ul>
+                  {selectedIndustries.map((industry) => (
+                    <li key={industry.id}>{industry.title}</li>
+                  ))}
+                </ul> */}
+                <ul>
+                  {fetchUser?.profile?.industry ? (
+                    <li key={fetchUser.profile.industry.id}>
+                      {fetchUser.profile.industry.title}
+                    </li>
+                  ) : (
+                    <li>No industry found.</li> // Handle the case where there is no industry
+                  )}
+                </ul>
+              </div>
               <Button
                 type="submit"
                 className={`w-full  ${
@@ -508,210 +709,6 @@ const Profile = () => {
             <img src={relatedFallback} alt="" className="w-full md:w-[400px]" />
           </div>
         </div>
-      </div>
-
-      <div className="container mx-auto p-4">
-        <div className="flex items-start justify-between mb-4 flex-wrap sm:flex-nowrap">
-          <div>
-            <h2 className="text-3xl font-extrabold mb-4">
-              Your Booking History
-            </h2>
-            <p>
-              Check your past and upcoming reservations easily by viewing your
-              reservation history here.
-            </p>
-          </div>
-          <Button
-            bgColor="transparent"
-            className={`border border-black h-min mt-3 sm:mt-1 hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0 ${
-              isClearingAllBookings ? "opacity-80 cursor-not-allowed" : ""
-            }`}
-            textColor="text-black"
-            onClick={handleClearAllBookings}
-            disabled={isClearingAllBookings} // Disable the button when clearing
-          >
-            {isClearingAllBookings ? "Clearing..." : "Clear All Bookings"}
-          </Button>
-        </div>
-
-        {loading ? (
-          <Loader />
-        ) : userBooking?.length === 0 ? (
-          <p className="text-lg text-tn_dark">No bookings to display.</p>
-        ) : (
-          userBooking?.slice(0, displayedBookings).map((booking, index) => (
-            <div
-              key={`${booking?.id}-${index}`}
-              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between flex-wrap relative"
-            >
-              <div className="flex items-start justify-start w-full sm:w-auto mb-2 sm:mb-0">
-                <img
-                  src={
-                    booking.hotel?.profile_image ||
-                    booking.hotel?.galleries[0]?.image ||
-                    fallback
-                  }
-                  className="w-20 h-16 rounded-md"
-                  alt="hotel"
-                />
-                <div className="ml-2">
-                  <p>{booking?.hotel?.type}</p>
-                  <p className="font-bold text-xl capitalize">
-                    {booking?.hotel?.name}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline mr-2">Date </span> {booking?.date}
-                </p>
-                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline mr-2">Time</span>{" "}
-                  {convertTo12HourFormat(booking?.time)}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline mr-2">Number of Persons</span>
-                  {booking?.seats}
-                </p>
-                <p className="text-sm mb-2 flex justify-between items-center text-tn_dark_field">
-                  <span className="underline mr-2">Total Price</span> Dkk{" "}
-                  {booking?.total_pay}
-                </p>
-              </div>
-
-              <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4 items-center">
-                {booking.is_eligible_to_rate ? (
-                  booking.ratings && booking.ratings.length > 0 ? (
-                    <span className="text-green-500 text-sm sm:text-base">
-                      Rated
-                    </span>
-                  ) : (
-                    <span
-                      className="text-sm sm:text-base hover:opacity-80 text-tn_pink cursor-pointer"
-                      onClick={() => {
-                        setSelectedBooking(booking);
-                        setIsRatingModalOpen(true);
-                      }}
-                    >
-                      Leave a review
-                    </span>
-                  )
-                ) : (
-                  <span className="text-gray-500 text-sm sm:text-base">
-                    Unable to rate
-                  </span>
-                )}
-
-                <Link
-                  to={`/restaurant/${booking?.hotel?.id}`}
-                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-2 py-1 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
-                >
-                  Rebook
-                </Link>
-
-                <Button
-                  onClick={() => handleClearBooking(booking?.id)}
-                  padX={"px-2"}
-                  padY={"py-1"}
-                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink hover:opacity-80 text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
-                    isClearBooking[booking?.id]
-                      ? "opacity-70 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={isClearBooking[booking?.id]}
-                >
-                  {isClearBooking[booking?.id] ? "..." : "X"}
-                </Button>
-              </div>
-            </div>
-          ))
-        )}
-        <RatingModal
-          isOpen={isRatingModalOpen}
-          onClose={() => setIsRatingModalOpen(false)}
-          onSubmit={handleRatingSubmit}
-          booking={selectedBooking} // Pass the selected booking object
-        />
-
-        {userBooking.length >= displayedBookings && (
-          <LoadMore onLoadMore={handleLoadMore} hasMore={hasMore} />
-        )}
-      </div>
-
-      <div className="container mx-auto p-4">
-        <div className="flex items-start justify-between mb-4 flex-wrap sm:flex-nowrap">
-          <div>
-            <h2 className="text-3xl font-extrabold mb-4">Your Favorites</h2>
-            <p>
-              Check your past and upcoming restaurant easily by viewing them
-              here.
-            </p>
-          </div>
-        </div>
-
-        {loadingFavorites ? (
-          <Loader />
-        ) : favorites?.length === 0 ? (
-          <p className="text-lg text-tn_dark">No favorites to display.</p>
-        ) : (
-          favorites?.slice(0, displayedFavorites).map((favorite, index) => (
-            <div
-              key={`${favorite?.id}-${index}`}
-              className="border rounded-lg p-4 mb-4 shadow-lg flex items-start justify-between flex-wrap relative"
-            >
-              <div className="flex items-start justify-start w-full sm:w-auto mb-2 sm:mb-0">
-                <img
-                  src={
-                    favorite?.profile_image ||
-                    favorite?.galleries[0]?.image ||
-                    fallback
-                  }
-                  className="w-20 h-16 rounded-md"
-                  alt="hotel"
-                />
-                <div className="ml-2">
-                  <p>{favorite?.type}</p>
-                  <Link
-                    to={`/restaurant/${favorite?.id}`}
-                    className="font-bold text-xl capitalize"
-                  >
-                    {favorite?.name}
-                  </Link>
-                </div>
-              </div>
-
-              {/* <div className="flex space-x-2 w-full sm:w-auto sm:mt-0 mt-4">
-                <Link
-                  to={`/restaurant/${booking?.hotel?.id}`}
-                  className="hover:bg-tn_dark_field bg-tn_pink text-white text-lg sm:text-base px-4 py-2 rounded-lg inline-block duration-200 transition-all w-full sm:w-auto text-center"
-                >
-                  Rebook
-                </Link>
-
-                <Button
-                  onClick={() => handleClearBooking(booking?.id)}
-                  padX={"px-2"}
-                  padY={"py-2"}
-                  className={`rounded-lg bg-tn_dark_field text-white hover:bg-tn_pink text-xs sm:text-sm absolute sm:relative top-2 right-2 sm:top-0 sm:right-0 ${
-                    isClearBooking[booking?.id]
-                      ? "opacity-70 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={isClearBooking[booking?.id]}
-                >
-                  {isClearBooking[booking?.id] ? "..." : "X"}
-                </Button>
-              </div> */}
-            </div>
-          ))
-        )}
-
-        {favorites.length >= displayedFavorites && (
-          <LoadMore onLoadMore={handleLoadMoreFav} hasMore={hasMoreFav} />
-        )}
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Input, Button } from "../component";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -16,24 +16,46 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  // const Login = async (data) => {
-  //     setError("");
-  //     try {
-  //       const session = await authService.login(data);
-  //       if (session) {
-  //         const userData = await authService.getCurrentUser();
-  //         if (userData) dispatch(authLogin(userData));
-  //         navigate("/");
-  //       }
-  //     } catch (error) {
-  //       console.log("unable to login", error);
-  //     }
-  //   };
-
-  const LoginSubmit = async (data) => {
-    setIsSigning(true); // Assuming you have setIsSigning state
+  const location = useLocation();
+  const { type } = location.state || {}; // Get the type passed from modal
+  localStorage.setItem("userType", type);
+  
+ 
+  const getUserIP = async () => {
     try {
-      const loginResponse = await dispatch(loginUser(data)).unwrap();
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+  const LoginSubmit = async (userData) => {
+    setIsSigning(true); // Assuming you have setIsSigning state
+    const userAgent = navigator.userAgent;
+
+    const {  email, password } = userData;
+    // Fetch IP Address
+    const ipAddress = await getUserIP();
+    const payload = {
+      email,
+      password,
+      type,
+      userAgent,
+      ipAddress,
+    };
+    console.log(payload, 'payload');
+    
+    try {
+      const loginResponse = await dispatch(loginUser({payload})).unwrap();
+      if (type === "employee") {
+        navigate("/employee"); // Redirect to employee dashboard
+      } else if (type === "employer") {
+        navigate("/employer"); // Redirect to employer dashboard
+      } else {
+        navigate("/"); // Fallback if type is not provided
+      }
       console.log("Login Response:", loginResponse);
       // Handle success, navigate user or update UI
     } catch (error) {

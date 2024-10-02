@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { signupUser } from "../store/authSlice";
 import { Input, Button } from "../component";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Capacitor } from "@capacitor/core";
 
@@ -24,20 +24,48 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
+  const location = useLocation();
+  const { type } = location.state || {}; // Get the type passed from modal
+  localStorage.setItem("userType", type);
+
+  
+  const getUserIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
   const handleSignup = async (userData) => {
-    console.log(userData, "signup form");
     setIsSigning(true);
     setShowError(""); // Clear any previous error message
+    const userAgent = navigator.userAgent;
 
-    // Skip recaptcha validation if running in native app (isApp)
-    if (!isApp && !recaptchaToken) {
-      setShowError("Please complete the reCAPTCHA.");
-      setIsSigning(false);
-      return;
-    }
+    const { name, email, password } = userData;
+    // Fetch IP Address
+    const ipAddress = await getUserIP();
+    const payload = {
+      name,
+      email,
+      password,
+      type,
+      userAgent,
+      ipAddress,
+    };
+    console.log(payload, "signup form");
 
     try {
-      const response = await dispatch(signupUser({ ...userData, recaptchaToken })).unwrap();
+      const response = await dispatch(signupUser({ payload })).unwrap();
+      if (type === "employee") {
+        navigate("/employee"); // Redirect to employee dashboard
+      } else if (type === "employer") {
+        navigate("/employer"); // Redirect to employer dashboard
+      } else {
+        navigate("/"); // Fallback if type is not provided
+      }
       console.log("Signup response:", response);
       // Navigate to home or another page
       navigate("/"); // Adjust the navigation as needed
@@ -55,9 +83,9 @@ export default function Signup() {
 
   const password = watch("password");
 
-  const handleRecaptchaChange = (value) => {
-    setRecaptchaToken(value);
-  };
+  // const handleRecaptchaChange = (value) => {
+  //   setRecaptchaToken(value);
+  // };
 
   // Prevent numbers in text fields
   const handleNameKeyPress = (e) => {
@@ -83,11 +111,11 @@ export default function Signup() {
         <span className="mb-6 flex space-x-2">
           <Input
             mainInput={"sm:w-full w-full"}
-            label="First Name"
+            label="Full Name"
             type="text"
             placeholder="John"
             onKeyPress={handleNameKeyPress} // Prevent numbers
-            {...register("fname", {
+            {...register("name", {
               pattern: {
                 value: /^[A-Za-z]+$/,
                 message: "First name should contain only alphabets",
@@ -95,26 +123,8 @@ export default function Signup() {
             })}
           />
           {errors.fname && (
-            <p className="text-red-500 text-xs mt-1">{errors.fname.message}</p>
+            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
           )}
-          <Input
-            mainInput={"sm:w-full w-full"}
-            label="Last Name"
-            type="text"
-            placeholder="Doe"
-            onKeyPress={handleNameKeyPress} // Prevent numbers
-            {...register("lname", {
-              pattern: {
-                value: /^[A-Za-z]+$/,
-                message: "Last name should contain only alphabets",
-              },
-            })}
-          />
-          {errors.lname && (
-            <p className="text-red-500 text-xs mt-1">{errors.lname.message}</p>
-          )}
-        </span>
-        <span className="mb-6 flex space-x-2">
           <span className="w-full">
             <Input
               mainInput={"sm:w-full w-full"}
@@ -132,29 +142,6 @@ export default function Signup() {
             {errors.email && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.email.message}
-              </p>
-            )}
-          </span>
-          <span className="w-full">
-            <Input
-              mainInput={"sm:w-full w-full"}
-              label="Phone Number"
-              placeholder="8191 18181 17337"
-              type="tel"
-              maxLength={15} // Restrict length to 15 digits
-              onKeyPress={handlePhoneKeyPress} // Prevent alphabets
-              {...register("phone", {
-                required: "Phone number is required",
-                validate: {
-                  lengthCheck: (value) =>
-                    (value.length >= 11 && value.length <= 15) ||
-                    "Phone number must be between 11 and 15 digits",
-                },
-              })}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.phone.message}
               </p>
             )}
           </span>
@@ -219,25 +206,8 @@ export default function Signup() {
           )}
         </div>
 
-        <div className="form-control mb-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="newsletter"
-              className="mr-2"
-              {...register("newsletter")}
-            />
-            <p className="text-sm">
-              Send me newsletter
-            </p>
-          </div>
-          {errors.terms && (
-            <p className="text-red-500 text-xs mt-1">{errors.newsletter.message}</p>
-          )}
-        </div>
-
         {/* Conditionally render ReCAPTCHA based on isApp */}
-        {!isApp && (
+        {/* {!isApp && (
           <div className="mb-6">
             <ReCAPTCHA
               sitekey={RECAPTCHA_SITE_KEY}
@@ -247,11 +217,13 @@ export default function Signup() {
               <p className="text-red-500 text-xs mt-1">{showError}</p>
             )}
           </div>
-        )}
+        )} */}
 
         <Button
           type="submit"
-          className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
+          className={`w-full ${
+            isSigning ? "opacity-70 cursor-not-allowed" : ""
+          }`}
           disabled={isSigning}
         >
           {isSigning ? "Registering user..." : "Sign up"}

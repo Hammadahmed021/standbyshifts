@@ -1,4 +1,5 @@
 export { default as Home } from "./Home";
+export { default as HomeNew } from "./HomeNew";
 export { default as About } from "./About";
 export { default as Login } from "./Login";
 export { default as RestaurantDetail } from "./RestuarantDetail";
@@ -15,3 +16,5 @@ export { default as Profile } from "./Profile";
 export { default as Thankyou } from "./Thankyou";
 export { default as NotFound } from "./NotFound";
 export { default as ForgotPassword } from "./ForgotPassword";
+export { default as Employee } from "./EmployeeHome";
+export { default as Employer } from "./EmployerHome";

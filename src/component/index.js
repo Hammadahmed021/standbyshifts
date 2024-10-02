@@ -25,3 +25,5 @@ export { default as ForgotPassForm } from "./ForgetPassForm";
 export { default as Loader } from "./Loader";
 export { default as CheckoutForm } from "./StripeCheckOut";
 export { default as RatingModal } from "./RatingModal";
+export { default as AuthModal } from "./AuthModal";
+export { default as AutoComplete } from "./AutoComplete";

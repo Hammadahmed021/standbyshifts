@@ -17,15 +17,16 @@ export default {
         },
       },
       colors:{
-        tn_pink: '#FD027E',
-        tn_text_grey: '#717171',
+        tn_pink: '#0000F8',
+        tn_primary: '#F59200',
+        tn_text_grey: '#656565',
         tn_light_grey: '#EDEDED',
         tn_dark: '#222222', 
         tn_light: '#F7F7F7',
         tn_dark_field: '#1C1B1F',
       },
       fontFamily:{
-        'lato': ["Lato", 'sans-serif']
+        'lato': ["Montserrat", 'sans-serif']
       },
       backgroundImage: {
         'hero': "url('/src/assets/Images/banner.png')",
