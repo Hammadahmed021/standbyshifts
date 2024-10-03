@@ -27,6 +27,7 @@ import {
 import { updateFirebasePassword } from "../service";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
+import { FaPen, FaTrash } from "react-icons/fa";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -57,6 +58,7 @@ const Profile = () => {
   const [fetchUser, setFetchUser] = useState([]);
   const [selectedIndustries, setSelectedIndustries] = useState([]);
   const [savedExperiences, setSavedExperiences] = useState([]);
+  const [editIndex, setEditIndex] = useState(null); // Track which experience is being edited
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -97,6 +99,8 @@ const Profile = () => {
     setValue,
     control,
     getValues,
+    resetField,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -106,6 +110,8 @@ const Profile = () => {
       zip: fetchUser?.employee?.zip_code || "",
       newPassword: "",
       confirmPassword: "",
+      layout: "1", // Default to first layout
+
       experiences: [
         {
           jobTitle: "", // Job title
@@ -118,8 +124,8 @@ const Profile = () => {
       ],
     },
   });
-  console.log(currentUser, "currentUser");
-  console.log(userData, "userData");
+  const selectedLayout = watch("layout");
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "experiences", // This should match the default values above
@@ -183,83 +189,82 @@ const Profile = () => {
 
   const onSave = async (data) => {
     console.log(data, "form data");
-  
+
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
-  
+    let profileImageFile = selectedFile;
+
     try {
-      const { newPassword, confirmPassword, address, zip } = data; // Pull address and zip from form data
-      let profileImageFile = selectedFile;
-  
+      const { newPassword, confirmPassword, address, zip } = data;
+
       // Ensure newPassword and confirmPassword match
       if (newPassword && confirmPassword) {
         if (newPassword !== confirmPassword) {
           setShowError("Passwords do not match.");
           return;
         }
-  
+
         if (!newPassword) {
           setShowError("New password is required.");
           return;
         }
-  
-        // Update Firebase password
+
         const passwordUpdated = await updateFirebasePassword(newPassword);
         if (!passwordUpdated) {
           setShowError("Failed to update password. Please try again.");
           return;
         }
       }
-  
-      // Validate work history entries
-      const validWorkHistories = savedExperiences.filter((exp) => exp.jobDesc && exp.jobTitle); // Only keep valid entries
-  
+
+      // Ensure at least one work history entry is present
+      const validWorkHistories = savedExperiences.filter(
+        (exp) => exp.jobDesc && exp.jobTitle
+      );
+
       if (validWorkHistories.length === 0) {
         setShowError("At least one work history entry is required.");
         return;
       }
-  
+
       // Construct the updated user data object
       const updatedUserData = {
         name: data.name,
         phone: data.phone,
-        profile_picture: profileImageFile || currentUser?.profile_picture || null, // Use existing profile picture if not updated
-        location: address || "", // Use the address from form data
-        zip_code: zip || "", // Use zip code from form data
-        industry_id: selectedIndustries.map((industry) => industry.id) || [], // Get industry IDs
-        skills: tags || [], // Use tags state for skills
+        ...(profileImageFile &&
+          profileImageFile !== currentUser?.employee?.profile_image && {
+            profile_picture: profileImageFile,
+          }), // Use existing profile picture if not updated
+        location: address || "",
+        zip_code: zip || "",
+        layout: data.layout,
+         industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
+        skills: tags || [],
         work_history: validWorkHistories.map((exp) => ({
           title: exp.jobTitle,
-          description: exp.jobDesc, // Ensure this is not empty
+          description: exp.jobDesc,
           start_month: exp.startMonth,
           end_month: exp.endMonth,
           start_year: exp.startYear,
           end_year: exp.endYear,
-        })), // Construct work histories from savedExperiences
+        })),
       };
-  
+
       console.log(updatedUserData, "updatedUserData");
-  
+
       // Update user profile on the server
       await updateUserProfile(updatedUserData);
-  
-      // Update Redux state with the new user data
+
       dispatch(updateUserData(updatedUserData));
-  
-      // Optionally, refetch the user data after a successful update
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error saving profile:", error);
     } finally {
       setIsSigning(false);
       setSuccessMessage("Profile updated successfully!");
-      setTimeout(() => {
-        setSuccessMessage(""); // Clear the success message after 3 seconds
-      }, 3000);
     }
   };
-  
-  
-  
 
   const getUserIP = async () => {
     try {
@@ -289,7 +294,7 @@ const Profile = () => {
       setValue("phone", data?.phone || "");
       setValue("address", data?.employee?.location || "");
       setValue("zip", data?.employee?.zip_code || "");
-    
+      setValue("layout", data?.layout || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -334,19 +339,19 @@ const Profile = () => {
   }, []);
   const handleFilterChange = (event) => {
     const selectedValue = event.target.value; // Extract value from event
-  
+
     // Find the selected industry based on the value
     const selectedIndustry = fetchUser?.industries.find(
       (industry) =>
-        industry.title === selectedValue || industry.id.toString() === selectedValue
+        industry.title === selectedValue ||
+        industry.id.toString() === selectedValue
     );
-  
+
     if (selectedIndustry) {
       // Set only the selected industry (allowing only one selection at a time)
       setSelectedIndustries([selectedIndustry]); // Replace the entire array with the selected one
     }
   };
-  
 
   // Helper function to add "All Industries" option
   const addAllOption = (options, label) => {
@@ -357,8 +362,15 @@ const Profile = () => {
     ];
   };
 
+  console.log(savedExperiences, 'savedExperiences');
+  
+
+  // Use Effect to initialize saved experiences
+  useEffect(() => {
+    setSavedExperiences(fetchUser?.profile?.work_histories || []);
+  }, [fetchUser]);
+
   const saveExperience = (index) => {
-    // Use getValues to get the current form values
     const values = getValues(`experiences.${index}`);
     
     const experience = {
@@ -370,11 +382,71 @@ const Profile = () => {
       endYear: values.endYear,
     };
 
-    // Add the current experience to saved experiences
-    setSavedExperiences((prev) => [...prev, experience]);
-    console.log(savedExperiences, 'savedExperiences'); // This will log the previous state
+    console.log("Experience to save:", experience);
+
+    // Update the state based on edit mode
+    setSavedExperiences((prev) => {
+      const existingExperiences = fetchUser?.profile?.work_histories || [];
+      const updatedExperiences = [...prev,...existingExperiences];
+
+      if (editIndex !== null) {
+        updatedExperiences[editIndex] = experience; 
+        console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
+      } else {
+        updatedExperiences.push(experience);
+        console.log("Appended New Experience:", experience);
+      }
+
+     
+
+      return updatedExperiences; // Return the updated array
+    });
+
+    // Reset form fields after saving
+    resetField(`experiences.${index}.jobTitle`);
+    resetField(`experiences.${index}.jobDesc`);
+    resetField(`experiences.${index}.startMonth`);
+    resetField(`experiences.${index}.startYear`);
+    resetField(`experiences.${index}.endMonth`);
+    resetField(`experiences.${index}.endYear`);
+
+    // Reset edit mode after saving
+    setEditIndex(null);
   };
   
+
+  const deleteExperience = (index) => {
+    setSavedExperiences((prev) => {
+      const newExperiences = prev.filter((_, i) => i !== index);
+      console.log(`Updated experiences:`, newExperiences); // Debug log
+      return newExperiences;
+    });
+  };
+
+  const editExperience = (index) => {
+    const selectedExperience = fetchUser?.profile?.work_histories[index];
+
+    if (selectedExperience) {
+      setValue(`experiences.${index}.jobTitle`, selectedExperience.title);
+      setValue(`experiences.${index}.jobDesc`, selectedExperience.description);
+      setValue(
+        `experiences.${index}.startMonth`,
+        selectedExperience.start_month
+      );
+      setValue(`experiences.${index}.startYear`, selectedExperience.start_year);
+      setValue(`experiences.${index}.endMonth`, selectedExperience.end_month);
+      setValue(`experiences.${index}.endYear`, selectedExperience.end_year);
+
+      // Set the index of the experience being edited
+      setEditIndex(index);
+
+      // Scroll to the form
+      document
+        .getElementById(`experienceForm_${index}`)
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -508,6 +580,7 @@ const Profile = () => {
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
+                    id={`experienceForm_${index}`}
                     className="mb-4 border p-4 rounded bg-gray-50"
                   >
                     <h3 className="font-semibold mb-2">
@@ -601,7 +674,9 @@ const Profile = () => {
                       onClick={() => saveExperience(index)}
                       className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                     >
-                      Save Experience
+                      {editIndex === index
+                        ? "Update Experience"
+                        : "Save Experience"}
                     </button>
                   </div>
                 ))}
@@ -625,40 +700,71 @@ const Profile = () => {
               </div>
               <div>
                 <strong className="mt-4 block">Saved Experiences:</strong>
-                {savedExperiences.length > 0 ? (
-                  <ul>
-                    {savedExperiences.map((experience, index) => (
-                      <li key={index} className="mb-4">
-                        <h2 className="font-bold">{experience.jobTitle}</h2>
-                        <p>{experience.jobDesc}</p>
-                        <p>
-                          {experience.startMonth}/{experience.startYear} -{" "}
-                          {experience.endMonth}/{experience.endYear}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No saved experiences.</p>
-                )}
+                <div>
+                  {savedExperiences.length > 0 ? (
+                    <ul>
+                      {savedExperiences.map((work, index) => (
+                        <li key={index} className="mb-4 relative">
+                          <h2 className="font-bold">{work.jobTitle}</h2>
+                          <p>{work.jobDesc}</p>
+                          <p>
+                            {work.startMonth}/{work.startYear} - {work.endMonth}
+                            /{work.endYear}
+                          </p>
+
+                         
+
+                          {/* Delete button */}
+                          <button
+                            type="button"
+                            onClick={() => deleteExperience(index)} // This function will remove the entry
+                            className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
+                          >
+                            <FaTrash />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No work history found.</p>
+                  )}
+                </div>
               </div>
               <div>
                 {fetchUser?.profile?.work_histories &&
                 fetchUser.profile.work_histories.length > 0 ? (
                   <ul>
                     {fetchUser.profile.work_histories.map((work, index) => (
-                      <li key={work.id} className="mb-4">
+                      <li key={work.id} className="mb-4 relative">
                         <h2 className="font-bold">{work.title}</h2>
                         <p>{work.description}</p>
                         <p>
                           {work.start_month}/{work.start_year} -{" "}
                           {work.end_month}/{work.end_year}
                         </p>
+
+                        {/* Edit button (Pen icon) */}
+                        <button
+                          type="button"
+                          onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
+                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                        >
+                          <FaPen />
+                        </button>
+
+                        {/* delete button  */}
+                        <button
+                          type="button"
+                          onClick={() => deleteExperience(index)} // This function will take the user to the form with pre-filled data
+                          className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
+                        >
+                          <FaTrash />
+                        </button>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p>No work history found.</p> // Handle the case where there are no work histories
+                  <p>No work history found.</p>
                 )}
               </div>
               <div className="mb-6">
@@ -691,6 +797,32 @@ const Profile = () => {
                     <li>No industry found.</li> // Handle the case where there is no industry
                   )}
                 </ul>
+              </div>
+              <div className="flex space-x-4">
+                {["1", "2", "3", "4"].map((layout) => (
+                  <label key={layout} className="cursor-pointer">
+                    <input
+                      type="radio"
+                      value={layout}
+                      {...register("layout")}
+                      className="hidden"
+                    />
+                    <div
+                      className={`border ${
+                        selectedLayout === layout
+                          ? "border-blue-500"
+                          : "border-gray-300"
+                      } rounded-lg p-2`}
+                    >
+                      <img
+                        src={`https://via.placeholder.com/100?text=Layout+${layout}`}
+                        alt={`Layout ${layout}`}
+                        className="mb-2"
+                      />
+                      <p>Layout {layout}</p>
+                    </div>
+                  </label>
+                ))}
               </div>
               <Button
                 type="submit"

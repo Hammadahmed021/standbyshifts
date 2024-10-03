@@ -34,6 +34,7 @@ const Header = ({ style }) => {
   const { t } = useTranslation();
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
+  
 
   const getUserIP = async () => {
     try {
@@ -131,7 +132,7 @@ const Header = ({ style }) => {
                     <div className="flex items-center cursor-pointer">
                       <img
                         src={
-                          currentUser?.employee?.profile_image ||
+                          currentUser?.employee?.profile_picture ||
                           userData?.profile_image?.name ||
                           fallback
                         }

@@ -253,27 +253,24 @@ export const updateUserProfile = async (userData) => {
     phone,
     location,
     zip_code,
-    industries, // Ensure this is always an array
+    industry_id, // Ensure this is always an array
     skills, // Default to an empty array if undefined
     work_history, // Default to an empty array if undefined
     profile_picture,
+    layout,
   } = userData;
 
   const formData = new FormData();
   formData.append("name", name);
   formData.append("phone", phone);
+  formData.append("layout", layout);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
-  // Ensure industries is always an array
-  const selectedIndustry =
-    Array.isArray(industries) && industries.length > 0
-      ? industries[0].id
-      : null;
 
-  if (selectedIndustry) {
-    formData.append("industry_id", selectedIndustry);
-  }
+    formData.append("industry_id", industry_id);
+  
+  
 
   // Append skills
   skills.forEach((skill) => formData.append("skills[]", skill));
