@@ -21,8 +21,9 @@ import {
   meta,
   netflix,
   png,
+  hero,
 } from "../assets";
-import { localDB } from "../utils/localDB";
+import { imageData, infoGrid, localDB, revenueGrid } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData, getDistance } from "../utils/HelperFun";
 import { Link, useNavigate } from "react-router-dom";
@@ -31,6 +32,8 @@ import { fetchUserNearByRestaurants, verifyUser } from "../utils/Api";
 import { app } from "../service/firebase";
 import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
+import InfoGrid from "../component/InfoGrid";
+import RevenueCard from "../component/RevenueCard";
 
 export default function HomeNew() {
   const isDesktop = useMediaQuery("(max-width: 991px)");
@@ -245,11 +248,11 @@ export default function HomeNew() {
 
   return (
     <>
-      <div className="bg-hero sm:h-[650px] h-[450px] sm:my-16 my-12 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0">
+      <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0">
         <div className="container h-full flex items-center sm:items-end px-0 ">
-          <div className="lg:w-7/12 w-full flex pl-10 py-12 flex-col justify-between h-full">
+          <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[85%]">
-              <h2 className="text-white text-6xl inline sm:block">
+              <h2 className="text-white text-6xl inline sm:block leading-tight">
                 Get your next
                 <span className="font-bold text-tn_primary inline sm:block">
                   {" "}
@@ -263,16 +266,16 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                  // className="border p-3 bg-gray-200 rounded-lg"
+                // className="border p-3 bg-gray-200 rounded-lg"
                 >
-                  Signup
+                  Register
                 </Button>
                 <Button
                   onClick={() => handleOpenModal("/login")}
                   className="border border-white"
                   bgColor="transparent"
                 >
-                  Login
+                  Log In
                 </Button>
               </div>
             </div>
@@ -291,211 +294,73 @@ export default function HomeNew() {
                 <li>
                   <img src={meta} alt="" />
                 </li>
-                <img src={netflix} alt="" />
-                <li></li>
-                <img src={png} alt="" />
-                <li></li>
+                <li>
+                  <img src={netflix} alt="" />
+                </li>
+                <li>
+                  <img src={png} alt="" />
+                </li>
               </ul>
             </div>
           </div>
           <div className="lg:w-5/12 w-full ">
             <div className="flex space-x-2 -mr-6">
-              <BannerSlider />
-              <BannerSlider reverse={true} />
+              <BannerSlider images={imageData} />
+              <BannerSlider images={imageData} reverse={true} />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto">
-        <div className="flex justify-between mb-10 sm:mb-14 flex-col sm:flex-row items-end">
-          <div className="text-center sm:text-start">
-            <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold ">
-              Restaurants Near You
+      <div className="container mx-auto ">
+        <div className=" mb-10 sm:mb-14">
+          <div className="text-center sm:text-center md:w-[44%] mx-auto">
+            <h2 className="text-[26px] w-full text-black md:text-[50px] leading-none font-semibold">
+              A whole world of talented peoples
             </h2>
-            <p className="text-lg font-normal text-black py-2 sm:py-0">
-              Popular types of food & restaurants near you
+            <p className="text-base w-full text-tn_text_grey  font-normal text-center py-2 sm:py-0 mt-4">
+              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
             </p>
           </div>
-          <Link
-            state={{ heading: "nearby" }}
-            to={{
-              pathname: "/listing",
-            }}
-            className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-          >
-            View All
-          </Link>
+          <div className="mt-8">
+
+            <InfoGrid items={infoGrid} />
+          </div>
         </div>
+      </div>
 
-        {loading ? (
-          <p className="p-4 text-center container mx-auto">
-            <Loader />
-          </p>
-        ) : error ? (
-          <p>Error: {error.message}</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-              {dataToDisplay.slice(0, visibleCards).map((data) => (
-                <CardCarousel
-                  key={data.id}
-                  id={data.id}
-                  title={data.title}
-                  address={data.location}
-                  images={data.images}
-                  rating={data.rating}
-                  type={data.type}
-                  timeline={data.timeline}
-                  is_favorite={data.is_favorite}
-                  // latitude={data.latitude}
-                  // longitude={data.longitude}
-                  onWishlistChange={handleWishlistChange} // Pass the refetch trigger
-                />
-              ))}
-            </div>
-            <LoadMore
-              onLoadMore={handleLoadMore}
-              hasMore={hasMore}
-              className={"mt-5"}
-            />
-          </>
-        )}
-
-        {/* Featured Carousel */}
-        <div className="mt-20">
-          <div className="flex justify-between mb-10 sm:mb-14 flex-col sm:flex-row items-end">
-            <div className="text-center sm:text-start">
-              <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold ">
-                Featured Restaurants
-              </h2>
-              <p className="text-lg font-normal text-black py-2 sm:py-0">
-                Checkout some of our Best Featured Restaurants of all the time
+      <div className="bg-hero sm:h-[700px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0">
+        <div className="container h-full flex items-center sm:items-end px-0 ">
+          <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+            <div className="w-[100%] sm:w-[95%]">
+              <h3 className="text-white text-5xl inline sm:block leading-tight font-semibold">
+                Find the talent needed to get
+                your business growing.
+              </h3>
+              <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start text-center">
+                There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.
               </p>
-            </div>
-            <Link
-              state={{ heading: "featured" }}
-              to={{
-                pathname: "/listing",
-              }}
-              className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-            >
-              View All
-            </Link>
-          </div>
-
-          {loading ? (
-            <p className="p-4 text-center container mx-auto">
-              <Loader />
-            </p>
-          ) : error ? (
-            <p>Error: {error.message}</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-                {approvedData
-                  .filter((data) => data.is_featured == true)
-                  .slice(0, visibleFeatureCards)
-                  .map((data, index) => (
-                    <CardCarousel
-                      key={index}
-                      id={data.id}
-                      title={data.title}
-                      address={data.location}
-                      images={data.images}
-                      type={data.type}
-                      is_featured={data.is_featured}
-                      is_favorite={data.is_favorite}
-                      onWishlistChange={handleWishlistChange} // Pass the refetch triggers
-                    />
-                  ))}
+              <div className="my-4">
+                <RevenueCard items={revenueGrid}/>
               </div>
-              {hasFeatureMore && (
-                <LoadMore
-                  onLoadMore={handleFeatureLoadMore}
-                  hasMore={hasFeatureMore}
-                  className={"mt-5"}
-                />
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="container mx-auto">
-        <div className="bg-appbanner sm:h-[439px] h-[220px] my-16 bg-no-repeat bg-cover px-2 lg:px-8 flex flex-wrap items-center justify-center sm:justify-between bg-right">
-          <div className="w-2/5 h-full pt-4 hidden lg:block">
-            <img
-              src={App}
-              alt=""
-              className="h-full object-cover w-[90%] lg:w-full"
-            />
-          </div>
-          <div className="lg:w-3/5 w-4/5">
-            <p className="text-white text-2xl hidden sm:block">
-              Popular food & restaurants near you
-            </p>
-            <h2 className=" mb-2 text-3xl w-full text-white sm:text-4xl md:text-5xl font-extrabold sm:mb-4 lg:w-[80%]  sm:text-start text-center">
-              Download our all new Mobile App
-            </h2>
-            <img src={storeBtn} alt="" className="mx-auto sm:mx-0" />
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto pb-10">
-        <div className="flex justify-between mb-10 sm:mb-14 flex-col sm:flex-row items-end">
-          <div className="text-center sm:text-start ">
-            <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold ">
-              Browse all our Best Restaurants
-            </h2>
-            <p className="text-lg font-normal text-black py-2 sm:py-0">
-              Explore all listed Restaurants we have | Popular types of food &
-              restaurants near you
-            </p>
-          </div>
-          <Link
-            state={{ heading: "all restaurant" }}
-            to={{
-              pathname: "/listing",
-            }}
-            className="border text-center p-3 rounded-lg border-black h-min mt-1 bg-transparent hover:bg-tn_pink hover:text-white hover:border-tn_pink duration-200 sm:inline-block block sm:w-auto w-[90%] m-auto sm:m-0"
-          >
-            View All
-          </Link>
-        </div>
-
-        {loading ? (
-          <p className="p-4 text-center container mx-auto">
-            <Loader />
-          </p>
-        ) : error ? (
-          <p>Error: {error.message}</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-              {approvedData.slice(0, visibleAllCards).map((data) => (
-                <CardCarousel
-                  key={data.id}
-                  id={data.id}
-                  title={data.title}
-                  address={data.location}
-                  images={data.images}
-                  rating={data.rating}
-                  type={data.type}
-                  timeline={data.timeline}
-                  is_favorite={data.is_favorite}
-                  onWishlistChange={handleWishlistChange} // Pass the refetch trigger
-                />
-              ))}
+              <div className="flex container px-0 space-x-3 mt-10">
+                <Button
+                  onClick={() => handleOpenModal("/signup")}
+                // className="border p-3 bg-gray-200 rounded-lg"
+                >
+                  Get Started
+                </Button>
+               
+              </div>
             </div>
-            <LoadMore
-              onLoadMore={handleAllLoadMore}
-              hasMore={hasAllMore}
-              className={"mt-5"}
-            />
-          </>
-        )}
+           
+          </div>
+          <div className="lg:w-5/12 w-full ">
+            <div className="flex flex-col items-ends justify-center">
+              <img src={hero} alt="" className="w-full h-[600px] object-contain" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Render Modal */}

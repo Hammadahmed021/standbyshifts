@@ -5,14 +5,14 @@ export default function Button({
     bgColor = 'bg-tn_primary',
     textColor = 'text-white',
     type = 'button',
-    textSize = 'text-base ',
+    textSize = 'text-lg ',
     padX = 'px-8',
     padY = 'py-2',
     className = '',
     ...props
 }) {
   return (
-    <button className={`${padX} ${padY} rounded-[100px] ${textSize} ${className} ${bgColor} ${textColor}`} {...props}>
+    <button className={`${padX} ${padY} transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] ${textSize} ${className} ${bgColor} ${textColor}`} {...props}>
         {children}
     </button>
   )

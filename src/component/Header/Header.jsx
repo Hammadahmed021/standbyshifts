@@ -34,7 +34,69 @@ const Header = ({ style }) => {
   const { t } = useTranslation();
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
+
+  console.log(userData?.user?.type, 'userData');
+
+  const defaultMenu = (
+    <>
+      <li>
+        <Link to={"/"}>Home</Link>
+      </li>
+      <li>
+        <Link to={"/"}>Post Job</Link>
+      </li>
+      <li>
+        <Link to={"/"}>Find Job</Link>
+      </li>
+      <li>
+        <Link to={"/"}>Contact</Link>
+      </li>
+      <li>
+        <Link to={"/about"}>About</Link>
+      </li>
+    </>
+  );
+
+  const employeeMenu = (
+    <>
+      <li>
+        <Link to={"/employee"}>Employee Home</Link>
+      </li>
+      <li>
+        <Link to={"/find-jobs"}>Find Jobs</Link>
+      </li>
+      <li>
+        <Link to={"/saved-jobs"}>Saved Jobs</Link>
+      </li>
+      <li>
+        <Link to={"/profile"}>Profile</Link>
+      </li>
+      <li>
+        <Link to={"/contact"}>Contact</Link>
+      </li>
+    </>
+  );
+
+  const employerMenu = (
+  <>
+      <li>
+        <Link to={"/employer"}>Employer Home</Link>
+      </li>
+      <li>
+        <Link to={"/post-job"}>Post Job</Link>
+      </li>
+      <li>
+        <Link to={"/manage-jobs"}>Manage Jobs</Link>
+      </li>
+      <li>
+        <Link to={"/candidates"}>Find Candidates</Link>
+      </li>
+      <li>
+        <Link to={"/profile"}>Company Profile</Link>
+      </li>
+      </>
   
+  );
 
   const getUserIP = async () => {
     try {
@@ -106,25 +168,21 @@ const Header = ({ style }) => {
               {/* <Search data={data} /> */}
             </div>
             <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
-           
-                    <li>
-                      <Link to={"/"}>Home</Link>
-                    </li>
-                    <li>
-                      <Link to={"/"}>Post Job</Link>
-                    </li>
-                    <li>
-                      <Link to={"/"}>Find Job</Link>
-                    </li>
-                    <li>
-                      <Link to={"/"}>Contact</Link>
-                    </li>
-                    <li>
-                      <Link to={"/about"}>About</Link>
-                    </li>
-                   
-                    
-                  
+
+              {userData && userData.user ? (
+                userData.user.type === "employee" ? (
+                  employeeMenu
+                ) : userData.user.type === "employer" ? (
+                  employerMenu
+                ) : (
+                  defaultMenu
+                )
+              ) : (
+                defaultMenu
+              )}
+
+
+
               {/* <span className="mx-4">|</span> */}
               {authStatus && (
                 <li className="inline-flex space-x-2">
@@ -171,7 +229,7 @@ const Header = ({ style }) => {
                     )}
                   </div>
                 </li>
-              ) }
+              )}
             </ul>
           </nav>
         ) : (
@@ -184,7 +242,7 @@ const Header = ({ style }) => {
             {toggle && (
               <ul
                 className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto"
-                // style={{ paddingTop: isApp ? "20px" : "0" }}
+              // style={{ paddingTop: isApp ? "20px" : "0" }}
               >
                 <div className="relative w-full min-h-screen p-3">
                   <div className="flex justify-between items-start">

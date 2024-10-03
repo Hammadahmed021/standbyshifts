@@ -12,6 +12,11 @@ export { default as menu } from "./Images/menu.png";
 export { default as login } from "./Images/login.png";
 export { default as signup } from "./Images/signup.png";
 export { default as notfound } from "./Images/notfound.jpg";
+export { default as hero } from "./Images/hero-girl.png";
+
+export { default as ImgB } from "./Images/image1.png";
+export { default as ImgB1 } from "./Images/image2.png";
+
 
 export { default as png } from "./Images/png.png";
 export { default as google } from "./Images/google.png";
@@ -28,3 +33,12 @@ export { default as twitter } from "./Icons/twitter.png";
 export { default as youtube } from "./Icons/youtube.png";
 export { default as marker } from "./Icons/marker-primary.svg";
 export { default as markerSec } from "./Icons/marker-secondary.svg";
+export { default as like } from "./Icons/like.png";
+export { default as messages } from "./Icons/messages.png";
+export { default as support } from "./Icons/support.png";
+export { default as bubble } from "./Icons/bubble.png";
+export { default as trendUp } from "./Icons/trend-up.png";
+export { default as grammerly } from "./Icons/grammerly.png";
+export { default as people } from "./Icons/people.png";
+export { default as task } from "./Icons/task-square.png";
+

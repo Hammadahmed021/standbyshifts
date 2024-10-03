@@ -1,5 +1,65 @@
 import img from "../assets/Images/restaurant-image.png";
-import { menu } from "../assets";
+import { menu, ImgB, ImgB1, like, bubble, support, messages, trendUp, grammerly, task, people as peeps } from "../assets";
+
+export const imageData = [
+  { src: ImgB1 },
+  { src: ImgB },
+  { src: ImgB1 },
+  { src: ImgB },
+  { src: ImgB1 },
+  { src: ImgB },
+];
+
+export const infoGrid = [
+  {
+    icon: bubble,
+    title: "Over 50+ categories",
+    description: "It is a long established fact that a reader will be distracted by.",
+  },
+  {
+    icon: messages,
+    title: "Clear communication",
+    description: "It is a long established fact that a reader will be distracted by.",
+  },
+  {
+    icon: like,
+    title: "Quality work done",
+    description: "It is a long established fact that a reader will be distracted by.",
+  },
+  {
+    icon: support,
+    title: "24/7  support",
+    description: "It is a long established fact that a reader will be distracted by.",
+  },
+];
+export const revenueGrid = [
+  {
+    icon: trendUp,
+    title: "Grow your revenue",
+    description: "It is a long established fact that a reader will be distracted by the readable content.",
+  },
+  {
+    icon: peeps,
+    title: "Meet new peoples",
+    description: "It is a long established fact that a reader will be distracted by the readable content.",
+  },
+  {
+    icon: grammerly,
+    title: "Live Smarter",
+    description: "It is a long established fact that a reader will be distracted by the readable content.",
+  },
+  {
+    icon: task,
+    title: "Describe Your Task",
+    description: "It is a long established fact that a reader will be distracted by the readable content.",
+  },
+];
+
+
+
+
+
+
 
 export const localDB = [
   {
