@@ -476,11 +476,31 @@ export const sendNewsletter = async (newsEmail) => {
   }
 };
 
-export const fetchProfileData = async () => {
+export const fetchProfileDataEmployee = async () => {
   const token = localStorage.getItem("webToken");
 
   try {
     const response = await axios.get(`${BASE_URL}employee/profile/fetch`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data, "profile data");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching profile data"
+    );
+  }
+};
+
+
+export const fetchProfileDataEmployer = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employer/profile/fetch`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

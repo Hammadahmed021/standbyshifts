@@ -49,9 +49,9 @@ export default function Login() {
     
     try {
       const loginResponse = await dispatch(loginUser({payload})).unwrap();
-      if (type === "employee") {
+      if (type == "employee") {
         navigate("/employee"); // Redirect to employee dashboard
-      } else if (type === "employer") {
+      } else if (type == "employer") {
         navigate("/employer"); // Redirect to employer dashboard
       } else {
         navigate("/"); // Fallback if type is not provided

@@ -6,7 +6,9 @@ const AuthLayout = ({ children, authentication = true }) => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(true);
   const authStatus = useSelector((state) => state.auth.status);
+  const authType = useSelector((state) => state.auth.userData?.user?.type);
   const userType = localStorage.getItem("userType"); // Fetch user type
+  const user = userType || authType
 
   useEffect(() => {
     const redirectState = JSON.parse(localStorage.getItem("redirectState"));
@@ -15,9 +17,9 @@ const AuthLayout = ({ children, authentication = true }) => {
       navigate("/"); // Redirect to login if not authenticated
     } else if (!authentication && authStatus) {
       // Redirect based on user type
-      if (userType === "employee") {
+      if (user == "employee") {
         navigate("/employee"); // Redirect to employee page
-      } else if (userType === "employer") {
+      } else if (user == "employer") {
         navigate("/employer"); // Redirect to employer page
       } else {
         navigate("/profile"); // Fallback
@@ -29,7 +31,7 @@ const AuthLayout = ({ children, authentication = true }) => {
     }
     
     setLoader(false);
-  }, [authentication, authStatus, navigate, userType]);
+  }, [authentication, authStatus, navigate, user]);
 
   return loader ? <h2>Loading...</h2> : <>{children}</>;
 };

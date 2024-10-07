@@ -17,7 +17,8 @@ import {
 import {
   deleteAllUserBookings,
   deleteUserBooking,
-  fetchProfileData,
+  fetchProfileDataEmployer,
+  fetchProfileDataEmployee,
   getUserBookings,
   giveRateToHotel,
   showFavorite,
@@ -63,10 +64,20 @@ const Profile = () => {
   // Predefined options for the autocomplete dropdown
   // const options = tags;
 
+  const userType = userData?.user?.type || localStorage.getItem("userType")
+
   useEffect(() => {
     const fetchData = async () => {
+
       try {
-        const data = await fetchProfileData();
+        let data;
+        if (userType === "employee") {
+          data = await fetchProfileDataEmployee();
+        } else if (userType === "employer") {
+          data = await fetchProfileDataEmployer();
+        } else {
+          throw new Error("Invalid user type"); // Handle unexpected user type
+        }
         setFetchUser(data);
 
         // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
@@ -221,10 +232,10 @@ const Profile = () => {
         (exp) => exp.jobDesc && exp.jobTitle
       );
 
-      if (validWorkHistories.length === 0) {
-        setShowError("At least one work history entry is required.");
-        return;
-      }
+      // if (validWorkHistories.length === 0) {
+      //   setShowError("At least one work history entry is required.");
+      //   return;
+      // }
 
       // Construct the updated user data object
       const updatedUserData = {
@@ -232,12 +243,12 @@ const Profile = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-            profile_picture: profileImageFile,
-          }), // Use existing profile picture if not updated
+          profile_picture: profileImageFile,
+        }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         layout: data.layout,
-         industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
+        industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
         skills: tags || [],
         work_history: validWorkHistories.map((exp) => ({
           title: exp.jobTitle,
@@ -363,7 +374,7 @@ const Profile = () => {
   };
 
   console.log(savedExperiences, 'savedExperiences');
-  
+
 
   // Use Effect to initialize saved experiences
   useEffect(() => {
@@ -372,7 +383,7 @@ const Profile = () => {
 
   const saveExperience = (index) => {
     const values = getValues(`experiences.${index}`);
-    
+
     const experience = {
       jobTitle: values.jobTitle,
       jobDesc: values.jobDesc,
@@ -387,17 +398,17 @@ const Profile = () => {
     // Update the state based on edit mode
     setSavedExperiences((prev) => {
       const existingExperiences = fetchUser?.profile?.work_histories || [];
-      const updatedExperiences = [...prev,...existingExperiences];
+      const updatedExperiences = [...prev, ...existingExperiences];
 
       if (editIndex !== null) {
-        updatedExperiences[editIndex] = experience; 
+        updatedExperiences[editIndex] = experience;
         console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
       } else {
         updatedExperiences.push(experience);
         console.log("Appended New Experience:", experience);
       }
 
-     
+
 
       return updatedExperiences; // Return the updated array
     });
@@ -413,7 +424,7 @@ const Profile = () => {
     // Reset edit mode after saving
     setEditIndex(null);
   };
-  
+
 
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
@@ -518,7 +529,7 @@ const Profile = () => {
                       type="password"
                       {...register("confirmPassword")}
                       placeholder="Confirm new password"
-                      // disabled={isGmailUser}
+                    // disabled={isGmailUser}
                     />
                   </span>
                   {showError && (
@@ -712,7 +723,7 @@ const Profile = () => {
                             /{work.endYear}
                           </p>
 
-                         
+
 
                           {/* Delete button */}
                           <button
@@ -732,7 +743,7 @@ const Profile = () => {
               </div>
               <div>
                 {fetchUser?.profile?.work_histories &&
-                fetchUser.profile.work_histories.length > 0 ? (
+                  fetchUser.profile.work_histories.length > 0 ? (
                   <ul>
                     {fetchUser.profile.work_histories.map((work, index) => (
                       <li key={work.id} className="mb-4 relative">
@@ -808,11 +819,10 @@ const Profile = () => {
                       className="hidden"
                     />
                     <div
-                      className={`border ${
-                        selectedLayout === layout
+                      className={`border ${selectedLayout === layout
                           ? "border-blue-500"
                           : "border-gray-300"
-                      } rounded-lg p-2`}
+                        } rounded-lg p-2`}
                     >
                       <img
                         src={`https://via.placeholder.com/100?text=Layout+${layout}`}
@@ -826,9 +836,8 @@ const Profile = () => {
               </div>
               <Button
                 type="submit"
-                className={`w-full  ${
-                  isSigning ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
                 disabled={isSigning}
               >
                 {isSigning ? "Saving..." : "Save changes"}

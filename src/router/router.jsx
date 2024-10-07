@@ -52,7 +52,7 @@ function BaseRouter() {
           <Route path="listing" element={<Listing />} />
           <Route path="thankyou" element={<Thankyou />} />
           <Route path="reservation/:id" element={<RestaurantReservation />} />
-          {/* <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} /> */}
+          <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} />
           <Route path="profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Route>

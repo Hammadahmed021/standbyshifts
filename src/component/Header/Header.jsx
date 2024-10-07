@@ -169,10 +169,10 @@ const Header = ({ style }) => {
             </div>
             <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
 
-              {userData && userData.user ? (
-                userData.user.type === "employee" ? (
+              {userData ? (
+                userData.user.type == "employee" ? (
                   employeeMenu
-                ) : userData.user.type === "employer" ? (
+                ) : userData.user.type == "employer" ? (
                   employerMenu
                 ) : (
                   defaultMenu
