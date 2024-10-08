@@ -12,6 +12,8 @@ import {
   AuthModal,
   EmpCard,
   EmpCardSlider,
+  ContactForm,
+  TestimonialSlider,
 } from "../component";
 import {
   Fav,
@@ -24,6 +26,10 @@ import {
   netflix,
   png,
   hero,
+  girl,
+  connect,
+  people,
+  peoples,
 } from "../assets";
 import {
   employees,
@@ -32,6 +38,7 @@ import {
   infoGrid,
   localDB,
   revenueGrid,
+  testimonial,
 } from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData, getDistance } from "../utils/HelperFun";
@@ -43,7 +50,7 @@ import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import InfoGrid from "../component/InfoGrid";
 import RevenueCard from "../component/RevenueCard";
-import { FaUser } from "react-icons/fa";
+import { FaClipboard, FaClipboardCheck, FaCoffee, FaUser, FaUsers } from "react-icons/fa";
 import AnimatedCounter from "../component/AnimatedCounter";
 
 export default function HomeNew() {
@@ -277,7 +284,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                  // className="border p-3 bg-gray-200 rounded-lg"
+                // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Register
                 </Button>
@@ -358,7 +365,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                  // className="border p-3 bg-gray-200 rounded-lg"
+                // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Get Started
                 </Button>
@@ -394,7 +401,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="bg-hero sm:h-auto h-auto sm:mb-16 mb-12 mt-16 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0 py-6">
+      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0 py-6">
         <div className="container h-full flex items-center px-0 ">
           <div className="lg:w-5/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
@@ -441,39 +448,100 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container bg-tn_pink rounded-2xl p-6">
+      <div className="container bg-tn_pink rounded-3xl p-12 ">
         <div className="flex item-center justify-between">
-        <AnimatedCounter
-        icon={FaUser}
-        heading="People"
-        targetNumber={100} // Target number to count to
-        duration={3000} // Duration in milliseconds
-      />
-      <AnimatedCounter
-        icon={FaUser}
-        heading="People"
-        targetNumber={100} // Target number to count to
-        duration={3000} // Duration in milliseconds
-      />
-      <AnimatedCounter
-        icon={FaUser}
-        heading="People"
-        targetNumber={100} // Target number to count to
-        duration={3000} // Duration in milliseconds
-      />
-      <AnimatedCounter
-        icon={FaUser}
-        heading="People"
-        targetNumber={100} // Target number to count to
-        duration={3000} // Duration in milliseconds
-      />
+          <AnimatedCounter
+            icon={FaClipboard}
+            heading="Jobs posted"
+            targetNumber={200} // Target number to count to
+            duration={3000} // Duration in milliseconds
+          />
+          <AnimatedCounter
+            icon={FaClipboardCheck}
+            heading="Companies"
+            targetNumber={25} // Target number to count to
+            duration={3000} // Duration in milliseconds
+          />
+          <AnimatedCounter
+            icon={FaUsers}
+            heading="Members"
+            targetNumber={153} // Target number to count to
+            duration={3000} // Duration in milliseconds
+          />
+          <AnimatedCounter
+            icon={FaCoffee}
+            heading="Shifts done"
+            targetNumber={88} // Target number to count to
+            duration={3000} // Duration in milliseconds
+          />
+        </div>
+      </div>
+
+      <div className="container flex items-center my-20">
+        <div className="lg:w-5/12 w-full">
+          <img src={girl} alt="" /></div>
+        <div className="lg:w-7/12 w-full">
+          <div className="text-center w-[65%] mx-auto">
+            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+              Connect us
+              to register yourself
+            </h3>
+            <p className=" my-4 text-base w-full text-tn_text_grey  font-normal  text-center">
+              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+            </p>
+          </div>
+          <div className="mx-auto w-[80%]">
+            <ContactForm />
+          </div>
+        </div>
+      </div>
+
+      <div className="container rounded-[3rem] bg-tn_light_grey flex items-center px-0">
+        <div className="lg:w-6/12 w-full">
+          <div className="p-12 text-start">
+            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+              Get started today for better reach
+            </h3>
+            <p className=" my-4 text-base w-full text-tn_text_grey  font-normal">
+              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+            <div className="flex space-x-2 mt-10">
+              <Button
+                type=""
+              >
+                Employee
+              </Button>
+              <Button
+                type=""
+                bgColor={`bg-tn_pink`}
+              >
+                Business
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="lg:w-6/12 w-full">
+          <img src={connect} alt="" /></div>
+      </div>
+
+      <div className="container flex items-center my-20 testimonials">
+        <div className="lg:w-5/12 w-full">
+          <img src={peoples} alt="" /></div>
+        <div className="lg:w-7/12 w-full ">
+          <div className="text-start w-full lg:w-[65%] mx-auto">
+            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+              Trusted by people all over
+            </h3>
+            <TestimonialSlider data={testimonial}/>
+          </div>
+
+
         </div>
       </div>
 
       {/* Render Modal */}
       {showModal && (
         <AuthModal
-          title="Are you signing up/logging in as an Employee or Employer?"
+          title="Define yourself..."
           onSelectRole={handleSelectRole}
           onClose={() => setShowModal(false)}
         />

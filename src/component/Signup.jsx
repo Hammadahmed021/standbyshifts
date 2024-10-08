@@ -206,18 +206,6 @@ export default function Signup() {
           )}
         </div>
 
-        {/* Conditionally render ReCAPTCHA based on isApp */}
-        {/* {!isApp && (
-          <div className="mb-6">
-            <ReCAPTCHA
-              sitekey={RECAPTCHA_SITE_KEY}
-              onChange={handleRecaptchaChange}
-            />
-            {showError && (
-              <p className="text-red-500 text-xs mt-1">{showError}</p>
-            )}
-          </div>
-        )} */}
 
         <Button
           type="submit"

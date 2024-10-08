@@ -16,6 +16,9 @@ export { default as hero } from "./Images/hero-girl.png";
 
 export { default as ImgB } from "./Images/image1.png";
 export { default as ImgB1 } from "./Images/image2.png";
+export { default as connect } from "./Images/connect.png";
+export { default as girl } from "./Images/girl.png";
+export { default as peoples } from "./Images/peoples.png";
 
 
 export { default as png } from "./Images/png.png";

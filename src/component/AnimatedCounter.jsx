@@ -31,15 +31,15 @@ const AnimatedCounter = ({
         {/* Counter Section */}
    
           {/* Icon on the Left */}
-          <Icon className="text-white" size={32}  />
+          <Icon className="text-white" size={34}  />
        
         {/* Number Display */}
-        <span className="text-3xl font-bold text-white">{Math.floor(count)}</span>
+        <span className="text-4xl font-bold text-white">{Math.floor(count)}</span>
 
         {/* Plus Icon */}
-        <FaPlus size={20} className="text-white" />
+        <FaPlus size={22} className="text-white" />
       </div>
-      <h4 className="text-sm font-light text-white leading-none ">{heading}</h4>
+      <h4 className="text-sm font-light text-white leading-none mt-1">{heading}</h4>
     </div>
   );
 };

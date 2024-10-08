@@ -72,10 +72,32 @@
   right: -90px;
 }
 
-/* .employer .slick-arrow.prev-arr span svg,
-.employer .slick-arrow.next-arr span svg {
-  transform: rotate(180deg);
-} */
+
+ul.custom-dots{
+  display: flex !important;
+  gap: 10;
+}
+.custom-dots li {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 100px;
+  border: 1px solid #0000F8; /* Customize border color */
+  background-color: transparent;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.custom-dots li.slick-active{
+  width: 50px !important;
+  height: 16px;
+  background-color: #0000F8; /* Active background color */
+}
+
+.custom-dots li div:before {
+  content: none; /* Remove default dot style */
+}
+
+
 
 @layer utilities {
   .custom-icons li img {
