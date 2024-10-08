@@ -10,6 +10,8 @@ import {
   Loader,
   Modal,
   AuthModal,
+  EmpCard,
+  EmpCardSlider,
 } from "../component";
 import {
   Fav,
@@ -23,7 +25,14 @@ import {
   png,
   hero,
 } from "../assets";
-import { imageData, infoGrid, localDB, revenueGrid } from "../utils/localDB";
+import {
+  employees,
+  employer,
+  imageData,
+  infoGrid,
+  localDB,
+  revenueGrid,
+} from "../utils/localDB";
 import useFetch from "../hooks/useFetch";
 import { transformData, getDistance } from "../utils/HelperFun";
 import { Link, useNavigate } from "react-router-dom";
@@ -34,6 +43,8 @@ import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import InfoGrid from "../component/InfoGrid";
 import RevenueCard from "../component/RevenueCard";
+import { FaUser } from "react-icons/fa";
+import AnimatedCounter from "../component/AnimatedCounter";
 
 export default function HomeNew() {
   const isDesktop = useMediaQuery("(max-width: 991px)");
@@ -266,7 +277,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                // className="border p-3 bg-gray-200 rounded-lg"
+                  // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Register
                 </Button>
@@ -319,11 +330,11 @@ export default function HomeNew() {
               A whole world of talented peoples
             </h2>
             <p className="text-base w-full text-tn_text_grey  font-normal text-center py-2 sm:py-0 mt-4">
-              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout.
             </p>
           </div>
           <div className="mt-8">
-
             <InfoGrid items={infoGrid} />
           </div>
         </div>
@@ -334,32 +345,128 @@ export default function HomeNew() {
           <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
               <h3 className="text-white text-5xl inline sm:block leading-tight font-semibold">
-                Find the talent needed to get
-                your business growing.
+                Find the talent needed to get your business growing.
               </h3>
               <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start text-center">
-                There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.
+                There are many variations of passages of Lorem Ipsum available,
+                but the majority have suffered alteration in some form, by
+                injected humour.
               </p>
               <div className="my-4">
-                <RevenueCard items={revenueGrid}/>
+                <RevenueCard items={revenueGrid} />
               </div>
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                // className="border p-3 bg-gray-200 rounded-lg"
+                  // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Get Started
                 </Button>
-               
               </div>
             </div>
-           
           </div>
           <div className="lg:w-5/12 w-full ">
             <div className="flex flex-col items-ends justify-center">
-              <img src={hero} alt="" className="w-full h-[600px] object-contain" />
+              <img
+                src={hero}
+                alt=""
+                className="w-full h-[600px] object-contain"
+              />
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="container">
+        <div className="flex items-center space-x-4 relative">
+          <div className="md:w-8/12 w-12 employees">
+            <EmpCardSlider data={employees} />
+          </div>
+          <div className="md:w-4/12 w-12 pb-8">
+            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+              Top rated employees
+            </h3>
+            <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start text-center">
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-hero sm:h-auto h-auto sm:mb-16 mb-12 mt-16 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0 py-6">
+        <div className="container h-full flex items-center px-0 ">
+          <div className="lg:w-5/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+            <div className="w-[100%] sm:w-[95%]">
+              <h3 className="text-white text-5xl inline sm:block leading-tight font-semibold">
+                Most popular employers
+              </h3>
+              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start text-center">
+                It is a long established fact that a reader will be distracted
+                by the readable content of a page when looking at its layout.
+              </p>
+              <div className="my-6">
+                <h4 className="text-white text-base mb-2 font-semibold">Popular searches:</h4>
+                <ul className="flex items-center space-x-2">
+                  <li>
+                    <span className="border border-tn_text_grey rounded-2xl flex space-x-2">
+                      <span className="text-tn_text_grey text-xs py-1 px-2">
+                        Accountability
+                      </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="border border-tn_text_grey rounded-2xl flex space-x-2">
+                      <span className="text-tn_text_grey text-xs py-1 px-2">
+                        Factory worker
+                      </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="border border-tn_text_grey rounded-2xl flex space-x-2">
+                      <span className="text-tn_text_grey text-xs py-1 px-2">
+                        House keeping
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="lg:w-7/12 w-full ">
+            <div className="flex flex-col items-ends justify-center px-6 employer">
+              <EmpCardSlider data={employer} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container bg-tn_pink rounded-2xl p-6">
+        <div className="flex item-center justify-between">
+        <AnimatedCounter
+        icon={FaUser}
+        heading="People"
+        targetNumber={100} // Target number to count to
+        duration={3000} // Duration in milliseconds
+      />
+      <AnimatedCounter
+        icon={FaUser}
+        heading="People"
+        targetNumber={100} // Target number to count to
+        duration={3000} // Duration in milliseconds
+      />
+      <AnimatedCounter
+        icon={FaUser}
+        heading="People"
+        targetNumber={100} // Target number to count to
+        duration={3000} // Duration in milliseconds
+      />
+      <AnimatedCounter
+        icon={FaUser}
+        heading="People"
+        targetNumber={100} // Target number to count to
+        duration={3000} // Duration in milliseconds
+      />
         </div>
       </div>
 

@@ -55,10 +55,47 @@ export const revenueGrid = [
   },
 ];
 
+export const employer = [
+  {
+    image: "https://via.placeholder.com/150",
+    title: "John Doe",
+    subheading: "Software Engineer",
+  },
+  {
+    image: "https://via.placeholder.com/150",
+    title: "Jane Smith",
+    subheading: "Product Manager",
+  },
+  {
+    image: "https://via.placeholder.com/150",
+    title: "Michael Brown",
+    subheading: "Designer",
+  },
+  // Add more employee objects as needed
+];
 
 
-
-
+export const employees = [
+  {
+    image: "https://via.placeholder.com/150",
+    title: "John Doe",
+    subheading: "Software Engineer",
+    rating: 4.5,
+  },
+  {
+    image: "https://via.placeholder.com/150",
+    title: "Jane Smith",
+    subheading: "Product Manager",
+    rating: 4.8,
+  },
+  {
+    image: "https://via.placeholder.com/150",
+    title: "Michael Brown",
+    subheading: "Designer",
+    rating: 4.2,
+  },
+  // Add more employee objects as needed
+];
 
 
 export const localDB = [

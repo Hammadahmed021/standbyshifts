@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 /* Add this to your index.css or App.css */
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
@@ -12,14 +13,69 @@
 
 @layer base {
   html {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   body {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Inter", sans-serif;
 
   }
 }
+
+.slick-prev:before,
+.slick-next:before {
+  content: unset;
+}
+
+.employees .slick-arrow {
+  position: absolute;
+  right: -150px;
+  left: unset;
+  top: 80%;
+  background: #F59200;
+  border-radius: 50px;
+  height: 30px;
+  width: 30px;
+}
+
+.employer .slick-arrow {
+  background: #F59200;
+  border-radius: 50px;
+  height: 30px;
+  width: 30px;
+  z-index: 1;
+}
+
+.employees .slick-arrow:hover span svg, .employer .slick-arrow:hover span svg { 
+  color: white;
+}
+
+.employer .slick-arrow.next-arr {
+  right: -10px;
+}
+
+.employer .slick-arrow.prev-arr {
+  left: -10px;
+}
+
+.employees .slick-arrow span,
+.employer .slick-arrow span {
+  height: 30px;
+  width: 30px;
+  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.employees .slick-arrow.next-arr {
+  right: -90px;
+}
+
+/* .employer .slick-arrow.prev-arr span svg,
+.employer .slick-arrow.next-arr span svg {
+  transform: rotate(180deg);
+} */
 
 @layer utilities {
   .custom-icons li img {

@@ -7,7 +7,7 @@ const Ratings = ({ rating }) => {
 
   return (
     <div className="flex items-center">
-      <FaStar size={12}/>
+      <FaStar size={12} color='#F59200'/>
       <span className="text-sm text-black font-normal ml-1">{formattedRating}</span>
     </div>
   );
