@@ -3,7 +3,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 const Input = forwardRef(function Input(
   {
+    icon,
     label,
+    iconSize = 15, // Default size for the icon
+    iconColor = "#F59200", // Default color for the icon
     type = "text",
     placeholder = "type here...",
     className = "",
@@ -28,14 +31,14 @@ const Input = forwardRef(function Input(
 
   return (
     <div className={`w-full relative ${mainInput}`}>
-      {label && (
-        <label className="inline-block mb-1 pl-1 absolute -top-2 px-1 left-4 text-xs text-tn_dark_field bg-white" htmlFor={id}>
-          {label}
-        </label>
+      {icon && (
+        <span className="inline-block absolute top-1/3 px-1 left-[6px]" >
+            {React.createElement(icon, { size: iconSize, color: iconColor })}
+        </span>
       )}
       <input
         type={type === "password" && showPassword ? "text" : type}
-        className={`appearance-none w-full px-3 py-3 border normal-case border-tn_dark_field outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 ${className}`}
+        className={`pl-8 appearance-none w-full px-3 py-3 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 ${className}`}
         ref={ref}
         placeholder={placeholder}
         

@@ -15,8 +15,8 @@ const AuthModal = ({ title, onSelectRole, onClose }) => {
   }, [onClose]);
 
   return (
-    <div id="modal-overlay" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4 sm:px-0">
-      <div className="bg-white rounded-3xl shadow-xl p-4 w-auto relative md:p-12">
+    <div id="modal-overlay" className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50 px-4 sm:px-0 bg-blend-saturation">
+      <div className="bg-white rounded-3xl shadow-xl p-6 w-auto relative md:p-12 drop-shadow-2xl bg-opacity-95">
         <button onClick={onClose} className="text-2xl absolute top-1 right-2 font-bold text-gray-600 hover:text-gray-800">
           &times;
         </button>

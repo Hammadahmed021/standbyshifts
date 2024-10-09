@@ -6,6 +6,7 @@ import { Input, Button } from "../component";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Capacitor } from "@capacitor/core";
+import { FaAccessibleIcon, FaLock, FaLockOpen, FaRegCompass, FaRegEnvelope, FaRegUser, FaUnlock, FaUser } from "react-icons/fa";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -111,7 +112,7 @@ export default function Signup() {
         <span className="mb-6 flex space-x-2">
           <Input
             mainInput={"sm:w-full w-full"}
-            label="Full Name"
+            icon={FaRegUser}
             type="text"
             placeholder="John"
             onKeyPress={handleNameKeyPress} // Prevent numbers
@@ -128,7 +129,7 @@ export default function Signup() {
           <span className="w-full">
             <Input
               mainInput={"sm:w-full w-full"}
-              label="Email"
+              icon={FaRegEnvelope}
               placeholder="Enter your email"
               type="email"
               {...register("email", {
@@ -150,7 +151,7 @@ export default function Signup() {
         <span className="mb-6 block">
           <Input
             mainInput={"sm:w-full w-full"}
-            label="Password"
+            icon={FaUnlock}
             type="password"
             maxLength={10}
             minLength={6}
@@ -169,7 +170,7 @@ export default function Signup() {
         <span className="mb-6 block">
           <Input
             mainInput={"sm:w-full w-full"}
-            label="Confirm Password"
+            icon={FaUnlock}
             type="password"
             maxLength={10}
             minLength={6}
