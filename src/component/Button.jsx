@@ -12,7 +12,7 @@ export default function Button({
     ...props
 }) {
   return (
-    <button className={`${padX} ${padY} transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] ${textSize} ${className} ${bgColor} ${textColor}`} {...props}>
+    <button className={`${padX} ${padY} shadow-xl transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] ${textSize} ${className} ${bgColor} ${textColor}`} {...props}>
         {children}
     </button>
   )

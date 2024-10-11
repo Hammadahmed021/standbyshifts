@@ -266,7 +266,7 @@ export default function HomeNew() {
 
   return (
     <>
-      <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0">
+      <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
         <div className="container h-full flex items-center sm:items-end px-0 ">
           <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[85%]">
@@ -347,7 +347,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="bg-hero sm:h-[700px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0">
+      <div className="bg-hero sm:h-[700px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
         <div className="container h-full flex items-center sm:items-end px-0 ">
           <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
@@ -401,7 +401,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-xl overflow-hidden px-0 py-6">
+      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
         <div className="container h-full flex items-center px-0 ">
           <div className="lg:w-5/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
@@ -448,7 +448,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container bg-tn_pink rounded-3xl p-12 ">
+      <div className="container bg-tn_pink rounded-site p-12 ">
         <div className="flex item-center justify-between">
           <AnimatedCounter
             icon={FaClipboard}
@@ -496,7 +496,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container rounded-[3rem] bg-tn_light_grey flex items-center px-0">
+      <div className="container rounded-site bg-tn_light_grey flex items-center px-0">
         <div className="lg:w-6/12 w-full">
           <div className="p-12 text-start">
             <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">

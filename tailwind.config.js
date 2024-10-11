@@ -25,6 +25,9 @@ export default {
         tn_light: '#F7F7F7',
         tn_dark_field: '#1C1B1F',
       },
+      borderRadius: {
+        'site': '50px', // Custom border radius
+      },
       fontFamily:{
         'lato': ["Montserrat", 'sans-serif']
       },

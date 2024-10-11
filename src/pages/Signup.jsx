@@ -73,10 +73,11 @@ const Signup = () => {
         {/* Left Column: Login Form */}
         <div className="px-4">
           <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold">
-            Signup
+          Sign-up
+          as an employee
           </h2>
           <p className="text-tn_text_grey mt-2 mb-8">
-            Let’s get you all st up so you can access your personal account.
+          It is a long established fact that a reader
           </p>
           <SignupComponent />
           <p className="text-tn_dark_field text-sm font-bold text-center py-3">
