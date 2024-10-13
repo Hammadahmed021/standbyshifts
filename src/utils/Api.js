@@ -244,6 +244,65 @@ export const deleteAllUserBookings = async () => {
   }
 };
 
+export const updateEmployerProfile = async (userData) => {
+  const token = localStorage.getItem("webToken");
+
+  const {
+    name,
+    phone,
+    location,
+    zip_code,
+    industry_id, // Ensure this is always an array
+    logo,
+    layout,
+  } = userData;
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("phone", phone);
+  formData.append("layout", layout);
+  formData.append("location", location || ""); // Directly use userData
+  formData.append("zip_code", zip_code || ""); // Directly use userData
+
+
+  formData.append("industry_id", industry_id);
+
+
+
+
+  // Append profile image if present
+  if (logo) {
+    formData.append("logo", logo);
+  }
+
+  // Log form data for debugging
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ": " + pair[1]);
+  }
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}employer/profile/update`,
+      formData,
+      {
+        params: {
+          api_key: API_KEY,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log(response.data.user, "Updated user profile data");
+    return response;
+  } catch (error) {
+    console.error("Error in updating user profile: ", error);
+    throw new Error("Error in updating user profile");
+  }
+};
+
 // Function to update user profile
 export const updateUserProfile = async (userData) => {
   const token = localStorage.getItem("webToken");
@@ -268,9 +327,9 @@ export const updateUserProfile = async (userData) => {
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
 
-    formData.append("industry_id", industry_id);
-  
-  
+  formData.append("industry_id", industry_id);
+
+
 
   // Append skills
   skills.forEach((skill) => formData.append("skills[]", skill));
@@ -514,3 +573,43 @@ export const fetchProfileDataEmployer = async () => {
     );
   }
 };
+
+// single employer data 
+export const fetchSingleDetailEmployer = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employer/profile/page-data`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data, "profile data");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching profile data"
+    );
+  }
+};
+
+
+// Post a job  
+export const postJob = async (payload) => {
+  console.log(payload, 'payload post job');
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = axios.post(`${BASE_URL}employer/job/post`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    })
+    return response.data;
+  } catch (error) {
+    console.log(error || "unable to post a job");
+
+  }
+}

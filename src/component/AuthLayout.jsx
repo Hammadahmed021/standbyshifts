@@ -22,7 +22,7 @@ const AuthLayout = ({ children, authentication = true }) => {
       } else if (user == "employer") {
         navigate("/employer"); // Redirect to employer page
       } else {
-        navigate("/profile"); // Fallback
+        navigate("/"); // Fallback
       }
     } else if (redirectState && redirectState.fromReservation && authStatus) {
       // Handle redirection from reservation

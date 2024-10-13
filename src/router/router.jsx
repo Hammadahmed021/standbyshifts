@@ -15,13 +15,18 @@ import {
   Listing,
   RestaurantReservation,
   Signup,
-  Profile,
+  // Profile,
   Thankyou,
   NotFound,
   ForgotPassword,
   HomeNew,
   Employer,
   Employee,
+  EmployeeProfile,
+  EmployerProfile,
+  PostJob,
+  EmployerProfileView,
+  EmployeeProfileView,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -52,8 +57,11 @@ function BaseRouter() {
           <Route path="listing" element={<Listing />} />
           <Route path="thankyou" element={<Thankyou />} />
           <Route path="reservation/:id" element={<RestaurantReservation />} />
-          <Route path="profile" element={<AuthLayout authentication={true}><Profile /></AuthLayout>} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="employee-profile" element={<AuthLayout authentication={true}><EmployeeProfile /></AuthLayout>} />
+          <Route path="employer-profile" element={<AuthLayout authentication={true}><EmployerProfile /></AuthLayout>} />
+          <Route path="employer-profile-view" element={<AuthLayout authentication={true}><EmployerProfileView /></AuthLayout>} />
+          <Route path="employee-profile-view" element={<AuthLayout authentication={true}><EmployeeProfileView  /></AuthLayout>} />
+          <Route path="post-job" element={<AuthLayout authentication={true}><PostJob /></AuthLayout>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

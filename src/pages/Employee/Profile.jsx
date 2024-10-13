@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useFieldArray, useForm } from "react-hook-form";
-import { clearAllBookings } from "../store/bookingSlice";
-import { updateUserData } from "../store/authSlice";
-import { fallback, relatedFallback } from "../assets";
+import { clearAllBookings } from "../../store/bookingSlice";
+import { updateUserData } from "../../store/authSlice";
+import { fallback, relatedFallback } from "../../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -13,7 +13,7 @@ import {
   RatingModal,
   AutoComplete,
   SelectOption,
-} from "../component";
+} from "../../component";
 import {
   deleteAllUserBookings,
   deleteUserBooking,
@@ -24,8 +24,8 @@ import {
   showFavorite,
   updateUserProfile,
   verifyUser,
-} from "../utils/Api";
-import { updateFirebasePassword } from "../service";
+} from "../../utils/Api";
+import { updateFirebasePassword } from "../../service";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import { FaPen, FaTrash } from "react-icons/fa";
@@ -73,8 +73,6 @@ const Profile = () => {
         let data;
         if (userType === "employee") {
           data = await fetchProfileDataEmployee();
-        } else if (userType === "employer") {
-          data = await fetchProfileDataEmployer();
         } else {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
@@ -208,15 +206,10 @@ const Profile = () => {
     try {
       const { newPassword, confirmPassword, address, zip } = data;
 
-      // Ensure newPassword and confirmPassword match
+      // Password update logic (if needed)
       if (newPassword && confirmPassword) {
         if (newPassword !== confirmPassword) {
           setShowError("Passwords do not match.");
-          return;
-        }
-
-        if (!newPassword) {
-          setShowError("New password is required.");
           return;
         }
 
@@ -227,15 +220,11 @@ const Profile = () => {
         }
       }
 
-      // Ensure at least one work history entry is present
-      const validWorkHistories = savedExperiences.filter(
-        (exp) => exp.jobDesc && exp.jobTitle
-      );
-
-      // if (validWorkHistories.length === 0) {
-      //   setShowError("At least one work history entry is required.");
-      //   return;
-      // }
+      // Merge new experiences with existing fetched experiences
+      const allExperiences = [
+        ...fetchUser?.profile?.work_histories || [], // Existing experiences from the user profile
+        ...savedExperiences // Newly added/edited experiences
+      ];
 
       // Construct the updated user data object
       const updatedUserData = {
@@ -250,30 +239,33 @@ const Profile = () => {
         layout: data.layout,
         industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
         skills: tags || [],
-        work_history: validWorkHistories.map((exp) => ({
-          title: exp.jobTitle,
-          description: exp.jobDesc,
-          start_month: exp.startMonth,
-          end_month: exp.endMonth,
-          start_year: exp.startYear,
-          end_year: exp.endYear,
+        work_history: allExperiences.map((exp) => ({
+          title: exp.jobTitle || exp.title,
+          description: exp.jobDesc || exp.description,
+          start_month: exp.startMonth || exp.start_month,
+          end_month: exp.endMonth || exp.end_month,
+          start_year: exp.startYear || exp.start_year,
+          end_year: exp.endYear || exp.end_year,
         })),
       };
 
       console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
-      await updateUserProfile(updatedUserData);
+      const response = await updateUserProfile(updatedUserData);
+      if (response.status === 200 || response.status === 201) {
+        dispatch(updateUserData(updatedUserData));
+        setIsSigning(false);
+        setSuccessMessage("Profile updated successfully!");
 
-      dispatch(updateUserData(updatedUserData));
-      setIsSigning(false);
-      setSuccessMessage("Profile updated successfully!");
+      }
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error saving profile:", error);
     }
   };
+
 
   const getUserIP = async () => {
     try {
@@ -374,10 +366,13 @@ const Profile = () => {
   console.log(savedExperiences, 'savedExperiences');
 
 
-  // Use Effect to initialize saved experiences
+  // Initialize saved experiences only when the component mounts
   useEffect(() => {
-    setSavedExperiences(fetchUser?.profile?.work_histories || []);
+    if (fetchUser?.profile?.work_histories) {
+      setSavedExperiences(fetchUser.profile.work_histories);
+    }
   }, [fetchUser]);
+
 
   const saveExperience = (index) => {
     const values = getValues(`experiences.${index}`);
@@ -391,12 +386,9 @@ const Profile = () => {
       endYear: values.endYear,
     };
 
-    console.log("Experience to save:", experience);
-
     // Update the state based on edit mode
     setSavedExperiences((prev) => {
-      const existingExperiences = fetchUser?.profile?.work_histories || [];
-      const updatedExperiences = [...prev, ...existingExperiences];
+      const updatedExperiences = [...prev]; // Copy previous experiences
 
       if (editIndex !== null) {
         updatedExperiences[editIndex] = experience;
@@ -405,8 +397,6 @@ const Profile = () => {
         updatedExperiences.push(experience);
         console.log("Appended New Experience:", experience);
       }
-
-
 
       return updatedExperiences; // Return the updated array
     });
@@ -424,13 +414,20 @@ const Profile = () => {
   };
 
 
+
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
       const newExperiences = prev.filter((_, i) => i !== index);
-      console.log(`Updated experiences:`, newExperiences); // Debug log
+      console.log(`Deleted experience at index ${index}`);
       return newExperiences;
     });
+
+    // If the deleted index was being edited, reset the edit index
+    if (editIndex === index) {
+      setEditIndex(null); // Clear the edit index if the experience being edited was deleted
+    }
   };
+
 
   const editExperience = (index) => {
     const selectedExperience = fetchUser?.profile?.work_histories[index];
@@ -720,9 +717,6 @@ const Profile = () => {
                             {work.startMonth}/{work.startYear} - {work.endMonth}
                             /{work.endYear}
                           </p>
-
-
-
                           {/* Delete button */}
                           <button
                             type="button"
@@ -818,8 +812,8 @@ const Profile = () => {
                     />
                     <div
                       className={`border ${selectedLayout === layout
-                          ? "border-blue-500"
-                          : "border-gray-300"
+                        ? "border-blue-500"
+                        : "border-gray-300"
                         } rounded-lg p-2`}
                     >
                       <img

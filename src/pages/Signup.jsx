@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Signup as SignupComponent } from "../component";
 import { signup, login, Logo } from "../assets";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle, FaApple } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { signupUser, login as loginFunc } from "../store/authSlice";
@@ -9,10 +9,15 @@ import { SignUpWithGoogle } from "../service";
 import { auth } from "../service/firebase";
 import { getUserFromGmailSignup } from "../utils/Api";
 import { Capacitor } from "@capacitor/core";
+import BannerSlider from "../component/BannerSlider";
+import { imageData } from "../utils/localDB";
 
-// const images = [login, signup];
+
 
 const Signup = () => {
+  const location = useLocation();
+const { type } = location.state || {}; // Get the type passed from modal
+localStorage.setItem("userType", type);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,78 +63,61 @@ const Signup = () => {
   };
 
   return (
-    <div className="container mx-auto flex sm:items-center justify-center min-h-screen p-0 sm:p-2 relative flex-col sm:flex-col items-start">
-      <Link to={"/"}>
-        <img
-          src={Logo}
-          className={` ${
-            isApp
-              ? "w-fit absolute top-8 left-4"
-              : "w-fit relative sm:absolute top-4 left-4 mb-8 sm:mb-0"
-          }`}
-        />
-      </Link>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        {/* Left Column: Login Form */}
-        <div className="px-4">
-          <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-extrabold">
-          Sign-up
-          as an employee
-          </h2>
-          <p className="text-tn_text_grey mt-2 mb-8">
-          It is a long established fact that a reader
-          </p>
-          <SignupComponent />
-          <p className="text-tn_dark_field text-sm font-bold text-center py-3">
-            Don’t have an account?{" "}
-            <Link className="text-tn_pink" to={"/login"}>
-              Log In
-            </Link>
-          </p>
-          {!isApp && (
-            <>
-              <div className="relative py-4 mt-5 mb-8">
-                <hr className="bg-tn_light_grey" />
-                <p className="absolute top-1 left-0 right-0 mx-auto text-center sm:w-[20%] w-[40%] bg-white text-tn_text_grey text-sm">
-                  Or login with
-                </p>
-              </div>
-              <div className="flex justify-between items-center space-x-3">
-                <span
-                  className="p-3 flex justify-center border w-full border-tn_light_grey rounded-lg"
-                  onClick={() => {}}
-                >
-                  <FaFacebook size={24} />
-                </span>
-                <span
-                  className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
-                  onClick={handleGoogleSignup}
-                >
-                  <FaGoogle size={24} />
-                </span>
-                <span
-                  className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
-                  onClick={() => {}}
-                >
-                  <FaApple size={24} />
-                </span>
-              </div>
-            </>
-          )}
-          {error && <p className="mt-3 text-center text-base">{error}</p>}
+    <div className="flex sm:items-center justify-center min-h-screen relative flex-col sm:flex-row items-start">
+      <div className="flex w-full justify-between min-h-screen space-x-4">
+        {/* Left Column */}
+        <div className="w-full sm:w-1/2 relative hidden md:block min-h-screen">
+          <div className="bg-tn_pink mr-14 absolute z-0 left-0 right-0 top-0 bottom-0">
+          </div>
+
+          <div className="flex space-x-4  -ml-12">
+            <BannerSlider images={imageData} />
+            <BannerSlider images={imageData} reverse={true} />
+            <BannerSlider images={imageData} />
+          </div>
         </div>
-        {/* Right Column: Image Slider */}
-        <div className="relative hidden md:block">
-          <img src={login} alt={`login`} className="w-full" />
-          {/* <Carousel slidesToShow={1}>
-            {images.map((image, index) => (
-            <img src={image} alt={`slide-${index}`} key={index} className="w-full" />
-            ))}
-          </Carousel> */}
+        <div className="w-full sm:w-1/2">
+          <div className="flex flex-col justify-start items-center w-full md:w-11/12 mx-auto h-full">
+            <div className="flex items-center justify-between py-4 w-full mb-12">
+              <Link to={"/"}>
+                <img
+                  src={Logo}
+                  className=""
+                />
+              </Link>
+              <p className="text-tn_text_grey text-base font-medium text-center ">
+
+                <Link className=" " to={"/login"}>
+                  Log In
+                </Link>
+              </p>
+            </div>
+            {/* Left Column: Login Form */}
+            <div className="mb-6 w-full">
+
+              <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-semibold md:w-2/4">
+                Sign-up as an {type}
+              </h2>
+              <p className="text-tn_text_grey mt-2 mb-12">
+                It is a long established fact that a reader
+              </p>
+              <SignupComponent onClick={handleGoogleSignup} />
+              {/* <span
+                className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"
+                onClick={handleGoogleSignup}
+              >
+                <FaGoogle size={24} />
+              </span> */}
+              {/* {error && <p className="mt-3 text-center text-base">{error}</p>} */}
+            </div>
+
+          </div>
         </div>
+
       </div>
     </div>
   );
 };
 
 export default Signup;
+

@@ -69,7 +69,7 @@ const Header = ({ style }) => {
         <Link to={"/saved-jobs"}>Saved Jobs</Link>
       </li>
       <li>
-        <Link to={"/profile"}>Profile</Link>
+        <Link to={"/employee-profile"}>Profile</Link>
       </li>
       <li>
         <Link to={"/contact"}>Contact</Link>
@@ -78,7 +78,7 @@ const Header = ({ style }) => {
   );
 
   const employerMenu = (
-  <>
+    <>
       <li>
         <Link to={"/employer"}>Employer Home</Link>
       </li>
@@ -92,10 +92,10 @@ const Header = ({ style }) => {
         <Link to={"/candidates"}>Find Candidates</Link>
       </li>
       <li>
-        <Link to={"/profile"}>Company Profile</Link>
+        <Link to={"/employer-profile"}>Company Profile</Link>
       </li>
-      </>
-  
+    </>
+
   );
 
   const getUserIP = async () => {
@@ -162,7 +162,13 @@ const Header = ({ style }) => {
         {!isDesktop ? (
           <nav className="flex py-4 items-center">
             <div className="flex items-center relative">
-              <Link to={"/"}>
+              <Link to={
+                userData
+                  ? userData.user.type === "employee"
+                    ? "employee"
+                    : "employer"
+                  : "/"
+              }>
                 <img src={Logo} alt="" className="w-28" />
               </Link>
               {/* <Search data={data} /> */}
@@ -191,6 +197,7 @@ const Header = ({ style }) => {
                       <img
                         src={
                           currentUser?.employee?.profile_picture ||
+                          currentUser?.employer?.logo ||
                           userData?.profile_image?.name ||
                           fallback
                         }
@@ -219,9 +226,16 @@ const Header = ({ style }) => {
                         className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10"
                       >
                         <Link
-                          to="/profile"
+
+                          to={
+                            userData && userData.user.type === "employee"
+                              ? "employee-profile"
+                              : "employer-profile"
+                          }
+
                           className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
                         >
+
                           Profile
                         </Link>
                         <LogoutBtn />

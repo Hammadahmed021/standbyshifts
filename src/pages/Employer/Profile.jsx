@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useFieldArray, useForm } from "react-hook-form";
-import { clearAllBookings } from "../store/bookingSlice";
-import { updateUserData } from "../store/authSlice";
-import { fallback, relatedFallback } from "../assets";
+import { clearAllBookings } from "../../store/bookingSlice";
+import { updateUserData } from "../../store/authSlice";
+import { fallback, relatedFallback } from "../../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -13,7 +13,7 @@ import {
   RatingModal,
   AutoComplete,
   SelectOption,
-} from "../component";
+} from "../../component";
 import {
   deleteAllUserBookings,
   deleteUserBooking,
@@ -24,8 +24,9 @@ import {
   showFavorite,
   updateUserProfile,
   verifyUser,
-} from "../utils/Api";
-import { updateFirebasePassword } from "../service";
+  updateEmployerProfile,
+} from "../../utils/Api";
+import { updateFirebasePassword } from "../../service";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import { FaPen, FaTrash } from "react-icons/fa";
@@ -63,7 +64,9 @@ const Profile = () => {
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
-
+  console.log(fetchUser, 'fetchUser >>>> employer');
+  console.log(currentUser, 'currentUser >>>> employer');
+  
   const userType = userData?.user?.type || localStorage.getItem("userType")
 
   useEffect(() => {
@@ -71,17 +74,12 @@ const Profile = () => {
 
       try {
         let data;
-        if (userType === "employee") {
-          data = await fetchProfileDataEmployee();
-        } else if (userType === "employer") {
+        if (userType === "employer") {
           data = await fetchProfileDataEmployer();
-        } else {
+        }  else {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
-
-        // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
-        setTags(data.skills ? data.skills.map((skill) => skill.title) : []);
 
         // Set selected industries based on fetched industries, ensuring it's an empty array if industries are undefined
         setSelectedIndustries(data.industries ? [] : []);
@@ -93,16 +91,6 @@ const Profile = () => {
     fetchData(); // Call the async function
   }, []); // Runs once when the component mounts
 
-  // Log tags whenever they change
-  useEffect(() => {
-    console.log(tags, "all tags");
-  }, [tags]);
-
-  const handleAddTag = (newTag) => {
-    if (!tags.includes(newTag)) {
-      setTags((prevTags) => [...prevTags, newTag]);
-    }
-  };
 
   const {
     register,
@@ -117,51 +105,18 @@ const Profile = () => {
     defaultValues: {
       name: currentUser?.name || "",
       phone: currentUser?.phone || "",
-      address: fetchUser?.employee?.address || "",
-      zip: fetchUser?.employee?.zip_code || "",
+      address: currentUser?.employer?.location || fetchUser?.profile?.employer?.location || "",
+      zip: currentUser?.employer?.zip_code || fetchUser?.profile?.employer?.zip_code || "",
       newPassword: "",
       confirmPassword: "",
       layout: "1", // Default to first layout
 
-      experiences: [
-        {
-          jobTitle: "", // Job title
-          jobDesc: "", // Job description
-          startYear: "", // Start year
-          startMonth: "", // Start month
-          endYear: "", // End year
-          endMonth: "", // End month
-        },
-      ],
+    
     },
   });
   const selectedLayout = watch("layout");
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "experiences", // This should match the default values above
-  });
-  const currentYear = new Date().getFullYear(); // Get the current year
-  const years = Array.from(
-    { length: currentYear - 1990 + 1 },
-    (_, i) => 1990 + i
-  );
-
-  // Month options for select
-  const months = [
-    { id: 1, name: "January" },
-    { id: 2, name: "February" },
-    { id: 3, name: "March" },
-    { id: 4, name: "April" },
-    { id: 5, name: "May" },
-    { id: 6, name: "June" },
-    { id: 7, name: "July" },
-    { id: 8, name: "August" },
-    { id: 9, name: "September" },
-    { id: 10, name: "October" },
-    { id: 11, name: "November" },
-    { id: 12, name: "December" },
-  ];
+  
 
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
@@ -227,15 +182,7 @@ const Profile = () => {
         }
       }
 
-      // Ensure at least one work history entry is present
-      const validWorkHistories = savedExperiences.filter(
-        (exp) => exp.jobDesc && exp.jobTitle
-      );
-
-      // if (validWorkHistories.length === 0) {
-      //   setShowError("At least one work history entry is required.");
-      //   return;
-      // }
+    
 
       // Construct the updated user data object
       const updatedUserData = {
@@ -243,27 +190,19 @@ const Profile = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-          profile_picture: profileImageFile,
+          logo: profileImageFile,
         }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         layout: data.layout,
         industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
-        skills: tags || [],
-        work_history: validWorkHistories.map((exp) => ({
-          title: exp.jobTitle,
-          description: exp.jobDesc,
-          start_month: exp.startMonth,
-          end_month: exp.endMonth,
-          start_year: exp.startYear,
-          end_year: exp.endYear,
-        })),
+       
       };
 
       console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
-      await updateUserProfile(updatedUserData);
+      await updateEmployerProfile(updatedUserData);
 
       dispatch(updateUserData(updatedUserData));
       setIsSigning(false);
@@ -301,8 +240,8 @@ const Profile = () => {
       // dispatch(updateUserData(data));
       setValue("name", data?.name || "");
       setValue("phone", data?.phone || "");
-      setValue("address", data?.employee?.location || "");
-      setValue("zip", data?.employee?.zip_code || "");
+      setValue("address", data?.employer?.location || "");
+      setValue("zip", data?.employer?.zip_code || "");
       setValue("layout", data?.layout || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -371,90 +310,7 @@ const Profile = () => {
     ];
   };
 
-  console.log(savedExperiences, 'savedExperiences');
 
-
-  // Use Effect to initialize saved experiences
-  useEffect(() => {
-    setSavedExperiences(fetchUser?.profile?.work_histories || []);
-  }, [fetchUser]);
-
-  const saveExperience = (index) => {
-    const values = getValues(`experiences.${index}`);
-
-    const experience = {
-      jobTitle: values.jobTitle,
-      jobDesc: values.jobDesc,
-      startMonth: values.startMonth,
-      startYear: values.startYear,
-      endMonth: values.endMonth,
-      endYear: values.endYear,
-    };
-
-    console.log("Experience to save:", experience);
-
-    // Update the state based on edit mode
-    setSavedExperiences((prev) => {
-      const existingExperiences = fetchUser?.profile?.work_histories || [];
-      const updatedExperiences = [...prev, ...existingExperiences];
-
-      if (editIndex !== null) {
-        updatedExperiences[editIndex] = experience;
-        console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
-      } else {
-        updatedExperiences.push(experience);
-        console.log("Appended New Experience:", experience);
-      }
-
-
-
-      return updatedExperiences; // Return the updated array
-    });
-
-    // Reset form fields after saving
-    resetField(`experiences.${index}.jobTitle`);
-    resetField(`experiences.${index}.jobDesc`);
-    resetField(`experiences.${index}.startMonth`);
-    resetField(`experiences.${index}.startYear`);
-    resetField(`experiences.${index}.endMonth`);
-    resetField(`experiences.${index}.endYear`);
-
-    // Reset edit mode after saving
-    setEditIndex(null);
-  };
-
-
-  const deleteExperience = (index) => {
-    setSavedExperiences((prev) => {
-      const newExperiences = prev.filter((_, i) => i !== index);
-      console.log(`Updated experiences:`, newExperiences); // Debug log
-      return newExperiences;
-    });
-  };
-
-  const editExperience = (index) => {
-    const selectedExperience = fetchUser?.profile?.work_histories[index];
-
-    if (selectedExperience) {
-      setValue(`experiences.${index}.jobTitle`, selectedExperience.title);
-      setValue(`experiences.${index}.jobDesc`, selectedExperience.description);
-      setValue(
-        `experiences.${index}.startMonth`,
-        selectedExperience.start_month
-      );
-      setValue(`experiences.${index}.startYear`, selectedExperience.start_year);
-      setValue(`experiences.${index}.endMonth`, selectedExperience.end_month);
-      setValue(`experiences.${index}.endYear`, selectedExperience.end_year);
-
-      // Set the index of the experience being edited
-      setEditIndex(index);
-
-      // Scroll to the form
-      document
-        .getElementById(`experienceForm_${index}`)
-        ?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <>
@@ -462,6 +318,7 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-1/2">
             <div className="flex flex-col">
+              <Link to={'/employer-profile-view'}>View Profile</Link>
               <div className="flex items-center overflow-hidden">
                 <img
                   src={imagePreview}
@@ -559,223 +416,6 @@ const Profile = () => {
                 />
               </span>
 
-              <div className="mb-6">
-                <label className="block mb-2">Tags</label>
-                <AutoComplete options={tags} onAddTag={handleAddTag} />
-                <h3>Add new skills</h3>
-                <ul className="mt-2">
-                  {tags.map((tag, index) => (
-                    <li
-                      key={index}
-                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-                <h3>My skills</h3>
-                <ul className="mt-2">
-                  {fetchUser?.skills?.map((tag, index) => (
-                    <li
-                      key={index}
-                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
-                    >
-                      {tag.title}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mb-6">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    id={`experienceForm_${index}`}
-                    className="mb-4 border p-4 rounded bg-gray-50"
-                  >
-                    <h3 className="font-semibold mb-2">
-                      Experience {index + 1}
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="mb-2 text-red-500 hover:underline"
-                    >
-                      Remove Experience
-                    </button>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Job Title</label>
-                      <input
-                        {...register(`experiences.${index}.jobTitle`)}
-                        placeholder="Enter your job title"
-                        className="border p-2 w-full rounded"
-                      />
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Job Description</label>
-                      <textarea
-                        {...register(`experiences.${index}.jobDesc`)}
-                        placeholder="Enter your job description"
-                        className="border p-2 w-full rounded"
-                      />
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Start Date</label>
-                      <span className="flex space-x-2">
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.startMonth`)}
-                        >
-                          <option value="">Select Month</option>
-                          {months.map((month) => (
-                            <option key={month.id} value={month.id}>
-                              {month.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.startYear`)}
-                        >
-                          <option value="">Select Year</option>
-                          {years.map((year) => (
-                            <option key={year} value={year}>
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">End Date</label>
-                      <span className="flex space-x-2">
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.endMonth`)}
-                        >
-                          <option value="">Select Month</option>
-                          {months.map((month) => (
-                            <option key={month.id} value={month.id}>
-                              {month.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.endYear`)}
-                        >
-                          <option value="">Select Year</option>
-                          {years.map((year) => (
-                            <option key={year} value={year}>
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
-                    </div>
-
-                    {/* Save Experience Button */}
-                    <button
-                      type="button"
-                      onClick={() => saveExperience(index)}
-                      className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                    >
-                      {editIndex === index
-                        ? "Update Experience"
-                        : "Save Experience"}
-                    </button>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      jobTitle: "",
-                      jobDesc: "",
-                      startYear: "",
-                      startMonth: "",
-                      endYear: "",
-                      endMonth: "",
-                    })
-                  }
-                  className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Add More Experience
-                </button>
-              </div>
-              <div>
-                <strong className="mt-4 block">Saved Experiences:</strong>
-                <div>
-                  {savedExperiences.length > 0 ? (
-                    <ul>
-                      {savedExperiences.map((work, index) => (
-                        <li key={index} className="mb-4 relative">
-                          <h2 className="font-bold">{work.jobTitle}</h2>
-                          <p>{work.jobDesc}</p>
-                          <p>
-                            {work.startMonth}/{work.startYear} - {work.endMonth}
-                            /{work.endYear}
-                          </p>
-
-
-
-                          {/* Delete button */}
-                          <button
-                            type="button"
-                            onClick={() => deleteExperience(index)} // This function will remove the entry
-                            className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
-                          >
-                            <FaTrash />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No work history found.</p>
-                  )}
-                </div>
-              </div>
-              <div>
-                {fetchUser?.profile?.work_histories &&
-                  fetchUser.profile.work_histories.length > 0 ? (
-                  <ul>
-                    {fetchUser.profile.work_histories.map((work, index) => (
-                      <li key={work.id} className="mb-4 relative">
-                        <h2 className="font-bold">{work.title}</h2>
-                        <p>{work.description}</p>
-                        <p>
-                          {work.start_month}/{work.start_year} -{" "}
-                          {work.end_month}/{work.end_year}
-                        </p>
-
-                        {/* Edit button (Pen icon) */}
-                        <button
-                          type="button"
-                          onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
-                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
-                        >
-                          <FaPen />
-                        </button>
-
-                        {/* delete button  */}
-                        <button
-                          type="button"
-                          onClick={() => deleteExperience(index)} // This function will take the user to the form with pre-filled data
-                          className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
-                        >
-                          <FaTrash />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No work history found.</p>
-                )}
-              </div>
               <div className="mb-6">
                 <SelectOption
                   label="Industries"

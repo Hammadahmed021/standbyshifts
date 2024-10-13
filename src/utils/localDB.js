@@ -187,19 +187,17 @@ export const localDB = [
 ];
 
 export const infoLinks = {
-  "Restaurant Login": "https://tablenow.dk/tablenow-restaurant/auth/login",
-  "Become a Partner": "https://tablenow.dk/tablenow-restaurant/auth/register",
-  "About TableNow": "/about",
-  "Download Free": "/",
-  "Gift Card": "/",
+  "Find Employee": "/",
+  "Find Employer": "/",
+  "Register": "/",
+  "Login": "/",
 };
 
 export const supportLinks = {
   "Privacy Policy": "/privacy-policy",
-  "Trading Conditions": "/terms-of-service",
-  Press: "/press",
-  FAQ: "/faq",
-  Contact: "/contact",
+  "Refund Policy": "/terms-of-service",
+  "About": "/",
+  "Contact": "/contact",
 };
 
 export const menus = [

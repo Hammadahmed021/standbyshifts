@@ -33,3 +33,4 @@ export { default as EmpCard } from "./EmpCard";
 export { default as EmpCardSlider } from "./EmpCardSlider";
 export { default as ContactForm } from "./ContactForm";
 export { default as TestimonialSlider } from "./TestimonialSlider";
+export { default as CompanyProfiles } from "./CompanyProfiles";

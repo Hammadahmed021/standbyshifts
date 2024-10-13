@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const EmployerHome = () => {
+const Home = () => {
   const { type } = location.state || {}; // Get the type passed from modal
 
   return (
@@ -8,4 +8,4 @@ const EmployerHome = () => {
   )
 }
 
-export default EmployerHome
+export default Home

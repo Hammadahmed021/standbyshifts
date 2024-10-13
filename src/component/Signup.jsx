@@ -6,13 +6,13 @@ import { Input, Button } from "../component";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Capacitor } from "@capacitor/core";
-import { FaAccessibleIcon, FaLock, FaLockOpen, FaRegCompass, FaRegEnvelope, FaRegUser, FaUnlock, FaUser } from "react-icons/fa";
+import { FaAccessibleIcon, FaGoogle, FaLock, FaLockOpen, FaRegCompass, FaRegEnvelope, FaRegUser, FaUnlock, FaUser } from "react-icons/fa";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 const isApp = Capacitor.isNativePlatform();
 
-export default function Signup() {
+export default function Signup({ onClick }) {
   const [isSigning, setIsSigning] = useState(false);
   const [showError, setShowError] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
@@ -29,7 +29,7 @@ export default function Signup() {
   const { type } = location.state || {}; // Get the type passed from modal
   localStorage.setItem("userType", type);
 
-  
+
   const getUserIP = async () => {
     try {
       const response = await fetch("https://api.ipify.org?format=json");
@@ -148,45 +148,47 @@ export default function Signup() {
           </span>
         </span>
 
-        <span className="mb-6 block">
-          <Input
-            mainInput={"sm:w-full w-full"}
-            icon={FaUnlock}
-            type="password"
-            maxLength={10}
-            minLength={6}
-            placeholder="Enter your password"
-            {...register("password", {
-              required: "Password is required",
-            })}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.password.message}
-            </p>
-          )}
+        <span className="mb-6 flex space-x-2">
+          <span className="w-full">
+            <Input
+              mainInput={"sm:w-full w-full"}
+              icon={FaUnlock}
+              type="password"
+              maxLength={10}
+              minLength={6}
+              placeholder="Enter your password"
+              {...register("password", {
+                required: "Password is required",
+              })}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </span>
+          <span className="w-full">
+            <Input
+              mainInput={"sm:w-full w-full"}
+              icon={FaUnlock}
+              type="password"
+              maxLength={10}
+              minLength={6}
+              placeholder="Re-enter your password"
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+                validate: (value) =>
+                  value === password || "Passwords do not match",
+              })}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </span>
         </span>
 
-        <span className="mb-6 block">
-          <Input
-            mainInput={"sm:w-full w-full"}
-            icon={FaUnlock}
-            type="password"
-            maxLength={10}
-            minLength={6}
-            placeholder="Re-enter your password"
-            {...register("confirmPassword", {
-              required: "Confirm Password is required",
-              validate: (value) =>
-                value === password || "Passwords do not match",
-            })}
-          />
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.confirmPassword.message}
-            </p>
-          )}
-        </span>
 
         <div className="form-control mb-4">
           <div className="flex items-center">
@@ -207,16 +209,26 @@ export default function Signup() {
           )}
         </div>
 
+        <span className="flex space-x-2 mt-10 mb-2">
+          <Button
+            type="submit"
+            className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            disabled={isSigning}
+          >
+            {isSigning ? "Creating..." : "Create an account"}
+          </Button>
 
-        <Button
-          type="submit"
-          className={`w-full ${
-            isSigning ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-          disabled={isSigning}
-        >
-          {isSigning ? "Registering user..." : "Sign up"}
-        </Button>
+          <span
+
+            onClick={onClick}
+            className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            disabled={isSigning}
+          >
+            <FaGoogle size={18} className="mr-2"/> {isSigning ? "Signing..." : "Sign-in with google"}
+          </span>
+        </span>
       </div>
     </form>
   );

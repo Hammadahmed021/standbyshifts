@@ -12,9 +12,15 @@ export { default as Contact } from "./Contact";
 export { default as Listing } from "./Listing";
 export { default as RestaurantReservation } from "./RestaurantReservation";
 export { default as Signup } from "./Signup";
-export { default as Profile } from "./Profile";
+// export { default as Profile } from "./Profile";
 export { default as Thankyou } from "./Thankyou";
 export { default as NotFound } from "./NotFound";
 export { default as ForgotPassword } from "./ForgotPassword";
-export { default as Employee } from "./EmployeeHome";
-export { default as Employer } from "./EmployerHome";
+export { default as Employee } from "./Employee/Home";
+export { default as Employer } from "./Employer/Home";
+export { default as EmployerProfile } from "./Employer/Profile";
+export { default as EmployeeProfile } from "./Employee/Profile";
+export { default as EmployeeProfileView } from "./Employee/ProfileView";
+export { default as EmployerProfileView } from "./Employer/ProfileView";
+export { default as PostJob } from "./Employer/PostJob";
+

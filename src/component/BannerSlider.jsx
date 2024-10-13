@@ -23,11 +23,11 @@ function BannerSlider({ images, reverse }) {
     <div className="slider-container ">
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="rounded-lg overflow-hidden ">
+          <div key={index} className="rounded-lg overflow-hidden">
             <img
               src={image.src}
               alt={`Slide ${index + 1}`}
-              className="w-[350px] h-[400px] object-cover rounded-lg"
+              className="w-[350px] h-[400px] object-cover rounded-lg my-1"
             />
           </div>
         ))}
