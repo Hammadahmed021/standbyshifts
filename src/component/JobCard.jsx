@@ -18,7 +18,7 @@ const JobCard = ({
         <img
           src={companyLogo}
           alt={companyName}
-          className="w-16 h-16 object-contain mr-4 rounded-lg"
+          className="w-16 h-16 object-cover mr-4 rounded-lg"
         />
         <div>
        

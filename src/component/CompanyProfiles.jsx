@@ -2,7 +2,7 @@ import React from 'react';
 import { FaBox, FaEnvelope, FaMailBulk, FaMailchimp, FaMarker, FaPhone, FaPhoneAlt, FaPuzzlePiece, FaSms, FaVoicemail } from 'react-icons/fa';
 import { FaFileZipper, FaLocationDot, FaLocationPin, FaMessage } from 'react-icons/fa6';
 
-const CompanyProfiles = ({ profile, layout }) => {
+const CompanyProfiles = ({ profile, layout, count }) => {
   const renderLayout = () => {
     switch (layout) {
       case '1':
@@ -19,7 +19,7 @@ const CompanyProfiles = ({ profile, layout }) => {
             <div className="second_col">
             <h2 className="text-xl font-bold mt-4">{profile?.name}</h2>
             <p className="text-gray-600 mt-2">{profile?.industry || 'Industry not provided'}</p>
-            <p className="text-gray-600 mt-2">{profile?.jobPostCount || 'jobPostCount'}</p>
+            <p className="text-gray-600 mt-2">{count || 'jobPostCount'}</p>
             <div className="mt-2 flex space-x-2 items-center">
               <h3 className="text-lg font-semibold">Contact Information:</h3>
               <p className="bg-tn_green bg-opacity-20 p-2 rounded-full text-tn_green inline-flex items-center gap-2"><FaEnvelope /><strong>Email:</strong> {profile?.email}</p>

@@ -26,7 +26,7 @@ const ProfileView = () => {
   return (
     <div>
       {profile ? (
-        <CompanyProfiles profile={profile?.about} layout={checkLayout} />
+        <CompanyProfiles profile={profile?.about} layout={checkLayout} count={profile?.jobPostCount}/>
       ) : (
         <p>Loading...</p> // Show loading text until profile data is available
       )}
@@ -41,7 +41,7 @@ const ProfileView = () => {
           {profile?.jobsPostedByYou?.map((job) => (
             <JobCard
               key={job.id}
-              companyLogo="https://via.placeholder.com/64" // Replace with actual logo
+              companyLogo={job?.user?.employer?.logo} // Replace with actual logo
               jobTitle={job.title}
               companyName={job.city} // You can also pass the company name if available
               payRate={`$${job.per_hour_rate}`}
