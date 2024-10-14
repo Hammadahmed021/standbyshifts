@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Signup as SignupComponent } from "../component";
 import { signup, login, Logo } from "../assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -12,12 +12,19 @@ import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import { imageData } from "../utils/localDB";
 
-
-
 const Signup = () => {
   const location = useLocation();
-const { type } = location.state || {}; // Get the type passed from modal
-localStorage.setItem("userType", type);
+  const { type } = location.state || {}; // Get the type passed from the homepage
+
+  useEffect(() => {
+    if (type) {
+      localStorage.setItem("userType", type); // Save the type in localStorage
+    }
+  }, [type]);
+
+  // If the type is not available in state, get it from localStorage
+  const userType = type || localStorage.getItem("userType");
+
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,36 +74,30 @@ localStorage.setItem("userType", type);
       <div className="flex w-full justify-between min-h-screen space-x-4">
         {/* Left Column */}
         <div className="w-full sm:w-1/2 relative hidden md:block min-h-screen">
-          <div className="bg-tn_pink mr-14 absolute z-0 left-0 right-0 top-0 bottom-0">
-          </div>
+          <div className="bg-tn_pink mr-14 absolute z-0 left-0 right-0 top-0 bottom-0"></div>
 
           <div className="flex space-x-4  -ml-12">
-            <BannerSlider images={imageData} />
-            <BannerSlider images={imageData} reverse={true} />
-            <BannerSlider images={imageData} />
+            <BannerSlider images={imageData} slidesToShow={3} />
+            <BannerSlider images={imageData} reverse={true} slidesToShow={3} />
+            <BannerSlider images={imageData} slidesToShow={3} />
           </div>
         </div>
         <div className="w-full sm:w-1/2">
           <div className="flex flex-col justify-start items-center w-full md:w-11/12 mx-auto h-full">
             <div className="flex items-center justify-between py-4 w-full mb-12">
               <Link to={"/"}>
-                <img
-                  src={Logo}
-                  className=""
-                />
+                <img src={Logo} className="" />
               </Link>
               <p className="text-tn_text_grey text-base font-medium text-center ">
-
-                <Link className=" " to={"/login"}>
+                <Link className=" " to={"/login"} state={{ type: userType }}>
                   Log In
                 </Link>
               </p>
             </div>
             {/* Left Column: Login Form */}
             <div className="mb-6 w-full">
-
               <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-semibold md:w-2/4">
-                Sign-up as an {type}
+                Sign-up as an {userType}
               </h2>
               <p className="text-tn_text_grey mt-2 mb-12">
                 It is a long established fact that a reader
@@ -110,14 +111,11 @@ localStorage.setItem("userType", type);
               </span> */}
               {/* {error && <p className="mt-3 text-center text-base">{error}</p>} */}
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );
 };
 
 export default Signup;
-

@@ -1,26 +1,37 @@
 import React from 'react';
+import { FaBox, FaEnvelope, FaMailBulk, FaMailchimp, FaMarker, FaPhone, FaPhoneAlt, FaPuzzlePiece, FaSms, FaVoicemail } from 'react-icons/fa';
+import { FaFileZipper, FaLocationDot, FaLocationPin, FaMessage } from 'react-icons/fa6';
 
 const CompanyProfiles = ({ profile, layout }) => {
   const renderLayout = () => {
     switch (layout) {
       case '1':
         return (
-          <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <>
+          <div className="bg-blue-950 w-full h-[250px]"></div>
+          <div className="p-6 flex justify-start items-center text-left space-x-5 container">
+            <div className="first_col -mt-24">
             <img
               src={profile?.employer?.logo}
               alt={profile?.name}
-              className="rounded-full w-32 h-32 mx-auto"
-            />
+              className="rounded-full w-40 h-40 mx-auto"
+            /></div>
+            <div className="second_col">
             <h2 className="text-xl font-bold mt-4">{profile?.name}</h2>
-            <p className="text-gray-600 mt-2">{profile?.industry?.title || 'Industry not provided'}</p>
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold">Contact Information</h3>
-              <p><strong>Email:</strong> {profile?.email}</p>
-              <p><strong>Phone:</strong> {profile?.phone}</p>
-              <p><strong>Location:</strong> {profile?.employer?.location}</p>
-              <p><strong>Zip Code:</strong> {profile?.employer?.zip_code}</p>
+            <p className="text-gray-600 mt-2">{profile?.industry || 'Industry not provided'}</p>
+            <p className="text-gray-600 mt-2">{profile?.jobPostCount || 'jobPostCount'}</p>
+            <div className="mt-2 flex space-x-2 items-center">
+              <h3 className="text-lg font-semibold">Contact Information:</h3>
+              <p className="bg-tn_green bg-opacity-20 p-2 rounded-full text-tn_green inline-flex items-center gap-2"><FaEnvelope /><strong>Email:</strong> {profile?.email}</p>
+              <p className="bg-tn_purple bg-opacity-20 p-2 rounded-full text-tn_purple inline-flex items-center gap-2"><FaPhoneAlt /><strong>Phone:</strong> {profile?.phone}</p>
+              <p className="bg-tn_brown bg-opacity-20 p-2 rounded-full text-tn_brown inline-flex items-center gap-2"><FaLocationDot /><strong>Location:</strong> {profile?.employer?.location}</p>
+              <p className="bg-tn_green bg-opacity-20 p-2 rounded-full text-tn_green inline-flex items-center gap-2"><FaFileZipper /><strong>Zip Code:</strong> {profile?.employer?.zip_code}</p>
             </div>
           </div>
+          </div>
+          
+          </>
+
         );
       case '2':
         return (
@@ -101,7 +112,7 @@ const CompanyProfiles = ({ profile, layout }) => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div>
       {renderLayout()}
     </div>
   );

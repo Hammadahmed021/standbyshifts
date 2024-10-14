@@ -29,7 +29,17 @@ import {
 import { updateFirebasePassword } from "../../service";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
-import { FaPen, FaTrash } from "react-icons/fa";
+import {
+  FaAdjust,
+  FaCode,
+  FaLocationArrow,
+  FaLock,
+  FaPen,
+  FaPhone,
+  FaRoute,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -64,19 +74,18 @@ const Profile = () => {
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
-  console.log(fetchUser, 'fetchUser >>>> employer');
-  console.log(currentUser, 'currentUser >>>> employer');
-  
-  const userType = userData?.user?.type || localStorage.getItem("userType")
+  console.log(fetchUser, "fetchUser >>>> employer");
+  console.log(currentUser, "currentUser >>>> employer");
+
+  const userType = userData?.user?.type || localStorage.getItem("userType");
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         let data;
         if (userType === "employer") {
           data = await fetchProfileDataEmployer();
-        }  else {
+        } else {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
@@ -91,7 +100,6 @@ const Profile = () => {
     fetchData(); // Call the async function
   }, []); // Runs once when the component mounts
 
-
   const {
     register,
     handleSubmit,
@@ -105,18 +113,20 @@ const Profile = () => {
     defaultValues: {
       name: currentUser?.name || "",
       phone: currentUser?.phone || "",
-      address: currentUser?.employer?.location || fetchUser?.profile?.employer?.location || "",
-      zip: currentUser?.employer?.zip_code || fetchUser?.profile?.employer?.zip_code || "",
+      address:
+        currentUser?.employer?.location ||
+        fetchUser?.profile?.employer?.location ||
+        "",
+      zip:
+        currentUser?.employer?.zip_code ||
+        fetchUser?.profile?.employer?.zip_code ||
+        "",
       newPassword: "",
       confirmPassword: "",
       layout: "1", // Default to first layout
-
-    
     },
   });
   const selectedLayout = watch("layout");
-
-  
 
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
@@ -182,21 +192,19 @@ const Profile = () => {
         }
       }
 
-    
-
       // Construct the updated user data object
       const updatedUserData = {
         name: data.name,
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-          logo: profileImageFile,
-        }), // Use existing profile picture if not updated
+            logo: profileImageFile,
+          }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         layout: data.layout,
-        industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
-       
+        industry_id:
+          selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -264,7 +272,9 @@ const Profile = () => {
   const handleNameKeyPress = (e) => {
     const charCode = e.keyCode || e.which;
     const charStr = String.fromCharCode(charCode);
-    if (!/^[a-zA-Z]+$/.test(charStr)) {
+
+    // Allow alphabets and spaces only
+    if (!/^[a-zA-Z ]+$/.test(charStr)) {
       e.preventDefault();
     }
   };
@@ -310,15 +320,12 @@ const Profile = () => {
     ];
   };
 
-
-
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-1/2">
             <div className="flex flex-col">
-              <Link to={'/employer-profile-view'}>View Profile</Link>
               <div className="flex items-center overflow-hidden">
                 <img
                   src={imagePreview}
@@ -345,47 +352,67 @@ const Profile = () => {
             </div>
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <Input
-                  label="Name"
-                  onKeyPress={handleNameKeyPress} // Prevent numbers
-                  {...register("name")}
-                  placeholder="Enter your name"
-                  className="mb-6"
-                />
-                <Input
-                  label="Phone"
-                  type="tel"
-                  maxLength={15} // Restrict length to 15 digits
-                  onKeyPress={handlePhoneKeyPress} // Prevent alphabets
-                  {...register("phone", {
-                    validate: {
-                      lengthCheck: (value) =>
-                        (value.length >= 11 && value.length <= 15) ||
-                        "Phone number must be between 11 and 15 digits",
-                    },
-                  })}
-                  placeholder="Enter your phone number"
-                  className="mb-6 sm:mb-0"
-                />
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Name"
+                    icon={FaUser}
+                    onKeyPress={handleNameKeyPress} // Prevent numbers
+                    {...register("name")}
+                    placeholder="Enter your name"
+                    // className="mb-6"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </span>
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Phone"
+                    type="tel"
+                    icon={FaPhone}
+                    maxLength={15} // Restrict length to 15 digits
+                    onKeyPress={handlePhoneKeyPress} // Prevent alphabets
+                    {...register("phone", {
+                      validate: {
+                        lengthCheck: (value) =>
+                          (value.length >= 11 && value.length <= 15) ||
+                          "Phone number must be between 11 and 15 digits",
+                      },
+                    })}
+                    placeholder="Enter your phone number"
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </span>
               </span>
               {!isGmailUser && (
                 <span className="mb-6 block">
                   <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                    <Input
-                      label="New Password"
-                      type="password"
-                      {...register("newPassword")}
-                      placeholder="Enter new password"
-                      // disabled={isGmailUser}
-                      className="mb-6 sm:mb-0"
-                    />
-                    <Input
-                      label="Confirm Password"
-                      type="password"
-                      {...register("confirmPassword")}
-                      placeholder="Confirm new password"
-                    // disabled={isGmailUser}
-                    />
+                    <span className=" w-full">
+                      <Input
+                        label="New Password"
+                        type="password"
+                        icon={FaLock}
+                        {...register("newPassword")}
+                        placeholder="Enter new password"
+                        // disabled={isGmailUser}
+                      />
+                    </span>
+                    <span className=" w-full">
+                      <Input
+                        label="Confirm Password"
+                        type="password"
+                        icon={FaLock}
+                        {...register("confirmPassword")}
+                        placeholder="Confirm new password"
+                        // disabled={isGmailUser}
+                      />
+                    </span>
                   </span>
                   {showError && (
                     <p className="text-red-500 text-sm">{showError}</p>
@@ -393,27 +420,41 @@ const Profile = () => {
                 </span>
               )}
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <Input
-                  label="Address"
-                  {...register("address")}
-                  placeholder="Enter your address"
-                  className="mb-6"
-                  type="text"
-                />
-                <Input
-                  label="Zip Code"
-                  type="text"
-                  maxLength={15} // Restrict length to 15 digits
-                  {...register("zip", {
-                    validate: {
-                      lengthCheck: (value) =>
-                        (value.length >= 5 && value.length <= 10) ||
-                        "Phone number must be between 11 and 15 digits",
-                    },
-                  })}
-                  placeholder="Zip code"
-                  className="mb-6 sm:mb-0"
-                />
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Address"
+                    {...register("address")}
+                    placeholder="Enter your address"
+                    icon={FaLocationArrow}
+                    type="text"
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </span>
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Zip Code"
+                    type="text"
+                    icon={FaAdjust}
+                    maxLength={15} // Restrict length to 15 digits
+                    {...register("zip", {
+                      validate: {
+                        lengthCheck: (value) =>
+                          (value.length >= 5 && value.length <= 10) ||
+                          "Zip code must be between 5 and 10 digits",
+                      },
+                    })}
+                    placeholder="Zip code"
+                  />
+                  {errors.zip && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.zip.message}
+                    </p>
+                  )}
+                </span>
               </span>
 
               <div className="mb-6">
@@ -447,7 +488,7 @@ const Profile = () => {
                   )}
                 </ul>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-between">
                 {["1", "2", "3", "4"].map((layout) => (
                   <label key={layout} className="cursor-pointer">
                     <input
@@ -457,10 +498,11 @@ const Profile = () => {
                       className="hidden"
                     />
                     <div
-                      className={`border ${selectedLayout === layout
+                      className={`border ${
+                        selectedLayout === layout
                           ? "border-blue-500"
                           : "border-gray-300"
-                        } rounded-lg p-2`}
+                      } rounded-lg p-2`}
                     >
                       <img
                         src={`https://via.placeholder.com/100?text=Layout+${layout}`}
@@ -472,14 +514,23 @@ const Profile = () => {
                   </label>
                 ))}
               </div>
-              <Button
-                type="submit"
-                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+              <div className="flex space-x-2 items-center justify-between my-3">
+                <Button
+                  type="submit"
+                  className={`w-full  ${
+                    isSigning ? "opacity-70 cursor-not-allowed" : ""
                   }`}
-                disabled={isSigning}
-              >
-                {isSigning ? "Saving..." : "Save changes"}
-              </Button>
+                  disabled={isSigning}
+                >
+                  {isSigning ? "Saving..." : "Save changes"}
+                </Button>
+                <Link
+                  to={"/employer-profile-view"}
+                  className="shadow-xl transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] w-full text-center bg-tn_dark_blue px-2 py-3 text-white"
+                >
+                  View Profile
+                </Link>
+              </div>
               {successMessage && (
                 <p className="text-green-500 mt-3">{successMessage}</p>
               )}

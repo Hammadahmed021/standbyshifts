@@ -317,7 +317,9 @@ const Profile = () => {
   const handleNameKeyPress = (e) => {
     const charCode = e.keyCode || e.which;
     const charStr = String.fromCharCode(charCode);
-    if (!/^[a-zA-Z]+$/.test(charStr)) {
+
+    // Allow alphabets and spaces only
+    if (!/^[a-zA-Z ]+$/.test(charStr)) {
       e.preventDefault();
     }
   };

@@ -4,8 +4,9 @@ import { Input, Button } from "../component";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
+import { FaGoogle, FaRegEnvelope, FaUnlock } from "react-icons/fa";
 
-export default function Login() {
+export default function Login({onClick}) {
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -19,8 +20,7 @@ export default function Login() {
   const location = useLocation();
   const { type } = location.state || {}; // Get the type passed from modal
   localStorage.setItem("userType", type);
-  
- 
+
   const getUserIP = async () => {
     try {
       const response = await fetch("https://api.ipify.org?format=json");
@@ -35,7 +35,7 @@ export default function Login() {
     setIsSigning(true); // Assuming you have setIsSigning state
     const userAgent = navigator.userAgent;
 
-    const {  email, password } = userData;
+    const { email, password } = userData;
     // Fetch IP Address
     const ipAddress = await getUserIP();
     const payload = {
@@ -45,10 +45,10 @@ export default function Login() {
       userAgent,
       ipAddress,
     };
-    console.log(payload, 'payload');
-    
+    console.log(payload, "payload");
+
     try {
-      const loginResponse = await dispatch(loginUser({payload})).unwrap();
+      const loginResponse = await dispatch(loginUser({ payload })).unwrap();
       if (type == "employee") {
         navigate("/employee"); // Redirect to employee dashboard
       } else if (type == "employer") {
@@ -83,6 +83,7 @@ export default function Login() {
             <Input
               mainInput={"sm:w-full w-full"}
               label="Email"
+              icon={FaRegEnvelope}
               placeholder="Enter your email"
               type="email"
               {...register("email", {
@@ -103,6 +104,7 @@ export default function Login() {
           <span className="mb-1 block">
             <Input
               mainInput={"sm:w-full w-full"}
+              icon={FaUnlock}
               label="Password"
               type="password"
               placeholder="Enter your password"
@@ -119,16 +121,30 @@ export default function Login() {
           {error && (
             <p className="text-start text-red-500 text-xs pb-2">{error}</p>
           )}
-          <p className=" text-xs mb-6 text-tn_pink text-end font-semibold"><Link to={"/forgot"}>Forgot Password? </Link></p>
-          <Button
-            type="submit"
-            className={`w-full ${
-              isSigning ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-            disabled={isSigning} // Disable button while signing
-          >
-            {isSigning ? "Logging in..." : "Log in"}
-          </Button>
+          <p className=" text-xs mb-6 text-tn_pink text-end font-semibold">
+            <Link to={"/forgot"}>Forgot Password? </Link>
+          </p>
+          <span className="flex space-x-2 mt-10 mb-2">
+            <Button
+              type="submit"
+              className={`w-full ${
+                isSigning ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+              disabled={isSigning} // Disable button while signing
+            >
+              {isSigning ? "Logging in..." : "Log in"}
+            </Button>
+            <span
+              onClick={onClick}
+              className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
+                isSigning ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+              disabled={isSigning}
+            >
+              <FaGoogle size={18} className="mr-2" />{" "}
+              {isSigning ? "Signing..." : "Sign-in with google"}
+            </span>
+          </span>
         </div>
       </form>
     </>

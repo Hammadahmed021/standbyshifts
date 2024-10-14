@@ -1,12 +1,12 @@
 import React from "react";
 import Slider from "react-slick";
 
-function BannerSlider({ images, reverse }) {
+function BannerSlider({ images, reverse, slidesToShow }) {
   const settings = {
     dots: false,
     arrows: false,
     infinite: true,
-    slidesToShow: 2, // Two images at a time in one set
+    slidesToShow: slidesToShow || 2, // Two images at a time in one set
     slidesToScroll: 1, // Scroll one set at a time
     vertical: true,
     verticalSwiping: true,
@@ -27,7 +27,7 @@ function BannerSlider({ images, reverse }) {
             <img
               src={image.src}
               alt={`Slide ${index + 1}`}
-              className="w-[350px] h-[400px] object-cover rounded-lg my-1"
+              className="w-[220px] h-[250px] 2xl:h-[400px] 2xl:w-[350px] xl:h-[250px] xl:w-[220px] object-cover rounded-lg my-1"
             />
           </div>
         ))}

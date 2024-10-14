@@ -226,7 +226,7 @@ export default function Signup({ onClick }) {
               }`}
             disabled={isSigning}
           >
-            <FaGoogle size={18} className="mr-2"/> {isSigning ? "Signing..." : "Sign-in with google"}
+            <FaGoogle size={18} className="mr-2"/> {isSigning ? "Signing..." : "Sign-up with google"}
           </span>
         </span>
       </div>

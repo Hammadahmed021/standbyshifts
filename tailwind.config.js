@@ -24,7 +24,12 @@ export default {
         tn_dark: '#1E1E1E', 
         tn_light: '#F7F7F7',
         tn_dark_field: '#1C1B1F',
-        tn_dark_blue: '#2D3748'
+        tn_dark_blue: '#2D3748',
+        tn_green: '#5EB676',
+        tn_purple: '#BC64A8',
+        tn_brown: '#C69153'
+
+
       },
       borderRadius: {
         'site': '50px', // Custom border radius
