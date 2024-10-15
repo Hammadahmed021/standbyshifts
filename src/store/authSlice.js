@@ -62,12 +62,13 @@ const requestPushNotificationPermission = async () => {
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
   async ({ payload }, { rejectWithValue }) => {
+    let user;
     try {
       const { email, password, name, type, userAgent, ipAddress } = payload;
 
       // Firebase authentication: create a new user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+       user = userCredential.user;
 
       // Fetch Firebase token for the user
       const token = await getIdToken(user);
@@ -97,6 +98,14 @@ export const signupUser = createAsyncThunk(
         ...response, // Include any other relevant response data
       };
     } catch (error) {
+      if(user){
+        try {
+          user.delete();
+        } catch (error) {
+          console.log("Unable to delete user from firebase");
+          
+        }
+      }
       return rejectWithValue(error.message);
     }
   }

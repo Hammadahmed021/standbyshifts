@@ -251,6 +251,7 @@ const Profile = () => {
       setValue("address", data?.employer?.location || "");
       setValue("zip", data?.employer?.zip_code || "");
       setValue("layout", data?.layout || "");
+      setImagePreview(data?.employer?.logo || fallback);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -319,7 +320,8 @@ const Profile = () => {
       ...safeOptions.map((opt) => ({ id: opt.id, name: opt.title })),
     ];
   };
-
+  console.log(imagePreview, 'imagePreview');
+  
   return (
     <>
       <div className="container mx-auto p-4">

@@ -68,8 +68,7 @@ export default function Signup({ onClick }) {
         navigate("/"); // Fallback if type is not provided
       }
       console.log("Signup response:", response);
-      // Navigate to home or another page
-      navigate("/"); // Adjust the navigation as needed
+     
     } catch (error) {
       console.error("API Signup failed:", error);
       if (error == "Firebase: Error (auth/email-already-in-use).") {

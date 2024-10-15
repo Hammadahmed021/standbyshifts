@@ -296,6 +296,8 @@ const Profile = () => {
       setValue("address", data?.employee?.location || "");
       setValue("zip", data?.employee?.zip_code || "");
       setValue("layout", data?.layout || "");
+      setImagePreview(data?.employee?.profile_picture || fallback);
+
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
