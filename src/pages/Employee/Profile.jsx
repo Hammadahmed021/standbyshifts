@@ -77,7 +77,8 @@ const Profile = () => {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
-
+        console.log("data.profile.work_histories",data.profile.work_histories)
+        setSavedExperiences(data.profile.work_histories);
         // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
         setTags(data.skills ? data.skills.map((skill) => skill.title) : []);
 
@@ -222,7 +223,7 @@ const Profile = () => {
 
       // Merge new experiences with existing fetched experiences
       const allExperiences = [
-        ...fetchUser?.profile?.work_histories || [], // Existing experiences from the user profile
+        // ...fetchUser?.profile?.work_histories || [], // Existing experiences from the user profile
         ...savedExperiences // Newly added/edited experiences
       ];
 
@@ -371,11 +372,11 @@ const Profile = () => {
 
 
   // Initialize saved experiences only when the component mounts
-  useEffect(() => {
-    if (fetchUser?.profile?.work_histories) {
-      setSavedExperiences(fetchUser.profile.work_histories);
-    }
-  }, [fetchUser]);
+  // useEffect(() => {
+  //   if (fetchUser?.profile?.work_histories) {
+  //     setSavedExperiences(fetchUser.profile.work_histories);
+  //   }
+  // }, [fetchUser]);
 
 
   const saveExperience = (index) => {
@@ -712,15 +713,27 @@ const Profile = () => {
                 <strong className="mt-4 block">Saved Experiences:</strong>
                 <div>
                   {savedExperiences.length > 0 ? (
-                    <ul>
-                      {savedExperiences.map((work, index) => (
-                        <li key={index} className="mb-4 relative">
-                          <h2 className="font-bold">{work.jobTitle}</h2>
-                          <p>{work.jobDesc}</p>
+                    savedExperiences.map((work, index) => 
+                      {
+                        console.log("experio",index,work)  
+                       return(
+                         <ul>
+                         <li key={index} className="mb-4 relative">
+                          <h2 className="font-bold">{index} {work.id}</h2>
+                          <h2 className="font-bold">{work.jobTitle ??work.title}</h2>
+                          <p>{work.jobDesc ??work.description}</p>
                           <p>
-                            {work.startMonth}/{work.startYear} - {work.endMonth}
-                            /{work.endYear}
+                            {work.startMonth ??work.start_month}/{work.startYear?? work.start_year} - {work.endMonth ??work.end_month}
+                            /{work.endYear ??work.end_year}
                           </p>
+                                      {/* Edit button (Pen icon) */}
+                        <button
+                          type="button"
+                          onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
+                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                        >
+                          <FaPen />
+                        </button>
                           {/* Delete button */}
                           <button
                             type="button"
@@ -730,50 +743,15 @@ const Profile = () => {
                             <FaTrash />
                           </button>
                         </li>
-                      ))}
                     </ul>
+                        )
+                      })
                   ) : (
                     <p>No work history found.</p>
                   )}
                 </div>
               </div>
-              <div>
-                {fetchUser?.profile?.work_histories &&
-                  fetchUser.profile.work_histories.length > 0 ? (
-                  <ul>
-                    {fetchUser.profile.work_histories.map((work, index) => (
-                      <li key={work.id} className="mb-4 relative">
-                        <h2 className="font-bold">{work.title}</h2>
-                        <p>{work.description}</p>
-                        <p>
-                          {work.start_month}/{work.start_year} -{" "}
-                          {work.end_month}/{work.end_year}
-                        </p>
-
-                        {/* Edit button (Pen icon) */}
-                        <button
-                          type="button"
-                          onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
-                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
-                        >
-                          <FaPen />
-                        </button>
-
-                        {/* delete button  */}
-                        <button
-                          type="button"
-                          onClick={() => deleteExperience(index)} // This function will take the user to the form with pre-filled data
-                          className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
-                        >
-                          <FaTrash />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No work history found.</p>
-                )}
-              </div>
+            
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
