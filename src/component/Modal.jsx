@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const Modal = ({ title, onYes, onClose }) => {
+const Modal = ({ title, onYes, onClose ,isChilderConponent}) => {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (event.target.id === 'modal-overlay') {
@@ -21,7 +21,7 @@ const Modal = ({ title, onYes, onClose }) => {
           &times;
         </button>
         <h2 className="text-xl font-semibold mb-4 text-center">{title}</h2>
-
+{isChilderConponent && isChilderConponent}
         {/* Conditionally render Yes and No buttons only if onYes is passed */}
         {onYes && (
           <div className="flex justify-center space-x-4 mt-8">
