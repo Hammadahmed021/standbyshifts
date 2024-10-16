@@ -14,6 +14,7 @@ const PostJob = () => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm();
 
@@ -26,7 +27,8 @@ const PostJob = () => {
 
         try {
             const response = await postJob(formattedData);
-            console.log("Job posted successfully:", response.data);
+            reset()
+            console.log("Job posted successfully:", response?.data);
         } catch (error) {
             console.error("Error posting the job:", error);
         }
