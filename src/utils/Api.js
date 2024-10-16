@@ -264,11 +264,7 @@ export const updateEmployerProfile = async (userData) => {
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
-
   formData.append("industry_id", industry_id);
-
-
-
 
   // Append profile image if present
   if (logo) {
@@ -313,11 +309,13 @@ export const updateUserProfile = async (userData) => {
     location,
     zip_code,
     industry_id, // Ensure this is always an array
-    skills, // Default to an empty array if undefined
+    expertise, // Default to an empty array if undefined
+    // skills, // Default to an empty array if undefined
     work_history, // Default to an empty array if undefined
     profile_picture,
     layout,
   } = userData;
+  console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
 
   const formData = new FormData();
   formData.append("name", name);
@@ -326,13 +324,11 @@ export const updateUserProfile = async (userData) => {
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
-
   formData.append("industry_id", industry_id);
-
-
+  // formData.append("expertise", expertise);
 
   // Append skills
-  skills.forEach((skill) => formData.append("skills[]", skill));
+  expertise.forEach((skill) => formData.append("expertise[]", skill));
 
   // Append work history
   work_history.forEach((work, index) => {
@@ -554,7 +550,6 @@ export const fetchProfileDataEmployee = async () => {
   }
 };
 
-
 export const fetchProfileDataEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -574,7 +569,7 @@ export const fetchProfileDataEmployer = async () => {
   }
 };
 
-// single employer data 
+// single employer data
 export const fetchSingleDetailEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -594,10 +589,9 @@ export const fetchSingleDetailEmployer = async () => {
   }
 };
 
-
-// Post a job  
+// Post a job
 export const postJob = async (payload) => {
-  console.log(payload, 'payload post job');
+  console.log(payload, "payload post job");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -605,11 +599,10 @@ export const postJob = async (payload) => {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
-    })
-    return response.data;
+      },
+    });
+    return response;
   } catch (error) {
     console.log(error || "unable to post a job");
-
   }
-}
+};
