@@ -1,4 +1,6 @@
 import React from "react";
+import { FaCalendar, FaClock, FaCrown, FaLocationArrow, FaMarker } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Component
 const JobCardSkeleton = () => (
@@ -43,11 +45,19 @@ const JobCard = ({
   level,
   location,
   description,
+  jobId,
   loading, // Add loading prop
 }) => {
   if (loading) {
     return <JobCardSkeleton />;
   }
+
+  const navigate = useNavigate();
+
+  // Function to handle navigation
+  const handleApplyClick = () => {
+    navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
+  };
 
   return (
     <div className="w-full rounded-2xl shadow-md bg-white p-6">
@@ -69,20 +79,24 @@ const JobCard = ({
 
       {/* Date and Time Info */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+          <FaCalendar size={12} className="mr-1"/>
           {dateRange}
         </span>
-        <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-medium">
+        <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+        <FaClock size={12} className="mr-1"/>
           {timeRange}
         </span>
       </div>
 
       {/* Level and Location */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium flex items-center" >
+        <FaCrown size={12} className="mr-1"/>
           {level}
         </span>
-        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+        <FaLocationArrow size={12} className="mr-1"/>
           {location}
         </span>
       </div>
@@ -91,7 +105,7 @@ const JobCard = ({
       <p className="text-gray-600 text-sm mb-4">{description}</p>
 
       {/* Apply Button */}
-      <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300">
+      <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={handleApplyClick}>
         Apply
       </button>
     </div>

@@ -23,4 +23,5 @@ export { default as EmployeeProfile } from "./Employee/Profile";
 export { default as EmployeeProfileView } from "./Employee/ProfileView";
 export { default as EmployerProfileView } from "./Employer/ProfileView";
 export { default as PostJob } from "./Employer/PostJob";
+export { default as JobDetail } from "./JobDetail";
 

@@ -27,6 +27,7 @@ import {
   PostJob,
   EmployerProfileView,
   EmployeeProfileView,
+  JobDetail,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -57,6 +58,7 @@ function BaseRouter() {
           <Route path="listing" element={<Listing />} />
           <Route path="thankyou" element={<Thankyou />} />
           <Route path="reservation/:id" element={<RestaurantReservation />} />
+          <Route path="/job/:id" element={<JobDetail />} />
           <Route path="employee-profile" element={<AuthLayout authentication={true}><EmployeeProfile /></AuthLayout>} />
           <Route path="employer-profile" element={<AuthLayout authentication={true}><EmployerProfile /></AuthLayout>} />
           <Route path="employer-profile-view" element={<AuthLayout authentication={true}><EmployerProfileView /></AuthLayout>} />

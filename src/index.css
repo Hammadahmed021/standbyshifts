@@ -27,7 +27,7 @@
   content: unset;
 }
 
-.employees .slick-arrow {
+.employees .slick-arrow{
   position: absolute;
   right: -150px;
   left: unset;
@@ -38,7 +38,7 @@
   width: 30px;
 }
 
-.employer .slick-arrow {
+.employer .slick-arrow, .employee-home .slick-arrow{
   background: #F59200;
   border-radius: 50px;
   height: 30px;
@@ -46,7 +46,7 @@
   z-index: 1;
 }
 
-.employees .slick-arrow:hover span svg, .employer .slick-arrow:hover span svg { 
+.employees .slick-arrow:hover span svg, .employer .slick-arrow:hover span svg, .employee-home .slick-arrow:hover span svg { 
   color: white;
 }
 
@@ -59,7 +59,8 @@
 }
 
 .employees .slick-arrow span,
-.employer .slick-arrow span {
+.employer .slick-arrow span,
+.employee-home .slick-arrow span {
   height: 30px;
   width: 30px;
   display: block;

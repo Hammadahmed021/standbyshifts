@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import EmpCard from "./EmpCard";
 import { NextArrow, PrevArrow } from "./CustomArrows";
 
-const EmpCardSlider = ({ data, arrowPosition }) => {
+const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
   const settings = {
     dots: false,
     infinite: true,
@@ -13,7 +13,7 @@ const EmpCardSlider = ({ data, arrowPosition }) => {
     // cssEase: "linear",
     // pauseOnHover: false,
     pauseOnFocus: false,
-    slidesToShow: 3, // Default to show 3 slides on desktop
+    slidesToShow: slidesToShow || 3, // Default to show 3 slides on desktop
     slidesToScroll: 1,
     nextArrow: (
       <NextArrow
@@ -64,6 +64,7 @@ const EmpCardSlider = ({ data, arrowPosition }) => {
               image={employee.image}
               title={employee.title}
               subheading={employee.subheading}
+              employer_name={employee.employer_name}
               rating={employee.rating}
             />
           </div>

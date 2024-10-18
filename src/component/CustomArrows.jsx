@@ -4,9 +4,9 @@ import { FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight } from "react-
 // Custom Next Arrow with flexible styling
 const NextArrow = ({ className, style, onClick }) => {
   return (
-    <div className={`${className} text-white next-arr`} onClick={onClick}>
+    <div className={`${className} text-white next-arr bg-tn_primary`} onClick={onClick}>
       <span>
-        <FaArrowLeft size={14} />
+        <FaArrowRight size={14} />
       </span>
     </div>
   );
@@ -15,9 +15,9 @@ const NextArrow = ({ className, style, onClick }) => {
 // Custom Prev Arrow with flexible styling
 const PrevArrow = ({ className, style, onClick }) => {
   return (
-    <div className={`${className} text-white prev-arr`} onClick={onClick}>
+    <div className={`${className} text-white prev-arr bg-tn_primary`} onClick={onClick}>
       <span>
-      <FaArrowRight size={14} />
+      <FaArrowLeft size={14} />
 
       </span>
     </div>

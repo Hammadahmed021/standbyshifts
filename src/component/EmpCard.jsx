@@ -2,9 +2,9 @@ import React from "react";
 import { FaStar } from "react-icons/fa";
 import Ratings from "./Ratings"; // Assuming your Ratings component is in the same folder
 
-const EmpCard = ({ image, title, subheading, rating }) => {
+const EmpCard = ({ image, title, subheading, employer_name, rating }) => {
   return (
-    <div className=" bg-white shadow-xl rounded-3xl overflow-hidden py-10 px-8">
+    <div className=" bg-white shadow-xl rounded-3xl overflow-hidden py-8 px-4">
       {/* Circular Image */}
       <div className="flex justify-center"> 
         <img
@@ -15,10 +15,10 @@ const EmpCard = ({ image, title, subheading, rating }) => {
       </div>
 
       {/* Title */}
-      <h2 className="text-[20px] font-semibold text-center text-tn_pink mt-6">{title}</h2>
+      <h2 className="text-[20px] font-semibold text-center text-tn_pink mt-6 truncate">{title}</h2>
 
       {/* Subheading */}
-      <p className="text-sm text-tn_text_grey text-center">{subheading}</p>
+      <p className="text-sm text-tn_text_grey text-center truncate">{subheading || employer_name }</p>
 
       {/* Rating */}
       {rating && (

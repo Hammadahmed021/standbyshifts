@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Await } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
@@ -313,14 +314,12 @@ export const updateUserProfile = async (userData) => {
     // skills, // Default to an empty array if undefined
     work_history, // Default to an empty array if undefined
     profile_picture,
-    layout,
   } = userData;
   console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
 
   const formData = new FormData();
   formData.append("name", name);
   formData.append("phone", phone);
-  formData.append("layout", layout);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
@@ -589,6 +588,24 @@ export const fetchSingleDetailEmployer = async () => {
   }
 };
 
+// show job on home for employee
+export const getJobsForEmployee = async () => {
+  const token = localStorage.getItem("webToken");
+  try {
+    const response = await axios.get(`${BASE_URL}employee/home-page`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching jobs for employee"
+    );
+  }
+};
+
 // Post a job
 export const postJob = async (payload) => {
   console.log(payload, "payload post job");
@@ -604,5 +621,26 @@ export const postJob = async (payload) => {
     return response;
   } catch (error) {
     console.log(error || "unable to post a job");
+  }
+};
+
+export const getJobById = async (id) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = axios.get(
+      `${BASE_URL}employee/job/get-matched-job-details/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response");
+
+    return response;
+  } catch (error) {
+    console.log(error || "Unable to get job by id");
   }
 };

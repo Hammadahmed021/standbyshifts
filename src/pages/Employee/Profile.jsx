@@ -69,11 +69,10 @@ const Profile = () => {
   // Predefined options for the autocomplete dropdown
   // const options = tags;
 
-  const userType = userData?.user?.type || localStorage.getItem("userType")
+  const userType = userData?.user?.type || localStorage.getItem("userType");
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         let data;
         if (userType === "employee") {
@@ -82,12 +81,18 @@ const Profile = () => {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
-        console.log("data.profile.work_histories",data.profile.work_histories)
+        console.log("data.profile.work_histories", data.profile.work_histories);
         setSavedExperiences(data.profile.work_histories);
         // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
-        setTags(data.profile.expertise ? data.profile.expertise.map((skill) => skill.title) : []);
+        setTags(
+          data.profile.expertise
+            ? data.profile.expertise.map((skill) => skill.title)
+            : []
+        );
 
-        setDropdownTags(data.expertise ? data.expertise.map((skill) => skill.title) : []);
+        setDropdownTags(
+          data.expertise ? data.expertise.map((skill) => skill.title) : []
+        );
 
         // Set selected industries based on fetched industries, ensuring it's an empty array if industries are undefined
         setSelectedIndustries(data.industries ? [] : []);
@@ -127,7 +132,6 @@ const Profile = () => {
       zip: fetchUser?.employee?.zip_code || "",
       newPassword: "",
       confirmPassword: "",
-      layout: "1", // Default to first layout
 
       experiences: [
         {
@@ -141,7 +145,6 @@ const Profile = () => {
       ],
     },
   });
-  const selectedLayout = watch("layout");
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -231,7 +234,7 @@ const Profile = () => {
       // Merge new experiences with existing fetched experiences
       const allExperiences = [
         // ...fetchUser?.profile?.work_histories || [], // Existing experiences from the user profile
-        ...savedExperiences // Newly added/edited experiences
+        ...savedExperiences, // Newly added/edited experiences
       ];
 
       // Construct the updated user data object
@@ -240,13 +243,13 @@ const Profile = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-          profile_picture: profileImageFile,
-        }), // Use existing profile picture if not updated
+            profile_picture: profileImageFile,
+          }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
-        layout: data.layout,
-        industry_id: selectedIndustries.length > 0 ? selectedIndustries[0].id : '',
-        expertise: [...newTags,...tags] || [],
+        industry_id:
+          selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
+        expertise: [...newTags, ...tags] || [],
         // skills: [...newTags,...tags] || [],
         work_history: allExperiences.map((exp) => ({
           title: exp.jobTitle || exp.title,
@@ -266,7 +269,6 @@ const Profile = () => {
         dispatch(updateUserData(updatedUserData));
         setIsSigning(false);
         setSuccessMessage("Profile updated successfully!");
-
       }
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
@@ -274,7 +276,6 @@ const Profile = () => {
       console.error("Error saving profile:", error);
     }
   };
-
 
   const getUserIP = async () => {
     try {
@@ -304,9 +305,7 @@ const Profile = () => {
       setValue("phone", data?.phone || "");
       setValue("address", data?.employee?.location || "");
       setValue("zip", data?.employee?.zip_code || "");
-      setValue("layout", data?.layout || "");
       setImagePreview(data?.employee?.profile_picture || fallback);
-
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -376,8 +375,7 @@ const Profile = () => {
     ];
   };
 
-  console.log(savedExperiences, 'savedExperiences');
-
+  console.log(savedExperiences, "savedExperiences");
 
   // Initialize saved experiences only when the component mounts
   // useEffect(() => {
@@ -385,7 +383,6 @@ const Profile = () => {
   //     setSavedExperiences(fetchUser.profile.work_histories);
   //   }
   // }, [fetchUser]);
-
 
   const saveExperience = (index) => {
     const values = getValues(`experiences.${index}`);
@@ -405,7 +402,10 @@ const Profile = () => {
 
       if (editIndex !== null) {
         updatedExperiences[editIndex] = experience;
-        console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
+        console.log(
+          `Updated Experience at index ${editIndex}:`,
+          updatedExperiences[editIndex]
+        );
       } else {
         updatedExperiences.push(experience);
         console.log("Appended New Experience:", experience);
@@ -426,8 +426,6 @@ const Profile = () => {
     setEditIndex(null);
   };
 
-
-
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
       const newExperiences = prev.filter((_, i) => i !== index);
@@ -441,17 +439,19 @@ const Profile = () => {
     }
   };
 
-
   const editExperience = (index) => {
     const selectedExperience = savedExperiences[index];
-    
-console.log("kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",selectedExperience)
+
+    console.log(
+      "kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",
+      selectedExperience
+    );
 
     if (selectedExperience) {
-      setEditExperiences(selectedExperience)
+      setEditExperiences(selectedExperience);
       setEditIndex(index);
-  setIsVisible(true)
-  
+      setIsVisible(true);
+
       // setValue(`experiences.${index}.jobTitle`, selectedExperience.title);
       // setValue(`experiences.${index}.jobDesc`, selectedExperience.description);
       // setValue(
@@ -471,23 +471,19 @@ console.log("kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",selectedExperience)
     }
   };
 
-// Remove Skills 
+  // Remove Skills
 
+  const removeSkills = (index) => {
+    const afterFilterTags = tags.filter((res, i) => i != index);
+    setTags(afterFilterTags);
+  };
 
-const removeSkills =(index)=>{
-const afterFilterTags = tags.filter((res,i) => i!= index)
-setTags(afterFilterTags)
-}
-
-const updateExpFun= ()=>{
-  setIsVisible(false)
-  const afterFilterExp = savedExperiences.filter((res,i)=>i!=editIndex)
-  setSavedExperiences(prev=>([
-    ...afterFilterExp,
-    editExperiences
-  ]))
-  setEditIndex(null)
-}
+  const updateExpFun = () => {
+    setIsVisible(false);
+    const afterFilterExp = savedExperiences.filter((res, i) => i != editIndex);
+    setSavedExperiences((prev) => [...afterFilterExp, editExperiences]);
+    setEditIndex(null);
+  };
 
   return (
     <>
@@ -519,141 +515,143 @@ const updateExpFun= ()=>{
                 <p>You can change your profile information here.</p>
               </div>
             </div>
-      {      isVisible && (
-      <Modal
-        title={"Edit Experience"}
-        onClose={()=>setIsVisible(false)}
-        isChilderConponent={
-          <div
-          key={editIndex}
-          // id={`experienceForm_${editIndex}`}
-          className="mb-4 border p-4 rounded bg-gray-50"
-        >
+            {isVisible && (
+              <Modal
+                title={"Edit Experience"}
+                onClose={() => setIsVisible(false)}
+                isChilderConponent={
+                  <div
+                    key={editIndex}
+                    // id={`experienceForm_${editIndex}`}
+                    className="mb-4 border p-4 rounded bg-gray-50"
+                  >
+                    <div className="mb-2">
+                      <label className="block mb-1">Job Title</label>
+                      <input
+                        // {...register(`experiences.${editIndex}.jobTitle`)}
+                        placeholder="Enter your job title"
+                        className="border p-2 w-full rounded"
+                        defaultValue={editExperiences?.title}
+                        onChange={(e) =>
+                          setEditExperiences((prev) => ({
+                            ...prev,
+                            title: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
 
+                    <div className="mb-2">
+                      <label className="block mb-1">Job Description</label>
+                      <textarea
+                        placeholder="Enter your job description"
+                        className="border p-2 w-full rounded"
+                        defaultValue={editExperiences?.description}
+                        onChange={(e) =>
+                          setEditExperiences((prev) => ({
+                            ...prev,
+                            description: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
 
-          <div className="mb-2">
-            <label className="block mb-1">Job Title</label>
-            <input
-              // {...register(`experiences.${editIndex}.jobTitle`)}
-              placeholder="Enter your job title"
-              className="border p-2 w-full rounded"
-              defaultValue={editExperiences?.title}
-              onChange={(e)=>setEditExperiences(prev=> ({
-...prev,
-title:e.target.value
-              }))}
-            />
-          </div>
+                    <div className="mb-2">
+                      <label className="block mb-1">Start Date</label>
+                      <span className="flex space-x-2">
+                        <select
+                          className="border p-2 rounded"
+                          defaultValue={editExperiences?.start_month}
+                          onChange={(e) => {
+                            setEditExperiences((prev) => ({
+                              ...prev,
+                              start_month: e.target.value,
+                            }));
+                          }}
+                          // {...register(`experiences.${editIndex}.startMonth`)}
+                        >
+                          <option value="">Select Month</option>
+                          {months.map((month) => (
+                            <option key={month.id} value={month.id}>
+                              {month.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className="border p-2 rounded"
+                          defaultValue={editExperiences?.start_year}
+                          onChange={(e) => {
+                            setEditExperiences((prev) => ({
+                              ...prev,
+                              start_year: e.target.value,
+                            }));
+                          }}
+                          // {...register(`experiences.${editIndex}.startYear`)}
+                        >
+                          <option value="">Select Year</option>
+                          {years.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </div>
 
-          <div className="mb-2">
-            <label className="block mb-1">Job Description</label>
-            <textarea
-              placeholder="Enter your job description"
-              className="border p-2 w-full rounded"
-              defaultValue={editExperiences?.description}
-              onChange={(e)=>setEditExperiences(prev=> ({
-...prev,
-description:e.target.value
-              }))}
-            />
-          </div>
+                    <div className="mb-2">
+                      <label className="block mb-1">End Date</label>
+                      <span className="flex space-x-2">
+                        <select
+                          className="border p-2 rounded"
+                          defaultValue={editExperiences?.end_month}
+                          onChange={(e) => {
+                            setEditExperiences((prev) => ({
+                              ...prev,
+                              end_month: e.target.value,
+                            }));
+                          }}
+                          // {...register(`experiences.${editIndex}.endMonth`)}
+                        >
+                          <option value="">Select Month</option>
+                          {months.map((month) => (
+                            <option key={month.id} value={month.id}>
+                              {month.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className="border p-2 rounded"
+                          defaultValue={editExperiences?.end_year}
+                          onChange={(e) => {
+                            setEditExperiences((prev) => ({
+                              ...prev,
+                              end_year: e.target.value,
+                            }));
+                          }}
+                          // {...register(`experiences.${editIndex}.endYear`)}
+                        >
+                          <option value="">Select Year</option>
+                          {years.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </div>
 
-          <div className="mb-2">
-            <label className="block mb-1">Start Date</label>
-            <span className="flex space-x-2">
-              <select
-                className="border p-2 rounded"
-                defaultValue={editExperiences?.start_month}
-                onChange={(e)=>{
-                  setEditExperiences(prev=> ({
-                    ...prev,
-                    start_month:e.target.value
-                                  }))
-                }}
-                // {...register(`experiences.${editIndex}.startMonth`)}
-              >
-                <option value="">Select Month</option>
-                {months.map((month) => (
-                  <option key={month.id} value={month.id}>
-                    {month.name}
-                  </option>
-                ))}
-              </select>
-              <select
-                className="border p-2 rounded"
-                defaultValue={editExperiences?.start_year}
-                onChange={(e)=>{
-                  setEditExperiences(prev=> ({
-                    ...prev,
-                    start_year:e.target.value
-                                  }))
-                }}
-                // {...register(`experiences.${editIndex}.startYear`)}
-              >
-                <option value="">Select Year</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </span>
-          </div>
-
-          <div className="mb-2">
-            <label className="block mb-1">End Date</label>
-            <span className="flex space-x-2">
-              <select
-                className="border p-2 rounded"
-                defaultValue={editExperiences?.end_month}
-                onChange={(e)=>{
-                  setEditExperiences(prev=> ({
-                    ...prev,
-                    end_month:e.target.value
-                                  }))
-                }}
-                // {...register(`experiences.${editIndex}.endMonth`)}
-              >
-                <option value="">Select Month</option>
-                {months.map((month) => (
-                  <option key={month.id} value={month.id}>
-                    {month.name}
-                  </option>
-                ))}
-              </select>
-              <select
-                className="border p-2 rounded"
-                defaultValue={editExperiences?.end_year}
-                onChange={(e)=>{
-                  setEditExperiences(prev=> ({
-                    ...prev,
-                    end_year:e.target.value
-                                  }))
-                }}
-                // {...register(`experiences.${editIndex}.endYear`)}
-              >
-                <option value="">Select Year</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </span>
-          </div>
-
-          {/* Save Experience Button */}
-          <button
-            type="button"
-            onClick={() => updateExpFun(editIndex)}
-            className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-               Update Experience
-          </button>
-        </div>
-        }
-      />
-    )}
+                    {/* Save Experience Button */}
+                    <button
+                      type="button"
+                      onClick={() => updateExpFun(editIndex)}
+                      className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >
+                      Update Experience
+                    </button>
+                  </div>
+                }
+              />
+            )}
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                 <Input
@@ -695,7 +693,7 @@ description:e.target.value
                       type="password"
                       {...register("confirmPassword")}
                       placeholder="Confirm new password"
-                    // disabled={isGmailUser}
+                      // disabled={isGmailUser}
                     />
                   </span>
                   {showError && (
@@ -749,7 +747,7 @@ description:e.target.value
                       className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
                     >
                       {tag}
-                      <FaTrash onClick={()=>removeSkills(index)} />
+                      <FaTrash onClick={() => removeSkills(index)} />
                     </li>
                   ))}
                 </ul>
@@ -880,44 +878,47 @@ description:e.target.value
                 <strong className="mt-4 block">Saved Experiences:</strong>
                 <div>
                   {savedExperiences.length > 0 ? (
-                    savedExperiences.map((work, index) => 
-                      {
-                        console.log("experio",index,work)  
-                       return(
-                         <ul>
-                         <li key={index} className="mb-4 relative">
-                          <h2 className="font-bold">{work.jobTitle ??work.title}</h2>
-                          <p>{work.jobDesc ??work.description}</p>
-                          <p>
-                            {work.startMonth ??work.start_month}/{work.startYear?? work.start_year} - {work.endMonth ??work.end_month}
-                            /{work.endYear ??work.end_year}
-                          </p>
-                                      {/* Edit button (Pen icon) */}
-                        <button
-                          type="button"
-                          onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
-                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
-                        >
-                          <FaPen />
-                        </button>
-                          {/* Delete button */}
-                          <button
-                            type="button"
-                            onClick={() => deleteExperience(index)} // This function will remove the entry
-                            className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
-                          >
-                            <FaTrash />
-                          </button>
-                        </li>
-                    </ul>
-                        )
-                      })
+                    savedExperiences.map((work, index) => {
+                      console.log("experio", index, work);
+                      return (
+                        <ul>
+                          <li key={index} className="mb-4 relative">
+                            <h2 className="font-bold">
+                              {work.jobTitle ?? work.title}
+                            </h2>
+                            <p>{work.jobDesc ?? work.description}</p>
+                            <p>
+                              {work.startMonth ?? work.start_month}/
+                              {work.startYear ?? work.start_year} -{" "}
+                              {work.endMonth ?? work.end_month}/
+                              {work.endYear ?? work.end_year}
+                            </p>
+                            {/* Edit button (Pen icon) */}
+                            <button
+                              type="button"
+                              onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
+                              className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                            >
+                              <FaPen />
+                            </button>
+                            {/* Delete button */}
+                            <button
+                              type="button"
+                              onClick={() => deleteExperience(index)} // This function will remove the entry
+                              className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
+                            >
+                              <FaTrash />
+                            </button>
+                          </li>
+                        </ul>
+                      );
+                    })
                   ) : (
                     <p>No work history found.</p>
                   )}
                 </div>
               </div>
-            
+
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
@@ -949,35 +950,12 @@ description:e.target.value
                   )}
                 </ul>
               </div>
-              <div className="flex space-x-4">
-                {["1", "2", "3", "4"].map((layout) => (
-                  <label key={layout} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      value={layout}
-                      {...register("layout")}
-                      className="hidden"
-                    />
-                    <div
-                      className={`border ${selectedLayout === layout
-                        ? "border-blue-500"
-                        : "border-gray-300"
-                        } rounded-lg p-2`}
-                    >
-                      <img
-                        src={`https://via.placeholder.com/100?text=Layout+${layout}`}
-                        alt={`Layout ${layout}`}
-                        className="mb-2"
-                      />
-                      <p>Layout {layout}</p>
-                    </div>
-                  </label>
-                ))}
-              </div>
+              
               <Button
                 type="submit"
-                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
+                className={`w-full  ${
+                  isSigning ? "opacity-70 cursor-not-allowed" : ""
+                }`}
                 disabled={isSigning}
               >
                 {isSigning ? "Saving..." : "Save changes"}
