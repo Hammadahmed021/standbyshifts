@@ -644,3 +644,26 @@ export const getJobById = async (id) => {
     console.log(error || "Unable to get job by id");
   }
 };
+
+
+// Fetching filter data of jobs (for emplpoyee)
+export const getJobsByFilter = async (filterData) => {
+  console.log(filterData, 'filter data');
+  const token = localStorage.getItem('webToken')
+  try {
+    const jobs = await axios.post(`${BASE_URL}employee/job/get-all-matched-jobs`, filterData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    console.log(jobs, 'api jobs by filter check');
+    return jobs;
+  } catch (error) {
+    console.log(error || "unable to fetch jobs by filter");
+
+  }
+
+}

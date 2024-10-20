@@ -41,6 +41,7 @@ export default {
         'hero': "url('/src/assets/Images/banner.png')",
         'appbanner': "url('/src/assets/Images/app-banner.png')",
         'tybanner': "url('/src/assets/Images/ty-banner.png')",
+        'nearby-bg': "url('/src/assets/Images/nearby-bg.png')",
       },
       screens: {
         'sc-1920': {'min': '1900px'},

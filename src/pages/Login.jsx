@@ -90,7 +90,7 @@ const Login = () => {
               <Link to={"/"}>
                 <img src={Logo} className="" />
               </Link>
-              <p className="text-tn_text_grey text-base font-medium text-center ">
+              <p className="text-tn_pink text-base font-medium text-center underline">
                 <Link className=" " to={"/signup"}  state={{ type: userType }}>
                   Sign Up
                 </Link>

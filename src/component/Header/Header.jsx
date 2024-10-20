@@ -16,11 +16,12 @@ import useMediaQuery from "../../hooks/useQuery";
 import useFetch from "../../hooks/useFetch";
 import Search from "../Search";
 import LogoutBtn from "./LogoutBtn";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaBell, FaChevronDown, FaChevronUp, FaSms } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../LanguageSelector";
 import { verifyUser } from "../../utils/Api";
 import { Capacitor } from "@capacitor/core";
+import { FaMessage } from "react-icons/fa6";
 
 const Header = ({ style }) => {
   const dropdownRef = useRef(null);
@@ -60,27 +61,40 @@ const Header = ({ style }) => {
   const employeeMenu = (
     <>
       <li>
-        <Link to={"/employee"}>Employee Home</Link>
+        <Link to={"/employee"}>Home</Link>
       </li>
       <li>
         <Link to={"/find-jobs"}>Find Jobs</Link>
       </li>
       <li>
-        <Link to={"/saved-jobs"}>Saved Jobs</Link>
-      </li>
-      <li>
-        <Link to={"/employee-profile"}>Profile</Link>
-      </li>
-      <li>
         <Link to={"/contact"}>Contact</Link>
       </li>
+      <li>
+        <Link to={"/about"}>About</Link>
+      </li>
+      <li>
+        <Link >
+          <span className="rounded-full p-1 bg-tn_primary w-8 h-8 flex items-center justify-center">
+            <FaBell size={18} color="#fff" />
+          </span>
+        </Link>
+      </li>
+      <li>
+        <Link >
+          <span className="rounded-full p-1 bg-tn_primary w-8 h-8 flex items-center justify-center">
+            <FaMessage size={18} color="#fff" />
+          </span>
+        </Link>
+      </li>
+
+
     </>
   );
 
   const employerMenu = (
     <>
       <li>
-        <Link to={"/employer"}>Employer Home</Link>
+        <Link to={"/employer"}>Home</Link>
       </li>
       <li>
         <Link to={"/post-job"}>Post Job</Link>
@@ -89,10 +103,24 @@ const Header = ({ style }) => {
         <Link to={"/manage-jobs"}>Manage Jobs</Link>
       </li>
       <li>
-        <Link to={"/candidates"}>Find Candidates</Link>
+        <Link to={"/contact"}>Contact</Link>
       </li>
       <li>
-        <Link to={"/employer-profile"}>Company Profile</Link>
+        <Link to={"/about"}>About</Link>
+      </li>
+      <li>
+        <Link >
+          <span className="rounded-full p-1 bg-tn_pink w-8 h-8 flex items-center justify-center">
+            <FaBell size={18} color="#fff" />
+          </span>
+        </Link>
+      </li>
+      <li>
+        <Link >
+          <span className="rounded-full p-1 bg-tn_pink w-8 h-8 flex items-center justify-center">
+            <FaMessage size={18} color="#fff" />
+          </span>
+        </Link>
       </li>
     </>
 
