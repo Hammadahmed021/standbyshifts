@@ -1,4 +1,5 @@
 import { fallback } from "../assets";
+import { NextArrow, PrevArrow } from "../component/CustomArrows";
 
 export const transformData = (apiResponse) => {
   if (!apiResponse || !Array.isArray(apiResponse)) return [];
@@ -117,3 +118,6 @@ export const getDistance = (lat1, lon1, lat2, lon2) => {
   console.log("Calculated distance:", distance);
   return distance;
 };
+
+
+

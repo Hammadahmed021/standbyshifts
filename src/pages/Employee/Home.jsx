@@ -41,53 +41,54 @@ const Home = () => {
   console.log(matchJobs, 'matchJobs>>>>>>>>>>>>>>>>>>');
   
 
-  const sliderSettings = {
-    dots: false, // Remove dots, show only arrows
-    infinite: true,
-    speed: 500,
-    autoplay: true, // Enable autoplay
-    autoplaySpeed: 3000, // 3 seconds between slides
-    slidesToShow: 3, // Default to 3 slides for desktop
-    slidesToScroll: 1,
-    nextArrow: (
-      <NextArrow
-        style={{
-          right: "-25px",
-          top: "50%", // Allow custom top position
-          bottom: "50%", // Allow custom bottom position
-          left: "-25px", // Allow custom left position
-          zIndex: 1, // Control zIndex if needed
-          position: "absolute", // Control position if needed
-        }}
-      />
-    ),
-    prevArrow: (
-      <PrevArrow
-        style={{
-          right: "-25px",
-          top: "50%", // Allow custom top position
-          bottom: "50%", // Allow custom bottom position
-          left: "-25px", // Allow custom left position
-          zIndex: 1, // Control zIndex if needed
-          position: "absolute", // Control position if needed
-        }}
-      />
-    ),
-    responsive: [
-      {
-        breakpoint: 1024, // Tablet breakpoint
-        settings: {
-          slidesToShow: 2, // Show 2 slides on tablets
+  const getSliderSettings = (items = []) => {
+    const itemCount = items.length;
+  
+    return {
+      dots: false,
+      infinite: itemCount > 1, // Disable infinite scroll if only 1 item
+      speed: 500,
+      autoplay: itemCount > 1, // Disable autoplay if only 1 item
+      autoplaySpeed: 3000, // 3 seconds between slides
+      slidesToShow: itemCount < 3 ? itemCount : 3, // Show as many slides as available or default to 3
+      slidesToScroll: 1,
+      nextArrow: (
+        <NextArrow
+          style={{
+            right: "-25px",
+            top: "50%",
+            zIndex: 1,
+            position: "absolute",
+          }}
+        />
+      ),
+      prevArrow: (
+        <PrevArrow
+          style={{
+            left: "-25px",
+            top: "50%",
+            zIndex: 1,
+            position: "absolute",
+          }}
+        />
+      ),
+      responsive: [
+        {
+          breakpoint: 1024, // Tablet breakpoint
+          settings: {
+            slidesToShow: itemCount < 2 ? itemCount : 2, // Show 1 or 2 slides on tablet depending on available items
+          },
         },
-      },
-      {
-        breakpoint: 768, // Mobile breakpoint
-        settings: {
-          slidesToShow: 1, // Show 1 slide on mobile
+        {
+          breakpoint: 768, // Mobile breakpoint
+          settings: {
+            slidesToShow: 1, // Show 1 slide on mobile
+          },
         },
-      },
-    ],
+      ],
+    };
   };
+  
   const navigate = useNavigate();
   const handleRoute = () => {
     navigate("/jobs");
@@ -155,7 +156,7 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        <Slider {...sliderSettings} className="mt-12">
+        <Slider {...getSliderSettings(matchJobs)} className="mt-12">
           {!matchJobs || matchJobs.length === 0
             ? // Show skeleton loaders for the number of jobs you expect to show
               [...Array(3)].map((_, index) => (

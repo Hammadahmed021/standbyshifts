@@ -3,17 +3,17 @@ import Slider from "react-slick";
 import EmpCard from "./EmpCard";
 import { NextArrow, PrevArrow } from "./CustomArrows";
 
-const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
+const EmpCardSlider = ({ data = [], arrowPosition, slidesToShow = 3 }) => {
+  const itemCount = data.length;
+
   const settings = {
     dots: false,
-    infinite: true,
-    autoplay: true,
+    infinite: itemCount > 1, // Infinite scroll only if there are more than 1 items
+    autoplay: itemCount > 1, // Autoplay only if there are more than 1 items
     speed: 4000,
     autoplaySpeed: 4000,
-    // cssEase: "linear",
-    // pauseOnHover: false,
     pauseOnFocus: false,
-    slidesToShow: slidesToShow || 3, // Default to show 3 slides on desktop
+    slidesToShow: itemCount < slidesToShow ? itemCount : slidesToShow, // Display all items if less than slidesToShow
     slidesToScroll: 1,
     nextArrow: (
       <NextArrow
@@ -30,12 +30,12 @@ const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
     prevArrow: (
       <PrevArrow
         style={{
-            right: arrowPosition?.right || "-25px",
-            top: arrowPosition?.top || "50%", // Allow custom top position
-            bottom: arrowPosition?.bottom || "50%", // Allow custom bottom position
-            left: arrowPosition?.left || "-25px", // Allow custom left position
-            zIndex: arrowPosition?.zIndex || 1, // Control zIndex if needed
-            position: arrowPosition?.position || "absolute", // Control position if needed
+          right: arrowPosition?.right || "-25px",
+          top: arrowPosition?.top || "50%", // Allow custom top position
+          bottom: arrowPosition?.bottom || "50%", // Allow custom bottom position
+          left: arrowPosition?.left || "-25px", // Allow custom left position
+          zIndex: arrowPosition?.zIndex || 1, // Control zIndex if needed
+          position: arrowPosition?.position || "absolute", // Control position if needed
         }}
       />
     ),
@@ -43,7 +43,7 @@ const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
       {
         breakpoint: 1024, // Tablet breakpoint
         settings: {
-          slidesToShow: 2, // Show 2 slides on tablet
+          slidesToShow: itemCount < 2 ? itemCount : 2, // Show 2 slides on tablet or less if data has fewer items
         },
       },
       {
@@ -62,9 +62,9 @@ const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
           <div key={index} className="px-2 py-12">
             <EmpCard
               image={employee.image || employee?.profile_picture}
-              title={employee.title || employee?.designation   }
+              title={employee.title || employee?.designation}
               subheading={employee.subheading}
-              employer_name={employee.employer_name || employee.name }
+              employer_name={employee.employer_name || employee.name}
               rating={employee.rating}
               jobId={employee?.id}
             />
