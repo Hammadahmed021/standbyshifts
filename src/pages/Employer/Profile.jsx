@@ -31,6 +31,7 @@ import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import {
   FaAdjust,
+  FaClipboard,
   FaCode,
   FaLocationArrow,
   FaLock,
@@ -40,6 +41,7 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa";
+import { FcAbout } from "react-icons/fc";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -124,6 +126,7 @@ const Profile = () => {
       newPassword: "",
       confirmPassword: "",
       layout: "1", // Default to first layout
+      about: currentUser?.about
     },
   });
   const selectedLayout = watch("layout");
@@ -203,6 +206,7 @@ const Profile = () => {
         location: address || "",
         zip_code: zip || "",
         layout: data.layout,
+        about: data.about,
         industry_id:
           selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
       };
@@ -251,6 +255,7 @@ const Profile = () => {
       setValue("address", data?.employer?.location || "");
       setValue("zip", data?.employer?.zip_code || "");
       setValue("layout", data?.layout || "");
+      setValue("about", data?.about || "");
       setImagePreview(data?.employer?.logo || fallback);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -320,8 +325,8 @@ const Profile = () => {
       ...safeOptions.map((opt) => ({ id: opt.id, name: opt.title })),
     ];
   };
-  console.log(imagePreview, 'imagePreview');
-  
+  console.log(imagePreview, "imagePreview");
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -458,6 +463,27 @@ const Profile = () => {
                   )}
                 </span>
               </span>
+              <span className="mb-6 w-full block">
+                <Input
+                  label="Bio"
+                  type="text"
+                  icon={FaClipboard}
+                  iconColor={'#F59200'}
+                  {...register("about", {
+                    validate: {
+                      lengthCheck: (value) =>
+                        (value.length >= 50 && value.length <= 180) ||
+                        "About must be between 50 and 150 words",
+                    },
+                  })}
+                  placeholder="About company"
+                />
+                {errors.about && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.about.message}
+                  </p>
+                )}
+              </span>
 
               <div className="mb-6">
                 <SelectOption
@@ -490,8 +516,8 @@ const Profile = () => {
                   )}
                 </ul>
               </div>
-              <div className="flex space-x-4 justify-between">
-                {["1", "2", "3", "4"].map((layout) => (
+              <div className="flex space-x-4 justify-start">
+                {["1", "2"].map((layout) => (
                   <label key={layout} className="cursor-pointer">
                     <input
                       type="radio"

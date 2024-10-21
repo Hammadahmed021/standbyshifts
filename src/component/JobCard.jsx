@@ -47,6 +47,7 @@ const JobCard = ({
   description,
   jobId,
   loading, // Add loading prop
+  userType
 }) => {
   if (loading) {
     return <JobCardSkeleton />;
@@ -79,11 +80,11 @@ const JobCard = ({
 
   {/* Date and Time Info */}
   <div className="flex flex-wrap gap-2 mb-4">
-    <span className="bg-green-100 text-green-400 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+    <span className="bg-green-100 text-tag_green px-3 py-1 rounded-full text-xs font-medium flex items-center">
       <FaCalendar size={12} className="mr-1" />
       {dateRange}
     </span>
-    <span className="bg-orange-100 text-tn_brown px-3 py-1 rounded-full text-xs font-medium flex items-center">
+    <span className="bg-orange-100 text-tag_brown px-3 py-1 rounded-full text-xs font-medium flex items-center">
       <FaClock size={12} className="mr-1" />
       {timeRange}
     </span>
@@ -91,11 +92,11 @@ const JobCard = ({
 
   {/* Level and Location */}
   <div className="flex flex-wrap gap-2 mb-4">
-    <span className="bg-purple-100 text-purple-400 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+    <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
       <FaCrown size={12} className="mr-1" />
       {level}
     </span>
-    <span className="bg-blue-100 text-blue-400 px-3 py-1 rounded-full text-xs font-medium flex items-center">
+    <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
       <FaMapMarker size={12} className="mr-1" />
       {location}
     </span>
@@ -105,11 +106,13 @@ const JobCard = ({
   <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
 
   {/* Apply Button */}
+  {(userType === "employee") &&
   <div className="mt-auto">
     <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={handleApplyClick}>
       Apply
     </button>
   </div>
+  }
 </div>
 
   );

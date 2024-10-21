@@ -21,15 +21,16 @@ export default {
         tn_primary: '#F59200',
         tn_text_grey: '#656565',
         tn_light_grey: '#EDEDED',
-        tn_dark: '#1E1E1E', 
+        tn_dark: '#312D2D', 
         tn_light: '#F7F7F7',
         tn_dark_field: '#1C1B1F',
         tn_dark_blue: '#2D3748',
         tn_green: '#5EB676',
         tn_purple: '#BC64A8',
-        tn_brown: '#C69153'
-
-
+        tag_brown: '#C69153',
+        tag_blue: '#3C96B0',
+        tag_purple: '#BC64A8',
+        tag_green: '#5EB676',
       },
       borderRadius: {
         'site': '50px', // Custom border radius
@@ -42,10 +43,14 @@ export default {
         'appbanner': "url('/src/assets/Images/app-banner.png')",
         'tybanner': "url('/src/assets/Images/ty-banner.png')",
         'nearby-bg': "url('/src/assets/Images/nearby-bg.png')",
+        'cta-bg': "url('/src/assets/Images/emp-bg.png')",
       },
       screens: {
         'sc-1920': {'min': '1900px'},
         'vxs': {'max': '480px'},
+      },
+      boxShadow: {
+        'custom-orange': '0px 15px 30px 0px rgba(245, 146, 0, 0.25)', // Adjusted for the hex color with transparency
       },
     },
   },

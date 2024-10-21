@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getJobById } from "../utils/Api";
 import {
   FaCalendarAlt,
   FaClock,
+  FaFileAlt,
   FaMapMarkerAlt,
+  FaShoppingBag,
   FaUserAlt,
+  FaUserCircle,
+  FaWolfPackBattalion,
 } from "react-icons/fa";
 import { EmpCardSlider, Loader } from "../component";
+import { FaBagShopping, FaBoxesPacking } from "react-icons/fa6";
+import { people } from "../assets";
+import { BsBackpack, BsBackpack2Fill } from "react-icons/bs";
+
 const JobDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [job, setJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
 
@@ -24,44 +33,81 @@ const JobDetail = () => {
   }, [id]);
   console.log(job, "job");
 
-  if (!job) return <div className="container text-center pt-8"><Loader /></div>;
+  const handleViewProfileClick = () => {
+    if (job?.details?.user?.id) {
+      const companyId = job?.details?.user?.id;
+      navigate(`/company/${companyId}`); // Assuming /company/:id is the profile page
+    }
+  };
+
+  if (!job)
+    return (
+      <div className="container text-center pt-8">
+        <Loader />
+      </div>
+    );
 
   return (
     <>
       <div className="flex flex-col lg:flex-row  container space-x-4 my-16">
         {/* Main Content */}
-        <div className="w-full lg:w-2/3 p-4  bg-white rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
+        <div className="w-full lg:w-2/3 p-4  bg-white rounded-2xl shadow-xl">
+          <div className="flex justify-between items-start mb-4">
             <div>
-              <h2 className="text-2xl font-bold">
+              <p className="text-gray-500 flex space-x-2 items-center text-sm">
+                <FaBagShopping size={14} className="mr-2" /> Job type:{" "}
+                <span className="font-semibold text-tn_dark">
+                  {job?.details?.designation || "Designation"}
+                </span>
+              </p>
+              <h2 className="text-2xl font-semibold capitalize flex items-center mt-2">
+                <img
+                  src={people}
+                  className="mr-2 rounded-full w-8 h-8 bg-tn_light_grey"
+                />{" "}
                 {job?.details?.title || "Job Title"}
               </h2>
-              <p className="text-gray-500">
-                Job type: {job?.details?.designation || "Designation"}
-              </p>
             </div>
-            <button className="bg-orange-500 text-white px-6 py-2 rounded-full font-semibold hover:bg-orange-600">
+            <button className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange">
               Apply
             </button>
           </div>
 
-          <div className="flex items-center text-gray-600 mb-4">
-            <FaCalendarAlt className="mr-2 text-green-600" />
-            <span>
-              {new Date(job?.details?.start_date).toLocaleDateString()} to{" "}
-              {new Date(job?.details?.end_date).toLocaleDateString()}
-            </span>
-            <FaClock className="ml-4 mr-2 text-orange-600" />
-            <span>
-              {job?.details?.shift_start_time} - {job?.details?.shift_end_time}
-            </span>
-            <FaUserAlt className="ml-4 mr-2 text-purple-600" />
-            <span>{job?.details?.experience_level || "Experience Level"}</span>
-            <FaMapMarkerAlt className="ml-4 mr-2 text-blue-600" />
-            <span>
-              {job?.details?.city}, {job?.details?.state}
-            </span>
+          <div className="flex items-center justify-between text-gray-600 mb-6">
+            <div className="flex items-center justify-start gap-2 mb-2">
+              <span className="inline-flex text-sm text-tag_green bg-tag_green bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                <FaCalendarAlt className="mr-2 text-tag_green" size={12} />
+                <span>
+                  {new Date(job?.details?.start_date).toLocaleDateString()} to{" "}
+                  {new Date(job?.details?.end_date).toLocaleDateString()}
+                </span>
+              </span>
+              <span className="inline-flex text-sm text-tag_brown bg-tag_brown bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                <FaClock className="mr-2 text-tag_brown" />
+                <span>
+                  {job?.details?.shift_start_time} -{" "}
+                  {job?.details?.shift_end_time}
+                </span>
+              </span>
+              <span className="inline-flex text-sm text-tag_purple bg-tag_purple bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                <FaUserAlt className="mr-2 text-tag_purple" />
+                <span className="capitalize">
+                  {job?.details?.experience_level || "Experience Level"}
+                </span>
+              </span>
+              <span className="inline-flex text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                <FaMapMarkerAlt className="mr-2 text-tag_blue" />
+                <span className="capitalize">
+                  {job?.details?.city}, {job?.details?.state}
+                </span>
+              </span>
+            </div>
+            <p className="text-xl font-semibold text-tn_dark">
+              ${job?.details?.per_hour_rate} / hr
+            </p>
           </div>
+
+          <hr className="border-b border-tn_light_grey my-6" />
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold">Description</h3>
@@ -69,6 +115,7 @@ const JobDetail = () => {
               {job?.details?.description || "No description available."}
             </p>
           </div>
+          <hr className="border-b border-tn_light_grey my-6" />
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold">Required Skills</h3>
@@ -77,7 +124,7 @@ const JobDetail = () => {
                 job?.details.expertise.map((skill) => (
                   <span
                     key={skill.id}
-                    className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full"
+                    className="border border-tn_light_grey text-tn_dark px-3 py-1 rounded-full text-sm"
                   >
                     {skill.title}
                   </span>
@@ -87,40 +134,62 @@ const JobDetail = () => {
               )}
             </div>
           </div>
+          <hr className="border-b border-tn_light_grey my-6" />
+          <h3 className="text-lg font-semibold"> Qualifications & Ability</h3>
+          <p>{job?.details?.qualification}</p>
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-1/3 p-4  bg-white rounded-lg shadow-md">
-          <div className="mb-4">
+        <div className="w-full lg:w-1/3 p-4  bg-white rounded-2xl shadow-xl h-auto">
+          <div className="mb-4 flex gap-2 items-center">
             <img
-              src={
-                job?.details?.user?.profile_image || "/default-company-logo.png"
-              }
+              src={job?.details?.user?.profile_image || people}
               alt={job?.details?.user?.name || "Company Logo"}
-              className="w-20 h-20 rounded-full mb-2"
+              className="w-20 h-20 object-contain rounded-2xl bg-slate-100 shadow-sm"
             />
-            <h3 className="text-lg font-bold">
-              {job?.details?.user?.name || "Company Name"}
-            </h3>
-            <p className="text-gray-500">View Company Profile</p>
+            <span>
+              <h3 className="text-lg font-bold">
+                {job?.details?.user?.name || "Company Name"}
+              </h3>
+              <p
+                className="text-tn_pink text-xs font-medium cursor-pointer"
+                onClick={handleViewProfileClick}
+              >
+                View Company Profile
+              </p>
+            </span>
           </div>
+          <hr className="border-b border-tn_light_grey my-6" />
 
-          <div className="mb-4">
-            <h4 className="text-md font-semibold text-gray-600">
-              Member Since
+          <div className="mb-4 flex justify-between items-center">
+            <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+              <FaUserCircle className="mr-2" /> Member Since
             </h4>
-            <p>
+            <p className="font-semibold">
               {new Date(job?.details?.user?.created_at).toLocaleDateString()}
             </p>
           </div>
 
-          <div className="mb-4">
-            <h4 className="text-md font-semibold text-gray-600">Industry</h4>
-            <p>
+          <hr className="border-b border-tn_light_grey my-6" />
+
+          <div className="mb-4 flex justify-between items-center">
+            <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+              <FaBoxesPacking className="mr-2" /> Industry
+            </h4>
+            <p className="font-semibold">
               {job?.details?.industry_id
                 ? job?.details?.industry_id
                 : "Not specified"}
             </p>
+          </div>
+
+          <hr className="border-b border-tn_light_grey my-6" />
+
+          <div className="mb-4 flex justify-between items-center">
+            <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+              <BsBackpack2Fill className="mr-2" /> Job Posts
+            </h4>
+            <p className="font-semibold">10</p>
           </div>
         </div>
       </div>

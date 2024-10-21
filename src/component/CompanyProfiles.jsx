@@ -1,68 +1,130 @@
-import React from 'react';
-import { FaBox, FaEnvelope, FaMailBulk, FaMailchimp, FaMarker, FaPhone, FaPhoneAlt, FaPuzzlePiece, FaSms, FaVoicemail } from 'react-icons/fa';
-import { FaFileZipper, FaLocationDot, FaLocationPin, FaMessage } from 'react-icons/fa6';
+import React from "react";
+import { BsBackpack2Fill } from "react-icons/bs";
+import {
+  FaBox,
+  FaEnvelope,
+  FaMailBulk,
+  FaMailchimp,
+  FaMarker,
+  FaPhone,
+  FaPhoneAlt,
+  FaPuzzlePiece,
+  FaSms,
+  FaVoicemail,
+} from "react-icons/fa";
+import {
+  FaFileZipper,
+  FaLocationDot,
+  FaLocationPin,
+  FaMessage,
+} from "react-icons/fa6";
 
 const CompanyProfiles = ({ profile, layout, count }) => {
   const renderLayout = () => {
     switch (layout) {
-      case '1':
+      case "1":
         return (
           <>
-          <div className="bg-blue-950 w-full h-[250px]"></div>
-          <div className="p-6 flex justify-start items-center text-left space-x-5 container">
-            <div className="first_col -mt-24">
-            <img
-              src={profile?.employer?.logo}
-              alt={profile?.name}
-              className="rounded-full w-40 h-40 mx-auto"
-            /></div>
-            <div className="second_col">
-            <h2 className="text-xl font-bold mt-4">{profile?.name}</h2>
-            <p className="text-gray-600 mt-2">{profile?.industry || 'Industry not provided'}</p>
-            <p className="text-gray-600 mt-2">{count || 'jobPostCount'}</p>
-            <div className="mt-2 flex space-x-2 items-center">
-              <h3 className="text-lg font-semibold">Contact Information:</h3>
-              <p className="bg-tn_green bg-opacity-20 p-2 rounded-full text-tn_green inline-flex items-center gap-2"><FaEnvelope /><strong>Email:</strong> {profile?.email}</p>
-              <p className="bg-tn_purple bg-opacity-20 p-2 rounded-full text-tn_purple inline-flex items-center gap-2"><FaPhoneAlt /><strong>Phone:</strong> {profile?.phone}</p>
-              <p className="bg-tn_brown bg-opacity-20 p-2 rounded-full text-tn_brown inline-flex items-center gap-2"><FaLocationDot /><strong>Location:</strong> {profile?.employer?.location}</p>
-              <p className="bg-tn_green bg-opacity-20 p-2 rounded-full text-tn_green inline-flex items-center gap-2"><FaFileZipper /><strong>Zip Code:</strong> {profile?.employer?.zip_code}</p>
+            <div className="bg-blue-950 w-full h-[250px]"></div>
+            <div className="p-6 flex justify-start items-center text-left space-x-5 container">
+              <div className="first_col -mt-24">
+                <img
+                  src={profile?.employer?.logo}
+                  alt={profile?.name}
+                  className="rounded-full w-52 h-50 mx-auto shadow-md"
+                />
+              </div>
+              <div className="second_col">
+                <h2 className="text-4xl font-bold mb-4">{profile?.name}</h2>
+                <div className="flex gap-2">
+                  <p className="bg-tag_green bg-opacity-20 p-2 rounded-full text-tag_green inline-flex items-center gap-2 text-sm">
+                    <BsBackpack2Fill /> Total Jobs: {count || "N/A"}
+                  </p>
+                  <p className="bg-tag_purple bg-opacity-20 p-2 rounded-full text-tag_purple inline-flex items-center gap-2 text-sm">
+                    <FaFileZipper />
+                    Zip Code: {profile?.employer?.zip_code}
+                  </p>
+                  <p className="bg-tag_brown bg-opacity-20 p-2 rounded-full text-tag_brown inline-flex items-center gap-2 text-sm">
+                    <FaLocationDot />
+                    Industry: {profile?.industry}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-          </div>
-          
-          </>
+            <div className="container gap-4 flex items-start justify-between">
+              <div className="w-8/12 shadow-xl rounded-2xl bg-white p-4">
+                <h3 className="text-lg font-semibold mb-6">About Company</h3>
+                <p>{profile?.about}</p>
+              </div>
+              <div className="w-4/12 shadow-xl rounded-2xl bg-white p-4">
+                <div className="mb-4 flex justify-between items-center gap-2">
+                  <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                    <FaEnvelope /> Email
+                  </h4>
+                  <p className="font-semibold">{profile?.email}</p>
+                </div>
+                <hr className="border-b border-tn_light_grey my-6" />
 
+                <div className="mb-4 flex justify-between items-center gap-2">
+                  <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                    <FaPhoneAlt /> Phone
+                  </h4>
+                  <p className="font-semibold">{profile?.phone}</p>
+                </div>
+                <hr className="border-b border-tn_light_grey my-6" />
+                <div className="mb-4 flex justify-between items-center gap-2">
+                  <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                    <FaLocationDot /> Location
+                  </h4>
+                  <p className="font-semibold">{profile?.employer?.location}</p>
+                </div>
+              </div>
+            </div>
+          </>
         );
-      case '2':
+      case "2":
         return (
-          <div className="bg-gray-100 shadow-md p-6 rounded-lg flex flex-col items-center text-center">
-            <div className="w-full bg-gray-200 p-4 rounded-t-lg">
-              <img
-                src={profile?.employer?.logo}
-                alt={profile?.name}
-                className="rounded-full w-24 h-24 mx-auto"
-              />
-            </div>
-            <h2 className="text-xl font-bold mt-4">{profile?.name}</h2>
-            <p className="text-gray-600 mt-2">{profile?.industry?.title || 'Industry not provided'}</p>
-            <div className="flex justify-between w-full mt-6">
-              <div>
-                <h3 className="font-semibold">Email</h3>
-                <p>{profile?.email}</p>
+          <>
+            <div className="bg-blue-950 w-full h-[250px] container rounded-2xl"></div>
+            <div className="container flex flex-col items-center text-center">
+              <div className="-mt-24">
+                <img
+                  src={profile?.employer?.logo}
+                  alt={profile?.name}
+                  className="rounded-full w-52 h-50 mx-auto shadow-md"
+                />
               </div>
-              <div>
-                <h3 className="font-semibold">Phone</h3>
-                <p>{profile?.phone}</p>
+              <h2 className="text-4xl font-bold my-6">{profile?.name}</h2>
+              <div className="flex justify-center space-x-2 items-center w-full mt-6">
+                <p className="bg-tag_green bg-opacity-20 p-2 rounded-full text-tag_green inline-flex items-center gap-2 text-sm">
+                  <BsBackpack2Fill /> Total Jobs {count || "N/A"}
+                </p>
+                <p className="bg-tag_brown bg-opacity-20 p-2 rounded-full text-tag_brown inline-flex items-center gap-2 text-sm">
+                  <FaLocationDot />
+                  {profile?.industry}
+                </p>
+                <p className="bg-tag_purple bg-opacity-20 p-2 rounded-full text-tag_purple inline-flex items-center gap-2 text-sm">
+                  <FaFileZipper />
+                  {profile?.employer?.zip_code}
+                </p>
+                <p className="bg-tag_green bg-opacity-20 p-2 rounded-full text-tag_green inline-flex items-center gap-2 text-sm">
+                  <FaEnvelope /> {profile?.email}
+                </p>
+                <p className="bg-tag_brown bg-opacity-20 p-2 rounded-full text-tag_brown inline-flex items-center gap-2 text-sm">
+                  <FaPhoneAlt /> {profile?.phone}
+                </p>
+                <p className="bg-tag_purple bg-opacity-20 p-2 rounded-full text-tag_purple inline-flex items-center gap-2 text-sm">
+                  <FaLocationDot /> {profile?.employer?.location}
+                </p>
+              </div>
+              <div className="my-10">
+                <h3 className="text-lg font-semibold mb-6">About Company</h3>
+                <p>{profile?.about}</p>
               </div>
             </div>
-            <div className="mt-4">
-              <h3 className="font-semibold">Location</h3>
-              <p>{profile?.employer?.location}</p>
-              <p>{profile?.employer?.zip_code}</p>
-            </div>
-          </div>
+          </>
         );
-      case '3':
+      case "3":
         return (
           <div className="bg-blue-50 p-6 rounded-lg md:flex md:flex-row">
             <div className="w-full md:w-1/3 flex justify-center md:justify-start">
@@ -74,18 +136,28 @@ const CompanyProfiles = ({ profile, layout, count }) => {
             </div>
             <div className="w-full md:w-2/3 text-left mt-4 md:mt-0 md:pl-6">
               <h2 className="text-xl font-bold">{profile?.name}</h2>
-              <p className="text-gray-600 mt-2">{profile?.industry?.title || 'Industry not provided'}</p>
+              <p className="text-gray-600 mt-2">
+                {profile?.industry?.title || "Industry not provided"}
+              </p>
               <div className="mt-4">
                 <h3 className="text-lg font-semibold">Contact Information</h3>
-                <p><strong>Email:</strong> {profile?.email}</p>
-                <p><strong>Phone:</strong> {profile?.phone}</p>
-                <p><strong>Location:</strong> {profile?.employer?.location}</p>
-                <p><strong>Zip Code:</strong> {profile?.employer?.zip_code}</p>
+                <p>
+                  <strong>Email:</strong> {profile?.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {profile?.phone}
+                </p>
+                <p>
+                  <strong>Location:</strong> {profile?.employer?.location}
+                </p>
+                <p>
+                  <strong>Zip Code:</strong> {profile?.employer?.zip_code}
+                </p>
               </div>
             </div>
           </div>
         );
-      case '4':
+      case "4":
         return (
           <div className="bg-gray-900 text-white p-6 rounded-lg flex flex-col items-center">
             <div className="bg-gray-800 p-4 rounded-t-lg w-full flex justify-center">
@@ -96,13 +168,23 @@ const CompanyProfiles = ({ profile, layout, count }) => {
               />
             </div>
             <h2 className="text-xl font-bold mt-4">{profile?.name}</h2>
-            <p className="text-gray-400 mt-2">{profile?.industry?.title || 'Industry not provided'}</p>
+            <p className="text-gray-400 mt-2">
+              {profile?.industry?.title || "Industry not provided"}
+            </p>
             <div className="w-full mt-6 text-center">
               <h3 className="text-lg font-semibold">Contact Information</h3>
-              <p><strong>Email:</strong> {profile?.email}</p>
-              <p><strong>Phone:</strong> {profile?.phone}</p>
-              <p><strong>Location:</strong> {profile?.employer?.location}</p>
-              <p><strong>Zip Code:</strong> {profile?.employer?.zip_code}</p>
+              <p>
+                <strong>Email:</strong> {profile?.email}
+              </p>
+              <p>
+                <strong>Phone:</strong> {profile?.phone}
+              </p>
+              <p>
+                <strong>Location:</strong> {profile?.employer?.location}
+              </p>
+              <p>
+                <strong>Zip Code:</strong> {profile?.employer?.zip_code}
+              </p>
             </div>
           </div>
         );
@@ -111,11 +193,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
     }
   };
 
-  return (
-    <div>
-      {renderLayout()}
-    </div>
-  );
+  return <div>{renderLayout()}</div>;
 };
 
 export default CompanyProfiles;

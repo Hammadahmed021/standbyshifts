@@ -29,7 +29,15 @@ import {
 import { updateFirebasePassword } from "../../service";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
-import { FaPen, FaTrash } from "react-icons/fa";
+import {
+  FaAdjust,
+  FaLocationArrow,
+  FaLock,
+  FaPen,
+  FaPhone,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -653,83 +661,125 @@ const Profile = () => {
               />
             )}
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
+              <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                Personal Information
+              </h3>
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <Input
-                  label="Name"
-                  onKeyPress={handleNameKeyPress} // Prevent numbers
-                  {...register("name")}
-                  placeholder="Enter your name"
-                  className="mb-6"
-                />
-                <Input
-                  label="Phone"
-                  type="tel"
-                  maxLength={15} // Restrict length to 15 digits
-                  onKeyPress={handlePhoneKeyPress} // Prevent alphabets
-                  {...register("phone", {
-                    validate: {
-                      lengthCheck: (value) =>
-                        (value.length >= 11 && value.length <= 15) ||
-                        "Phone number must be between 11 and 15 digits",
-                    },
-                  })}
-                  placeholder="Enter your phone number"
-                  className="mb-6 sm:mb-0"
-                />
-              </span>
-              {!isGmailUser && (
-                <span className="mb-6 block">
-                  <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                    <Input
-                      label="New Password"
-                      type="password"
-                      {...register("newPassword")}
-                      placeholder="Enter new password"
-                      // disabled={isGmailUser}
-                      className="mb-6 sm:mb-0"
-                    />
-                    <Input
-                      label="Confirm Password"
-                      type="password"
-                      {...register("confirmPassword")}
-                      placeholder="Confirm new password"
-                      // disabled={isGmailUser}
-                    />
-                  </span>
-                  {showError && (
-                    <p className="text-red-500 text-sm">{showError}</p>
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Name"
+                    onKeyPress={handleNameKeyPress} // Prevent numbers
+                    icon={FaUser}
+                    {...register("name")}
+                    placeholder="Enter your name"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.name.message}
+                    </p>
                   )}
                 </span>
-              )}
-              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <Input
-                  label="Address"
-                  {...register("address")}
-                  placeholder="Enter your address"
-                  className="mb-6"
-                  type="text"
-                />
-                <Input
-                  label="Zip Code"
-                  type="text"
-                  maxLength={15} // Restrict length to 15 digits
-                  {...register("zip", {
-                    validate: {
-                      lengthCheck: (value) =>
-                        (value.length >= 5 && value.length <= 10) ||
-                        "Phone number must be between 11 and 15 digits",
-                    },
-                  })}
-                  placeholder="Zip code"
-                  className="mb-6 sm:mb-0"
-                />
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Phone"
+                    type="tel"
+                    icon={FaPhone}
+                    maxLength={15} // Restrict length to 15 digits
+                    onKeyPress={handlePhoneKeyPress} // Prevent alphabets
+                    {...register("phone", {
+                      validate: {
+                        lengthCheck: (value) =>
+                          (value.length >= 11 && value.length <= 15) ||
+                          "Phone number must be between 11 and 15 digits",
+                      },
+                    })}
+                    placeholder="Enter your phone number"
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </span>
               </span>
+              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Address"
+                    {...register("address")}
+                    icon={FaLocationArrow}
+                    placeholder="Enter your address"
+                    type="text"
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </span>
 
+                <span className="mb-6 w-full">
+                  {" "}
+                  <Input
+                    label="Zip Code"
+                    type="text"
+                    icon={FaAdjust}
+                    maxLength={15} // Restrict length to 15 digits
+                    {...register("zip", {
+                      validate: {
+                        lengthCheck: (value) =>
+                          (value.length >= 5 && value.length <= 10) ||
+                          "Phone number must be between 11 and 15 digits",
+                      },
+                    })}
+                    placeholder="Zip code"
+                  />
+                  {errors.zip && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.zip.message}
+                    </p>
+                  )}
+                </span>
+              </span>
+              {!isGmailUser && (
+                <>
+                  <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                    Change Password
+                  </h3>
+                  <span className="mb-6 block">
+                    <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                      <Input
+                        label="New Password"
+                        type="password"
+                        icon={FaLock}
+                        {...register("newPassword")}
+                        placeholder="Enter new password"
+                        // disabled={isGmailUser}
+                      />
+                      <Input
+                        label="Confirm Password"
+                        type="password"
+                        icon={FaLock}
+                        {...register("confirmPassword")}
+                        placeholder="Confirm new password"
+                        // disabled={isGmailUser}
+                      />
+                    </span>
+                    {showError && (
+                      <p className="text-red-500 text-sm">{showError}</p>
+                    )}
+                  </span>
+                </>
+              )}
+
+              <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                Work Experience
+              </h3>
               <div className="mb-6">
                 <label className="block mb-2">Tags</label>
                 <AutoComplete options={dropdownTags} onAddTag={handleAddTag} />
                 <h3>Add new skills</h3>
-                <ul className="mt-2">
+                <ul className="space-x-1">
                   {newTags.map((tag, index) => (
                     <li
                       key={index}
@@ -918,7 +968,6 @@ const Profile = () => {
                   )}
                 </div>
               </div>
-
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
@@ -950,7 +999,7 @@ const Profile = () => {
                   )}
                 </ul>
               </div>
-              
+
               <Button
                 type="submit"
                 className={`w-full  ${

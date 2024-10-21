@@ -11,7 +11,7 @@ export { default as relatedFallback } from "./Images/restaurant-image.png";
 export { default as menu } from "./Images/menu.png";
 export { default as login } from "./Images/login.png";
 export { default as signup } from "./Images/signup.png";
-export { default as notfound } from "./Images/notfound.jpg";
+export { default as notfound } from "./Images/notfound.png";
 export { default as hero } from "./Images/hero-girl.png";
 
 export { default as ImgB } from "./Images/image1.png";
@@ -20,6 +20,7 @@ export { default as connect } from "./Images/connect.png";
 export { default as girl } from "./Images/girl.png";
 export { default as peoples } from "./Images/peoples.png";
 export { default as nearByBg } from "./Images/nearby-bg.png";
+export { default as girlSofa } from "./Images/girl-img.png";
 
 
 export { default as png } from "./Images/png.png";

@@ -64,7 +64,7 @@ const Header = ({ style }) => {
         <Link to={"/employee"}>Home</Link>
       </li>
       <li>
-        <Link to={"/find-jobs"}>Find Jobs</Link>
+        <Link to={"/jobs"}>Find Jobs</Link>
       </li>
       <li>
         <Link to={"/contact"}>Contact</Link>

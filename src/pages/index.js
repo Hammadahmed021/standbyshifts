@@ -25,4 +25,4 @@ export { default as EmployerProfileView } from "./Employer/ProfileView";
 export { default as PostJob } from "./Employer/PostJob";
 export { default as JobDetail } from "./JobDetail";
 export { default as AllJobs } from "./Employee/AllJobs";
-
+export { default as CompanyProfile } from "./Employee/CompanyProfile";

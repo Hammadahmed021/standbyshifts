@@ -61,11 +61,12 @@ const EmpCardSlider = ({ data, arrowPosition, slidesToShow }) => {
         {data.map((employee, index) => (
           <div key={index} className="px-2 py-12">
             <EmpCard
-              image={employee.image}
-              title={employee.title}
+              image={employee.image || employee?.profile_picture}
+              title={employee.title || employee?.designation   }
               subheading={employee.subheading}
-              employer_name={employee.employer_name}
+              employer_name={employee.employer_name || employee.name }
               rating={employee.rating}
+              jobId={employee?.id}
             />
           </div>
         ))}

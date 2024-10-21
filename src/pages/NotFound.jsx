@@ -9,7 +9,7 @@ const NotFound = () => {
 
   return (
     <div className='text-center my-10 container mx-auto'>
-      {/* <img src={notfound} alt='not found' className="w-[500px] mx-auto mb-6" /> */}
+      <img src={notfound} alt='not found' className="w-auto mx-auto mb-6" />
       <h4 className='text-center text-6xl py-8 font-medium blockw'>Page not found</h4>
       <Link to={
         userData

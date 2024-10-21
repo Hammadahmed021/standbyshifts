@@ -256,6 +256,7 @@ export const updateEmployerProfile = async (userData) => {
     industry_id, // Ensure this is always an array
     logo,
     layout,
+    about
   } = userData;
 
   const formData = new FormData();
@@ -264,6 +265,7 @@ export const updateEmployerProfile = async (userData) => {
   formData.append("layout", layout);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
+  formData.append("about", about || ""); // Directly use userData
 
   formData.append("industry_id", industry_id);
 
@@ -606,6 +608,25 @@ export const getJobsForEmployee = async () => {
   }
 };
 
+
+// show data on home for employer
+export const getDataForEmployer = async () => {
+  const token = localStorage.getItem("webToken");
+  try {
+    const response = await axios.get(`${BASE_URL}employer/profile/page-data`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching jobs for employee"
+    );
+  }
+};
+
 // Post a job
 export const postJob = async (payload) => {
   console.log(payload, "payload post job");
@@ -645,25 +666,46 @@ export const getJobById = async (id) => {
   }
 };
 
-
 // Fetching filter data of jobs (for emplpoyee)
 export const getJobsByFilter = async (filterData) => {
-  console.log(filterData, 'filter data');
-  const token = localStorage.getItem('webToken')
+  console.log(filterData, "filter data");
+  const token = localStorage.getItem("webToken");
   try {
-    const jobs = await axios.post(`${BASE_URL}employee/job/get-all-matched-jobs`, filterData,
+    const jobs = await axios.post(
+      `${BASE_URL}employee/job/get-all-matched-jobs`,
+      filterData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
-    )
-    console.log(jobs, 'api jobs by filter check');
+    );
+    console.log(jobs, "api jobs by filter check");
     return jobs;
   } catch (error) {
     console.log(error || "unable to fetch jobs by filter");
-
   }
+};
 
-}
+// get company details for employee
+export const getCompanyProfile = async (id) => {
+  console.log(id, "id");
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}employee/job/get-employer-details-and-jobs/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response get company");
+    return response;
+  } catch (error) {
+    console.log(error || "unable to get company profile");
+  }
+};
