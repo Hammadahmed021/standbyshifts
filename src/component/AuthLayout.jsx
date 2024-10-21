@@ -20,7 +20,7 @@ const AuthLayout = ({ children, authentication = true }) => {
       if (user == "employee") {
         navigate("/employee"); // Redirect to employee page
       } else if (user == "employer") {
-        navigate("/employer"); // Redirect to employer page
+        navigate("/employer-profile"); // Redirect to employer page
       } else {
         navigate("/"); // Fallback
       }
