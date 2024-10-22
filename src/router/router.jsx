@@ -30,6 +30,7 @@ import {
   JobDetail,
   AllJobs,
   CompanyProfile,
+  ManageJobs,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -65,6 +66,8 @@ function BaseRouter() {
           <Route path="employee-profile" element={<AuthLayout authentication={true}><EmployeeProfile /></AuthLayout>} />
           <Route path="company/:companyId" element={<AuthLayout authentication={true}><CompanyProfile /></AuthLayout>} />
           <Route path="employer-profile" element={<AuthLayout authentication={true}><EmployerProfile /></AuthLayout>} />
+          {/*  manage-jobs */}
+          <Route path="manage-jobs" element={<AuthLayout authentication={true}><ManageJobs /></AuthLayout>} />
           <Route path="employer-profile-view" element={<AuthLayout authentication={true}><EmployerProfileView /></AuthLayout>} />
           <Route path="employee-profile-view" element={<AuthLayout authentication={true}><EmployeeProfileView  /></AuthLayout>} />
           <Route path="post-job" element={<AuthLayout authentication={true}><PostJob /></AuthLayout>} />
