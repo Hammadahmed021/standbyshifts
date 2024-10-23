@@ -35,4 +35,3 @@ export { default as ContactForm } from "./ContactForm";
 export { default as TestimonialSlider } from "./TestimonialSlider";
 export { default as CompanyProfiles } from "./CompanyProfiles";
 export { default as JobCard } from "./JobCard";
-export { default as EmployerJobCard } from "./EmployerJobCard";

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Await } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_KEY = import.meta.env.VITE_APP_KEY; // Ensure this is correctly set
@@ -256,7 +255,6 @@ export const updateEmployerProfile = async (userData) => {
     industry_id, // Ensure this is always an array
     logo,
     layout,
-    about
   } = userData;
 
   const formData = new FormData();
@@ -265,9 +263,12 @@ export const updateEmployerProfile = async (userData) => {
   formData.append("layout", layout);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
-  formData.append("about", about || ""); // Directly use userData
+
 
   formData.append("industry_id", industry_id);
+
+
+
 
   // Append profile image if present
   if (logo) {
@@ -312,24 +313,26 @@ export const updateUserProfile = async (userData) => {
     location,
     zip_code,
     industry_id, // Ensure this is always an array
-    expertise, // Default to an empty array if undefined
-    // skills, // Default to an empty array if undefined
+    skills, // Default to an empty array if undefined
     work_history, // Default to an empty array if undefined
     profile_picture,
+    layout,
   } = userData;
-  console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
 
   const formData = new FormData();
   formData.append("name", name);
   formData.append("phone", phone);
+  formData.append("layout", layout);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
 
+
   formData.append("industry_id", industry_id);
-  // formData.append("expertise", expertise);
+
+
 
   // Append skills
-  expertise.forEach((skill) => formData.append("expertise[]", skill));
+  skills.forEach((skill) => formData.append("skills[]", skill));
 
   // Append work history
   work_history.forEach((work, index) => {
@@ -551,6 +554,7 @@ export const fetchProfileDataEmployee = async () => {
   }
 };
 
+
 export const fetchProfileDataEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -570,7 +574,7 @@ export const fetchProfileDataEmployer = async () => {
   }
 };
 
-// single employer data
+// single employer data 
 export const fetchSingleDetailEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
@@ -590,46 +594,10 @@ export const fetchSingleDetailEmployer = async () => {
   }
 };
 
-// show job on home for employee
-export const getJobsForEmployee = async () => {
-  const token = localStorage.getItem("webToken");
-  try {
-    const response = await axios.get(`${BASE_URL}employee/home-page`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response;
-  } catch (error) {
-    throw new Error(
-      error || "something went wrong while fetching jobs for employee"
-    );
-  }
-};
 
-
-// show data on home for employer
-export const getDataForEmployer = async () => {
-  const token = localStorage.getItem("webToken");
-  try {
-    const response = await axios.get(`${BASE_URL}employer/profile/page-data`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response;
-  } catch (error) {
-    throw new Error(
-      error || "something went wrong while fetching jobs for employee"
-    );
-  }
-};
-
-// Post a job
+// Post a job  
 export const postJob = async (payload) => {
-  console.log(payload, "payload post job");
+  console.log(payload, 'payload post job');
   const token = localStorage.getItem("webToken");
 
   try {
@@ -637,81 +605,16 @@ export const postJob = async (payload) => {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      },
-    });
-    return response;
+      }
+    })
+    return response.data;
   } catch (error) {
     console.log(error || "unable to post a job");
+
   }
-};
+}
 
-export const getJobById = async (id) => {
-  const token = localStorage.getItem("webToken");
-
-  try {
-    const response = axios.get(
-      `${BASE_URL}employee/job/get-matched-job-details/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response, "response");
-
-    return response;
-  } catch (error) {
-    console.log(error || "Unable to get job by id");
-  }
-};
-
-// Fetching filter data of jobs (for emplpoyee)
-export const getJobsByFilter = async (filterData) => {
-  console.log(filterData, "filter data");
-  const token = localStorage.getItem("webToken");
-  try {
-    const jobs = await axios.post(
-      `${BASE_URL}employee/job/get-all-matched-jobs`,
-      filterData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(jobs, "api jobs by filter check");
-    return jobs;
-  } catch (error) {
-    console.log(error || "unable to fetch jobs by filter");
-  }
-};
-
-// get company details for employee
-export const getCompanyProfile = async (id) => {
-  console.log(id, "id");
-  const token = localStorage.getItem("webToken");
-
-  try {
-    const response = await axios.get(
-      `${BASE_URL}employee/job/get-employer-details-and-jobs/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response, "response get company");
-    return response;
-  } catch (error) {
-    console.log(error || "unable to get company profile");
-  }
-};
-
-
-// update a job  
+// Post a job  
 export const updateJob = async (payload) => {
   console.log(payload, 'payload post job');
   const token = localStorage.getItem("webToken");
@@ -730,24 +633,24 @@ export const updateJob = async (payload) => {
   }
 }
 
-// Employer all jobs posted 
+// Employer all jobs posted
 export const fetchAllJobByEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
   try {
-    const response = await axios.get(`${BASE_URL}employer/profile/posted-jobs`,
+    const response = await axios.get(
+      `${BASE_URL}employer/profile/posted-jobs`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
-    )
-    console.log(response, 'getting all jobs');
-    
-    return response
+    );
+    console.log(response, "getting all jobs");
+
+    return response;
   } catch (error) {
     console.log(error || "unable to get all jobs");
-    
   }
-}
+};

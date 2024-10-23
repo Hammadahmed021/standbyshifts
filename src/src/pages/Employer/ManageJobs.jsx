@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { EmployerJobCard, JobCard } from "../../component";
+import { JobCard } from "../../component";
 import { fetchAllJobByEmployer } from "../../utils/Api";
 import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ const ManageJobs = () => {
       <div className="container my-8">
         <div className="grid grid-cols-3 gap-4">
           {allJobs?.map((job) => (
-            <EmployerJobCard
+            <JobCard
               key={job.id}
               companyLogo={job?.user?.employer?.logo} // Replace with actual logo
               jobTitle={job.title}

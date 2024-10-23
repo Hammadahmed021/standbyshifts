@@ -1,6 +1,5 @@
 import React from "react";
-import { FaCalendar, FaClock, FaCrown, FaLocationArrow, FaMapMarker, FaMarker } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaCalendar, FaClock, FaCrown, FaMapMarker } from "react-icons/fa";
 
 // Skeleton Loader Component
 const JobCardSkeleton = () => (
@@ -35,7 +34,7 @@ const JobCardSkeleton = () => (
   </div>
 );
 
-const JobCard = ({
+const EmployerJobCard = ({
   companyLogo,
   jobTitle,
   companyName,
@@ -45,21 +44,13 @@ const JobCard = ({
   level,
   location,
   description,
-  jobId,
+  btnText,
   onClick,
   loading, // Add loading prop
-  userType
 }) => {
   if (loading) {
     return <JobCardSkeleton />;
   }
-
-  const navigate = useNavigate();
-
-  // Function to handle navigation
-  const handleApplyClick = () => {
-    navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
-  };
 
   return (
     <div className="w-full rounded-2xl shadow-xl bg-white p-6 mb-6 flex flex-col h-full">
@@ -106,17 +97,12 @@ const JobCard = ({
   {/* Description */}
   <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
 
-  {/* Apply Button */}
-  {(userType === "employee") &&
-  <div className="mt-auto">
-    <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={handleApplyClick}>
-      Apply
-    </button>
-  </div>
-  }
-</div>
-
+      {/* Apply Button */}
+      <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={()=>onClick()??{}}>
+        {btnText ?? "Apply"}
+      </button>
+    </div>
   );
 };
 
-export default JobCard;
+export default EmployerJobCard;
