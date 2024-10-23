@@ -59,7 +59,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
               </div>
               <div className="w-4/12 shadow-xl rounded-2xl bg-white p-4">
                 <div className="mb-4 flex justify-between items-center gap-2">
-                  <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                  <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaEnvelope /> Email
                   </h4>
                   <p className="font-semibold">{profile?.email}</p>
@@ -67,14 +67,14 @@ const CompanyProfiles = ({ profile, layout, count }) => {
                 <hr className="border-b border-tn_light_grey my-6" />
 
                 <div className="mb-4 flex justify-between items-center gap-2">
-                  <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                  <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaPhoneAlt /> Phone
                   </h4>
                   <p className="font-semibold">{profile?.phone}</p>
                 </div>
                 <hr className="border-b border-tn_light_grey my-6" />
                 <div className="mb-4 flex justify-between items-center gap-2">
-                  <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                  <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaLocationDot /> Location
                   </h4>
                   <p className="font-semibold">{profile?.employer?.location}</p>

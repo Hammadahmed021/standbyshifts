@@ -24,6 +24,9 @@ const CompanyProfile = () => {
       fetchCompanyProfile(); // Trigger API call if companyId is available
     }
   }, [companyId, getCompanyProfile]);
+  
+
+  
 
   if (!companyData) {
     return (

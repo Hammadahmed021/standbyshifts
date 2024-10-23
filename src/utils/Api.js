@@ -256,7 +256,7 @@ export const updateEmployerProfile = async (userData) => {
     industry_id, // Ensure this is always an array
     logo,
     layout,
-    about
+    about,
   } = userData;
 
   const formData = new FormData();
@@ -608,7 +608,6 @@ export const getJobsForEmployee = async () => {
   }
 };
 
-
 // show data on home for employer
 export const getDataForEmployer = async () => {
   const token = localStorage.getItem("webToken");
@@ -710,10 +709,9 @@ export const getCompanyProfile = async (id) => {
   }
 };
 
-
-// update a job  
+// update a job
 export const updateJob = async (payload) => {
-  console.log(payload, 'payload post job');
+  console.log(payload, "payload post job");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -721,33 +719,52 @@ export const updateJob = async (payload) => {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
-    })
+      },
+    });
     return response.data;
   } catch (error) {
     console.log(error || "unable to post a job");
-
   }
-}
+};
 
-// Employer all jobs posted 
+// Employer all jobs posted
 export const fetchAllJobByEmployer = async () => {
   const token = localStorage.getItem("webToken");
 
   try {
-    const response = await axios.get(`${BASE_URL}employer/profile/posted-jobs`,
+    const response = await axios.get(
+      `${BASE_URL}employer/profile/posted-jobs`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
-    )
-    console.log(response, 'getting all jobs');
-    
-    return response
+    );
+    console.log(response, "getting all jobs");
+
+    return response;
   } catch (error) {
     console.log(error || "unable to get all jobs");
-    
   }
-}
+};
+
+// Apply jobs
+export const applyJob = async (id) => {
+  console.log(id, "id");
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employee/job/apply/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response, "response for applied jobs");
+
+    return response;
+  } catch (error) {
+    console.log(error || "unable to apply on job");
+  }
+};

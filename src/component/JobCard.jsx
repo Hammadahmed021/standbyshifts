@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCalendar, FaClock, FaCrown, FaLocationArrow, FaMapMarker, FaMarker } from "react-icons/fa";
+import { FaCalendar, FaClock, FaCrown, FaMapMarker } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Component
@@ -46,14 +46,10 @@ const JobCard = ({
   location,
   description,
   jobId,
-  onClick,
-  loading, // Add loading prop
+  applicants, // Add applicants prop
+  loading,
   userType
 }) => {
-  if (loading) {
-    return <JobCardSkeleton />;
-  }
-
   const navigate = useNavigate();
 
   // Function to handle navigation
@@ -61,61 +57,70 @@ const JobCard = ({
     navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
   };
 
+  // Determine button text based on applicants
+  const buttonText = applicants?.length > 0 ? "View Job" : "Apply";
+
+  if (loading) {
+    return <JobCardSkeleton />;
+  }
+
   return (
     <div className="w-full rounded-2xl shadow-xl bg-white p-6 mb-6 flex flex-col h-full">
-  {/* Header */}
-  <div className="flex items-center mb-4">
-    <img
-      src={companyLogo}
-      alt={companyName}
-      className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
-    />
-    <div>
-      <h2 className="text-xl font-semibold text-tn_dark_field">{jobTitle}</h2>
-      <div className="flex space-x-2">
-        <p className="text-tn_text_grey text-sm">{companyName}</p>
-        <p className="text-tn_dark font-semibold text-sm">{payRate} / hr</p>
+      {/* Header */}
+      <div className="flex items-center mb-4">
+        <img
+          src={companyLogo}
+          alt={companyName}
+          className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
+        />
+        <div>
+          <h2 className="text-xl font-semibold text-tn_dark_field">{jobTitle}</h2>
+          <div className="flex space-x-2">
+            <p className="text-tn_text_grey text-sm">{companyName}</p>
+            <p className="text-tn_dark font-semibold text-sm">{payRate} / hr</p>
+          </div>
+        </div>
       </div>
+
+      {/* Date and Time Info */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        <span className="bg-green-100 text-tag_green px-3 py-1 rounded-full text-xs font-medium flex items-center">
+          <FaCalendar size={12} className="mr-1" />
+          {dateRange}
+        </span>
+        <span className="bg-orange-100 text-tag_brown px-3 py-1 rounded-full text-xs font-medium flex items-center">
+          <FaClock size={12} className="mr-1" />
+          {timeRange}
+        </span>
+      </div>
+
+      {/* Level and Location */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
+          <FaCrown size={12} className="mr-1" />
+          {level}
+        </span>
+        <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
+          <FaMapMarker size={12} className="mr-1" />
+          {location}
+        </span>
+      </div>
+
+      {/* Description */}
+      <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
+
+      {/* Apply/View Job Button */}
+      {userType === "employee" && (
+        <div className="mt-auto">
+          <button
+            className={`${buttonText == "View Job" ? 'bg-tn_pink' : 'bg-tn_primary'} w-full text-white py-2 rounded-full hover:bg-opacity-80 font-semibold transition duration-300`}
+            onClick={handleApplyClick}
+          >
+            {buttonText}
+          </button>
+        </div>
+      )}
     </div>
-  </div>
-
-  {/* Date and Time Info */}
-  <div className="flex flex-wrap gap-2 mb-4">
-    <span className="bg-green-100 text-tag_green px-3 py-1 rounded-full text-xs font-medium flex items-center">
-      <FaCalendar size={12} className="mr-1" />
-      {dateRange}
-    </span>
-    <span className="bg-orange-100 text-tag_brown px-3 py-1 rounded-full text-xs font-medium flex items-center">
-      <FaClock size={12} className="mr-1" />
-      {timeRange}
-    </span>
-  </div>
-
-  {/* Level and Location */}
-  <div className="flex flex-wrap gap-2 mb-4">
-    <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
-      <FaCrown size={12} className="mr-1" />
-      {level}
-    </span>
-    <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
-      <FaMapMarker size={12} className="mr-1" />
-      {location}
-    </span>
-  </div>
-
-  {/* Description */}
-  <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
-
-  {/* Apply Button */}
-  {(userType === "employee") &&
-  <div className="mt-auto">
-    <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={handleApplyClick}>
-      Apply
-    </button>
-  </div>
-  }
-</div>
-
   );
 };
 

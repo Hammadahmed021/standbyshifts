@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getJobById } from "../utils/Api";
+import { applyJob, getJobById } from "../utils/Api";
 import {
   FaCalendarAlt,
   FaClock,
@@ -15,23 +15,29 @@ import { EmpCardSlider, Loader } from "../component";
 import { FaBagShopping, FaBoxesPacking } from "react-icons/fa6";
 import { people } from "../assets";
 import { BsBackpack, BsBackpack2Fill } from "react-icons/bs";
+import { showSuccessToast } from "../utils/Toast";
 
 const JobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
+  const jobId = job?.details?.id;
+  const initialApplicantStatus = job?.details?.applicant.length > 0;
+  const [applyForJob, setApplyForJob] = useState(initialApplicantStatus || []);
+  const [isApplying, setIsApplying] = useState(false);
+  console.log(id, "id job detail");
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       const response = await getJobById(id); // Fetch job details by ID
       setJob(response?.data);
+      setApplyForJob(response?.data?.details?.applicant);
       setRelatedJobs(response?.data?.relatedJobs);
     };
 
     fetchJobDetails();
-  }, [id]);
-  console.log(job, "job");
+  }, [id, jobId]);
 
   const handleViewProfileClick = () => {
     if (job?.details?.user?.id) {
@@ -39,6 +45,36 @@ const JobDetail = () => {
       navigate(`/company/${companyId}`); // Assuming /company/:id is the profile page
     }
   };
+
+  const applyOnJob = async (id) => {
+    if (applyForJob.length === 0 && !isApplying) {
+      try {
+        setIsApplying(true); // Set applying status to true
+        const response = await applyJob(id);
+        console.log(response, "apply jobs res");
+
+        if (response.status === 200) {
+          showSuccessToast("Applied successfully.");
+
+          // Update state after applying for the job
+          setApplyForJob([1]); // Set any non-empty array to indicate application status
+
+          // Reset the loading state after applying
+          setTimeout(() => {
+            setIsApplying(false);
+          }, 2000); // 2-second delay before resetting the button
+        }
+      } catch (error) {
+        console.error("Error applying for the job:", error);
+        setIsApplying(false); // Reset applying status in case of error
+      }
+    }
+  };
+  useEffect(() => {
+    if (job?.details?.applicant?.length > 0) {
+      setApplyForJob(job.details.applicant); // Ensure the button shows "Applied" after reload
+    }
+  }, [job?.details?.applicant]);
 
   if (!job)
     return (
@@ -68,9 +104,24 @@ const JobDetail = () => {
                 {job?.details?.title || "Job Title"}
               </h2>
             </div>
-            <button className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange">
-              Apply
-            </button>
+            {applyForJob.length > 0 ? (
+              // Button if the user has already applied
+              <button
+                className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
+                disabled
+              >
+                Applied
+              </button>
+            ) : (
+              // Button if the user has not applied yet
+              <button
+                className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                onClick={() => applyOnJob(jobId)}
+                disabled={isApplying}
+              >
+                {isApplying ? "Applying..." : "Apply"}
+              </button>
+            )}
           </div>
 
           <div className="flex items-center justify-between text-gray-600 mb-6">
