@@ -42,6 +42,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { FcAbout } from "react-icons/fc";
+import { layoutOptions } from "../../utils/localDB";
 
 const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -126,7 +127,7 @@ const Profile = () => {
       newPassword: "",
       confirmPassword: "",
       layout: "1", // Default to first layout
-      about: currentUser?.about
+      about: currentUser?.about,
     },
   });
   const selectedLayout = watch("layout");
@@ -358,6 +359,9 @@ const Profile = () => {
               </div>
             </div>
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
+              <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                Personal Information
+              </h3>
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                 <span className="mb-6 w-full">
                   <Input
@@ -381,13 +385,15 @@ const Profile = () => {
                     icon={FaPhone}
                     maxLength={15} // Restrict length to 15 digits
                     onKeyPress={handlePhoneKeyPress} // Prevent alphabets
-                    {...register("phone", {
-                      validate: {
-                        lengthCheck: (value) =>
-                          (value.length >= 11 && value.length <= 15) ||
-                          "Phone number must be between 11 and 15 digits",
-                      },
-                    })}
+                    {...register("phone"
+                      // {
+                      //   validate: {
+                      //     lengthCheck: (value) =>
+                      //       (value.length >= 11 && value.length <= 15) ||
+                      //       "Phone number must be between 11 and 15 digits",
+                      //   },
+                      // }
+                    )}
                     placeholder="Enter your phone number"
                   />
                   {errors.phone && (
@@ -397,35 +403,7 @@ const Profile = () => {
                   )}
                 </span>
               </span>
-              {!isGmailUser && (
-                <span className="mb-6 block">
-                  <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                    <span className=" w-full">
-                      <Input
-                        label="New Password"
-                        type="password"
-                        icon={FaLock}
-                        {...register("newPassword")}
-                        placeholder="Enter new password"
-                        // disabled={isGmailUser}
-                      />
-                    </span>
-                    <span className=" w-full">
-                      <Input
-                        label="Confirm Password"
-                        type="password"
-                        icon={FaLock}
-                        {...register("confirmPassword")}
-                        placeholder="Confirm new password"
-                        // disabled={isGmailUser}
-                      />
-                    </span>
-                  </span>
-                  {showError && (
-                    <p className="text-red-500 text-sm">{showError}</p>
-                  )}
-                </span>
-              )}
+
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                 <span className="mb-6 w-full">
                   <Input
@@ -447,13 +425,15 @@ const Profile = () => {
                     type="text"
                     icon={FaAdjust}
                     maxLength={15} // Restrict length to 15 digits
-                    {...register("zip", {
-                      validate: {
-                        lengthCheck: (value) =>
-                          (value.length >= 5 && value.length <= 10) ||
-                          "Zip code must be between 5 and 10 digits",
-                      },
-                    })}
+                    {...register("zip"
+                      // {
+                      //   validate: {
+                      //     lengthCheck: (value) =>
+                      //       (value.length >= 5 && value.length <= 10) ||
+                      //       "Zip code must be between 5 and 10 digits",
+                      //   },
+                      // }
+                    )}
                     placeholder="Zip code"
                   />
                   {errors.zip && (
@@ -468,14 +448,16 @@ const Profile = () => {
                   label="Bio"
                   type="text"
                   icon={FaClipboard}
-                  iconColor={'#F59200'}
-                  {...register("about", {
-                    validate: {
-                      lengthCheck: (value) =>
-                        (value.length >= 50 && value.length <= 180) ||
-                        "About must be between 50 and 150 words",
-                    },
-                  })}
+                  iconColor={"#F59200"}
+                  {...register("about"
+                    // {
+                    //   validate: {
+                    //     lengthCheck: (value) =>
+                    //       (value.length >= 50 && value.length <= 180) ||
+                    //       "About must be between 50 and 150 words",
+                    //   },
+                    // }
+                  )}
                   placeholder="About company"
                 />
                 {errors.about && (
@@ -484,6 +466,41 @@ const Profile = () => {
                   </p>
                 )}
               </span>
+
+              {!isGmailUser && (
+                <>
+                  <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                    Change Password
+                  </h3>
+                  <span className="mb-6 block">
+                    <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                      <span className=" w-full">
+                        <Input
+                          label="New Password"
+                          type="password"
+                          icon={FaLock}
+                          {...register("newPassword")}
+                          placeholder="Enter new password"
+                          // disabled={isGmailUser}
+                        />
+                      </span>
+                      <span className=" w-full">
+                        <Input
+                          label="Confirm Password"
+                          type="password"
+                          icon={FaLock}
+                          {...register("confirmPassword")}
+                          placeholder="Confirm new password"
+                          // disabled={isGmailUser}
+                        />
+                      </span>
+                    </span>
+                    {showError && (
+                      <p className="text-red-500 text-sm">{showError}</p>
+                    )}
+                  </span>
+                </>
+              )}
 
               <div className="mb-6">
                 <SelectOption
@@ -517,27 +534,27 @@ const Profile = () => {
                 </ul>
               </div>
               <div className="flex space-x-4 justify-start">
-                {["1", "2"].map((layout) => (
-                  <label key={layout} className="cursor-pointer">
+                {layoutOptions.map((layout) => (
+                  <label key={layout.id} className="cursor-pointer">
                     <input
                       type="radio"
-                      value={layout}
+                      value={layout.id}
                       {...register("layout")}
                       className="hidden"
                     />
                     <div
                       className={`border ${
-                        selectedLayout === layout
+                        selectedLayout === layout.id
                           ? "border-blue-500"
                           : "border-gray-300"
                       } rounded-lg p-2`}
                     >
                       <img
-                        src={`https://via.placeholder.com/100?text=Layout+${layout}`}
-                        alt={`Layout ${layout}`}
+                        src={layout.imageUrl}
+                        alt={layout.label}
                         className="mb-2"
                       />
-                      <p>Layout {layout}</p>
+                      <p>{layout.label}</p>
                     </div>
                   </label>
                 ))}

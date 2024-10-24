@@ -71,9 +71,9 @@ export default function Signup({ onClick }) {
     try {
       const response = await dispatch(signupUser({ payload })).unwrap();
       if (type == "employee") {
-        navigate("/employee"); // Redirect to employee dashboard
+        navigate("/employee-profile"); // Redirect to employee dashboard
       } else if (type == "employer") {
-        navigate("/employer"); // Redirect to employer dashboard
+        navigate("/employer-profile"); // Redirect to employer dashboard
       } else {
         navigate("/"); // Fallback if type is not provided
       }

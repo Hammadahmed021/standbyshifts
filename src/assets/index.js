@@ -22,6 +22,10 @@ export { default as peoples } from "./Images/peoples.png";
 export { default as nearByBg } from "./Images/nearby-bg.png";
 export { default as girlSofa } from "./Images/girl-img.png";
 export { default as avatar } from "./Images/profile_avatar.png";
+export { default as layout1 } from "./Images/layout-1.png";
+export { default as layout2 } from "./Images/layout-2.png";
+export { default as layout3 } from "./Images/layout-3.png";
+export { default as layout4 } from "./Images/layout-4.png";
 
 
 export { default as png } from "./Images/png.png";

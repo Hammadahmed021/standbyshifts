@@ -44,12 +44,6 @@ const Header = ({ style }) => {
         <Link to={"/"}>Home</Link>
       </li>
       <li>
-        <Link to={"/"}>Post Job</Link>
-      </li>
-      <li>
-        <Link to={"/"}>Find Job</Link>
-      </li>
-      <li>
         <Link to={"/"}>Contact</Link>
       </li>
       <li>

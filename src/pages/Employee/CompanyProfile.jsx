@@ -27,8 +27,7 @@ const CompanyProfile = () => {
     }
   }, [companyId, getCompanyProfile]);
 
-  console.log(companyData, 'companyData');
-  
+  console.log(companyData, "companyData");
 
   const hasMore = visibleJobsCount < companyData?.jobPostedByEmployer?.length;
 
@@ -44,7 +43,7 @@ const CompanyProfile = () => {
     );
   }
   const checkLayout = companyData?.about?.layout || "1"; // Check layout from profile
-  console.log(companyData, "companyData");
+  console.log(companyData, "companyData >>>>>>>>>>>>>>>>");
 
   return (
     <>
@@ -60,44 +59,57 @@ const CompanyProfile = () => {
         </p> // Show loading text until profile data is available
       )}
       <div className="container my-16">
-      <div className="flex items-center justify-between my-10">
+        <div className="flex items-center justify-between my-10">
           <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
           <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
-          <FaFilter size={16} color="#fff" />
-        </span>
+            <FaFilter size={16} color="#fff" />
+          </span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {!companyData || companyData.length === 0
-            ? // Show skeleton loaders for the number of jobs you expect to show
-              [...Array(3)].map((_, index) => (
+          {!companyData || companyData.length === 0 ? (
+            // Show skeleton loaders when loading, and a message if no jobs are available
+            <>
+              {[...Array(3)].map((_, index) => (
                 <div key={index} className="p-2">
                   <JobCard loading={true} /> {/* Loader JobCard */}
                 </div>
+              ))}
+              <div className="text-center p-4 text-black">
+                <p>
+                  No jobs available.{" "}
+                  <a href="/post-job" className="text-blue-600 underline">
+                    Post a job now
+                  </a>
+                </p>
+              </div>
+            </>
+          ) : (
+            // If jobs are available, display the jobs list
+            companyData?.jobPostedByEmployer
+              ?.slice(0, visibleJobsCount)
+              ?.map((job) => (
+                <JobCard
+                  jobId={job?.id}
+                  key={job.id}
+                  companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                  jobTitle={job.title}
+                  companyName={job.city} // You can also pass the company name if available
+                  payRate={`$${job.per_hour_rate}`}
+                  dateRange={`${new Date(
+                    job.start_date
+                  ).toLocaleDateString()} to ${new Date(
+                    job.end_date
+                  ).toLocaleDateString()}`}
+                  timeRange={`${job.shift_start_time} - ${job.shift_end_time}`}
+                  level={job.experience_level}
+                  location={`${job.location}, ${job.state}`}
+                  description={job.description}
+                  userType={userType}
+                  loading={false}
+                  applicants={job?.applicant}
+                />
               ))
-            : companyData?.jobPostedByEmployer
-                ?.slice(0, visibleJobsCount)
-                ?.map((job) => (
-                  <JobCard
-                    jobId={job?.id}
-                    key={job.id}
-                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                    jobTitle={job.title}
-                    companyName={job.city} // You can also pass the company name if available
-                    payRate={`$${job.per_hour_rate}`}
-                    dateRange={`${new Date(
-                      job.start_date
-                    ).toLocaleDateString()} to ${new Date(
-                      job.end_date
-                    ).toLocaleDateString()}`}
-                    timeRange={`${job.shift_start_time} - ${job.shift_end_time}`}
-                    level={job.experience_level}
-                    location={`${job.location}, ${job.state}`}
-                    description={job.description}
-                    userType={userType}
-                    loading={false}
-                    applicants={job?.applicant}
-                  />
-                ))}
+          )}
         </div>
         <LoadMore
           onLoadMore={handleLoadMore}

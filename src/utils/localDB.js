@@ -1,5 +1,5 @@
 import img from "../assets/Images/restaurant-image.png";
-import { menu, ImgB, ImgB1, like, bubble, support, messages, trendUp, grammerly, task, people as peeps } from "../assets";
+import { menu, ImgB, ImgB1, like, bubble, support, messages, trendUp, grammerly, task, people as peeps, layout1, layout2 } from "../assets";
 
 export const imageData = [
   { src: ImgB1 },
@@ -8,6 +8,29 @@ export const imageData = [
   { src: ImgB },
   { src: ImgB1 },
   { src: ImgB },
+];
+
+export const layoutOptions = [
+  {
+    id: "1",
+    label: "Layout 1",
+    imageUrl: layout1,
+  },
+  {
+    id: "2",
+    label: "Layout 2",
+    imageUrl: layout2,
+  },
+  // {
+  //   id: "3",
+  //   label: "Layout 3",
+  //   imageUrl: "https://via.placeholder.com/100?text=Layout+3",
+  // },
+  // {
+  //   id: "4",
+  //   label: "Layout 4",
+  //   imageUrl: "https://via.placeholder.com/100?text=Layout+4",
+  // },
 ];
 
 export const infoGrid = [

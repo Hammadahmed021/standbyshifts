@@ -90,7 +90,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
             <div className="container flex flex-col items-center text-center">
               <div className="-mt-24">
                 <img
-                  src={profile?.employer?.logo}
+                  src={profile?.employer?.logo || avatar}
                   alt={profile?.name}
                   className="rounded-full w-52 h-50 mx-auto shadow-md"
                 />
