@@ -804,3 +804,10 @@ export const getEmployeeAppliedOnJob = async (employeeId) => {
     console.log(error || "unable to get appliers on jobs");
   }
 };
+
+// single page for eomployee view
+// endpoint - employer/profile/applier/{employeeId}
+
+
+// fetch single page as employer of jobs
+// endpoint - /fetch-single-job/{jobId}
