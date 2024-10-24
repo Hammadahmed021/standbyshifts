@@ -332,7 +332,7 @@ const Profile = () => {
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl">
             <div className="flex flex-col">
               <div className="flex items-center overflow-hidden">
                 <img
@@ -581,9 +581,9 @@ const Profile = () => {
               )}
             </form>
           </div>
-          <div className="w-full md:w-1/2 hidden md:flex md:ml-8  justify-end">
+          {/* <div className="w-full md:w-1/2 hidden md:flex md:ml-8  justify-end">
             <img src={relatedFallback} alt="" className="w-full md:w-[400px]" />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
