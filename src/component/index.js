@@ -36,3 +36,4 @@ export { default as TestimonialSlider } from "./TestimonialSlider";
 export { default as CompanyProfiles } from "./CompanyProfiles";
 export { default as JobCard } from "./JobCard";
 export { default as EmployerJobCard } from "./EmployerJobCard";
+export { default as EmployeeDetailCard } from "./EmployeeCard";

@@ -13,7 +13,6 @@ const ManageJobs = () => {
     const fetchAllJobs = async () => {
       const response = await fetchAllJobByEmployer();
       setAllJobs(response?.data);
-      console.log(response, "fetching all jobs by employer");
     };
     fetchAllJobs();
   }, []);

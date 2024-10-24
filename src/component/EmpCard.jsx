@@ -3,7 +3,7 @@ import { FaStar } from "react-icons/fa";
 import Ratings from "./Ratings"; // Assuming your Ratings component is in the same folder
 import { useNavigate } from "react-router-dom";
 
-const EmpCard = ({ image, title, subheading, employer_name, rating }) => {
+const EmpCard = ({ image, title, subheading, employer_name, rating, jobId }) => {
   const navigate = useNavigate(); // Initialize navigate
   const handleCardClick = () => {
     navigate(`/job/${jobId}`); // Navigate to job detail page with jobId

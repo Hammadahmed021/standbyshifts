@@ -184,6 +184,7 @@ const Home = () => {
                     description={job?.description}
                     userType={userType}
                     loading={false}
+                    applicants={job?.applicant} 
                   />
                 </div>
               ))}

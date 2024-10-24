@@ -1,5 +1,12 @@
 import React from "react";
-import { FaCalendar, FaClock, FaCrown, FaMapMarker } from "react-icons/fa";
+import {
+  FaCalendar,
+  FaChevronRight,
+  FaClock,
+  FaCrown,
+  FaMapMarker,
+} from "react-icons/fa";
+import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Component
@@ -48,7 +55,8 @@ const JobCard = ({
   jobId,
   applicants, // Add applicants prop
   loading,
-  userType
+  userType,
+  onClick, // Add prop to show applicants
 }) => {
   const navigate = useNavigate();
 
@@ -74,7 +82,9 @@ const JobCard = ({
           className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
         />
         <div>
-          <h2 className="text-xl font-semibold text-tn_dark_field">{jobTitle}</h2>
+          <h2 className="text-xl font-semibold text-tn_dark_field">
+            {jobTitle}
+          </h2>
           <div className="flex space-x-2">
             <p className="text-tn_text_grey text-sm">{companyName}</p>
             <p className="text-tn_dark font-semibold text-sm">{payRate} / hr</p>
@@ -109,11 +119,41 @@ const JobCard = ({
       {/* Description */}
       <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
 
+      {/* Applicants Section */}
+      {applicants && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center">
+            {applicants.slice(0, 10).map((applicant, index) => (
+              <img
+                key={index}
+                src={applicant?.employee?.profile_picture}
+                alt={`Applicant ${index + 1}`}
+                className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-lg -ml-2"
+              />
+            ))}
+            {applicants.length > 10 && (
+              <span className="ml-2 text-sm text-gray-600">
+                + {applicants.length - 10}
+              </span>
+            )}
+          </div>
+          <button
+            className="flex items-center rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
+            onClick={onClick}
+          >
+            View Applicants <FaArrowRightLong className="ml-2" />
+          </button>
+        </div>
+      )}
+     
+
       {/* Apply/View Job Button */}
       {userType === "employee" && (
         <div className="mt-auto">
           <button
-            className={`${buttonText == "View Job" ? 'bg-tn_pink' : 'bg-tn_primary'} w-full text-white py-2 rounded-full hover:bg-opacity-80 font-semibold transition duration-300`}
+            className={`${
+              buttonText == "View Job" ? "bg-tn_pink" : "bg-tn_primary"
+            } w-full text-white py-2 rounded-full hover:bg-opacity-80 font-semibold transition duration-300`}
             onClick={handleApplyClick}
           >
             {buttonText}

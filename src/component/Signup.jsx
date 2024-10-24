@@ -6,7 +6,17 @@ import { Input, Button } from "../component";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Capacitor } from "@capacitor/core";
-import { FaAccessibleIcon, FaGoogle, FaLock, FaLockOpen, FaRegCompass, FaRegEnvelope, FaRegUser, FaUnlock, FaUser } from "react-icons/fa";
+import {
+  FaAccessibleIcon,
+  FaGoogle,
+  FaLock,
+  FaLockOpen,
+  FaRegCompass,
+  FaRegEnvelope,
+  FaRegUser,
+  FaUnlock,
+  FaUser,
+} from "react-icons/fa";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -14,6 +24,7 @@ const isApp = Capacitor.isNativePlatform();
 
 export default function Signup({ onClick }) {
   const [isSigning, setIsSigning] = useState(false);
+  const [isSigningGoogle, setIsSigningGoogle] = useState(false);
   const [showError, setShowError] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const navigate = useNavigate();
@@ -28,7 +39,6 @@ export default function Signup({ onClick }) {
   const location = useLocation();
   const { type } = location.state || {}; // Get the type passed from modal
   localStorage.setItem("userType", type);
-
 
   const getUserIP = async () => {
     try {
@@ -68,7 +78,6 @@ export default function Signup({ onClick }) {
         navigate("/"); // Fallback if type is not provided
       }
       console.log("Signup response:", response);
-     
     } catch (error) {
       console.error("API Signup failed:", error);
       if (error == "Firebase: Error (auth/email-already-in-use).") {
@@ -91,7 +100,9 @@ export default function Signup({ onClick }) {
   const handleNameKeyPress = (e) => {
     const charCode = e.keyCode || e.which;
     const charStr = String.fromCharCode(charCode);
-    if (!/^[a-zA-Z]+$/.test(charStr)) {
+
+    // Allow letters (a-z, A-Z) and spaces
+    if (!/^[a-zA-Z\s]+$/.test(charStr)) {
       e.preventDefault();
     }
   };
@@ -109,22 +120,27 @@ export default function Signup({ onClick }) {
     <form onSubmit={handleSubmit(handleSignup)} className="mt-8">
       <div className="mt-2">
         <span className="mb-6 flex space-x-2">
-          <Input
-            mainInput={"sm:w-full w-full"}
-            icon={FaRegUser}
-            type="text"
-            placeholder="John"
-            onKeyPress={handleNameKeyPress} // Prevent numbers
-            {...register("name", {
-              pattern: {
-                value: /^[A-Za-z]+$/,
-                message: "First name should contain only alphabets",
-              },
-            })}
-          />
-          {errors.fname && (
-            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-          )}
+          <span className="w-full">
+            <Input
+              mainInput={"sm:w-full w-full"}
+              icon={FaRegUser}
+              type="text"
+              placeholder="John"
+              onKeyPress={handleNameKeyPress} // Prevent numbers
+              {...register("name", {
+                required: "Name is required",
+                pattern: {
+                  // Allow alphabets and spaces
+                  value: /^[A-Za-z\s]+$/,
+                  message: "Name should contain only alphabets and spaces",
+                },
+              })}
+            />
+
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+            )}
+          </span>
           <span className="w-full">
             <Input
               mainInput={"sm:w-full w-full"}
@@ -188,7 +204,6 @@ export default function Signup({ onClick }) {
           </span>
         </span>
 
-
         <div className="form-control mb-4">
           <div className="flex items-center">
             <input
@@ -207,25 +222,27 @@ export default function Signup({ onClick }) {
             <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
           )}
         </div>
-
+        {showError && <p className="text-red-500 text-xs mt-2">{showError}</p>}
         <span className="flex space-x-2 mt-10 mb-2">
           <Button
             type="submit"
-            className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+            className={`w-full ${
+              isSigning ? "opacity-70 cursor-not-allowed" : ""
+            }`}
             disabled={isSigning}
           >
             {isSigning ? "Creating..." : "Create an account"}
           </Button>
 
           <span
-
             onClick={onClick}
-            className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            disabled={isSigning}
+            className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
+              isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+            disabled={isSigningGoogle}
           >
-            <FaGoogle size={18} className="mr-2"/> {isSigning ? "Signing..." : "Sign-up with google"}
+            <FaGoogle size={18} className="mr-2" />{" "}
+            {isSigningGoogle ? "Signing..." : "Sign-up with google"}
           </span>
         </span>
       </div>

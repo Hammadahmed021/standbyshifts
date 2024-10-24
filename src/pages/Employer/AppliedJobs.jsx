@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { checkAppliersOnJob } from "../../utils/Api";
 import { JobCard } from "../../component";
-import { fetchAllJobByEmployer } from "../../utils/Api";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
 
-const ManageJobs = () => {
-    const navigate = useNavigate();
-  const [allJobs, setAllJobs] = useState([]);
+const AppliedJobs = () => {
+  const navigate = useNavigate();
+  const [appliers, setAppliers] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
   useEffect(() => {
-    const fetchAllJobs = async () => {
-      const response = await fetchAllJobByEmployer();
-      setAllJobs(response?.data);
-      console.log(response, "fetching all jobs by employer");
+    const getAppliers = async () => {
+      const response = await checkAppliersOnJob();
+      console.log(response?.data, "eresd>>>>>>>>>>");
+      setAppliers(response?.data);
     };
-    fetchAllJobs();
+    getAppliers();
   }, []);
   return (
     <>
-      <div className="container">
-        Manange jobs idhr crud banado posted job ka
-      </div>
-      <div className="container my-8">
-        <div className="grid grid-cols-3 gap-4">
-          {allJobs?.map((job) => (
+      <div className="container my-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {appliers?.map((job) => (
             <JobCard
+              jobId={job.id}
               key={job.id}
               companyLogo={job?.user?.employer?.logo} // Replace with actual logo
               jobTitle={job.title}
@@ -41,11 +39,9 @@ const ManageJobs = () => {
               location={`${job.location}, ${job.state}`}
               description={job.description}
               userType={userType}
-              btnText={"Edit"}
+              applicants={job?.applicants}
               onClick={() => {
-                navigate(`/post-job`, {
-                  state: job,
-                });
+                navigate(`/view-applicants/${job?.id}`); // Assuming job detail page is at '/job/:id'
               }}
             />
           ))}
@@ -55,4 +51,4 @@ const ManageJobs = () => {
   );
 };
 
-export default ManageJobs;
+export default AppliedJobs;

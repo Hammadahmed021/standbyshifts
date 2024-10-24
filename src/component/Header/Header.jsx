@@ -103,6 +103,9 @@ const Header = ({ style }) => {
         <Link to={"/manage-jobs"}>Manage Jobs</Link>
       </li>
       <li>
+        <Link to={"/appliers-on-job"}>Applied Jobs</Link>
+      </li>      
+      <li>
         <Link to={"/contact"}>Contact</Link>
       </li>
       <li>
@@ -251,7 +254,7 @@ const Header = ({ style }) => {
                     {isDropdownOpen && (
                       <div
                         ref={dropdownRef}
-                        className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10"
+                        className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden"
                       >
                         <Link
 

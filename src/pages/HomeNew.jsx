@@ -386,7 +386,7 @@ export default function HomeNew() {
 
       <div className="container">
         <div className="flex items-center space-x-4 relative">
-          <div className="md:w-8/12 w-12 employees">
+          <div className="md:w-8/12 w-12 employees pointer-events-none">
             <EmpCardSlider data={employees} />
           </div>
           <div className="md:w-4/12 w-12 pb-8">
@@ -441,7 +441,7 @@ export default function HomeNew() {
             </div>
           </div>
           <div className="lg:w-7/12 w-full ">
-            <div className="flex flex-col items-ends justify-center px-6 employer">
+            <div className="flex flex-col items-ends justify-center px-6 employer pointer-events-none">
               <EmpCardSlider data={employer} />
             </div>
           </div>

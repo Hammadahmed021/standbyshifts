@@ -27,3 +27,6 @@ export { default as JobDetail } from "./JobDetail";
 export { default as AllJobs } from "./Employee/AllJobs";
 export { default as CompanyProfile } from "./Employee/CompanyProfile";
 export { default as ManageJobs } from "./Employer/ManageJobs";
+export { default as AppliedJobs } from "./Employer/AppliedJobs";
+export { default as ApplierCandidates } from "./Employer/ApplierCandidates";
+export { default as EmployeeView } from "./EmployeeView";

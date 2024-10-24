@@ -104,7 +104,7 @@ const JobDetail = () => {
                 {job?.details?.title || "Job Title"}
               </h2>
             </div>
-            {applyForJob.length > 0 ? (
+            {applyForJob?.length > 0 ? (
               // Button if the user has already applied
               <button
                 className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"

@@ -768,3 +768,39 @@ export const applyJob = async (id) => {
     console.log(error || "unable to apply on job");
   }
 };
+
+// Method to check employee applied on jobs
+export const checkAppliersOnJob = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employer/job/fetch-job`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error || "unable to get appliers on jobs");
+  }
+};
+
+// Method to get employee applied on job
+export const getEmployeeAppliedOnJob = async (employeeId) => {
+  const token = localStorage.getItem("webToken");
+  try {
+    const response = await axios.get(
+      `${BASE_URL}employer/profile/appliers/${employeeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.log(error || "unable to get appliers on jobs");
+  }
+};

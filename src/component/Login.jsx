@@ -8,6 +8,7 @@ import { FaGoogle, FaRegEnvelope, FaUnlock } from "react-icons/fa";
 
 export default function Login({onClick}) {
   const [isSigning, setIsSigning] = useState(false);
+  const [isSigningGoogle, setIsSigningGoogle] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -137,12 +138,12 @@ export default function Login({onClick}) {
             <span
               onClick={onClick}
               className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
-                isSigning ? "opacity-70 cursor-not-allowed" : ""
+                isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
               }`}
-              disabled={isSigning}
+              disabled={isSigningGoogle}
             >
               <FaGoogle size={18} className="mr-2" />{" "}
-              {isSigning ? "Signing..." : "Sign-in with google"}
+              {isSigningGoogle ? "Signing..." : "Sign-in with google"}
             </span>
           </span>
         </div>

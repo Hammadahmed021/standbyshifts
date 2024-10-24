@@ -28,7 +28,6 @@ const Home = () => {
     getData();
   }, []);
 
-  console.log(profile, "profile  >>>>>>");
   const checkLayout = profile?.about?.layout || "1"; // Check layout from profile
 
   const navigate = useNavigate();

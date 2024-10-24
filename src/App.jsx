@@ -99,7 +99,7 @@ function App() {
 
       const payload = {
         userAgent,
-        ipAddress,        
+        ipAddress,
       };
       try {
         const response = await verifyUser(payload);
@@ -191,9 +191,19 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      {!shouldHideHeaderFooter && <Header />}
-      <main className="relative">{loading ? <Loader /> : <Outlet />}</main>
-      {!shouldHideHeaderFooter && <Footer />}
+      <div className="flex flex-col min-h-screen">
+        {/* Header */}
+        {!shouldHideHeaderFooter && <Header />}
+
+        {/* Main Content Area */}
+        <main className="flex-grow relative">
+          {loading ? <Loader /> : <Outlet />}
+        </main>
+
+        {/* Footer */}
+        {!shouldHideHeaderFooter && <Footer />}
+      </div>
+
       <NotificationModal />
     </>
   );
