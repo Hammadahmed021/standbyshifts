@@ -776,9 +776,8 @@ const Profile = () => {
                 Work Experience
               </h3>
               <div className="mb-6">
-                <label className="block mb-2">Tags</label>
+                <label className="block mb-2 font-semibold">Tags</label>
                 <AutoComplete options={dropdownTags} onAddTag={handleAddTag} />
-                <h3>Add new skills</h3>
                 <ul className="space-x-1">
                   {newTags.map((tag, index) => (
                     <li
@@ -789,15 +788,15 @@ const Profile = () => {
                     </li>
                   ))}
                 </ul>
-                <h3>My skills</h3>
-                <ul className="mt-2">
+                <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
+                <ul className="mb-4">
                   {tags?.map((tag, index) => (
                     <li
                       key={index}
-                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
+                      className="px-2 py-1 text-sm rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
                     >
                       {tag}
-                      <FaTrash onClick={() => removeSkills(index)} />
+                      <FaTrash onClick={() => removeSkills(index)} size={11} className="cursor-pointer"/>
                     </li>
                   ))}
                 </ul>

@@ -16,7 +16,7 @@ const LoadMore = ({ onLoadMore, hasMore, className }) => {
     <div className={`flex justify-center my-5 ${className}`}>
       {hasMore ? (
         <button
-          className={`bg-tn_pink text-white px-5 py-2 rounded-lg hover:bg-tn_light_grey hover:text-tn_dark ${isLoading ? 'opacity-20 cursor-not-allowed' : ''}`}
+          className={` text-tn_dark border border-tn_light_grey px-5 py-2 rounded-full hover:bg-tn_light_grey hover:text-tn_dark ${isLoading ? 'opacity-20 cursor-not-allowed' : ''}`}
           onClick={handleClick}
           disabled={isLoading}
         >

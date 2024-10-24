@@ -18,10 +18,8 @@ const ManageJobs = () => {
   }, []);
   return (
     <>
-      <div className="container">
-        Manange jobs idhr crud banado posted job ka
-      </div>
-      <div className="container my-8">
+     
+      <div className="container my-10">
         <div className="grid grid-cols-3 gap-4">
           {allJobs?.map((job) => (
             <EmployerJobCard

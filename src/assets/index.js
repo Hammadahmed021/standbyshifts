@@ -21,6 +21,7 @@ export { default as girl } from "./Images/girl.png";
 export { default as peoples } from "./Images/peoples.png";
 export { default as nearByBg } from "./Images/nearby-bg.png";
 export { default as girlSofa } from "./Images/girl-img.png";
+export { default as avatar } from "./Images/profile_avatar.png";
 
 
 export { default as png } from "./Images/png.png";

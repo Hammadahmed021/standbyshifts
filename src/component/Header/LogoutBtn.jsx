@@ -15,7 +15,7 @@ export default function LogoutBtn({ className }) {
       dispatch(logout()); // Dispatch your logout action
       localStorage.removeItem("webToken");
       localStorage.removeItem("userType");
-
+      setTimeout(() => navigate("/"), 1000);
     } catch (error) {
       console.error("Logout failed:", error.message);
       // Handle logout failure if needed

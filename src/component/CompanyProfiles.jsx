@@ -18,7 +18,7 @@ import {
   FaLocationPin,
   FaMessage,
 } from "react-icons/fa6";
-import { ImgB } from "../assets";
+import { avatar, ImgB } from "../assets";
 
 const CompanyProfiles = ({ profile, layout, count }) => {
   const renderLayout = () => {
@@ -30,7 +30,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
             <div className="p-6 flex justify-start items-center text-left space-x-5 container">
               <div className="first_col -mt-24">
                 <img
-                  src={profile?.employer?.logo || ImgB}
+                  src={profile?.employer?.logo || avatar}
                   alt={profile?.name}
                   className="rounded-full w-44 h-44 mx-auto shadow-md object-cover"
                 />

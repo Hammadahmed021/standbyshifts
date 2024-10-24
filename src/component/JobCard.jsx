@@ -120,7 +120,7 @@ const JobCard = ({
       <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
 
       {/* Applicants Section */}
-      {applicants && (
+      {(applicants && userType != "employee") && (
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center">
             {applicants.slice(0, 10).map((applicant, index) => (
