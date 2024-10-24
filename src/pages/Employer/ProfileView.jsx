@@ -3,6 +3,7 @@ import { fetchSingleDetailEmployer } from "../../utils/Api"; // Adjust this path
 import { CompanyProfiles, JobCard, Loader } from "../../component"; // Import the dynamic layout component
 import { FaFilter } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const ProfileView = () => {
   const [profile, setProfile] = useState([]); // Initialize as null to check loading state
@@ -52,7 +53,9 @@ const ProfileView = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profile?.jobsPostedByYou?.length <= 0 ? (
             <>
-              <p>No jobs available. <Link to={'/post-job'}>Post a job new</Link></p>
+              <p>
+                No jobs available. <Link to={"/post-job"}>Post a job new</Link>
+              </p>
             </>
           ) : (
             profile?.jobsPostedByYou?.map((job) => (
