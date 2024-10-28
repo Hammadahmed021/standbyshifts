@@ -105,7 +105,7 @@ const JobCard = ({
       </div>
 
       {/* Level and Location */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4 truncate">
         <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FaCrown size={12} className="mr-1" />
           {level}
@@ -117,7 +117,7 @@ const JobCard = ({
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
+      <p className="text-gray-600 text-sm mb-4 flex-grow truncate">{description}</p>
 
       {/* Applicants Section */}
       {(applicants && userType != "employee") && (

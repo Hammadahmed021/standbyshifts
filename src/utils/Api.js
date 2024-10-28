@@ -644,27 +644,6 @@ export const postJob = async (payload) => {
   }
 };
 
-export const getJobById = async (id) => {
-  const token = localStorage.getItem("webToken");
-
-  try {
-    const response = axios.get(
-      `${BASE_URL}employee/job/get-matched-job-details/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response, "response");
-
-    return response;
-  } catch (error) {
-    console.log(error || "Unable to get job by id");
-  }
-};
-
 // Fetching filter data of jobs (for emplpoyee)
 export const getJobsByFilter = async (filterData) => {
   console.log(filterData, "filter data");
@@ -805,7 +784,73 @@ export const getEmployeeAppliedOnJob = async (employeeId) => {
   }
 };
 
+
+//get job detail employee
+export const getJobByIdEmployee = async (id) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = axios.get(
+      `${BASE_URL}employee/job/get-matched-job-details/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response");
+
+    return response;
+  } catch (error) {
+    console.log(error || "Unable to get job by id");
+  }
+};
+
+//get job detail employer
+
+export const getJobByIdEmployer = async (id) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = axios.get(
+      `${BASE_URL}employer/job/fetch-single-job/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response");
+
+    return response;
+  } catch (error) {
+    console.log(error || "Unable to get job by id");
+  }
+};
+
 // single page for eomployee view
+export const getEmployeeById = async (id) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = axios.get(
+      `${BASE_URL}employer/profile/applier/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response");
+
+    return response;
+  } catch (error) {
+    console.log(error || "Unable to get job by id");
+  }
+};
 // endpoint - employer/profile/applier/{employeeId}
 
 

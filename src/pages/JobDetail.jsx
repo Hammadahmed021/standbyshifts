@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { applyJob, getJobById } from "../utils/Api";
+import { applyJob, getJobByIdEmployee, getJobByIdEmployer } from "../utils/Api";
 import {
   FaCalendarAlt,
   FaClock,
   FaFileAlt,
   FaMapMarkerAlt,
   FaShoppingBag,
+  FaTrash,
   FaUserAlt,
   FaUserCircle,
   FaWolfPackBattalion,
 } from "react-icons/fa";
 import { EmpCardSlider, Loader } from "../component";
-import { FaBagShopping, FaBoxesPacking } from "react-icons/fa6";
+import {
+  FaBagShopping,
+  FaBoxesPacking,
+  FaPencil,
+  FaTrashCan,
+} from "react-icons/fa6";
 import { people } from "../assets";
 import { BsBackpack, BsBackpack2Fill } from "react-icons/bs";
 import { showSuccessToast } from "../utils/Toast";
+import { useSelector } from "react-redux";
 
 const JobDetail = () => {
   const { id } = useParams();
@@ -23,17 +30,38 @@ const JobDetail = () => {
   const [job, setJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
   const jobId = job?.details?.id;
-  const initialApplicantStatus = job?.details?.applicant.length > 0;
+  const initialApplicantStatus = job?.details?.applicant?.length > 0;
   const [applyForJob, setApplyForJob] = useState(initialApplicantStatus || []);
   const [isApplying, setIsApplying] = useState(false);
   console.log(id, "id job detail");
+  const userData = useSelector((state) => state.auth.userData);
+  const userType = userData?.user?.type;
+
+  console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
 
   useEffect(() => {
     const fetchJobDetails = async () => {
-      const response = await getJobById(id); // Fetch job details by ID
-      setJob(response?.data);
-      setApplyForJob(response?.data?.details?.applicant);
-      setRelatedJobs(response?.data?.relatedJobs);
+      if (userType == "employee") {
+        const response = await getJobByIdEmployee(id); // Fetch job details by ID
+        console.log(
+          response?.data,
+          " employee response ?????????>>>>>>>>>>>>>>>"
+        );
+
+        setJob(response?.data);
+        setApplyForJob(response?.data?.details?.applicant);
+        setRelatedJobs(response?.data?.relatedJobs);
+      } else {
+        const response = await getJobByIdEmployer(id); // Fetch job details by ID
+        console.log(
+          response?.data,
+          " employer response ?????????>>>>>>>>>>>>>>>"
+        );
+
+        setJob(response?.data);
+        setApplyForJob(response?.data?.details?.applicant);
+        setRelatedJobs(response?.data?.relatedJobs);
+      }
     };
 
     fetchJobDetails();
@@ -104,23 +132,48 @@ const JobDetail = () => {
                 {job?.details?.title || "Job Title"}
               </h2>
             </div>
-            {applyForJob?.length > 0 ? (
-              // Button if the user has already applied
-              <button
-                className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
-                disabled
-              >
-                Applied
-              </button>
+            {userType == "employee" ? (
+              <>
+                {applyForJob?.length > 0 ? (
+                  // Button if the user has already applied
+                  <button
+                    className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
+                    disabled
+                  >
+                    Applied
+                  </button>
+                ) : (
+                  // Button if the user has not applied yet
+                  <button
+                    className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                    onClick={() => applyOnJob(jobId)}
+                    disabled={isApplying}
+                  >
+                    {isApplying ? "Applying..." : "Apply"}
+                  </button>
+                )}
+              </>
             ) : (
-              // Button if the user has not applied yet
-              <button
-                className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
-                onClick={() => applyOnJob(jobId)}
-                disabled={isApplying}
-              >
-                {isApplying ? "Applying..." : "Apply"}
-              </button>
+              <>
+                <span className="flex items-center gap-2">
+                  <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer">
+                    <FaTrashCan
+                      size={12}
+                      onClick={() => console.log("deleting shit")}
+                    />
+                  </span>
+                  <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer">
+                    <FaPencil
+                      size={12}
+                      onClick={() => {
+                        navigate(`/post-job`, {
+                          state: job?.details,
+                        });
+                      }}
+                    />
+                  </span>
+                </span>
+              </>
             )}
           </div>
 
@@ -191,79 +244,84 @@ const JobDetail = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-1/3 p-4  bg-white rounded-2xl shadow-xl h-auto">
-          <div className="mb-4 flex gap-2 items-center">
-            <img
-              src={job?.details?.user?.profile_image || people}
-              alt={job?.details?.user?.name || "Company Logo"}
-              className="w-20 h-20 object-contain rounded-2xl bg-slate-100 shadow-sm"
-            />
-            <span>
-              <h3 className="text-lg font-bold">
-                {job?.details?.user?.name || "Company Name"}
-              </h3>
-              <p
-                className="text-tn_pink text-xs font-medium cursor-pointer"
-                onClick={handleViewProfileClick}
-              >
-                View Company Profile
+        <div className="w-full lg:w-1/3 p-0">
+          <div className="p-4  bg-white rounded-2xl shadow-xl h-auto">
+            <div className="mb-4 flex gap-2 items-center">
+              <img
+                src={job?.details?.user?.profile_image || people}
+                alt={job?.details?.user?.name || "Company Logo"}
+                className="w-20 h-20 object-contain rounded-2xl bg-slate-100 shadow-sm"
+              />
+              <span>
+                <h3 className="text-lg font-bold">
+                  {job?.details?.user?.name || "Company Name"}
+                </h3>
+                <p
+                  className="text-tn_pink text-xs font-medium cursor-pointer"
+                  onClick={handleViewProfileClick}
+                >
+                  View Company Profile
+                </p>
+              </span>
+            </div>
+            <hr className="border-b border-tn_light_grey my-6" />
+
+            <div className="mb-4 flex justify-between items-center">
+              <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                <FaUserCircle className="mr-2" /> Member Since
+              </h4>
+              <p className="font-semibold">
+                {new Date(job?.details?.user?.created_at).toLocaleDateString()}
               </p>
-            </span>
-          </div>
-          <hr className="border-b border-tn_light_grey my-6" />
+            </div>
 
-          <div className="mb-4 flex justify-between items-center">
-            <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-              <FaUserCircle className="mr-2" /> Member Since
-            </h4>
-            <p className="font-semibold">
-              {new Date(job?.details?.user?.created_at).toLocaleDateString()}
-            </p>
-          </div>
+            <hr className="border-b border-tn_light_grey my-6" />
 
-          <hr className="border-b border-tn_light_grey my-6" />
+            <div className="mb-4 flex justify-between items-center">
+              <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                <FaBoxesPacking className="mr-2" /> Industry
+              </h4>
+              <p className="font-semibold">
+                {job?.details?.industry_id
+                  ? job?.details?.industry_id
+                  : "Not specified"}
+              </p>
+            </div>
 
-          <div className="mb-4 flex justify-between items-center">
-            <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-              <FaBoxesPacking className="mr-2" /> Industry
-            </h4>
-            <p className="font-semibold">
-              {job?.details?.industry_id
-                ? job?.details?.industry_id
-                : "Not specified"}
-            </p>
-          </div>
+            <hr className="border-b border-tn_light_grey my-6" />
 
-          <hr className="border-b border-tn_light_grey my-6" />
-
-          <div className="mb-4 flex justify-between items-center">
-            <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-              <BsBackpack2Fill className="mr-2" /> Job Posts
-            </h4>
-            <p className="font-semibold">10</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gray-100">
-        <div className="container py-10">
-          <div className="w-[50%] mx-auto mt-6">
-            <h3 className="text-tn_dark text-center text-5xl inline sm:block leading-tight font-semibold">
-              Related Jobs
-            </h3>
-            <p className=" my-4 text-base w-full text-tn_dark  font-normal  text-center">
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout.
-            </p>
-          </div>
-
-          <div className=" w-full">
-            <div className="flex flex-col items-ends justify-center px-6 employer">
-              <EmpCardSlider data={relatedJobs} slidesToShow={6} />
+            <div className="mb-4 flex justify-between items-center">
+              <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
+                <BsBackpack2Fill className="mr-2" /> Job Posts
+              </h4>
+              <p className="font-semibold">10</p>
             </div>
           </div>
         </div>
       </div>
+      {userType == "employee" && (
+        <>
+          <div className="bg-gray-100">
+            <div className="container py-10">
+              <div className="w-[50%] mx-auto mt-6">
+                <h3 className="text-tn_dark text-center text-5xl inline sm:block leading-tight font-semibold">
+                  Related Jobs
+                </h3>
+                <p className=" my-4 text-base w-full text-tn_dark  font-normal  text-center">
+                  It is a long established fact that a reader will be distracted
+                  by the readable content of a page when looking at its layout.
+                </p>
+              </div>
+
+              <div className=" w-full">
+                <div className="flex flex-col items-ends justify-center px-6 employer">
+                  <EmpCardSlider data={relatedJobs} slidesToShow={6} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

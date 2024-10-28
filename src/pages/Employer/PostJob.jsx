@@ -16,6 +16,8 @@ const PostJob = () => {
   const location = useLocation();
 
   const jobData = location?.state;
+  console.log(jobData, 'jobData');
+  
 
   console.log(
     "jobDatajobDatajobDatajobDatajobDatajobDatajobDatajobData",

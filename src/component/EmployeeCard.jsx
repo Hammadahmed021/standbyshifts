@@ -61,7 +61,7 @@ const EmployeeDetailCard = ({ profile }) => {
             <img
               src={companyLogo}
               alt={companyName}
-              className="w-14 h-14 object-cover mr-3 rounded-md shadow-lg"
+              className="w-14 h-14 object-cover mr-3 rounded-md shadow-sm"
             />
             <div>
               <p className="text-gray-500 text-sm">Job applied:</p>
