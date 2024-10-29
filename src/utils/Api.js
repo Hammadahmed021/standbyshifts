@@ -688,6 +688,30 @@ export const getCompanyProfile = async (id) => {
   }
 };
 
+// get company details for employer
+export const getCompanyProfileEmployer = async (id) => {
+  console.log(id, "id");
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}employer/job/get-employer-details-and-jobs/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response, "response get company");
+    return response;
+  } catch (error) {
+    console.log(error || "unable to get company profile");
+  }
+};
+
+
+
 // update a job
 export const updateJob = async (payload) => {
   console.log(payload, "payload post job");

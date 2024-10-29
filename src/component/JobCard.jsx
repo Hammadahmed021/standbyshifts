@@ -7,7 +7,7 @@ import {
   FaMapMarker,
 } from "react-icons/fa";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // Skeleton Loader Component
 const JobCardSkeleton = () => (
@@ -50,21 +50,25 @@ const JobCard = ({
   dateRange,
   timeRange,
   level,
-  location,
+  address,
   description,
   jobId,
   applicants, // Add applicants prop
   loading,
   userType,
   onClick, // Add prop to show applicants
+  className
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Function to handle navigation
   const handleApplyClick = () => {
     navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
   };
-
+  const isEmployeeView = location.pathname.startsWith("/employee-view");
+  console.log(isEmployeeView, 'isEmployeeView >>>>>>>');
+  
   // Determine button text based on applicants
   const buttonText = applicants?.length > 0 ? "View Job" : "Apply";
 
@@ -73,7 +77,7 @@ const JobCard = ({
   }
 
   return (
-    <div className="w-full rounded-2xl shadow-xl bg-white p-6 mb-6 flex flex-col h-full">
+    <div className={`w-full rounded-2xl shadow-xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}>
       {/* Header */}
       <div className="flex items-center mb-4">
         <img
@@ -112,7 +116,7 @@ const JobCard = ({
         </span>
         <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FaMapMarker size={12} className="mr-1" />
-          {location}
+          {address}
         </span>
       </div>
 
@@ -141,7 +145,7 @@ const JobCard = ({
             className="flex items-center rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
             onClick={onClick}
           >
-            View Applicants <FaArrowRightLong className="ml-2" />
+            {isEmployeeView? 'View Job' : 'View Applicants'} <FaArrowRightLong className="ml-2" />
           </button>
         </div>
       )}

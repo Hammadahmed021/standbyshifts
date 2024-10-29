@@ -183,7 +183,7 @@ const Header = ({ style }) => {
 
   return (
     <header className="relative" style={style}>
-      <div className="container sm:px-0 mx-auto">
+      <div className="container sm:px-0 mx-auto border-b-2 mb-6 border-tn_light_grey">
         {!isDesktop ? (
           <nav className="flex py-4 items-center">
             <div className="flex items-center relative">

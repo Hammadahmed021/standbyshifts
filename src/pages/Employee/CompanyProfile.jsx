@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getCompanyProfile } from "../../utils/Api";
+import { getCompanyProfile, getCompanyProfileEmployer } from "../../utils/Api";
 import { useParams } from "react-router-dom";
 import { CompanyProfiles, JobCard, Loader, LoadMore } from "../../component";
 import { useSelector } from "react-redux";
@@ -15,8 +15,15 @@ const CompanyProfile = () => {
   useEffect(() => {
     const fetchCompanyProfile = async () => {
       try {
-        const response = await getCompanyProfile(companyId); // Pass companyId to API
-        setCompanyData(response.data);
+        if (userType == "employee") {
+          const response = await getCompanyProfile(companyId); // Pass companyId to API
+          setCompanyData(response.data);
+        } else {
+          console.log(userType, "user type employer >>>>>>>>>>");
+
+          const response = await getCompanyProfileEmployer(companyId); // Pass companyId to API
+          setCompanyData(response.data);
+        }
       } catch (error) {
         console.error("Error fetching company profile:", error);
       }
@@ -102,11 +109,11 @@ const CompanyProfile = () => {
                   ).toLocaleDateString()}`}
                   timeRange={`${job.shift_start_time} - ${job.shift_end_time}`}
                   level={job.experience_level}
-                  location={`${job.location}, ${job.state}`}
+                  address={`${job.location}, ${job.state}`}
                   description={job.description}
                   userType={userType}
                   loading={false}
-                  applicants={job?.applicant}
+                  // applicants={job?.applicant}
                 />
               ))
           )}

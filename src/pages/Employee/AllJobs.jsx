@@ -59,7 +59,7 @@ const AllJobs = () => {
                     ).toLocaleDateString()}`}
                     timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
                     level={job?.experience_level}
-                    location={`${job?.location}, ${job?.state}`}
+                    address={`${job?.location}, ${job?.state}`}
                     description={job?.description}
                     userType={userType}
                     applicants={job?.applicant} // Pass applicants to JobCard
