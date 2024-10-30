@@ -34,7 +34,8 @@ const PostJob = () => {
   useEffect(() => {
     if (jobData?.id) {
       Object.entries(jobData).forEach(([key, value]) => {
-        setValue(key, value);
+        if(key == "required_expertise") setValue(key,[value.map(res=> res.title )])
+       else setValue(key, value);
       });
     }
   }, []);
@@ -55,10 +56,12 @@ const PostJob = () => {
       const response = jobData?.id
         ? await updateJob(formattedData)
         : await postJob(formattedData);
+        if(response.status == 200){
       if (!jobData?.id) reset();
       showSuccessToast("Job posted successfully");
       navigate("/manage-jobs");
-      console.log("Job posted successfully:", response?.data);
+    }else showErrorToast("Error posting the job")
+      console.log("Job posted successfully:", response);
     } catch (error) {
       showErrorToast("Error posting the job");
       console.error("Error posting the job:", error);
@@ -110,7 +113,7 @@ const PostJob = () => {
                 value
                   .split(",")
                   .map((item) => item.trim())
-                  .filter(Boolean).length > 0 ||
+                  .filter(Boolean).length > 0 || 
                 "At least one expertise is required",
             })}
           />

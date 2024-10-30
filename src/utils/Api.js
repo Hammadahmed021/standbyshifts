@@ -651,7 +651,12 @@ export const getJobsByFilter = async (filterData) => {
   try {
     const jobs = await axios.post(
       `${BASE_URL}employee/job/get-all-matched-jobs`,
-      filterData,
+      {
+        experty_ids: filterData?.expertise,
+        industry_ids: filterData?.indestries,
+        job_title: filterData?.jobTitle,
+        zip_code: filterData?.zipcode,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -710,8 +715,6 @@ export const getCompanyProfileEmployer = async (id) => {
   }
 };
 
-
-
 // update a job
 export const updateJob = async (payload) => {
   console.log(payload, "payload post job");
@@ -724,7 +727,7 @@ export const updateJob = async (payload) => {
         "Content-Type": "application/json",
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error || "unable to post a job");
   }
@@ -808,7 +811,6 @@ export const getEmployeeAppliedOnJob = async (employeeId) => {
   }
 };
 
-
 //get job detail employee
 export const getJobByIdEmployee = async (id) => {
   const token = localStorage.getItem("webToken");
@@ -859,15 +861,12 @@ export const getEmployeeById = async (id) => {
   const token = localStorage.getItem("webToken");
 
   try {
-    const response = axios.get(
-      `${BASE_URL}employer/profile/applier/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = axios.get(`${BASE_URL}employer/profile/applier/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     console.log(response, "response");
 
     return response;
@@ -876,7 +875,6 @@ export const getEmployeeById = async (id) => {
   }
 };
 // endpoint - employer/profile/applier/{employeeId}
-
 
 // fetch single page as employer of jobs
 // endpoint - /fetch-single-job/{jobId}

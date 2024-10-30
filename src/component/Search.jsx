@@ -5,7 +5,7 @@ import { FaBagShopping, FaCartFlatbed } from "react-icons/fa6";
 import { LuSearch } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
-const Search = ({ data, className }) => {
+const Search = ({ data, className ,onSearch}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const Search = ({ data, className }) => {
         <LuSearch
           size={24}
           className="bg-tn_primary mr-2 rounded-full w-8 h-8 py-1 px-2 text-white"
-          onClick={() => handleSearch(searchTerm)}
+          onClick={() =>onSearch(searchTerm) ?? handleSearch(searchTerm)}
         />
       </span>
       {suggestions.length > 0 && (

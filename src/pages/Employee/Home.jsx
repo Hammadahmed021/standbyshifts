@@ -5,6 +5,7 @@ import {
   EmpCardSlider,
   Input,
   JobCard,
+  SelectOption,
   TestimonialSlider,
 } from "../../component";
 import { testimonial } from "../../utils/localDB";
@@ -18,8 +19,31 @@ import { useSelector } from "react-redux";
 const Home = () => {
   const [recentJobs, setRecentJobs] = useState([]);
   const [matchJobs, setMatchJobs] = useState([]);
+  const [expertise, setExpertise] = useState([]);
   const [skills, setSkills] = useState([]);
   const [employers, setEmployers] = useState([]);
+  const [industries, setIndustries] = useState([]);
+
+  const [selectedOptions, setSelectedOptions] = useState({
+    industries:null,
+    expertise:null,
+jobTitle:null,
+zipCode:null,
+location:null
+  });
+
+  const handleFilterChange = (e, category) => {
+    const value = Array.isArray(e.target.value)
+      ? e.target.value
+      : [e.target.value]; // Ensure it's an array
+
+    setSelectedOptions((prevSelectedOptions) => ({
+      ...prevSelectedOptions,
+      [category]: value,
+    }));
+
+  };
+
 
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
@@ -29,10 +53,13 @@ const Home = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       const response = await getJobsForEmployee();
+      console.log("responseresponseresponseresponseresponseresponseresponse",response)
       setRecentJobs(response?.data?.matchJobs);
       setMatchJobs(response?.data?.recentMatchedJobs);
+      setExpertise(response?.data?.expertise);
       setSkills(response?.data?.skills);
       setEmployers(response?.data?.employers);
+      setIndustries(response?.data?.industries);
     };
 
     fetchJobs();
@@ -89,9 +116,14 @@ const Home = () => {
     };
   };
   
+  const addAllOption = (options, label) => [
+    { id: "all", name: label },
+    ...options,
+  ];
+
   const navigate = useNavigate();
   const handleRoute = () => {
-    navigate("/jobs");
+    navigate("/jobs",{ state: selectedOptions});
   };
   return (
     <>
@@ -110,11 +142,65 @@ const Home = () => {
                 by the readable content of a page when looking at its layout.
               </p>
               <div className="flex container px-0 space-x-3 mt-10">
+              <SelectOption
+          label="Expertise"
+          value={selectedOptions.expertise}
+          onChange={(e) => handleFilterChange(e, "expertise")}
+          className="border-r-2 pr-1 mx-5"
+          options={addAllOption(expertise || [], "All Expertise")}
+        />
+              <SelectOption
+          label="Industries"
+          value={selectedOptions.industries}
+          onChange={(e) => handleFilterChange(e, "industries")}
+          className="border-r-2 pr-1 mx-5"
+          options={addAllOption(industries || [], "All Industries")}
+        />
+              {/* <SelectOption
+          label="Areas"
+          value={selectedOptions.areas}
+          onChange={(e) => handleFilterChange(e, "areas")}
+          className="border-r-2 pr-1 mx-5"
+          options={addAllOption(data?.areas || [], "All Areas")}
+        /> */}
                 <input
                   label="Search by title"
                   placeholder="Search by title"
                   type="text"
                   className="rounded-site w-[30%] pl-4"
+                  value={selectedOptions.jobTitle}
+                  onChange={(e)=>{
+                    setSelectedOptions((prevSelectedOptions) => ({
+                      ...prevSelectedOptions,
+                      "jobTitle": e.target.value,
+                    }));
+                  }}
+                />
+                <input
+                  label="Search by Zipcode"
+                  placeholder="Search by Zipcode"
+                  type="text"
+                  className="rounded-site w-[30%] pl-4"
+                  value={selectedOptions.zipCode}
+                  onChange={(e)=>{
+                    setSelectedOptions((prevSelectedOptions) => ({
+                      ...prevSelectedOptions,
+                      "zipCode": e.target.value,
+                    }));
+                  }}
+                />
+                <input
+                  label="Search by location"
+                  placeholder="Search by location"
+                  type="text"
+                  className="rounded-site w-[30%] pl-4"
+                  value={selectedOptions.location}
+                  onChange={(e)=>{
+                    setSelectedOptions((prevSelectedOptions) => ({
+                      ...prevSelectedOptions,
+                      "location": e.target.value,
+                    }));
+                  }}
                 />
                 <Button onClick={handleRoute}>Search</Button>
               </div>
