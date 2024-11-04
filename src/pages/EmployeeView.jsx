@@ -56,6 +56,9 @@ const EmployeeView = () => {
     getEmployee(id);
   }, [id]);
 
+  console.log(employeeJobs, 'employeeJobs >>>>>>');
+  
+
   return (
     <>
       <div className="flex flex-col lg:flex-row  container space-x-4 my-16">
@@ -93,9 +96,9 @@ const EmployeeView = () => {
               </div>
             </div>
             <div className="flex items-center">
-              <span className="inline-flex items-center px-4 py-2 bg-tn_dark rounded-site gap-2 text-white">
+              {/* <span className="inline-flex items-center px-4 py-2 bg-tn_dark rounded-site gap-2 text-white" onClick={() => { navigate('/chat', {state: employeeJobs})}}>
                 <FaRegMessage /> Chat with applicant
-              </span>
+              </span> */}
             </div>
           </div>
           <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl">
@@ -172,7 +175,7 @@ const EmployeeView = () => {
                        {/* Date Created */}
                        <p className="text-xs text-tn_text_grey">
                         Added on:{" "}
-                        {new Date(history.created_at).toLocaleDateString()}
+                        {new Date(history.created_at).toLocaleDateString()} 
                       </p>
                       {/* Job Title */}
                       <h3 className="text-lg font-semibold capitalize text-tn_dark_field">

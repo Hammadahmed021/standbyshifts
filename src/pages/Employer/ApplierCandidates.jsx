@@ -1,19 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getEmployeeAppliedOnJob } from "../../utils/Api";
+import { getEmployeeAppliedOnJob, hirePeople } from "../../utils/Api";
 import { EmployeeDetailCard } from "../../component";
+import { showErrorToast, showSuccessToast } from "../../utils/Toast";
 
 const ApplierCandidates = () => {
   const { id } = useParams();
   const [candidates, setCandidates] = useState([]);
+  const getEmployeeOnJob = async (id) => {
+    const response = await getEmployeeAppliedOnJob(id);
+    setCandidates(response?.data);
+  };
   useEffect(() => {
-    const getEmployeeOnJob = async (id) => {
-      const response = await getEmployeeAppliedOnJob(id);
-      setCandidates(response?.data);
-    };
     getEmployeeOnJob(id);
   }, []);
   console.log(candidates, "response?.data>>>>>>>>>>>>>>>>");
+
+const hirePeopleFun =async ({userId,jobId})=>{
+const hireForJob =await hirePeople({
+  user_id:userId , job_id:jobId
+})
+if(hireForJob.status == 200){
+  getEmployeeOnJob(id)
+  showSuccessToast("Hired")}
+  else showErrorToast(hireForJob?.data?.message)
+}
+console.log(candidates, 'job');
+
 
   return (
     <>
@@ -30,6 +43,9 @@ const ApplierCandidates = () => {
                 profileImage: job?.profile_picture,
                 jobId: job?.applied_jobs?.id,
                 employeeId: job?.id,
+                isHired:job?.is_hired,
+                onHire:hirePeopleFun,
+                userData:job
               }}
             />
           ))}

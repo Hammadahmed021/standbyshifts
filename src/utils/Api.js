@@ -874,6 +874,26 @@ export const getEmployeeById = async (id) => {
     console.log(error || "Unable to get job by id");
   }
 };
+
+export const hirePeople = async (body) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.post(`${BASE_URL}employer/job/hire`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("API response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("Error message:", error.message);
+    throw error;
+  }
+};
+
 // endpoint - employer/profile/applier/{employeeId}
 
 // fetch single page as employer of jobs

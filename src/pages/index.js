@@ -30,3 +30,4 @@ export { default as ManageJobs } from "./Employer/ManageJobs";
 export { default as AppliedJobs } from "./Employer/AppliedJobs";
 export { default as ApplierCandidates } from "./Employer/ApplierCandidates";
 export { default as EmployeeView } from "./EmployeeView";
+export { default as Chat } from "./Chat";

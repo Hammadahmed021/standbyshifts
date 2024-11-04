@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Logo, fallback, fb, instagram, twitter, youtube } from "../../assets";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, NavLink, useLocation } from "react-router-dom"; // Import useLocation
 import { useSelector } from "react-redux";
 import {
   LuBackpack,
@@ -36,18 +36,33 @@ const Header = ({ style }) => {
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
 
-  console.log(userData?.user?.type, 'userData');
+  console.log(userData?.user?.type, "userData");
 
   const defaultMenu = (
     <>
       <li>
-        <Link to={"/"}>Home</Link>
+        <NavLink
+          to={"/"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <Link to={"/"}>Contact</Link>
+        <NavLink
+          to={"/"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Contact
+        </NavLink>
       </li>
       <li>
-        <Link to={"/about"}>About</Link>
+        <NavLink
+          to={"/about"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          About
+        </NavLink>
       </li>
     </>
   );
@@ -55,18 +70,38 @@ const Header = ({ style }) => {
   const employeeMenu = (
     <>
       <li>
-        <Link to={"/employee"}>Home</Link>
+        <NavLink
+          to={"/employee"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <Link to={"/jobs"}>Find Jobs</Link>
+        <NavLink
+          to={"/jobs"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Find Jobs
+        </NavLink>
       </li>
       <li>
-        <Link to={"/contact"}>Contact</Link>
+        <NavLink
+          to={"/contact"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Contact
+        </NavLink>
       </li>
       <li>
-        <Link to={"/about"}>About</Link>
+        <NavLink
+          to={"/about"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          About
+        </NavLink>
       </li>
-      <li>
+      {/* <li>
         <Link >
           <span className="rounded-full p-1 bg-tn_primary w-8 h-8 flex items-center justify-center">
             <FaBell size={18} color="#fff" />
@@ -79,33 +114,61 @@ const Header = ({ style }) => {
             <FaMessage size={18} color="#fff" />
           </span>
         </Link>
-      </li>
-
-
+      </li> */}
     </>
   );
 
   const employerMenu = (
     <>
       <li>
-        <Link to={"/employer"}>Home</Link>
+        <NavLink
+          to={"/employer"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <Link to={"/post-job"}>Post Job</Link>
+        <NavLink
+          to={"/post-job"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Post Job
+        </NavLink>
       </li>
       <li>
-        <Link to={"/manage-jobs"}>Manage Jobs</Link>
+        <NavLink
+          to={"/manage-jobs"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Manage Jobs
+        </NavLink>
       </li>
       <li>
-        <Link to={"/appliers-on-job"}>Applied Jobs</Link>
-      </li>      
-      <li>
-        <Link to={"/contact"}>Contact</Link>
+        <NavLink
+          to={"/appliers-on-job"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Applied Jobs
+        </NavLink>
       </li>
       <li>
-        <Link to={"/about"}>About</Link>
+        <NavLink
+          to={"/contact"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Contact
+        </NavLink>
       </li>
       <li>
+        <NavLink
+          to={"/about"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          About
+        </NavLink>
+      </li>
+      {/* <li>
         <Link >
           <span className="rounded-full p-1 bg-tn_pink w-8 h-8 flex items-center justify-center">
             <FaBell size={18} color="#fff" />
@@ -118,9 +181,8 @@ const Header = ({ style }) => {
             <FaMessage size={18} color="#fff" />
           </span>
         </Link>
-      </li>
+      </li> */}
     </>
-
   );
 
   const getUserIP = async () => {
@@ -187,32 +249,27 @@ const Header = ({ style }) => {
         {!isDesktop ? (
           <nav className="flex py-4 items-center">
             <div className="flex items-center relative">
-              <Link to={
-                userData
-                  ? userData.user.type === "employee"
-                    ? "employee"
-                    : "employer"
-                  : "/"
-              }>
+              <Link
+                to={
+                  userData
+                    ? userData.user.type === "employee"
+                      ? "employee"
+                      : "employer"
+                    : "/"
+                }
+              >
                 <img src={Logo} alt="" className="w-28" />
               </Link>
               {/* <Search data={data} /> */}
             </div>
             <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
-
-              {userData ? (
-                userData.user.type == "employee" ? (
-                  employeeMenu
-                ) : userData.user.type == "employer" ? (
-                  employerMenu
-                ) : (
-                  defaultMenu
-                )
-              ) : (
-                defaultMenu
-              )}
-
-
+              {userData
+                ? userData.user.type == "employee"
+                  ? employeeMenu
+                  : userData.user.type == "employer"
+                  ? employerMenu
+                  : defaultMenu
+                : defaultMenu}
 
               {/* <span className="mx-4">|</span> */}
               {authStatus && (
@@ -251,16 +308,13 @@ const Header = ({ style }) => {
                         className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden"
                       >
                         <Link
-
                           to={
                             userData && userData.user.type === "employee"
                               ? "employee-profile"
                               : "employer-profile"
                           }
-
                           className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
                         >
-
                           Profile
                         </Link>
                         <LogoutBtn />
@@ -281,7 +335,7 @@ const Header = ({ style }) => {
             {toggle && (
               <ul
                 className="flex flex-col py-4 px-2 items-center bg-white shadow-lg fixed top-0 left-0 right-0  h-screen duration-200 justify-center z-10 overflow-y-auto"
-              // style={{ paddingTop: isApp ? "20px" : "0" }}
+                // style={{ paddingTop: isApp ? "20px" : "0" }}
               >
                 <div className="relative w-full min-h-screen p-3">
                   <div className="flex justify-between items-start">

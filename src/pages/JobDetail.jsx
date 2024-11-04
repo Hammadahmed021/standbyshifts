@@ -152,6 +152,18 @@ const JobDetail = () => {
                     {isApplying ? "Applying..." : "Apply"}
                   </button>
                 )}
+                       <button
+                    className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                    onClick={() => navigate("/chat",{state:{
+                      id:job?.details?.user?.id,
+                      applied_jobs:{
+                        id:job?.details?.id
+                      },
+                      name:job?.details?.user?.name,
+                    }})}
+                  >
+                   Chat
+                  </button>
               </>
             ) : (
               <>

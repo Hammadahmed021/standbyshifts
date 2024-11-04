@@ -34,6 +34,7 @@ import {
   AppliedJobs,
   ApplierCandidates,
   EmployeeView,
+  Chat,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -77,6 +78,7 @@ function BaseRouter() {
           <Route path="post-job" element={<AuthLayout authentication={true}><PostJob /></AuthLayout>} />
           <Route path="appliers-on-job" element={<AuthLayout authentication={true}><AppliedJobs /></AuthLayout>} />
           <Route path="view-applicants/:id" element={<AuthLayout authentication={true}><ApplierCandidates /></AuthLayout>} />
+          <Route path="chat" element={<AuthLayout authentication={true}><Chat /></AuthLayout>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

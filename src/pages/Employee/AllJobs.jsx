@@ -14,7 +14,7 @@ const AllJobs = () => {
   const userType = userData?.user?.type;
 
   const getJobs = async (e) => {
-    const res = await getJobsByFilter({...location.state,jobTitle:e ?? location.state.jobTitle});
+    const res = await getJobsByFilter({...location.state,jobTitle:e ?? location?.state?.jobTitle});
     setJobs(res?.data??[]);
     console.log(JSON.stringify(res?.data), "res?.data?>>>>>>>>>>>>>");
     // Check if there are more jobs than the initial load
