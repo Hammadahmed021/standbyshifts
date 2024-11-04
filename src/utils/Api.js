@@ -473,9 +473,9 @@ export const showFavorite = async () => {
 };
 
 /* Rate */
-export const giveRateToHotel = async (rateData) => {
+export const giveRating = async (rateData) => {
   const token = localStorage.getItem("webToken");
-  const { table_booking_id, hotel_id, user_id, rating, review } = rateData;
+  const { ratee_id, rating_type, user_id, rating, review, job_post_id } = rateData;
   try {
     const response = await axios.post(`${BASE_URL}rate`, rateData, {
       headers: {
@@ -488,6 +488,7 @@ export const giveRateToHotel = async (rateData) => {
     throw new Error(error.message || "unable to give ratings");
   }
 };
+
 
 export const sendFCMToken = async (fcm_token) => {
   console.log(fcm_token, "fcm_token");
