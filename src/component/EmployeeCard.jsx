@@ -35,7 +35,7 @@ const EmployeeDetailCard = ({ profile }) => {
   };
 
   return (
-    <div className="bg-white rounded-site shadow-lg p-6 max-w-sm">
+    <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm">
       {/* Profile Section */}
       <div className="flex items-center">
         <img

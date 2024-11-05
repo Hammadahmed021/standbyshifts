@@ -77,7 +77,7 @@ const JobCard = ({
   }
 
   return (
-    <div className={`w-full rounded-2xl shadow-xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}>
+    <div className={`w-full rounded-2xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}>
       {/* Header */}
       <div className="flex items-center mb-4">
         <img

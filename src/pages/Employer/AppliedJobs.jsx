@@ -23,6 +23,7 @@ const AppliedJobs = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {appliers?.map((job) => (
             <JobCard
+            className={'shadow-xl'}
               jobId={job.id}
               key={job.id}
               companyLogo={job?.user?.employer?.logo} // Replace with actual logo

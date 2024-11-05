@@ -54,6 +54,7 @@ const onSearchText = (e)=>{
             :jobs?.length ==0 ? <h1>no data found</h1> : jobs?.slice(0, visibleJobsCount)?.map((job) => (
                 <div key={job?.id} className="p-2">
                   <JobCard
+                  className={'shadow-xl'}
                     jobId={job?.id}
                     key={job?.id}
                     companyLogo={job?.user?.employer?.logo} // Replace with actual logo

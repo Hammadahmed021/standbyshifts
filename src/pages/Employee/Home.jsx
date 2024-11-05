@@ -253,6 +253,7 @@ location:null
             : matchJobs?.map((job) => (
                 <div key={job?.id} className="p-2">
                   <JobCard
+                  className={'shadow-xl'}
                     jobId={job?.id}
                     key={job?.id}
                     companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -347,6 +348,7 @@ location:null
               : matchJobs?.splice(0, 3)?.map((job) => (
                   <div key={job?.id} className="p-2">
                     <JobCard
+                    className={'shadow-xl'}
                       jobId={job?.id}
                       key={job?.id}
                       companyLogo={job?.user?.employer?.logo} // Replace with actual logo

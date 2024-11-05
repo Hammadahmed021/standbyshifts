@@ -132,38 +132,45 @@ const JobDetail = () => {
                 {job?.details?.title || "Job Title"}
               </h2>
             </div>
+
             {userType == "employee" ? (
               <>
-                {applyForJob?.length > 0 ? (
-                  // Button if the user has already applied
+                <div className="flex gap-1">
+                  {applyForJob?.length > 0 ? (
+                    // Button if the user has already applied
+                    <button
+                      className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
+                      disabled
+                    >
+                      Applied
+                    </button>
+                  ) : (
+                    // Button if the user has not applied yet
+                    <button
+                      className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                      onClick={() => applyOnJob(jobId)}
+                      disabled={isApplying}
+                    >
+                      {isApplying ? "Applying..." : "Apply"}
+                    </button>
+                  )}
                   <button
-                    className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
-                    disabled
+                    className="bg-tn_pink text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                    onClick={() =>
+                      navigate("/chat", {
+                        state: {
+                          id: job?.details?.user?.id,
+                          applied_jobs: {
+                            id: job?.details?.id,
+                          },
+                          name: job?.details?.user?.name,
+                        },
+                      })
+                    }
                   >
-                    Applied
+                    Chat
                   </button>
-                ) : (
-                  // Button if the user has not applied yet
-                  <button
-                    className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
-                    onClick={() => applyOnJob(jobId)}
-                    disabled={isApplying}
-                  >
-                    {isApplying ? "Applying..." : "Apply"}
-                  </button>
-                )}
-                       <button
-                    className="bg-tn_primary text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
-                    onClick={() => navigate("/chat",{state:{
-                      id:job?.details?.user?.id,
-                      applied_jobs:{
-                        id:job?.details?.id
-                      },
-                      name:job?.details?.user?.name,
-                    }})}
-                  >
-                   Chat
-                  </button>
+                </div>
               </>
             ) : (
               <>

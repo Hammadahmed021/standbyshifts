@@ -21,7 +21,6 @@ import {
   fetchProfileDataEmployer,
   fetchProfileDataEmployee,
   getUserBookings,
-  giveRateToHotel,
   showFavorite,
   updateUserProfile,
   verifyUser,

@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { getCompanyProfile, getCompanyProfileEmployer } from "../../utils/Api";
+import {
+  getCompanyProfile,
+  getCompanyProfileEmployer,
+  giveRating,
+} from "../../utils/Api";
 import { useParams } from "react-router-dom";
-import { CompanyProfiles, JobCard, Loader, LoadMore } from "../../component";
+import {
+  CompanyProfiles,
+  JobCard,
+  Loader,
+  LoadMore,
+  RatingModal,
+} from "../../component";
 import { useSelector } from "react-redux";
 import { FaFilter } from "react-icons/fa";
+import { showSuccessToast } from "../../utils/Toast";
 
 const CompanyProfile = () => {
   const { companyId } = useParams(); // Get companyId from URL
@@ -11,6 +22,89 @@ const CompanyProfile = () => {
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratings, setRatings] = useState([]); // Initialize with ratings
+
+  console.log(companyData, "companyData >>>>>>>>>>>>");
+  console.log(companyId, "companyId >>>>>>>>>>>>");
+  console.log(userData, "userData  >>>>>>>>>>>>");
+
+  useEffect(() => {
+    if (companyData?.ratingsReceived) {
+      setRatings(companyData.ratingsReceived);
+      console.log(companyData.ratingsReceived, "ratings updated in state");
+    }
+  }, [companyData?.ratingsReceived]);
+
+  const openRatingModal = () => {
+    setIsRatingModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeRatingModal = () => {
+    setIsRatingModalOpen(false);
+  };
+
+  // Function to handle submission of rating and feedback
+  // const handleRatingSubmit = async (ratingData) => {
+  //   const rateData = {
+  //     ratee_id: companyId /* specify the ratee ID */,
+  //     user_id: userData?.user?.id /* specify the user ID */,
+  //     rating: ratingData?.rating,
+  //     review: ratingData?.feedback,
+  //   };
+  //   try {
+  //     const response = await giveRating(rateData);
+
+  //     showSuccessToast("You've successfully rated!");
+  //     console.log("Rating submitted successfully:", response.data);
+  //     setRatings((prevRatings) => [
+  //       ...prevRatings,
+  //       response?.data?.ratingsReceived,
+  //     ]); // Add new rating
+  //   } catch (error) {
+  //     console.error("Error submitting rating:", error.message);
+  //   } finally {
+  //     closeRatingModal();
+  //   }
+  // };
+
+  const handleRatingSubmit = async (ratingData) => {
+    const rateData = {
+      ratee_id: companyId, // specify the ratee ID
+      user_id: userData?.user?.id, // specify the user ID
+      rating: ratingData?.rating,
+      review: ratingData?.feedback,
+    };
+  
+    try {
+      const response = await giveRating(rateData);
+      console.log(response, 'response >>>>>>');
+      
+  
+      // If the response is successful, show a success toast
+      if (response?.message == "Profile rated successfully") {
+        showSuccessToast("You've successfully rated!");
+        console.log("Rating submitted successfully:", response.data);
+  
+        // Construct the new rating object based on API response
+        const newRating = {
+          id: response?.data?.ratingsReceived?.id,
+          rating: ratingData?.rating,
+          review: ratingData?.feedback,
+          created_at: new Date().toISOString(),
+        };
+  
+        // Update the ratings state with the new rating at the top
+        setRatings((prevRatings) => [newRating, ...prevRatings]);
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error.message);
+    } finally {
+      closeRatingModal();
+    }
+  };
+  
 
   useEffect(() => {
     const fetchCompanyProfile = async () => {
@@ -67,6 +161,59 @@ const CompanyProfile = () => {
       )}
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
+          <h3 className="text-4xl text-tn_dark font-semibold">Rate Company</h3>
+        </div>
+        <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold capitalize items-center">
+              Rate {companyData?.about?.name}
+            </h2>
+            <span className="flex items-center gap-1">
+              <span
+                className={`text-sm underline cursor-pointer ${
+                  companyData?.is_rated == true &&
+                  "pointer-events-none opacity-75"
+                }`}
+                onClick={openRatingModal}
+              >
+                {companyData?.is_rated == true
+                  ? "Already rated"
+                  : "Click to rate"}
+              </span>
+              <span className="text-sm text-tn_primary">
+                ⭐{Math.floor(companyData.averageRating)}
+              </span>
+            </span>
+          </div>
+          {/* Display each rating */}
+          {ratings.length > 0 ? (
+            ratings
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // Sort by latest date
+              .slice(0, 3) // Limit to the first 3 items
+              .map((rating) => (
+                <div key={rating?.id} className="py-4 border-b last:border-0">
+                  <div className="flex items-center mb-2 justify-between">
+                    <span className="text-yellow-500 mr-2">
+                      {"⭐".repeat(rating?.rating)}
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {rating?.created_at
+                        ? new Date(rating.created_at).toLocaleDateString()
+                        : ""}
+                    </span>
+                  </div>
+                  <p className="text-gray-800">
+                    {rating?.review || "No review provided"}
+                  </p>
+                </div>
+              ))
+          ) : (
+            <p className="text-gray-500">No ratings yet</p>
+          )}
+        </div>
+      </div>
+      <div className="container my-16">
+        <div className="flex items-center justify-between my-10">
           <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
           <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
             <FaFilter size={16} color="#fff" />
@@ -96,6 +243,7 @@ const CompanyProfile = () => {
               ?.slice(0, visibleJobsCount)
               ?.map((job) => (
                 <JobCard
+                  className={"shadow-xl"}
                   jobId={job?.id}
                   key={job.id}
                   companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -124,6 +272,13 @@ const CompanyProfile = () => {
           className="mt-5"
         />
       </div>
+
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={closeRatingModal}
+        onSubmit={handleRatingSubmit}
+        Rating={companyId}
+      />
     </>
   );
 };

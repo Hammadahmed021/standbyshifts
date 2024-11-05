@@ -475,9 +475,20 @@ export const showFavorite = async () => {
 /* Rate */
 export const giveRating = async (rateData) => {
   const token = localStorage.getItem("webToken");
-  const { ratee_id, rating_type, user_id, rating, review, job_post_id } = rateData;
+
+  const rating_type = "profile";
+
+  const { ratee_id, user_id, rating, review } = rateData;
+
+  const payload = {
+    rating_type,
+    ratee_id,
+    user_id,
+    rating,
+    review,
+  };
   try {
-    const response = await axios.post(`${BASE_URL}rate`, rateData, {
+    const response = await axios.post(`${BASE_URL}rate`, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -488,7 +499,6 @@ export const giveRating = async (rateData) => {
     throw new Error(error.message || "unable to give ratings");
   }
 };
-
 
 export const sendFCMToken = async (fcm_token) => {
   console.log(fcm_token, "fcm_token");

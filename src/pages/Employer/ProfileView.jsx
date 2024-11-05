@@ -43,6 +43,7 @@ const ProfileView = () => {
           <Loader />
         </p> // Show loading text until profile data is available
       )}
+      
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
           <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
@@ -60,6 +61,7 @@ const ProfileView = () => {
           ) : (
             profile?.jobsPostedByYou?.map((job) => (
               <JobCard
+                className={"shadow-xl"}
                 key={job.id}
                 companyLogo={job?.user?.employer?.logo} // Replace with actual logo
                 jobTitle={job.title}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getEmployeeById } from "../utils/Api";
+import { getEmployeeById, giveRating } from "../utils/Api";
 import {
   FaBagShopping,
   FaBoxesPacking,
@@ -31,16 +31,30 @@ import {
 } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { BiSolidMessageAltDots } from "react-icons/bi";
-import { EmployeeDetailCard, JobCard } from "../component";
+import { EmployeeDetailCard, JobCard, RatingModal } from "../component";
+import { showSuccessToast } from "../utils/Toast";
 
 const EmployeeView = () => {
   const [employee, setEmployee] = useState([]);
   const [employeeJobs, setEmployeeJobs] = useState([]);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratings, setRatings] = useState([]); // Initialize with ratings
+
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
+  console.log(userData, "userData >>>>>");
+
   const { id } = useParams();
   const navigate = useNavigate();
   console.log(id, "id>>>>>>>>>>");
+
+  useEffect(() => {
+    if (employee?.ratings_received) {
+      setRatings(employee.ratings_received);
+      console.log(employee.ratings_received, "ratings updated in state");
+    }
+  }, [employee?.ratings_received]);
+
   useEffect(() => {
     const getEmployee = async (id) => {
       try {
@@ -56,8 +70,41 @@ const EmployeeView = () => {
     getEmployee(id);
   }, [id]);
 
-  console.log(employeeJobs, 'employeeJobs >>>>>>');
-  
+  console.log(employeeJobs, "employeeJobs >>>>>>");
+
+  // Function to open the modal
+  const openRatingModal = () => {
+    setIsRatingModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeRatingModal = () => {
+    setIsRatingModalOpen(false);
+  };
+
+  // Function to handle submission of rating and feedback
+  const handleRatingSubmit = async (ratingData) => {
+    const rateData = {
+      ratee_id: employee?.id /* specify the ratee ID */,
+      user_id: userData?.user?.id /* specify the user ID */,
+      rating: ratingData?.rating,
+      review: ratingData?.feedback,
+    };
+    try {
+      const response = await giveRating(rateData);
+
+      showSuccessToast("You've successfully rated!");
+      console.log("Rating submitted successfully:", response.data);
+      setRatings((prevRatings) => [
+        ...prevRatings,
+        response?.data?.ratings_received,
+      ]); // Add new rating
+    } catch (error) {
+      console.error("Error submitting rating:", error.message);
+    } finally {
+      closeRatingModal();
+    }
+  };
 
   return (
     <>
@@ -108,7 +155,7 @@ const EmployeeView = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {employeeJobs.map((job, ind) => (
                 <JobCard
-                  className={"border border-tn_light_grey shadow"}
+                  className={"border border-tn_light_grey shadow-none"}
                   jobId={job.id}
                   key={job.id}
                   companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -172,10 +219,10 @@ const EmployeeView = () => {
                       key={history.id}
                       className="border border-tn_light_grey p-4 rounded-lg w-full flex flex-col gap-2"
                     >
-                       {/* Date Created */}
-                       <p className="text-xs text-tn_text_grey">
+                      {/* Date Created */}
+                      <p className="text-xs text-tn_text_grey">
                         Added on:{" "}
-                        {new Date(history.created_at).toLocaleDateString()} 
+                        {new Date(history.created_at).toLocaleDateString()}
                       </p>
                       {/* Job Title */}
                       <h3 className="text-lg font-semibold capitalize text-tn_dark_field">
@@ -198,8 +245,6 @@ const EmployeeView = () => {
                           No description provided.
                         </p>
                       )}
-
-                     
                     </div>
                   ))
                 ) : (
@@ -268,6 +313,53 @@ const EmployeeView = () => {
               <p className="font-semibold">{employee?.phone}</p>
             </div>
           </div>
+
+          <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold capitalize items-center">
+                Rate {employee?.name}
+              </h2>
+              <span className="flex items-center gap-1">
+                <span
+                  className={`text-sm underline cursor-pointer ${
+                    employee?.isRated == true &&
+                    "pointer-events-none opacity-75"
+                  }`}
+                  onClick={openRatingModal}
+                >
+                  {employee?.isRated == true
+                    ? "Already rated"
+                    : "Click to rate"}
+                </span>
+                <span className="text-sm text-tn_primary">
+                  ⭐{Math.floor(employee.averageRating)}
+                </span>
+              </span>
+            </div>
+            {/* Display each rating */}
+            {ratings.length > 0 ? (
+              ratings
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // Sort by latest date
+                .slice(0, 3) // Limit to the first 3 items
+                .map((rating) => (
+                  <div key={rating.id} className="py-4 border-b last:border-0">
+                    <div className="flex items-center mb-2 justify-between">
+                      <span className="text-yellow-500 mr-2">
+                        {"⭐".repeat(rating.rating)}
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        {new Date(rating.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-gray-800">
+                      {rating.review || "No review provided"}
+                    </p>
+                  </div>
+                ))
+            ) : (
+              <p className="text-gray-500">No ratings yet</p>
+            )}
+          </div>
         </div>
       </div>
       {userType == "employee" && (
@@ -293,6 +385,13 @@ const EmployeeView = () => {
           </div>
         </>
       )}
+
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={closeRatingModal}
+        onSubmit={handleRatingSubmit}
+        Rating={employee?.employee?.id}
+      />
     </>
   );
 };

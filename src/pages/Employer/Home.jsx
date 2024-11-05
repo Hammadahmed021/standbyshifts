@@ -65,6 +65,7 @@ const Home = () => {
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {profile?.jobsPostedByYou?.map((job) => (
               <JobCard
+              className={'shadow-xl'}
                 key={job.id}
                 companyLogo={job?.user?.employer?.logo} // Replace with actual logo
                 jobTitle={job.title}
