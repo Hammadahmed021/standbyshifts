@@ -155,7 +155,7 @@ const JobDetail = () => {
                     </button>
                   )}
                   <button
-                    className="bg-tn_pink text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 shadow-custom-orange"
+                    className="bg-tn_pink text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 "
                     onClick={() =>
                       navigate("/chat", {
                         state: {

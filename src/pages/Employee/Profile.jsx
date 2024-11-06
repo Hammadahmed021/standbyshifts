@@ -492,6 +492,26 @@ const Profile = () => {
     setEditIndex(null);
   };
 
+  const formatPhoneNumberWithCountryCode = (value) => {
+    // Remove all non-numeric characters except for the leading '+1'
+    let cleanedValue = value.replace(/[^0-9]/g, "");
+
+    // Ensure '+1' is always at the beginning
+    if (cleanedValue.startsWith("1")) {
+      cleanedValue = cleanedValue.slice(1);
+    }
+
+    // Format according to the US number format +1 (XXX) XXX-XXXX
+    const match = cleanedValue.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+    if (match) {
+      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${
+        match[2] ? `) ${match[2]}` : ""
+      }${match[3] ? `-${match[3]}` : ""}`;
+      return formatted.trim();
+    }
+    return "+1";
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -682,17 +702,22 @@ const Profile = () => {
                   <Input
                     label="Phone"
                     type="tel"
-                    icon={FaPhone}
-                    maxLength={15} // Restrict length to 15 digits
-                    onKeyPress={handlePhoneKeyPress} // Prevent alphabets
+                    icon={FaPhone} // Using the phone icon here
+                    maxLength={17} // To accommodate "+1 (XXX) XXX-XXXX"
+                    placeholder="+1 (123) 456-7890" // US phone format with country code
                     {...register("phone", {
+                      onChange: (e) => {
+                        const formattedValue = formatPhoneNumberWithCountryCode(
+                          e.target.value
+                        );
+                        setValue("phone", formattedValue); // Update form state with formatted value
+                      },
                       validate: {
                         lengthCheck: (value) =>
-                          (value.length >= 11 && value.length <= 15) ||
-                          "Phone number must be between 11 and 15 digits",
+                          value.replace(/\D/g, "").length === 11 ||
+                          "Phone number must be exactly 10 digits after +1",
                       },
                     })}
-                    placeholder="Enter your phone number"
                   />
                   {errors.phone && (
                     <p className="text-red-500 text-xs mt-1">
@@ -795,7 +820,11 @@ const Profile = () => {
                       className="px-2 py-1 text-sm rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
                     >
                       {tag}
-                      <FaTrash onClick={() => removeSkills(index)} size={11} className="cursor-pointer"/>
+                      <FaTrash
+                        onClick={() => removeSkills(index)}
+                        size={11}
+                        className="cursor-pointer"
+                      />
                     </li>
                   ))}
                 </ul>

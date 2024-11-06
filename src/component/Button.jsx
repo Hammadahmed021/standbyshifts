@@ -6,7 +6,7 @@ export default function Button({
     textColor = 'text-white',
     type = 'button',
     textSize = 'text-lg ',
-    padX = 'px-8',
+    padX = 'px-10',
     padY = 'py-2',
     className = '',
     ...props

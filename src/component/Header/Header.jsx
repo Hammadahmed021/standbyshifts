@@ -50,7 +50,7 @@ const Header = ({ style }) => {
       </li>
       <li>
         <NavLink
-          to={"/"}
+          to={"/contact"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
           Contact

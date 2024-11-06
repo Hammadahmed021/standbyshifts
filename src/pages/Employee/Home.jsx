@@ -25,11 +25,11 @@ const Home = () => {
   const [industries, setIndustries] = useState([]);
 
   const [selectedOptions, setSelectedOptions] = useState({
-    industries:null,
-    expertise:null,
-jobTitle:null,
-zipCode:null,
-location:null
+    industries: null,
+    expertise: null,
+    jobTitle: null,
+    zipCode: null,
+    location: null,
   });
 
   const handleFilterChange = (e, category) => {
@@ -41,9 +41,7 @@ location:null
       ...prevSelectedOptions,
       [category]: value,
     }));
-
   };
-
 
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
@@ -53,7 +51,10 @@ location:null
   useEffect(() => {
     const fetchJobs = async () => {
       const response = await getJobsForEmployee();
-      console.log("responseresponseresponseresponseresponseresponseresponse",response)
+      console.log(
+        "responseresponseresponseresponseresponseresponseresponse",
+        response
+      );
       setRecentJobs(response?.data?.matchJobs);
       setMatchJobs(response?.data?.recentMatchedJobs);
       setExpertise(response?.data?.expertise);
@@ -65,12 +66,11 @@ location:null
     fetchJobs();
   }, []);
 
-  console.log(matchJobs, 'matchJobs>>>>>>>>>>>>>>>>>>');
-  
+  console.log(matchJobs, "matchJobs>>>>>>>>>>>>>>>>>>");
 
   const getSliderSettings = (items = []) => {
     const itemCount = items.length;
-  
+
     return {
       dots: false,
       infinite: itemCount > 1, // Disable infinite scroll if only 1 item
@@ -115,7 +115,7 @@ location:null
       ],
     };
   };
-  
+
   const addAllOption = (options, label) => [
     { id: "all", name: label },
     ...options,
@@ -123,14 +123,14 @@ location:null
 
   const navigate = useNavigate();
   const handleRoute = () => {
-    navigate("/jobs",{ state: selectedOptions});
+    navigate("/jobs", { state: selectedOptions });
   };
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
         <div className="container h-full flex items-center sm:items-end px-0 ">
           <div className="w-full flex pl-10 py-0 flex-col justify-evenly h-full">
-            <div className="w-[100%] sm:w-[85%]">
+            <div className="w-[100%] sm:w-[90%]">
               <h2 className="text-white text-6xl inline sm:block leading-tight">
                 Discover the ideal
                 <span className="font-bold text-tn_primary inline sm:block">
@@ -141,67 +141,63 @@ location:null
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
-              <div className="flex container px-0 space-x-3 mt-10">
-              <SelectOption
-          label="Expertise"
-          value={selectedOptions.expertise}
-          onChange={(e) => handleFilterChange(e, "expertise")}
-          className="border-r-2 pr-1 mx-5"
-          options={addAllOption(expertise || [], "All Expertise")}
-        />
-              <SelectOption
-          label="Industries"
-          value={selectedOptions.industries}
-          onChange={(e) => handleFilterChange(e, "industries")}
-          className="border-r-2 pr-1 mx-5"
-          options={addAllOption(industries || [], "All Industries")}
-        />
-              {/* <SelectOption
-          label="Areas"
-          value={selectedOptions.areas}
-          onChange={(e) => handleFilterChange(e, "areas")}
-          className="border-r-2 pr-1 mx-5"
-          options={addAllOption(data?.areas || [], "All Areas")}
-        /> */}
-                <input
-                  label="Search by title"
-                  placeholder="Search by title"
-                  type="text"
-                  className="rounded-site w-[30%] pl-4"
-                  value={selectedOptions.jobTitle}
-                  onChange={(e)=>{
-                    setSelectedOptions((prevSelectedOptions) => ({
-                      ...prevSelectedOptions,
-                      "jobTitle": e.target.value,
-                    }));
-                  }}
-                />
-                <input
-                  label="Search by Zipcode"
-                  placeholder="Search by Zipcode"
-                  type="text"
-                  className="rounded-site w-[30%] pl-4"
-                  value={selectedOptions.zipCode}
-                  onChange={(e)=>{
-                    setSelectedOptions((prevSelectedOptions) => ({
-                      ...prevSelectedOptions,
-                      "zipCode": e.target.value,
-                    }));
-                  }}
-                />
-                <input
-                  label="Search by location"
-                  placeholder="Search by location"
-                  type="text"
-                  className="rounded-site w-[30%] pl-4"
-                  value={selectedOptions.location}
-                  onChange={(e)=>{
-                    setSelectedOptions((prevSelectedOptions) => ({
-                      ...prevSelectedOptions,
-                      "location": e.target.value,
-                    }));
-                  }}
-                />
+              <div className="flex container px-0  mt-10 gap-3">
+                <div className="flex gap-2 rounded-site border py-3 px-4">
+                  <SelectOption
+                    // label="Expertise"
+                    value={selectedOptions.expertise}
+                    onChange={(e) => handleFilterChange(e, "expertise")}
+                    className="border-r pr-1 py-2"
+                    options={addAllOption(expertise || [], "All Expertise")}
+                  />
+                  <SelectOption
+                    // label="Industries"
+                    value={selectedOptions.industries}
+                    onChange={(e) => handleFilterChange(e, "industries")}
+                    className="border-r pr-1 py-2"
+                    options={addAllOption(industries || [], "All Industries")}
+                  />
+
+                  <input
+                    label="Search by title"
+                    placeholder="Job title"
+                    type="text"
+                    className="w-[100%]  bg-transparent border-r pr-1 py-2 outline-none focus:outline-none text-white"
+                    value={selectedOptions.jobTitle}
+                    onChange={(e) => {
+                      setSelectedOptions((prevSelectedOptions) => ({
+                        ...prevSelectedOptions,
+                        jobTitle: e.target.value,
+                      }));
+                    }}
+                  />
+                  <input
+                    label="Search by Zipcode"
+                    placeholder="Zipcode"
+                    type="text"
+                    className="w-[100%] bg-transparent border-r pr-1 py-2 outline-none focus:outline-none text-white"
+                    value={selectedOptions.zipCode}
+                    onChange={(e) => {
+                      setSelectedOptions((prevSelectedOptions) => ({
+                        ...prevSelectedOptions,
+                        zipCode: e.target.value,
+                      }));
+                    }}
+                  />
+                  <input
+                    label="Search by location"
+                    placeholder="Location"
+                    type="text"
+                    className="w-[100%]  bg-transparent py-2 outline-none focus:outline-none text-white"
+                    value={selectedOptions.location}
+                    onChange={(e) => {
+                      setSelectedOptions((prevSelectedOptions) => ({
+                        ...prevSelectedOptions,
+                        location: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
                 <Button onClick={handleRoute}>Search</Button>
               </div>
             </div>
@@ -253,7 +249,7 @@ location:null
             : matchJobs?.map((job) => (
                 <div key={job?.id} className="p-2">
                   <JobCard
-                  className={'shadow-xl'}
+                    className={"shadow-xl"}
                     jobId={job?.id}
                     key={job?.id}
                     companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -271,7 +267,7 @@ location:null
                     description={job?.description}
                     userType={userType}
                     loading={false}
-                    applicants={job?.applicant} 
+                    applicants={job?.applicant}
                   />
                 </div>
               ))}
@@ -348,7 +344,7 @@ location:null
               : matchJobs?.splice(0, 3)?.map((job) => (
                   <div key={job?.id} className="p-2">
                     <JobCard
-                    className={'shadow-xl'}
+                      className={"shadow-xl"}
                       jobId={job?.id}
                       key={job?.id}
                       companyLogo={job?.user?.employer?.logo} // Replace with actual logo
