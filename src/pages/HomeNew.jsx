@@ -266,18 +266,18 @@ export default function HomeNew() {
 
   return (
     <>
-      <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
-        <div className="container h-full flex items-center sm:items-end px-0 ">
-          <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+      <div className="bg-hero sm:h-[650px] h-[500px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
+        <div className="container h-full flex items-center sm:items-end px-4 sm:px-0">
+          <div className="lg:w-7/12 w-full flex pl-0 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[85%]">
-              <h2 className="text-white text-6xl inline sm:block leading-tight">
+              <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
                 Get your next
                 <span className="font-bold text-tn_primary inline sm:block">
                   {" "}
                   weeknight job shifts
                 </span>
               </h2>
-              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start text-center sm:w-[95%]">
+              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start sm:w-[95%]">
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
@@ -321,7 +321,7 @@ export default function HomeNew() {
               </ul>
             </div>
           </div>
-          <div className="lg:w-5/12 w-full ">
+          <div className="lg:w-5/12 w-full hidden sm:block">
             <div className="flex space-x-2 -mr-6">
               <BannerSlider images={imageData} />
               <BannerSlider images={imageData} reverse={true} />
@@ -347,14 +347,14 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="bg-hero sm:h-[700px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
-        <div className="container h-full flex items-center sm:items-end px-0 ">
-          <div className="lg:w-7/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+      <div className="bg-hero sm:h-[700px] h-[auto] py-8 sm:py-0 sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
+        <div className="container h-full flex items-center sm:items-end px-4 sm:px-0">
+          <div className="lg:w-7/12 w-full flex pl-0 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
-              <h3 className="text-white text-5xl inline sm:block leading-tight font-semibold">
+              <h3 className="text-white text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
                 Find the talent needed to get your business growing.
               </h3>
-              <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start text-center">
+              <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start">
                 There are many variations of passages of Lorem Ipsum available,
                 but the majority have suffered alteration in some form, by
                 injected humour.
@@ -372,7 +372,7 @@ export default function HomeNew() {
               </div>
             </div>
           </div>
-          <div className="lg:w-5/12 w-full ">
+          <div className="lg:w-5/12 w-full hidden sm:block">
             <div className="flex flex-col items-ends justify-center">
               <img
                 src={hero}
@@ -385,15 +385,15 @@ export default function HomeNew() {
       </div>
 
       <div className="container">
-        <div className="flex items-center space-x-4 relative">
-          <div className="md:w-8/12 w-12 employees pointer-events-none">
+        <div className="flex flex-col-reverse sm:flex-row items-center space-x-4 relative">
+          <div className="md:w-8/12 w-full employees pointer-events-none">
             <EmpCardSlider data={employees} />
           </div>
-          <div className="md:w-4/12 w-12 pb-8">
-            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+          <div className="md:w-4/12 w-full pb-8">
+            <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Top rated employees
             </h3>
-            <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start text-center">
+            <p className=" my-4 text-base w-full text-tn_text_grey  font-normal sm:text-start ">
               It is a long established fact that a reader will be distracted by
               the readable content of a page when.
             </p>
@@ -402,13 +402,13 @@ export default function HomeNew() {
       </div>
 
       <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
-        <div className="container h-full flex items-center px-0 ">
-          <div className="lg:w-5/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+        <div className="container h-full flex items-center flex-col sm:flex-row px-0 ">
+          <div className="lg:w-5/12 w-full flex pl-4 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
-              <h3 className="text-white text-5xl inline sm:block leading-tight font-semibold">
+              <h3 className="text-white text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
                 Most popular employers
               </h3>
-              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start text-center">
+              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start  ">
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
@@ -448,41 +448,45 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container bg-tn_pink rounded-site p-12 ">
-        <div className="flex item-center justify-between">
+      <div className="container bg-tn_pink rounded-site p-8 sm:p-12 ">
+        <div className="flex flex-wrap item-center justify-between">
           <AnimatedCounter
             icon={FaClipboard}
             heading="Jobs posted"
             targetNumber={200} // Target number to count to
             duration={3000} // Duration in milliseconds
+            className={'p-3'}
           />
           <AnimatedCounter
             icon={FaClipboardCheck}
             heading="Companies"
             targetNumber={25} // Target number to count to
             duration={3000} // Duration in milliseconds
+            className={'p-3'}
           />
           <AnimatedCounter
             icon={FaUsers}
             heading="Members"
             targetNumber={153} // Target number to count to
             duration={3000} // Duration in milliseconds
+            className={'p-3'}
           />
           <AnimatedCounter
             icon={FaCoffee}
             heading="Shifts done"
             targetNumber={88} // Target number to count to
             duration={3000} // Duration in milliseconds
+            className={'p-3'}
           />
         </div>
       </div>
 
-      <div className="container flex items-center my-20">
-        <div className="lg:w-5/12 w-full">
+      <div className="container flex flex-col-reverse sm:flex-row items-center my-20">
+        <div className="lg:w-5/12 w-full mt-12 sm:mt-0">
           <img src={girl} alt="" /></div>
-        <div className="lg:w-7/12 w-full">
-          <div className="text-center w-[65%] mx-auto">
-            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+        <div className="lg:w-7/12 w-full ">
+          <div className="text-center w-full sm:w-[65%] mx-auto">
+            <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Connect us
               to register yourself
             </h3>
@@ -490,7 +494,7 @@ export default function HomeNew() {
               It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
             </p>
           </div>
-          <div className="mx-auto w-[80%]">
+          <div className="mx-auto w-[80%] ">
             <ContactForm />
           </div>
         </div>
@@ -498,8 +502,8 @@ export default function HomeNew() {
 
       <div className="container rounded-site bg-tn_light_grey flex items-center px-0">
         <div className="lg:w-6/12 w-full">
-          <div className="p-12 text-start">
-            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+          <div className="p-6 sm:p-12 text-start">
+            <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Get started today for better reach
             </h3>
             <p className=" my-4 text-base w-full text-tn_text_grey  font-normal">
@@ -519,7 +523,7 @@ export default function HomeNew() {
             </div>
           </div>
         </div>
-        <div className="lg:w-6/12 w-full">
+        <div className="lg:w-6/12 w-full hidden sm:block">
           <img src={connect} alt="" /></div>
       </div>
 

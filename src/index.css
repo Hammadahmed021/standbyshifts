@@ -146,6 +146,15 @@ ul.custom-dots {
 
   /* Hides the pseudo-element on smaller screens */
   @media (max-width: 640px) {
+    .employees .slick-arrow{
+      top: 0;
+    }
+    .employees .slick-arrow.next-arr {
+      right: 100px;
+  }
+  .employees .slick-prev {
+    right: 150px !important;
+}
     .border-li li::before {
       display: none;
     }

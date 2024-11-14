@@ -196,7 +196,7 @@ function App() {
         {!shouldHideHeaderFooter && <Header />}
 
         {/* Main Content Area */}
-        <main className="flex-grow relative">
+        <main className="flex-grow relative px-3 sm:px-0">
           {loading ? <Loader /> : <Outlet />}
         </main>
 

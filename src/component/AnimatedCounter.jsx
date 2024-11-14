@@ -6,6 +6,7 @@ const AnimatedCounter = ({
   heading,
   targetNumber,
   duration = 2000,
+  className,
 }) => {
   const [count, setCount] = useState(0);
 
@@ -26,7 +27,7 @@ const AnimatedCounter = ({
   }, [targetNumber, duration]);
 
   return (
-    <div className="flex flex-col items-center  text-center">
+    <div className={`flex flex-col items-center  text-center ${className}`}>
       <div className="flex space-x-2 items-center">
         {/* Counter Section */}
    
