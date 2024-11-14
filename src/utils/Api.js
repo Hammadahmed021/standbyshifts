@@ -376,7 +376,8 @@ export const updateUserProfile = async (userData) => {
 
 // Function to verify if user is logged In or not
 export const verifyUser = async (payload) => {
-  const token = localStorage.getItem("webToken");
+  // const token = localStorage.getItem("webToken");
+  const { token } = payload;
 
   try {
     const data = await axios.post(`${BASE_URL}verify`, payload, {
@@ -395,13 +396,10 @@ export const verifyUser = async (payload) => {
 };
 
 // Function to get user from gmail to login
-export const getUserFromGmailLogin = async (email) => {
-  // const { email } = userData;
-  const payload = {
-    email,
-  };
+export const getUserFromGmailLogin = async (userData) => {
+ 
   try {
-    const response = await axios.post(`${BASE_URL}socialLogin`, payload);
+    const response = await axios.post(`${BASE_URL}socialLogin`, userData);
     console.log(response.data, "response");
 
     return response;
@@ -414,13 +412,9 @@ export const getUserFromGmailLogin = async (email) => {
 
 // Function to get user from gmail to signup
 export const getUserFromGmailSignup = async (userData) => {
-  const { email, name } = userData;
-  const payload = {
-    name,
-    email,
-  };
+ 
   try {
-    const response = await axios.post(`${BASE_URL}socialSignup`, payload);
+    const response = await axios.post(`${BASE_URL}socialSignup`, userData);
     console.log(response, "response");
 
     return response;

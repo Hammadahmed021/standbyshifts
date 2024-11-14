@@ -20,7 +20,7 @@ const AppliedJobs = () => {
   return (
     <>
       <div className="container my-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
           {appliers?.map((job) => (
             <JobCard
             className={'shadow-xl'}

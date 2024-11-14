@@ -21,7 +21,7 @@ const EmployeeDetailCard = ({ profile }) => {
     employeeId,
     isHired,
     onHire,
-    userData
+    userData,
   } = profile;
 
   const navigate = useNavigate();
@@ -86,14 +86,16 @@ const EmployeeDetailCard = ({ profile }) => {
         >
           View Profile
         </button>
-        <button className="rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium w-full p-2" onClick={()=>{ 
-          console.log("sldhvklsbdklvbskldbvlksdbvlkbsdklvbskldb",isHired)
-          if(!isHired){onHire({userId:employeeId,jobId})}
-      else navigate("/chat",{state:userData})
-      }} >
-         {
-          isHired ? "Chat" : "Hire"
-         } 
+        <button
+          className="rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium w-full p-2"
+          onClick={() => {
+            console.log("sldhvklsbdklvbskldbvlksdbvlkbsdklvbskldb", isHired);
+            if (!isHired) {
+              onHire({ userId: employeeId, jobId });
+            } else navigate("/chat", { state: userData });
+          }}
+        >
+          {isHired ? "Chat" : "Hire"}
         </button>
         {/* <button className="rounded-full  text-tn_dark border border-tn_light_grey p-2">
           <FaCommentDots size={18} />

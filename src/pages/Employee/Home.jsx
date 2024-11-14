@@ -127,34 +127,36 @@ const Home = () => {
   };
   return (
     <>
-      <div className="bg-hero sm:h-[650px] h-[450px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
-        <div className="container h-full flex items-center sm:items-end px-0 ">
-          <div className="w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+      <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
+        <div className="container h-full flex items-center sm:items-end p-6 sm:px-0 ">
+          <div className="w-full flex sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[90%]">
-              <h2 className="text-white text-6xl inline sm:block leading-tight">
-                Discover the ideal
+              <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
+                Discover the ideal{" "}
                 <span className="font-bold text-tn_primary inline sm:block">
                   match for professional needs
                 </span>
               </h2>
-              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start text-center sm:w-[95%]">
+              <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
-              <div className="flex container px-0  mt-10 gap-3">
-                <div className="flex gap-2 rounded-site border py-3 px-4">
+              <div className="flex flex-wrap sm:flex-nowrap container px-0  mt-10 gap-3">
+                <div className="flex flex-wrap sm:flex-nowrap gap-2 rounded-2xl sm:rounded-site border py-3 px-4">
                   <SelectOption
                     // label="Expertise"
+                    selectClassName={"pl-1"}
                     value={selectedOptions.expertise}
                     onChange={(e) => handleFilterChange(e, "expertise")}
-                    className="border-r pr-1 py-2"
+                    className="border-b sm:border-b-0 sm:border-r  sm:pr-1 py-2"
                     options={addAllOption(expertise || [], "All Expertise")}
                   />
                   <SelectOption
                     // label="Industries"
+                    selectClassName={"pl-1"}
                     value={selectedOptions.industries}
                     onChange={(e) => handleFilterChange(e, "industries")}
-                    className="border-r pr-1 py-2"
+                    className="border-b sm:border-b-0 sm:border-r sm:pr-1 py-2"
                     options={addAllOption(industries || [], "All Industries")}
                   />
 
@@ -162,7 +164,7 @@ const Home = () => {
                     label="Search by title"
                     placeholder="Job title"
                     type="text"
-                    className="w-[100%]  bg-transparent border-r pr-1 py-2 outline-none focus:outline-none text-white"
+                    className="w-[100%]  bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
                     value={selectedOptions.jobTitle}
                     onChange={(e) => {
                       setSelectedOptions((prevSelectedOptions) => ({
@@ -175,7 +177,7 @@ const Home = () => {
                     label="Search by Zipcode"
                     placeholder="Zipcode"
                     type="text"
-                    className="w-[100%] bg-transparent border-r pr-1 py-2 outline-none focus:outline-none text-white"
+                    className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
                     value={selectedOptions.zipCode}
                     onChange={(e) => {
                       setSelectedOptions((prevSelectedOptions) => ({
@@ -201,9 +203,9 @@ const Home = () => {
                 <Button onClick={handleRoute}>Search</Button>
               </div>
             </div>
-            <div>
+            <div className="mt-6 sm:mt-0">
               <p className="text-white font-base">Popular searches:</p>
-              <ul className="flex flex-wrap space-x-3 custom-icons mt-4">
+              <ul className="flex flex-wrap gap-2 custom-icons mt-4">
                 {skills.slice(0, 6).map((item) => (
                   <li key={item.id}>
                     <span className="text-tn_light rounded-site text-sm bg-tn_text_grey px-3 py-1 flex items-center justify-between">
@@ -219,11 +221,11 @@ const Home = () => {
       </div>
       <div className="container mt-24 employee-home px-0">
         <div className="container">
-          <h3 className="text-tn_dark text-4xl inline sm:block leading-tight font-semibold">
+          <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold">
             Recent job posts
           </h3>
-          <div className="flex item-center justify-between">
-            <ul className="flex flex-wrap space-x-3 custom-icons mt-4">
+          <div className="flex flex-wrap flex-col-reverse sm:flex-row item-center justify-between">
+            <ul className="flex flex-wrap gap-2 custom-icons mt-4">
               {skills.slice(0, 6).map((item) => (
                 <li key={item.id}>
                   <span className="text-tn_dark rounded-site text-sm border border-tn_light_grey px-3 py-1 flex items-center justify-between">
@@ -238,54 +240,56 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        <Slider {...getSliderSettings(matchJobs)} className="mt-12">
-          {!matchJobs || matchJobs.length === 0
-            ? // Show skeleton loaders for the number of jobs you expect to show
-              [...Array(3)].map((_, index) => (
-                <div key={index} className="p-2">
-                  <JobCard loading={true} /> {/* Loader JobCard */}
-                </div>
-              ))
-            : matchJobs?.map((job) => (
-                <div key={job?.id} className="p-2">
-                  <JobCard
-                    className={"shadow-xl"}
-                    jobId={job?.id}
-                    key={job?.id}
-                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                    jobTitle={job?.title}
-                    companyName={job?.city} // You can also pass the company name if available
-                    payRate={`$${job?.per_hour_rate}`}
-                    dateRange={`${new Date(
-                      job?.start_date
-                    ).toLocaleDateString()} to ${new Date(
-                      job?.end_date
-                    ).toLocaleDateString()}`}
-                    timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
-                    level={job?.experience_level}
-                    address={`${job?.location}, ${job?.state}`}
-                    description={job?.description}
-                    userType={userType}
-                    loading={false}
-                    applicants={job?.applicant}
-                  />
-                </div>
-              ))}
-        </Slider>
+        <div className="px-6">
+          <Slider {...getSliderSettings(matchJobs)} className="mt-12">
+            {!matchJobs || matchJobs.length === 0
+              ? // Show skeleton loaders for the number of jobs you expect to show
+                [...Array(3)].map((_, index) => (
+                  <div key={index} className="p-2">
+                    <JobCard loading={true} /> {/* Loader JobCard */}
+                  </div>
+                ))
+              : matchJobs?.map((job) => (
+                  <div key={job?.id} className="p-2">
+                    <JobCard
+                      className={"shadow-xl"}
+                      jobId={job?.id}
+                      key={job?.id}
+                      companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                      jobTitle={job?.title}
+                      companyName={job?.city} // You can also pass the company name if available
+                      payRate={`$${job?.per_hour_rate}`}
+                      dateRange={`${new Date(
+                        job?.start_date
+                      ).toLocaleDateString()} to ${new Date(
+                        job?.end_date
+                      ).toLocaleDateString()}`}
+                      timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
+                      level={job?.experience_level}
+                      address={`${job?.location}, ${job?.state}`}
+                      description={job?.description}
+                      userType={userType}
+                      loading={false}
+                      applicants={job?.applicant}
+                    />
+                  </div>
+                ))}
+          </Slider>
+        </div>
       </div>
 
       <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
-        <div className="container h-full flex items-center px-0">
-          <div className="lg:w-5/12 w-full flex pl-10 py-0 flex-col justify-evenly h-full">
+        <div className="container h-full flex flex-wrap items-center px-0">
+          <div className="lg:w-5/12 w-full flex px-4 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
-              <h3 className="text-white text-4xl inline sm:block leading-tight font-semibold">
+              <h3 className="text-white text-4xl inline sm:block leading-tight text-center  font-semibold">
                 Jobs that match your profile
               </h3>
-              <p className=" my-4 text-base w-full text-white  font-normal sm:text-start text-center">
+              <p className="my-4 text-base w-full text-white  font-normal text-start ">
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
-              <Button className="mt-8 pointer-events-none">Find more</Button>
+              <Button className="mt-2 sm:mt-8 pointer-events-none">Find more</Button>
             </div>
           </div>
           <div className="lg:w-7/12 w-full ">
@@ -320,20 +324,20 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="bg-nearby-bg my-24 bg-cover py-8">
+      <div className="bg-nearby-bg my-0 sm:my-24 bg-cover py-8">
         <div className="container pt-20 pb-10">
-          <div className="flex items-center justify-between">
-            <h3 className="text-white text-4xl inline sm:block leading-tight font-semibold text-center">
+          <div className="flex flex-wrap items-center justify-center sm:justify-between">
+            <h3 className="text-white text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-start sm:text-center">
               Jobs near you
             </h3>
             <Link
               to={"/jobs"}
-              className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium"
+              className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium hidden sm:block"
             >
               Find more
             </Link>
           </div>
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-1">
+          <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-1">
             {!matchJobs || matchJobs.length === 0
               ? // Show skeleton loaders for the number of jobs you expect to show
                 [...Array(3)].map((_, index) => (
@@ -366,10 +370,18 @@ const Home = () => {
                   </div>
                 ))}
           </div>
+          <div className="text-center pb-12 mt-6 sm:hidden">
+          <Link
+              to={"/jobs"}
+              className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium "
+            >
+              Find more
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="container flex items-center my-20 testimonials">
+      <div className="container flex items-center mt-0 mb-20 sm:mt-20 testimonials">
         <div className="lg:w-5/12 w-full">
           <img src={peoples} alt="" />
         </div>

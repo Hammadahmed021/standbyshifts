@@ -297,10 +297,12 @@ const Profile = () => {
   const fetchUserData = async () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
-
+    const token = localStorage.getItem("webToken");
+    
     const payload = {
       userAgent,
       ipAddress,
+      token
     };
     try {
       const response = await verifyUser(payload);
@@ -680,7 +682,7 @@ const Profile = () => {
               />
             )}
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
-              <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+              <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                 Personal Information
               </h3>
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
@@ -748,13 +750,13 @@ const Profile = () => {
                     label="Zip Code"
                     type="text"
                     icon={FaAdjust}
-                    maxLength={15} // Restrict length to 15 digits
+                    maxLength={10} // Restrict length to 15 digits
                     {...register("zip", {
-                      validate: {
-                        lengthCheck: (value) =>
-                          (value.length >= 5 && value.length <= 10) ||
-                          "Phone number must be between 11 and 15 digits",
-                      },
+                      // validate: {
+                      //   lengthCheck: (value) =>
+                      //     (value.length >= 5 && value.length <= 10) ||
+                      //     "Phone number must be between 11 and 15 digits",
+                      // },
                     })}
                     placeholder="Zip code"
                   />
@@ -767,11 +769,12 @@ const Profile = () => {
               </span>
               {!isGmailUser && (
                 <>
-                  <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                  <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                     Change Password
                   </h3>
                   <span className="mb-6 block">
                     <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                    <span className="mb-6 sm:mb-0 w-full">
                       <Input
                         label="New Password"
                         type="password"
@@ -780,6 +783,7 @@ const Profile = () => {
                         placeholder="Enter new password"
                         // disabled={isGmailUser}
                       />
+                      </span>
                       <Input
                         label="Confirm Password"
                         type="password"
@@ -796,7 +800,7 @@ const Profile = () => {
                 </>
               )}
 
-              <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+              <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                 Work Experience
               </h3>
               <div className="mb-6">
@@ -867,7 +871,7 @@ const Profile = () => {
 
                     <div className="mb-2">
                       <label className="block mb-1">Start Date</label>
-                      <span className="flex space-x-2">
+                      <span className="flex flex-wrap gap-2">
                         <select
                           className="border p-2 rounded"
                           {...register(`experiences.${index}.startMonth`)}
@@ -895,7 +899,7 @@ const Profile = () => {
 
                     <div className="mb-2">
                       <label className="block mb-1">End Date</label>
-                      <span className="flex space-x-2">
+                      <span className="flex flex-wrap gap-2">
                         <select
                           className="border p-2 rounded"
                           {...register(`experiences.${index}.endMonth`)}
@@ -998,6 +1002,7 @@ const Profile = () => {
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
+                  selectClassName={'pl-1'}
                   value={selectedIndustries.map((industry) => industry.title)}
                   onChange={handleFilterChange}
                   options={addAllOption(

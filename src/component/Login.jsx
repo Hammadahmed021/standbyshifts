@@ -5,8 +5,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
 import { FaGoogle, FaRegEnvelope, FaUnlock } from "react-icons/fa";
+import { SignUpWithGoogle } from "../service";
+import { getUserFromGmailLogin } from "../utils/Api";
 
-export default function Login({onClick}) {
+export default function Login({ onClick }) {
   const [isSigning, setIsSigning] = useState(false);
   const [isSigningGoogle, setIsSigningGoogle] = useState(false);
   const [error, setError] = useState(null);
@@ -32,9 +34,10 @@ export default function Login({onClick}) {
       return null;
     }
   };
+  const userAgent = navigator.userAgent;
+
   const LoginSubmit = async (userData) => {
     setIsSigning(true); // Assuming you have setIsSigning state
-    const userAgent = navigator.userAgent;
 
     const { email, password } = userData;
     // Fetch IP Address
@@ -71,6 +74,48 @@ export default function Login({onClick}) {
       // Handle error, show error message or retry
     } finally {
       setIsSigning(false); // Reset signing state
+    }
+  };
+
+  const handleSocialLogin = async () => {
+    try {
+      const { user } = await SignUpWithGoogle();
+      console.log("User logged in:", user);
+      const ipAddress = await getUserIP();
+
+      const userEmail = user?.email;
+      const payload = {
+        userEmail,
+        type,
+        userAgent,
+        ipAddress,
+      };
+
+      if (userEmail) {
+        const response = await getUserFromGmailLogin(payload);
+        const token = response.data.token;
+        console.log(token, "token jhan");
+
+        // Store token in localStorage
+        localStorage.setItem("webToken", token);
+      }
+
+      if (user) {
+        dispatch(
+          loginFunc({
+            userData: {
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+              photo: user.photoURL,
+              loginType: user.providerData?.[0]?.providerId,
+            },
+          })
+        );
+        // navigate("/");
+      }
+    } catch (error) {
+      console.error("Login failed:", error.message);
     }
   };
 
@@ -125,7 +170,7 @@ export default function Login({onClick}) {
           <p className=" text-xs mb-6 text-tn_pink text-end font-semibold">
             <Link to={"/forgot"}>Forgot Password? </Link>
           </p>
-          <span className="flex space-x-2 mt-10 mb-2">
+          <span className="flex flex-col sm:flex-row sm:space-x-2 mt-10 mb-2">
             <Button
               type="submit"
               className={`w-full ${
@@ -136,8 +181,8 @@ export default function Login({onClick}) {
               {isSigning ? "Logging in..." : "Log in"}
             </Button>
             <span
-              onClick={onClick}
-              className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
+              onClick={handleSocialLogin}
+              className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 mt-3 sm:mt-0 sm:p-0 p-2 text-sm sm:text-lg rounded-[100px] text-white flex items-center justify-center  w-full ${
                 isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSigningGoogle}

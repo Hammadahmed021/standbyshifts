@@ -73,9 +73,9 @@ const Login = () => {
 
   return (
     <div className="flex sm:items-center justify-center overflow-hidden h-screen relative flex-col sm:flex-row items-start">
-      <div className="flex w-full justify-between h-full space-x-4">
+      <div className="flex w-full justify-between h-full sm:space-x-4">
         {/* Left Column */}
-        <div className="w-full sm:w-1/2 relative hidden md:block min-h-screen">
+        <div className="w-full sm:w-1/2 relative hidden md:block min-h-screen ">
           <div className="bg-tn_pink mr-14 absolute z-0 left-0 right-0 top-0 bottom-0"></div>
 
           <div className="flex space-x-4  -ml-12">
@@ -84,7 +84,7 @@ const Login = () => {
             <BannerSlider images={imageData} slidesToShow={3} />
           </div>
         </div>
-        <div className="w-full sm:w-1/2">
+        <div className="w-full sm:w-1/2 px-0 sm:px-2">
           <div className="flex flex-col justify-start items-center w-full md:w-11/12 mx-auto h-full">
             <div className="flex items-center justify-between py-4 w-full mb-12">
               <Link to={"/"}>

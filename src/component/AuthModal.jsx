@@ -20,7 +20,7 @@ const AuthModal = ({ title, onSelectRole, onClose }) => {
         <button onClick={onClose} className="text-2xl absolute top-1 right-2 font-bold text-gray-600 hover:text-gray-800">
           &times;
         </button>
-        <h2 className="text-4xl sm:text-5xl font-semibold mb-4 text-center">{title}</h2>
+        <h2 className="text-2xl sm:text-5xl font-semibold mb-4 text-center">{title}</h2>
         <p>It is a long established fact that a reader will be distracted.</p>
 
 

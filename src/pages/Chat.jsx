@@ -19,7 +19,6 @@ import { verifyUser } from "../utils/Api";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-
 function Chat() {
   const location = useLocation();
 
@@ -33,11 +32,9 @@ function Chat() {
   const [lastMessages, setLastMessages] = useState({});
   const chatroomDocRef = useRef(null);
 
-  console.log(selectedUser, 'selectedUser ???');
-  
+  console.log(selectedUser, "selectedUser ???");
 
   const userData = useSelector((state) => state.auth.userData);
-  
 
   const getUserIP = async () => {
     try {
@@ -56,12 +53,15 @@ function Chat() {
   }, []);
 
   const getAuth = async () => {
+    const token = localStorage.getItem("webToken");
+
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
 
     const payload = {
       userAgent,
       ipAddress,
+      token,
     };
     const response = await verifyUser(payload);
     const data = await response.data;
@@ -153,72 +153,91 @@ function Chat() {
 
   return (
     <div className="container max-h-screen h-[75vh] mb-6 relative">
-    <div className="w-full max-w-md lg:max-w-lg mx-auto bg-white shadow-lg rounded-lg flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="text-start text-base flex justify-between gap-1 py-3 border-b border-gray-200 rounded-t-lg bg-gray-100 px-2 capitalize">
-       <span> <span className="font-semibold">Chatting with - </span> {selectedUser?.name || "Chat Room"}</span>
-       <span> <span className="font-semibold">Job title - </span> {selectedUser?.applied_jobs?.title || "N/A"}</span>
-      </div>
+      <div className="w-full max-w-md lg:max-w-lg mx-auto bg-white shadow-lg rounded-lg flex flex-col h-full">
+        {/* Chat Header */}
+        <div className="text-start text-base flex justify-between gap-1 py-3 border-b border-gray-200 rounded-t-lg bg-gray-100 px-2 capitalize">
+          <span>
+            {" "}
+            <span className="font-semibold">Chatting with - </span>{" "}
+            {selectedUser?.name || "Chat Room"}
+          </span>
+          <span>
+            {" "}
+            <span className="font-semibold">Job title - </span>{" "}
+            {selectedUser?.applied_jobs?.title || "N/A"}
+          </span>
+        </div> 
 
-      {/* Messages Container */}
-      <section className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        <ul className="space-y-4">
-          {messages.map((message) => (
-            <li
-              key={message.id}
-              className={`flex ${
-                message.sender === userData?.user.id ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div className={`flex flex-col ${message.sender === userData?.user.id ? 'items-end' : 'items-start' } max-w-xs lg:max-w-sm`}>
+        {/* Messages Container */}
+        <section className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <ul className="space-y-4">
+            {messages.map((message) => (
+              <li
+                key={message.id}
+                className={`flex ${
+                  message.sender === userData?.user.id
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
+              >
                 <div
-                  className={`px-2 py-2 rounded-lg text-sm shadow-sm ${
+                  className={`flex flex-col ${
                     message.sender === userData?.user.id
-                      ? "bg-blue-500 text-white text-right"
-                      : "bg-gray-300 text-gray-800 text-left"
-                  }`}
+                      ? "items-end"
+                      : "items-start"
+                  } max-w-xs lg:max-w-sm`}
                 >
-                  <p>{message.text}</p>
+                  <div
+                    className={`px-2 py-2 rounded-lg text-sm shadow-sm ${
+                      message.sender === userData?.user.id
+                        ? "bg-blue-500 text-white text-right"
+                        : "bg-gray-300 text-gray-800 text-left"
+                    }`}
+                  >
+                    <p>{message.text}</p>
+                  </div>
+                  <span className="text-xs text-gray-500 mt-1">
+                    {message.user} •{" "}
+                    {message.createdAt
+                      ? new Date(message.createdAt.toDate()).toLocaleTimeString(
+                          [],
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )
+                      : ""}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500 mt-1">
-                  {message.user} •{" "}
-                  {message.createdAt
-                    ? new Date(message.createdAt.toDate()).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : ""}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      {/* Message Input Form */}
-      <form
-        className="flex items-center border-t border-gray-200 p-3 bg-white rounded-b-lg relative"
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendMessage();
-        }}
-      >
-        <input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          type="text"
-          placeholder="Type your message here..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-        />
-        <button
-          type="submit"
-          className="ml-3 px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        {/* Message Input Form */}
+        <form
+          className="flex flex-wrap items-center border-t border-gray-200 p-3 bg-white rounded-b-lg relative"
+          onSubmit={(e) => {
+            e.preventDefault();
+            sendMessage();
+          }}
         >
-          Send
-        </button>
-      </form>
+          <input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            type="text"
+            placeholder="Type your message here..."
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          />
+          <button
+            type="submit"
+            className="ml-0 sm:ml-3 px-4 py-2 mt-1 w-full sm:w-auto sm:mt-0 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
   );
 }
 export default Chat;

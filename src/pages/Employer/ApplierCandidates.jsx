@@ -16,22 +16,22 @@ const ApplierCandidates = () => {
   }, []);
   console.log(candidates, "response?.data>>>>>>>>>>>>>>>>");
 
-const hirePeopleFun =async ({userId,jobId})=>{
-const hireForJob =await hirePeople({
-  user_id:userId , job_id:jobId
-})
-if(hireForJob.status == 200){
-  getEmployeeOnJob(id)
-  showSuccessToast("Hired")}
-  else showErrorToast(hireForJob?.data?.message)
-}
-console.log(candidates, 'job');
-
+  const hirePeopleFun = async ({ userId, jobId }) => {
+    const hireForJob = await hirePeople({
+      user_id: userId,
+      job_id: jobId,
+    });
+    if (hireForJob.status == 200) {
+      getEmployeeOnJob(id);
+      showSuccessToast("Hired");
+    } else showErrorToast(hireForJob?.data?.message);
+  };
+  console.log(candidates, "job");
 
   return (
     <>
       <div className="container my-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
           {candidates?.map((job, ind) => (
             <EmployeeDetailCard
               key={ind}
@@ -43,9 +43,9 @@ console.log(candidates, 'job');
                 profileImage: job?.profile_picture,
                 jobId: job?.applied_jobs?.id,
                 employeeId: job?.id,
-                isHired:job?.is_hired,
-                onHire:hirePeopleFun,
-                userData:job
+                isHired: job?.is_hired,
+                onHire: hirePeopleFun,
+                userData: job,
               }}
             />
           ))}

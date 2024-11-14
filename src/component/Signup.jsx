@@ -17,6 +17,8 @@ import {
   FaUnlock,
   FaUser,
 } from "react-icons/fa";
+import { SignUpWithGoogle } from "../service";
+import { getUserFromGmailSignup } from "../utils/Api";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -50,14 +52,15 @@ export default function Signup({ onClick }) {
       return null;
     }
   };
+  const userAgent = navigator.userAgent;
+
   const handleSignup = async (userData) => {
     setIsSigning(true);
     setShowError(""); // Clear any previous error message
-    const userAgent = navigator.userAgent;
 
     const { name, email, password } = userData;
-    // Fetch IP Address
     const ipAddress = await getUserIP();
+    // Fetch IP Address
     const payload = {
       name,
       email,
@@ -116,11 +119,54 @@ export default function Signup({ onClick }) {
     }
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      const { user } = await SignUpWithGoogle();
+      console.log("User logged in:", user.displayName);
+
+      const ipAddress = await getUserIP();
+
+      // Proceed with login if it's a different user or not logged in
+      const userData = {
+        name: user?.displayName,
+        email: user?.email,
+        type,
+        userAgent,
+        ipAddress
+      };
+
+      if (userData) {
+        const response = await getUserFromGmailSignup(userData);
+        const token = response.data.token;
+
+        // Store token in localStorage
+        localStorage.setItem("webToken", token);
+      }
+
+      if (user) {
+        dispatch(
+          loginFunc({
+            userData: {
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+              password: user.password,
+              loginType: user.providerData?.[0]?.providerId,
+            },
+          })
+        );
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login failed:", error.message);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(handleSignup)} className="mt-8">
       <div className="mt-2">
-        <span className="mb-6 flex space-x-2">
-          <span className="w-full">
+        <span className="sm:mb-6 flex flex-col sm:flex-row sm:space-x-2">
+          <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
               icon={FaRegUser}
@@ -163,8 +209,8 @@ export default function Signup({ onClick }) {
           </span>
         </span>
 
-        <span className="mb-6 flex space-x-2">
-          <span className="w-full">
+        <span className="mb-6 flex flex-col sm:flex-row sm:space-x-2">
+          <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
               icon={FaUnlock}
@@ -223,7 +269,7 @@ export default function Signup({ onClick }) {
           )}
         </div>
         {showError && <p className="text-red-500 text-xs mt-2">{showError}</p>}
-        <span className="flex space-x-2 mt-10 mb-2">
+        <span className="flex flex-col sm:flex-row sm:space-x-2 mt-10 mb-2">
           <Button
             type="submit"
             className={`w-full ${
@@ -235,8 +281,8 @@ export default function Signup({ onClick }) {
           </Button>
 
           <span
-            onClick={onClick}
-            className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
+            onClick={handleGoogleSignup}
+            className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 mt-3 sm:mt-0 sm:p-0 p-2 text-sm sm:text-lg ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
               isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
             }`}
             disabled={isSigningGoogle}

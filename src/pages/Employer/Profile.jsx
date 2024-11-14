@@ -239,11 +239,15 @@ const Profile = () => {
   const fetchUserData = async () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
+    const token = localStorage.getItem("webToken");
 
     const payload = {
       userAgent,
       ipAddress,
+      token,
     };
+    console.log(payload, 'payload');
+    
     try {
       const response = await verifyUser(payload);
       const data = await response.data;
@@ -445,7 +449,7 @@ const Profile = () => {
                     label="Zip Code"
                     type="text"
                     icon={FaAdjust}
-                    maxLength={15} // Restrict length to 15 digits
+                    maxLength={10} // Restrict length to 15 digits
                     {...register(
                       "zip"
                       // {
@@ -466,23 +470,21 @@ const Profile = () => {
                 </span>
               </span>
               <span className="mb-6 w-full block">
-                <Input
-                  label="Bio"
-                  type="text"
-                  icon={FaClipboard}
-                  iconColor={"#F59200"}
-                  {...register(
-                    "about"
-                    // {
-                    //   validate: {
-                    //     lengthCheck: (value) =>
-                    //       (value.length >= 50 && value.length <= 180) ||
-                    //       "About must be between 50 and 150 words",
-                    //   },
-                    // }
-                  )}
-                  placeholder="About company"
-                />
+                <div className="relative ">
+                  <FaClipboard
+                    scale={15}
+                    color="#F59200"
+                    className="absolute top-3 left-2"
+                  />
+                  <textarea
+                    label="Bio"
+                    rows="4" // Adjust the number of rows as needed
+                    {...register("about")}
+                    placeholder="About company"
+                    className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                  />
+                </div>
+
                 {errors.about && (
                   <p className="text-red-500 text-xs mt-1">
                     {errors.about.message}
@@ -526,7 +528,8 @@ const Profile = () => {
               )}
 
               <div className="mb-6">
-                <SelectOption
+                <SelectOption 
+                selectClassName={'pl-1'}
                   label="Industries"
                   value={selectedIndustries.map((industry) => industry.title)}
                   onChange={handleFilterChange}

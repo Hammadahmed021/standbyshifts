@@ -80,14 +80,34 @@ export default function HomeNew() {
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
   console.log(user_id, "data");
 
+  const getUserIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
     if (location.pathname === "/" || !user_id) {
       refetch();
     }
     const fetchUserData = async () => {
+      const userAgent = navigator.userAgent;
+      const ipAddress = await getUserIP();
+      const token = localStorage.getItem("webToken");
+  
+      const payload = {
+        userAgent,
+        ipAddress,
+        token
+      };
       try {
-        const response = await verifyUser();
+        const response = await verifyUser(payload);
         const data = await response.data;
 
         setCurrentUser(data);
@@ -402,8 +422,8 @@ export default function HomeNew() {
       </div>
 
       <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
-        <div className="container h-full flex items-center flex-col sm:flex-row px-0 ">
-          <div className="lg:w-5/12 w-full flex pl-4 sm:pl-10 py-0 flex-col justify-evenly h-full">
+        <div className="container h-full flex items-center flex-col sm:flex-row px-4 sm:px-0 ">
+          <div className="lg:w-5/12 w-full flex pl-0 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
               <h3 className="text-white text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
                 Most popular employers
@@ -448,7 +468,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container bg-tn_pink rounded-site p-8 sm:p-12 ">
+      <div className="container bg-tn_pink rounded-site p-4 sm:p-12 ">
         <div className="flex flex-wrap item-center justify-between">
           <AnimatedCounter
             icon={FaClipboard}
@@ -532,7 +552,7 @@ export default function HomeNew() {
           <img src={peoples} alt="" /></div>
         <div className="lg:w-7/12 w-full ">
           <div className="text-start w-full lg:w-[65%] mx-auto">
-            <h3 className="text-tn_dark text-5xl inline sm:block leading-tight font-semibold">
+            <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Trusted by people all over
             </h3>
             <TestimonialSlider data={testimonial}/>

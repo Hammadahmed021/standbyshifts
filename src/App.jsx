@@ -94,12 +94,14 @@ function App() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      const token = localStorage.getItem("webToken");
       const userAgent = navigator.userAgent;
       const ipAddress = await getUserIP();
 
       const payload = {
         userAgent,
         ipAddress,
+        token,
       };
       try {
         const response = await verifyUser(payload);

@@ -161,11 +161,11 @@ const CompanyProfile = () => {
       )}
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
-          <h3 className="text-4xl text-tn_dark font-semibold">Rate Company</h3>
+          <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Rate Company</h3>
         </div>
         <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold capitalize items-center">
+            <h2 className="text-lg sm:text-2xl font-semibold capitalize items-center">
               Rate {companyData?.about?.name}
             </h2>
             <span className="flex items-center gap-1">
@@ -214,7 +214,7 @@ const CompanyProfile = () => {
       </div>
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
-          <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
+          <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Jobs</h3>
           <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
             <FaFilter size={16} color="#fff" />
           </span>

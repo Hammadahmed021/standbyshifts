@@ -108,10 +108,10 @@ const EmployeeView = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row  container space-x-4 my-16">
+      <div className="flex flex-col lg:flex-row  container lg:space-x-4 my-16">
         {/* Main Content */}
-        <div className="w-full lg:w-2/3   ">
-          <div className=" mb-4 p-6 flex justify-between bg-white rounded-2xl shadow-xl">
+        <div className="w-full lg:w-2/3 ">
+          <div className=" mb-4 p-6 flex justify-between bg-white rounded-2xl shadow-xl relative">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <img
@@ -125,14 +125,14 @@ const EmployeeView = () => {
                   <p className="text-tn_text_grey mb-3">
                     {employee?.industry?.title}
                   </p>
-                  <span className="flex gap-3 items-center">
-                    <span className="inline-flex text-sm text-tag_purple bg-tag_purple bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                  <span className="flex flex-wrap gap-3 items-center ">
+                    <span className="inline-flex flex-wrap text-xs sm:text-sm text-tag_purple bg-tag_purple bg-opacity-20 items-center px-2 py-1 rounded-2xl">
                       <FaEnvelope className="mr-2 text-tag_purple" />
                       <span className="capitalize">
                         {employee?.email || "Experience Level"}
                       </span>
                     </span>
-                    <span className="inline-flex text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                    <span className="inline-flex flex-wrap text-xs sm:text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-center px-2 py-1 rounded-2xl">
                       <FaMapMarkerAlt className="mr-2 text-tag_blue" />
                       <span className="capitalize">
                         {employee?.employee?.location}

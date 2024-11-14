@@ -287,10 +287,11 @@ const Profile = () => {
   const fetchUserData = async () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
-
+    const token = localStorage.getItem("webToken");
     const payload = {
       userAgent,
       ipAddress,
+      token
     };
     try {
       const response = await verifyUser(payload);

@@ -35,7 +35,7 @@ const AnimatedCounter = ({
           <Icon className="text-white" size={34}  />
        
         {/* Number Display */}
-        <span className="text-4xl font-bold text-white">{Math.floor(count)}</span>
+        <span className="text-2xl sm:text-4xl font-bold text-white">{Math.floor(count)}</span>
 
         {/* Plus Icon */}
         <FaPlus size={22} className="text-white" />

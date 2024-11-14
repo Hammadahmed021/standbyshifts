@@ -17,12 +17,13 @@ const AuthLayout = ({ children, authentication = true }) => {
       navigate("/"); // Redirect to login if not authenticated
     } else if (!authentication && authStatus) {
       // Redirect based on user type
-      if (user == "employee") {
+      if (user === "employee") {
         navigate("/employee"); // Redirect to employee page
-      } else if (user == "employer") {
+      } else if (user === "employer") {
         navigate("/employer-profile"); // Redirect to employer page
       } else {
         navigate("/"); // Fallback
+        localStorage.removeItem("userType")
       }
     } else if (redirectState && redirectState.fromReservation && authStatus) {
       // Handle redirection from reservation

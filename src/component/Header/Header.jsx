@@ -199,10 +199,12 @@ const Header = ({ style }) => {
   const fetchCurrentUserData = async () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
+    const token = localStorage.getItem("webToken");
 
     const payload = {
       userAgent,
       ipAddress,
+      token,
     };
     try {
       const response = await verifyUser(payload);
@@ -371,21 +373,13 @@ const Header = ({ style }) => {
                   </div>
 
                   <ul className="space-y-6 text-xl font-bold mt-6">
-                    <li>
-                      <Link to={"/profile"}>Edit Profile</Link>
-                    </li>
-                    <li>
-                      <Link to={"/profile"}>Booking History</Link>
-                    </li>
-                    <li>
-                      <Link to={"/privacy-policy"}>Privacy Policy</Link>
-                    </li>
-                    <li>
-                      <Link to={"/terms-of-service"}>Terms & Condition</Link>
-                    </li>
-                    <li>
-                      <Link to={"/"}>Secure Payment</Link>
-                    </li>
+                    {userData
+                      ? userData.user.type == "employee"
+                        ? employeeMenu
+                        : userData.user.type == "employer"
+                        ? employerMenu
+                        : defaultMenu
+                      : defaultMenu}
                     {authStatus && (
                       <li>
                         <LogoutBtn className="inline" />
@@ -393,12 +387,12 @@ const Header = ({ style }) => {
                     )}
                   </ul>
 
-                  <h4 className="text-xl font-bold text-tn_pink mt-10 mb-4">
+                  <h4 className="text-xl font-bold text-tn_primary mt-10 mb-4">
                     Contact
                   </h4>
                   <ul className="text-base text-tn_dark font-medium">
                     <li>+12 345 678 000</li>
-                    <li>info@tablenow.com</li>
+                    <li>info@standbyshifts.com</li>
 
                     <li className="mt-4">
                       7262 Sepulveda Blvd. <br />

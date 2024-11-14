@@ -25,7 +25,7 @@ const ForgotPassword = () => {
           }`}
         />
       </Link>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div className="grid grid-cols-1 gap-2 items-center">
         {/* Left Column: Login Form */}
         <div className="px-2 md:px-4">
           <p className="mb-6 flex items-center">
@@ -45,9 +45,9 @@ const ForgotPassword = () => {
         </div>
 
         {/* Right Column: Image Slider */}
-        <div className="relative hidden md:block">
+        {/* <div className="relative hidden md:block">
           <img src={login} alt={`login`} className="w-full" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

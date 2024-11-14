@@ -113,18 +113,18 @@ const JobDetail = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row  container space-x-4 my-16">
+      <div className="flex flex-col lg:flex-row s  container sm:space-x-4 my-8 sm:my-16">
         {/* Main Content */}
         <div className="w-full lg:w-2/3 p-4  bg-white rounded-2xl shadow-xl">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <p className="text-gray-500 flex space-x-2 items-center text-sm">
+          <div className="flex flex-wrap justify-between items-start mb-4">
+            <div className="mb-4 sm:mb-0">
+              <p className="text-gray-500 flex flex-wrap space-x-2 items-center text-sm">
                 <FaBagShopping size={14} className="mr-2" /> Job type:{" "}
                 <span className="font-semibold text-tn_dark">
                   {job?.details?.designation || "Designation"}
                 </span>
               </p>
-              <h2 className="text-2xl font-semibold capitalize flex items-center mt-2">
+              <h2 className="text-lg sm:text-2xl font-semibold capitalize flex items-center mt-2">
                 <img
                   src={people}
                   className="mr-2 rounded-full w-8 h-8 bg-tn_light_grey"
@@ -137,13 +137,32 @@ const JobDetail = () => {
               <>
                 <div className="flex gap-1">
                   {applyForJob?.length > 0 ? (
-                    // Button if the user has already applied
-                    <button
-                      className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
-                      disabled
-                    >
-                      Applied
-                    </button>
+                    <>
+                       {/* Button if the user has already applied */}
+                      <button
+                        className="bg-tn_primary bg-opacity-80 text-white p-2 text-sm w-[120px] rounded-full font-normal shadow-none cursor-not-allowed"
+                        disabled
+                      >
+                        Applied
+                      </button>
+                      <button
+                        className="bg-tn_pink text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 "
+                        onClick={() =>
+                          navigate("/chat", {
+                            state: {
+                              id: job?.details?.user?.id,
+                              applied_jobs: {
+                                id: job?.details?.id,
+                                title: job?.details?.title
+                              },
+                              name: job?.details?.user?.name,
+                            },
+                          })
+                        }
+                      >
+                        Chat
+                      </button>
+                    </>
                   ) : (
                     // Button if the user has not applied yet
                     <button
@@ -154,22 +173,6 @@ const JobDetail = () => {
                       {isApplying ? "Applying..." : "Apply"}
                     </button>
                   )}
-                  <button
-                    className="bg-tn_pink text-white p-2 text-sm w-[120px] rounded-full font-normal hover:opacity-80 "
-                    onClick={() =>
-                      navigate("/chat", {
-                        state: {
-                          id: job?.details?.user?.id,
-                          applied_jobs: {
-                            id: job?.details?.id,
-                          },
-                          name: job?.details?.user?.name,
-                        },
-                      })
-                    }
-                  >
-                    Chat
-                  </button>
                 </div>
               </>
             ) : (
@@ -196,8 +199,8 @@ const JobDetail = () => {
             )}
           </div>
 
-          <div className="flex items-center justify-between text-gray-600 mb-6">
-            <div className="flex items-center justify-start gap-2 mb-2">
+          <div className="flex flex-wrap items-center justify-between text-gray-600 mb-6">
+            <div className="flex flex-wrap items-center justify-start gap-2 mb-2">
               <span className="inline-flex text-sm text-tag_green bg-tag_green bg-opacity-20 items-center px-2 py-1 rounded-2xl">
                 <FaCalendarAlt className="mr-2 text-tag_green" size={12} />
                 <span>
@@ -263,7 +266,7 @@ const JobDetail = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-1/3 p-0">
+        <div className="w-full lg:w-1/3 p-0 mt-6 sm:mt-0">
           <div className="p-4  bg-white rounded-2xl shadow-xl h-auto">
             <div className="mb-4 flex gap-2 items-center">
               <img
@@ -321,12 +324,12 @@ const JobDetail = () => {
       {userType == "employee" && (
         <>
           <div className="bg-gray-100">
-            <div className="container py-10">
-              <div className="w-[50%] mx-auto mt-6">
-                <h3 className="text-tn_dark text-center text-5xl inline sm:block leading-tight font-semibold">
+            <div className="container py-6 sm:py-10">
+              <div className="w-full md:w-[50%] mx-auto mt-6">
+                <h3 className="text-tn_dark text-center text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
                   Related Jobs
                 </h3>
-                <p className=" my-4 text-base w-full text-tn_dark  font-normal  text-center">
+                <p className=" my-4 text-base w-full text-tn_dark  font-normal text-start sm:text-center">
                   It is a long established fact that a reader will be distracted
                   by the readable content of a page when looking at its layout.
                 </p>

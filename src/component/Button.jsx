@@ -5,7 +5,7 @@ export default function Button({
     bgColor = 'bg-tn_primary',
     textColor = 'text-white',
     type = 'button',
-    textSize = 'text-lg ',
+    textSize = 'text-sm md:text-lg',
     padX = 'px-10',
     padY = 'py-2',
     className = '',

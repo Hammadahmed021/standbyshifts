@@ -57,7 +57,7 @@ const JobCard = ({
   loading,
   userType,
   onClick, // Add prop to show applicants
-  className
+  className,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,8 +67,8 @@ const JobCard = ({
     navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
   };
   const isEmployeeView = location.pathname.startsWith("/employee-view");
-  console.log(isEmployeeView, 'isEmployeeView >>>>>>>');
-  
+  console.log(isEmployeeView, "isEmployeeView >>>>>>>");
+
   // Determine button text based on applicants
   const buttonText = applicants?.length > 0 ? "View Job" : "Apply";
 
@@ -77,7 +77,9 @@ const JobCard = ({
   }
 
   return (
-    <div className={`w-full rounded-2xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}>
+    <div
+      className={`w-full rounded-2xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}
+    >
       {/* Header */}
       <div className="flex items-center mb-4">
         <img
@@ -86,10 +88,10 @@ const JobCard = ({
           className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
         />
         <div>
-          <h2 className="text-xl font-semibold text-tn_dark_field">
+          <h2 className="text-base sm:text-xl font-semibold text-tn_dark_field">
             {jobTitle}
           </h2>
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap sm:space-x-2">
             <p className="text-tn_text_grey text-sm">{companyName}</p>
             <p className="text-tn_dark font-semibold text-sm">{payRate} / hr</p>
           </div>
@@ -121,10 +123,12 @@ const JobCard = ({
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 text-sm mb-4 flex-grow truncate">{description}</p>
+      <p className="text-gray-600 text-sm mb-4 flex-grow truncate">
+        {description}
+      </p>
 
       {/* Applicants Section */}
-      {(applicants && userType != "employee") && (
+      {applicants && userType != "employee" && (
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center">
             {applicants.slice(0, 10).map((applicant, index) => (
@@ -141,15 +145,17 @@ const JobCard = ({
               </span>
             )}
           </div>
-          <button
-            className="flex items-center rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
-            onClick={onClick}
-          >
-            {isEmployeeView? 'View Job' : 'View Applicants'} <FaArrowRightLong className="ml-2" />
-          </button>
+          {applicants.length > 0 && (
+            <button
+              className="flex items-center rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
+              onClick={onClick}
+            >
+              {isEmployeeView ? "View Job" : "View Applicants"}{" "}
+              <FaArrowRightLong className="ml-2" />
+            </button>
+          )}
         </div>
       )}
-     
 
       {/* Apply/View Job Button */}
       {userType === "employee" && (
