@@ -98,7 +98,7 @@ const EmployerJobCard = ({
   <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
 
       {/* Apply Button */}
-      <button className="w-full bg-orange-500 text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={()=>onClick()??{}}>
+      <button className="w-full bg-tn_primary text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300" onClick={()=>onClick()??{}}>
         {btnText ?? "Apply"}
       </button>
     </div>

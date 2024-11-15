@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const ManageJobs = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [allJobs, setAllJobs] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
@@ -18,12 +18,12 @@ const ManageJobs = () => {
   }, []);
   return (
     <>
-     
       <div className="container my-10">
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
           {allJobs?.map((job) => (
             <EmployerJobCard
               key={job.id}
+              loading={false}
               companyLogo={job?.user?.employer?.logo} // Replace with actual logo
               jobTitle={job.title}
               companyName={job.city} // You can also pass the company name if available

@@ -40,7 +40,7 @@ const PostJob = () => {
   useEffect(() => {
     if (jobData?.id) {
       Object.entries(jobData).forEach(([key, value]) => {
-        if (key == "required_expertise")
+        if (key === "required_expertise")
           setValue(key, [value.map((res) => res.title)]);
         else setValue(key, value);
       });
@@ -65,7 +65,7 @@ const PostJob = () => {
       if (response.status == 200) {
         if (!jobData?.id) reset();
         showSuccessToast("Job posted successfully");
-        navigate("/manage-jobs");
+        navigate("/appliers-on-job");
       } else showErrorToast("Error posting the job");
       console.log("Job posted successfully:", response);
     } catch (error) {

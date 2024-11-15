@@ -67,6 +67,7 @@ const Home = () => {
               <JobCard
               className={'shadow-xl'}
                 key={job.id}
+                jobId={job.id}
                 companyLogo={job?.user?.employer?.logo} // Replace with actual logo
                 jobTitle={job.title}
                 companyName={job.city} // You can also pass the company name if available

@@ -23,7 +23,7 @@ const AppliedJobs = () => {
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
           {appliers?.map((job) => (
             <JobCard
-            className={'shadow-xl'}
+              className={"shadow-xl"}
               jobId={job.id}
               key={job.id}
               companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -43,6 +43,12 @@ const AppliedJobs = () => {
               applicants={job?.applicants}
               onClick={() => {
                 navigate(`/view-applicants/${job?.id}`); // Assuming job detail page is at '/job/:id'
+              }}
+              btnText={"Edit"}
+              onClickToEdit={() => {
+                navigate(`/post-job`, {
+                  state: job,
+                });
               }}
             />
           ))}

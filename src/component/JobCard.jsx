@@ -58,6 +58,8 @@ const JobCard = ({
   userType,
   onClick, // Add prop to show applicants
   className,
+  btnText,
+  onClickToEdit,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,7 +83,7 @@ const JobCard = ({
       className={`w-full rounded-2xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}
     >
       {/* Header */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4 relative">
         <img
           src={companyLogo}
           alt={companyName}
@@ -96,6 +98,14 @@ const JobCard = ({
             <p className="text-tn_dark font-semibold text-sm">{payRate} / hr</p>
           </div>
         </div>
+
+        {/* Apply Button */}
+        <button
+          className="w-full bg-tn_primary text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300"
+          onClick={() => onClickToEdit() ?? {}}
+        >
+          {btnText ?? "Apply"}
+        </button>
       </div>
 
       {/* Date and Time Info */}
@@ -167,6 +177,18 @@ const JobCard = ({
             onClick={handleApplyClick}
           >
             {buttonText}
+          </button>
+        </div>
+      )}
+
+      {/* Apply/View Job Button */}
+      {userType === "employer" && (
+        <div className="mt-auto">
+          <button
+            className={`bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-semibold transition duration-300`}
+            onClick={handleApplyClick}
+          >
+            View Job
           </button>
         </div>
       )}
