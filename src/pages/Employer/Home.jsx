@@ -55,17 +55,17 @@ const Home = () => {
             Recent job posts
           </h3>
           <Link
-            to={""}
-            className="text-tn_text_grey text-base pointer-events-none"
+            to={"/appliers-on-job"}
+            className="text-tn_text_grey text-base cursor-pointer"
           >
             View All
           </Link>
         </div>
         <div className="container">
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {profile?.jobsPostedByYou?.map((job) => (
+            {profile?.jobsPostedByYou?.slice(0,6)?.map((job) => (
               <JobCard
-              className={'shadow-xl'}
+                className={"shadow-xl"}
                 key={job.id}
                 jobId={job.id}
                 companyLogo={job?.user?.employer?.logo} // Replace with actual logo
@@ -82,6 +82,12 @@ const Home = () => {
                 address={`${job.location}, ${job.state}`}
                 description={job.description}
                 userType={userType}
+                btnText={true}
+                onClickToEdit={() => {
+                  navigate(`/post-job`, {
+                    state: job,
+                  });
+                }}
               />
             ))}
           </div>
@@ -140,7 +146,7 @@ const Home = () => {
         <div className="w-full sm:w-7/12 pl-0 md:pl-8 pt-8 sm:pt-0">
           <div className="w-[100%] sm:w-[85%]">
             <h3 className="text-white text-4xl sm:text-5xl inline sm:block leading-tight">
-              Hire experts &{' '}
+              Hire experts &{" "}
               <span className="font-bold text-tn_primary inline sm:block">
                 Get your job done
               </span>

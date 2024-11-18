@@ -1002,7 +1002,7 @@ const Profile = () => {
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
-                  selectClassName={'pl-1'}
+                  pl={'pl-1'}
                   value={selectedIndustries.map((industry) => industry.title)}
                   onChange={handleFilterChange}
                   options={addAllOption(

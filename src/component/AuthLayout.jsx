@@ -24,6 +24,7 @@ const AuthLayout = ({ children, authentication = true }) => {
       } else {
         navigate("/"); // Fallback
         localStorage.removeItem("userType")
+        // localStorage.removeItem("webToken")
       }
     } else if (redirectState && redirectState.fromReservation && authStatus) {
       // Handle redirection from reservation

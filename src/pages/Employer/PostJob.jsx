@@ -83,9 +83,9 @@ const PostJob = () => {
               <h2 className="text-3xl sm:text-4xl font-semibold text-tn_dark">
                 Job Details
               </h2>
-              <button className="flex items-center gap-2" onClick={goBack}>
+              {/* <button className="flex items-center gap-2" onClick={goBack}>
                 <FaArrowLeftLong /> Back
-              </button>
+              </button> */}
             </div>
 
             <div className="flex flex-wrap md:flex-nowrap space-y-2 md:space-y-0 md:space-x-2">

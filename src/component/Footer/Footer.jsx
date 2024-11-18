@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 
 const Footer = () => {
   const userData = useSelector((state) => state.auth.userData);
+  const userType = userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
+
 
   return (
     <footer className="bg-tn_dark text-white">
@@ -15,7 +17,7 @@ const Footer = () => {
           <div class="w-full md:w-2/5 py-2 sm:py-4">
             <Link to={
               userData
-                ? userData.user.type === "employee"
+                ? userType === "employee"
                   ? "employee"
                   : "employer"
                 : "/"

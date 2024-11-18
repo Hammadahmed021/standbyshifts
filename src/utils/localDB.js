@@ -212,8 +212,8 @@ export const localDB = [
 export const infoLinks = {
   "Find Employee": "/",
   "Find Employer": "/",
-  "Register": "/",
-  "Login": "/",
+  // "Register": "/",
+  // "Login": "/",
 };
 
 export const supportLinks = {

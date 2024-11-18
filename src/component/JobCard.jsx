@@ -5,8 +5,9 @@ import {
   FaClock,
   FaCrown,
   FaMapMarker,
+  FaPen,
 } from "react-icons/fa";
-import { FaArrowRightLong } from "react-icons/fa6";
+import { FaArrowRightLong, FaPencil } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // Skeleton Loader Component
@@ -69,6 +70,7 @@ const JobCard = ({
     navigate(`/job/${jobId}`); // Assuming job detail page is at '/job/:id'
   };
   const isEmployeeView = location.pathname.startsWith("/employee-view");
+  const isEmployer = location.pathname.startsWith("/appliers-on-job");
   console.log(isEmployeeView, "isEmployeeView >>>>>>>");
 
   // Determine button text based on applicants
@@ -100,12 +102,18 @@ const JobCard = ({
         </div>
 
         {/* Apply Button */}
-        <button
-          className="w-full bg-tn_primary text-white py-2 rounded-full font-semibold hover:bg-orange-600 transition duration-300"
-          onClick={() => onClickToEdit() ?? {}}
-        >
-          {btnText ?? "Apply"}
-        </button>
+        {userType == "employer" && btnText && (
+          <>
+            <span className="absolute top-0 right-0">
+              <span
+                className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer hover:opacity-80 duration-200"
+                onClick={() => onClickToEdit() ?? {}}
+              >
+                <FaPencil size={12} />
+              </span>
+            </span>
+          </>
+        )}
       </div>
 
       {/* Date and Time Info */}
@@ -138,32 +146,39 @@ const JobCard = ({
       </p>
 
       {/* Applicants Section */}
-      {applicants && userType != "employee" && (
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center">
-            {applicants.slice(0, 10).map((applicant, index) => (
-              <img
-                key={index}
-                src={applicant?.employee?.profile_picture}
-                alt={`Applicant ${index + 1}`}
-                className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-lg -ml-2"
-              />
-            ))}
-            {applicants.length > 10 && (
-              <span className="ml-2 text-sm text-gray-600">
-                + {applicants.length - 10}
-              </span>
-            )}
-          </div>
+      {applicants && userType !== "employee" && (
+        <div className="flex items-center justify-between gap-2 mt-4">
+          {/* Applicants Button */}
           {applicants.length > 0 && (
             <button
-              className="flex items-center rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
+              className="flex items-center w-full rounded-site justify-center text-tn_dark border border-tn_light_grey text-sm font-medium p-2"
               onClick={onClick}
             >
               {isEmployeeView ? "View Job" : "View Applicants"}{" "}
               <FaArrowRightLong className="ml-2" />
             </button>
           )}
+
+          {/* View Job Button */}
+          {userType === "employer" && (
+            <button
+              className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
+              onClick={handleApplyClick}
+            >
+              View Job
+            </button>
+          )}
+        </div>
+      )}
+
+      {userType === "employer" && !isEmployer && (
+        <div className="mt-auto">
+          <button
+            className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
+            onClick={handleApplyClick}
+          >
+            View Job
+          </button>
         </div>
       )}
 
@@ -177,18 +192,6 @@ const JobCard = ({
             onClick={handleApplyClick}
           >
             {buttonText}
-          </button>
-        </div>
-      )}
-
-      {/* Apply/View Job Button */}
-      {userType === "employer" && (
-        <div className="mt-auto">
-          <button
-            className={`bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-semibold transition duration-300`}
-            onClick={handleApplyClick}
-          >
-            View Job
           </button>
         </div>
       )}

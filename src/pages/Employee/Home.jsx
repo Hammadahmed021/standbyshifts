@@ -145,7 +145,7 @@ const Home = () => {
                 <div className="flex flex-wrap sm:flex-nowrap gap-2 rounded-2xl sm:rounded-site border py-3 px-4">
                   <SelectOption
                     // label="Expertise"
-                    selectClassName={"pl-1"}
+                    pl={"pl-1"}
                     value={selectedOptions.expertise}
                     onChange={(e) => handleFilterChange(e, "expertise")}
                     className="border-b sm:border-b-0 sm:border-r  sm:pr-1 py-2"
@@ -153,7 +153,7 @@ const Home = () => {
                   />
                   <SelectOption
                     // label="Industries"
-                    selectClassName={"pl-1"}
+                    pl={"pl-1"}
                     value={selectedOptions.industries}
                     onChange={(e) => handleFilterChange(e, "industries")}
                     className="border-b sm:border-b-0 sm:border-r sm:pr-1 py-2"

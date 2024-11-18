@@ -246,8 +246,8 @@ const Profile = () => {
       ipAddress,
       token,
     };
-    console.log(payload, 'payload');
-    
+    console.log(payload, "payload");
+
     try {
       const response = await verifyUser(payload);
       const data = await response.data;
@@ -528,8 +528,8 @@ const Profile = () => {
               )}
 
               <div className="mb-6">
-                <SelectOption 
-                selectClassName={'pl-1'}
+                <SelectOption
+                  pl={"pl-1"}
                   label="Industries"
                   value={selectedIndustries.map((industry) => industry.title)}
                   onChange={handleFilterChange}

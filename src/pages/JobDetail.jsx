@@ -184,7 +184,7 @@ const JobDetail = () => {
                       onClick={() => console.log("deleting shit")}
                     />
                   </span>
-                  <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer">
+                  <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer hover:opacity-80 duration-200">
                     <FaPencil
                       size={12}
                       onClick={() => {
@@ -316,7 +316,7 @@ const JobDetail = () => {
               <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
                 <BsBackpack2Fill className="mr-2" /> Job Posts
               </h4>
-              <p className="font-semibold">10</p>
+              <p className="font-semibold">{job?.jobPostCount || '10'}</p>
             </div>
           </div>
         </div>

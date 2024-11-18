@@ -14,6 +14,7 @@ import {
   EmpCardSlider,
   ContactForm,
   TestimonialSlider,
+  LoginSignupModal,
 } from "../component";
 import {
   Fav,
@@ -50,7 +51,13 @@ import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import InfoGrid from "../component/InfoGrid";
 import RevenueCard from "../component/RevenueCard";
-import { FaClipboard, FaClipboardCheck, FaCoffee, FaUser, FaUsers } from "react-icons/fa";
+import {
+  FaClipboard,
+  FaClipboardCheck,
+  FaCoffee,
+  FaUser,
+  FaUsers,
+} from "react-icons/fa";
 import AnimatedCounter from "../component/AnimatedCounter";
 
 export default function HomeNew() {
@@ -100,11 +107,11 @@ export default function HomeNew() {
       const userAgent = navigator.userAgent;
       const ipAddress = await getUserIP();
       const token = localStorage.getItem("webToken");
-  
+
       const payload = {
         userAgent,
         ipAddress,
-        token
+        token,
       };
       try {
         const response = await verifyUser(payload);
@@ -284,6 +291,22 @@ export default function HomeNew() {
     navigate(destination, { state: { type: role } });
   };
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const handleRoleClick = (role) => {
+    setSelectedRole(role); // Store the selected role (employee or employer)
+    setModalOpen(true); // Open the modal
+  };
+
+  const handleModalAction = (action) => {
+    setModalOpen(false); // Close the modal
+    if (action === "login") {
+      navigate("/login", { state: { type: selectedRole } });
+    } else if (action === "signup") {
+      navigate("/signup", { state: { type: selectedRole } });
+    }
+  };
+
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-[500px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
@@ -304,7 +327,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                // className="border p-3 bg-gray-200 rounded-lg"
+                  // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Register
                 </Button>
@@ -385,7 +408,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                // className="border p-3 bg-gray-200 rounded-lg"
+                  // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Get Started
                 </Button>
@@ -433,7 +456,9 @@ export default function HomeNew() {
                 by the readable content of a page when looking at its layout.
               </p>
               <div className="my-6">
-                <h4 className="text-white text-base mb-2 font-semibold">Popular searches:</h4>
+                <h4 className="text-white text-base mb-2 font-semibold">
+                  Popular searches:
+                </h4>
                 <ul className="flex items-center space-x-2">
                   <li>
                     <span className="border border-tn_text_grey rounded-2xl flex space-x-2">
@@ -475,43 +500,44 @@ export default function HomeNew() {
             heading="Jobs posted"
             targetNumber={200} // Target number to count to
             duration={3000} // Duration in milliseconds
-            className={'p-3'}
+            className={"p-3"}
           />
           <AnimatedCounter
             icon={FaClipboardCheck}
             heading="Companies"
             targetNumber={25} // Target number to count to
             duration={3000} // Duration in milliseconds
-            className={'p-3'}
+            className={"p-3"}
           />
           <AnimatedCounter
             icon={FaUsers}
             heading="Members"
             targetNumber={153} // Target number to count to
             duration={3000} // Duration in milliseconds
-            className={'p-3'}
+            className={"p-3"}
           />
           <AnimatedCounter
             icon={FaCoffee}
             heading="Shifts done"
             targetNumber={88} // Target number to count to
             duration={3000} // Duration in milliseconds
-            className={'p-3'}
+            className={"p-3"}
           />
         </div>
       </div>
 
       <div className="container flex flex-col-reverse sm:flex-row items-center my-20">
         <div className="lg:w-5/12 w-full mt-12 sm:mt-0">
-          <img src={girl} alt="" /></div>
+          <img src={girl} alt="" />
+        </div>
         <div className="lg:w-7/12 w-full ">
           <div className="text-center w-full sm:w-[65%] mx-auto">
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
-              Connect us
-              to register yourself
+              Connect us to register yourself
             </h3>
             <p className=" my-4 text-base w-full text-tn_text_grey  font-normal  text-center">
-              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout.
             </p>
           </div>
           <div className="mx-auto w-[80%] ">
@@ -527,38 +553,39 @@ export default function HomeNew() {
               Get started today for better reach
             </h3>
             <p className=" my-4 text-base w-full text-tn_text_grey  font-normal">
-              It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout.{" "}
+            </p>
             <div className="flex space-x-2 mt-10">
-              <Button
-                type=""
-              >
+              <Button onClick={() => handleRoleClick("employee")}>
                 Employee
               </Button>
               <Button
-                type=""
-                bgColor={`bg-tn_pink`}
+                onClick={() => handleRoleClick("employer")}
+                bgColor="bg-tn_pink"
               >
+                {" "}
                 Business
               </Button>
             </div>
           </div>
         </div>
         <div className="lg:w-6/12 w-full hidden sm:block">
-          <img src={connect} alt="" /></div>
+          <img src={connect} alt="" />
+        </div>
       </div>
 
       <div className="container flex items-center my-20 testimonials">
         <div className="lg:w-5/12 w-full">
-          <img src={peoples} alt="" /></div>
+          <img src={peoples} alt="" />
+        </div>
         <div className="lg:w-7/12 w-full ">
           <div className="text-start w-full lg:w-[65%] mx-auto">
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Trusted by people all over
             </h3>
-            <TestimonialSlider data={testimonial}/>
+            <TestimonialSlider data={testimonial} />
           </div>
-
-
         </div>
       </div>
 
@@ -568,6 +595,15 @@ export default function HomeNew() {
           title="Define yourself..."
           onSelectRole={handleSelectRole}
           onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {/* Login signup Modal */}
+      {isModalOpen && (
+        <LoginSignupModal
+          role={selectedRole}
+          onAction={(action) => handleModalAction(action)}
+          onClose={() => setModalOpen(false)}
         />
       )}
     </>

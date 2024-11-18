@@ -397,7 +397,6 @@ export const verifyUser = async (payload) => {
 
 // Function to get user from gmail to login
 export const getUserFromGmailLogin = async (userData) => {
- 
   try {
     const response = await axios.post(`${BASE_URL}socialLogin`, userData);
     console.log(response.data, "response");
@@ -406,22 +405,20 @@ export const getUserFromGmailLogin = async (userData) => {
   } catch (error) {
     console.log(error, "error getting user from gmail");
 
-    throw new Error("something went wrong");
+    throw new Error(error.response.data.message || "something went wrong");
   }
 };
 
 // Function to get user from gmail to signup
 export const getUserFromGmailSignup = async (userData) => {
- 
   try {
     const response = await axios.post(`${BASE_URL}socialSignup`, userData);
     console.log(response, "response");
-
     return response;
   } catch (error) {
     console.log(error, "error getting user from gmail");
 
-    throw new Error("something went wrong");
+    throw new Error(error.response.data.message || "something went wrong");
   }
 };
 

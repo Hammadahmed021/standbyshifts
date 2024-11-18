@@ -11,6 +11,7 @@ import { getUserFromGmailSignup } from "../utils/Api";
 import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import { imageData } from "../utils/localDB";
+import { getIdToken } from "firebase/auth";
 
 const Signup = () => {
   const location = useLocation();
@@ -31,41 +32,90 @@ const Signup = () => {
 
   const isApp = Capacitor.isNativePlatform();
 
+  const getUserIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+  const userAgent = navigator.userAgent;
+
   const handleGoogleSignup = async () => {
     try {
+      // Step 1: Sign up with Google
       const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user.displayName);
+      console.log("User logged in:", user);
 
-      // Proceed with login if it's a different user or not logged in
-      const userData = {
-        name: user?.displayName,
-        email: user?.email,
-      };
-
-      if (userData) {
-        const response = await getUserFromGmailSignup(userData);
-        const token = response.data.token;
-
-        // Store token in localStorage
-        localStorage.setItem("webToken", token);
+      if (!user) {
+        throw new Error("Google signup failed. Please try again.");
       }
 
-      if (user) {
+      // Step 2: Gather necessary data
+      const ipAddress = await getUserIP();
+      const token = await getIdToken(user);
+      const email = user?.email;
+
+      if (!email) {
+        throw new Error("Failed to retrieve email from Google account.");
+      }
+
+      const userData = {
+        name: user?.displayName,
+        email,
+        token,
+        type, // User type (employee/employer)
+        ipAddress,
+        userAgent,
+      };
+
+      // Step 3: Store temporary data locally
+      localStorage.setItem("webToken", token);
+      localStorage.setItem("userType", type);
+
+      // Step 4: Check if the user exists or register them
+      const response = await getUserFromGmailSignup(userData);
+
+      if (response.status === 200) {
+        showSuccessToast("Successfully signed up!");
+
+        // Step 5: Dispatch signup state to Redux
         dispatch(
           loginFunc({
             userData: {
               uid: user.uid,
               displayName: user.displayName,
               email: user.email,
-              password: user.password,
+              photo: user.photoURL,
               loginType: user.providerData?.[0]?.providerId,
+              type,
             },
           })
         );
+
+        // Navigate to the home page
         navigate("/");
+      } else {
+        // If user registration failed
+        throw new Error(
+          response.data?.message || "Signup failed. Please try again."
+        );
       }
     } catch (error) {
-      console.error("Login failed:", error.message);
+      // Clear sensitive data in case of an error
+      localStorage.removeItem("webToken");
+      localStorage.removeItem("userType");
+
+      // Show error toast for user feedback
+      showErrorToast(
+        error.message || "An error occurred during signup. Please try again."
+      );
+
+      // Log the error for debugging
+      console.log("Signup failed:", error);
     }
   };
 

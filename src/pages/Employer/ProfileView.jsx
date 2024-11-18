@@ -47,9 +47,9 @@ const ProfileView = () => {
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
           <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
-          <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
+          {/* <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
             <FaFilter size={16} color="#fff" />
-          </span>
+          </span> */}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profile?.jobsPostedByYou?.length <= 0 ? (

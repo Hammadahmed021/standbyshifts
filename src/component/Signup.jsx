@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import { SignUpWithGoogle } from "../service";
 import { getUserFromGmailSignup } from "../utils/Api";
+import { showSuccessToast } from "../utils/Toast";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -73,6 +74,9 @@ export default function Signup({ onClick }) {
 
     try {
       const response = await dispatch(signupUser({ payload })).unwrap();
+      if (response) {
+        showSuccessToast("Successfully signed up!");
+      }
       if (type == "employee") {
         navigate("/employee-profile"); // Redirect to employee dashboard
       } else if (type == "employer") {
@@ -119,48 +123,48 @@ export default function Signup({ onClick }) {
     }
   };
 
-  const handleGoogleSignup = async () => {
-    try {
-      const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user.displayName);
+  // const handleGoogleSignup = async () => {
+  //   try {
+  //     const { user } = await SignUpWithGoogle();
+  //     console.log("User logged in:", user.displayName);
 
-      const ipAddress = await getUserIP();
+  //     const ipAddress = await getUserIP();
 
-      // Proceed with login if it's a different user or not logged in
-      const userData = {
-        name: user?.displayName,
-        email: user?.email,
-        type,
-        userAgent,
-        ipAddress
-      };
+  //     // Proceed with login if it's a different user or not logged in
+  //     const userData = {
+  //       name: user?.displayName,
+  //       email: user?.email,
+  //       type,
+  //       userAgent,
+  //       ipAddress
+  //     };
 
-      if (userData) {
-        const response = await getUserFromGmailSignup(userData);
-        const token = response.data.token;
+  //     if (userData) {
+  //       const response = await getUserFromGmailSignup(userData);
+  //       const token = response.data.token;
 
-        // Store token in localStorage
-        localStorage.setItem("webToken", token);
-      }
+  //       // Store token in localStorage
+  //       localStorage.setItem("webToken", token);
+  //     }
 
-      if (user) {
-        dispatch(
-          loginFunc({
-            userData: {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              password: user.password,
-              loginType: user.providerData?.[0]?.providerId,
-            },
-          })
-        );
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Login failed:", error.message);
-    }
-  };
+  //     if (user) {
+  //       dispatch(
+  //         loginFunc({
+  //           userData: {
+  //             uid: user.uid,
+  //             displayName: user.displayName,
+  //             email: user.email,
+  //             password: user.password,
+  //             loginType: user.providerData?.[0]?.providerId,
+  //           },
+  //         })
+  //       );
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error("Login failed:", error.message);
+  //   }
+  // };
 
   return (
     <form onSubmit={handleSubmit(handleSignup)} className="mt-8">
@@ -281,7 +285,7 @@ export default function Signup({ onClick }) {
           </Button>
 
           <span
-            onClick={handleGoogleSignup}
+            onClick={onClick}
             className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 mt-3 sm:mt-0 sm:p-0 p-2 text-sm sm:text-lg ease-in-out hover:opacity-80 rounded-[100px] text-white flex items-center justify-center  w-full ${
               isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
             }`}

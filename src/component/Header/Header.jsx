@@ -36,7 +36,11 @@ const Header = ({ style }) => {
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
 
+  const userType = userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
+
   console.log(userData?.user?.type, "userData");
+  console.log(userType, "userType");
+  console.log(userData, "userData sss");
 
   const defaultMenu = (
     <>
@@ -136,20 +140,20 @@ const Header = ({ style }) => {
           Post Job
         </NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink
           to={"/manage-jobs"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
           Manage Jobs
         </NavLink>
-      </li>
+      </li> */}
       <li>
         <NavLink
           to={"/appliers-on-job"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Applied Jobs
+          Manage Jobs
         </NavLink>
       </li>
       <li>
@@ -254,7 +258,7 @@ const Header = ({ style }) => {
               <Link
                 to={
                   userData
-                    ? userData.user.type === "employee"
+                    ? userType === "employee"
                       ? "employee"
                       : "employer"
                     : "/"
@@ -266,9 +270,9 @@ const Header = ({ style }) => {
             </div>
             <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
               {userData
-                ? userData.user.type == "employee"
+                ? userType == "employee"
                   ? employeeMenu
-                  : userData.user.type == "employer"
+                  : userType == "employer"
                   ? employerMenu
                   : defaultMenu
                 : defaultMenu}
@@ -311,7 +315,7 @@ const Header = ({ style }) => {
                       >
                         <Link
                           to={
-                            userData && userData.user.type === "employee"
+                            userData && userType === "employee"
                               ? "employee-profile"
                               : "employer-profile"
                           }

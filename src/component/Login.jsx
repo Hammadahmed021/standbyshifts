@@ -7,6 +7,7 @@ import { loginUser } from "../store/authSlice";
 import { FaGoogle, FaRegEnvelope, FaUnlock } from "react-icons/fa";
 import { SignUpWithGoogle } from "../service";
 import { getUserFromGmailLogin } from "../utils/Api";
+import { showSuccessToast } from "../utils/Toast";
 
 export default function Login({ onClick }) {
   const [isSigning, setIsSigning] = useState(false);
@@ -53,6 +54,9 @@ export default function Login({ onClick }) {
 
     try {
       const loginResponse = await dispatch(loginUser({ payload })).unwrap();
+      if(loginResponse){
+        showSuccessToast("Successfully logged in!");
+      }
       if (type == "employee") {
         navigate("/employee"); // Redirect to employee dashboard
       } else if (type == "employer") {
@@ -77,47 +81,7 @@ export default function Login({ onClick }) {
     }
   };
 
-  const handleSocialLogin = async () => {
-    try {
-      const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user);
-      const ipAddress = await getUserIP();
-
-      const userEmail = user?.email;
-      const payload = {
-        userEmail,
-        type,
-        userAgent,
-        ipAddress,
-      };
-
-      if (userEmail) {
-        const response = await getUserFromGmailLogin(payload);
-        const token = response.data.token;
-        console.log(token, "token jhan");
-
-        // Store token in localStorage
-        localStorage.setItem("webToken", token);
-      }
-
-      if (user) {
-        dispatch(
-          loginFunc({
-            userData: {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              photo: user.photoURL,
-              loginType: user.providerData?.[0]?.providerId,
-            },
-          })
-        );
-        // navigate("/");
-      }
-    } catch (error) {
-      console.error("Login failed:", error.message);
-    }
-  };
+  
 
   return (
     <>
@@ -181,7 +145,7 @@ export default function Login({ onClick }) {
               {isSigning ? "Logging in..." : "Log in"}
             </Button>
             <span
-              onClick={handleSocialLogin}
+              onClick={onClick}
               className={`bg-tn_dark_blue shadow-xl cursor-pointer transition duration-500 ease-in-out hover:opacity-80 mt-3 sm:mt-0 sm:p-0 p-2 text-sm sm:text-lg rounded-[100px] text-white flex items-center justify-center  w-full ${
                 isSigningGoogle ? "opacity-70 cursor-not-allowed" : ""
               }`}
