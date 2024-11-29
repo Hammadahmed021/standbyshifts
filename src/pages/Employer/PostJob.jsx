@@ -14,6 +14,13 @@ const experienceLevels = [
   { id: "senior", name: "Senior" },
 ];
 
+const shiftTimes = [
+  { id: "morning", name: "Morning" },
+  { id: "afternoon", name: "Afternoon" },
+  { id: "evening", name: "Evening" },
+  { id: "night", name: "Night" },
+];
+
 const PostJob = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,11 +58,11 @@ const PostJob = () => {
     console.log(data, "form data of job posting");
     const formattedData = {
       ...data,
-      required_expertise: data.required_expertise
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-      id: jobData?.id,
+      required_expertise: data?.required_expertise
+        ?.split(",")
+        ?.map((item) => item?.trim())
+        ?.filter(Boolean),
+      id: jobData?.id
     };
 
     try {
@@ -67,7 +74,7 @@ const PostJob = () => {
         showSuccessToast("Job posted successfully");
         navigate("/appliers-on-job");
       } else showErrorToast("Error posting the job");
-      console.log("Job posted successfully:", response);
+      console.log("Job updated successfully:", response);
     } catch (error) {
       showErrorToast("Error posting the job");
       console.error("Error posting the job:", error);
@@ -314,8 +321,25 @@ const PostJob = () => {
                   </span>
                 )}
               </div>
+
               <div className="flex flex-col w-full">
-                {/* Experience Required */}
+                <h2>Shift Timings</h2>
+                <SelectOption
+                  selectClassName={"border rounded-lg py-3 px-1"}
+                  iconColor={"#0000F8"}
+                  icon={FaCalendar}
+                  options={shiftTimes}
+                  {...register("shifts", {
+                    required: "Shift time is required",
+                  })}
+                />
+                {errors.shifts && (
+                  <span className="text-red-500">
+                    {errors.shifts.message}
+                  </span>
+                )}
+              </div>
+              {/* <div className="flex flex-col w-full">
                 <h2>Experience Required</h2>
 
                 <Input
@@ -325,7 +349,7 @@ const PostJob = () => {
                   icon={FaCalendar}
                   {...register("experience_required")}
                 />
-              </div>
+              </div> */}
               <div className="flex flex-col w-full">
                 {/* Location */}
                 <h2>Location</h2>
@@ -438,7 +462,8 @@ const PostJob = () => {
             </div>
 
             {/* Submit Button */}
-            <Button type="submit">Post Job</Button>
+            
+            <Button type="submit">{jobData?.id ? 'Update Job' : 'Post Job'}</Button>
           </div>
         </form>
       </div>

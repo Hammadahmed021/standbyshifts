@@ -7,7 +7,7 @@ const SelectOption = forwardRef(function Input(
     iconColor = "#F59200", // Default color for the icon,
     label,
     options,
-    className = "",
+    selectClassName = "",
     pl = "pl-8",
     ...props
   },
@@ -17,9 +17,9 @@ const SelectOption = forwardRef(function Input(
   // console.log(options, 'options');
 
   return (
-    <div className={`w-full ${className} bg-transparent  relative`}>
+    <div className={`w-full ${selectClassName} bg-transparent p-2 relative`}>
       {icon && (
-        <span className="inline-block absolute top-1/3 px-1 left-[6px]">
+        <span className="inline-block absolute inset-y-4 px-1 left-[6px]">
           {React.createElement(icon, { size: iconSize, color: iconColor })}
         </span>
       )}

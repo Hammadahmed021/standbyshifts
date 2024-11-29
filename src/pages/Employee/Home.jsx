@@ -23,13 +23,24 @@ const Home = () => {
   const [skills, setSkills] = useState([]);
   const [employers, setEmployers] = useState([]);
   const [industries, setIndustries] = useState([]);
+  // const [shifts, setShifts] = useState([]);
+  const [start_date, setStart_date] = useState([]);
+
+  const shiftTimes = [
+    { id: "morning", name: "Morning" },
+    { id: "afternoon", name: "Afternoon" },
+    { id: "evening", name: "Evening" },
+    { id: "night", name: "Night" },
+  ];
 
   const [selectedOptions, setSelectedOptions] = useState({
-    industries: null,
+    // industries: null,
+    shifts: shiftTimes,
     expertise: null,
     jobTitle: null,
     zipCode: null,
     location: null,
+    start_date: null
   });
 
   const handleFilterChange = (e, category) => {
@@ -60,7 +71,8 @@ const Home = () => {
       setExpertise(response?.data?.expertise);
       setSkills(response?.data?.skills);
       setEmployers(response?.data?.employers);
-      setIndustries(response?.data?.industries);
+      setStart_date(response?.data?.start_date);
+      // setIndustries(response?.data?.industries);
     };
 
     fetchJobs();
@@ -154,10 +166,10 @@ const Home = () => {
                   <SelectOption
                     // label="Industries"
                     pl={"pl-1"}
-                    value={selectedOptions.industries}
-                    onChange={(e) => handleFilterChange(e, "industries")}
-                    className="border-b sm:border-b-0 sm:border-r sm:pr-1 py-2"
-                    options={addAllOption(industries || [], "All Industries")}
+                    value={selectedOptions.shifts}
+                    onChange={(e) => handleFilterChange(e, "shifts")}
+                    className="border-b sm:border-b-0 sm:border-r pr-1 py-2"
+                    options={addAllOption(shiftTimes || [], "All shifts")}
                   />
 
                   <input
@@ -173,6 +185,19 @@ const Home = () => {
                       }));
                     }}
                   />
+                  <input
+                    className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
+                    type="date"
+                    value={selectedOptions.start_date}
+                    onChange={(e) => {
+                      setSelectedOptions((prevSelectedOptions) => ({
+                        ...prevSelectedOptions,
+                        start_date: e.target.value,
+                      }));
+                    }}
+                    placeholder="Enter start date"
+                  />
+
                   <input
                     label="Search by Zipcode"
                     placeholder="Zipcode"
@@ -244,36 +269,36 @@ const Home = () => {
           <Slider {...getSliderSettings(matchJobs)} className="mt-12">
             {!matchJobs || matchJobs.length === 0
               ? // Show skeleton loaders for the number of jobs you expect to show
-                [...Array(3)].map((_, index) => (
-                  <div key={index} className="p-2">
-                    <JobCard loading={true} /> {/* Loader JobCard */}
-                  </div>
-                ))
+              [...Array(3)].map((_, index) => (
+                <div key={index} className="p-2">
+                  <JobCard loading={true} /> {/* Loader JobCard */}
+                </div>
+              ))
               : matchJobs?.map((job) => (
-                  <div key={job?.id} className="p-2">
-                    <JobCard
-                      className={"shadow-xl"}
-                      jobId={job?.id}
-                      key={job?.id}
-                      companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                      jobTitle={job?.title}
-                      companyName={job?.city} // You can also pass the company name if available
-                      payRate={`$${job?.per_hour_rate}`}
-                      dateRange={`${new Date(
-                        job?.start_date
-                      ).toLocaleDateString()} to ${new Date(
-                        job?.end_date
-                      ).toLocaleDateString()}`}
-                      timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
-                      level={job?.experience_level}
-                      address={`${job?.location}, ${job?.state}`}
-                      description={job?.description}
-                      userType={userType}
-                      loading={false}
-                      applicants={job?.applicant}
-                    />
-                  </div>
-                ))}
+                <div key={job?.id} className="p-2">
+                  <JobCard
+                    className={"shadow-xl"}
+                    jobId={job?.id}
+                    key={job?.id}
+                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                    jobTitle={job?.title}
+                    companyName={job?.city} // You can also pass the company name if available
+                    payRate={`$${job?.per_hour_rate}`}
+                    dateRange={`${new Date(
+                      job?.start_date
+                    ).toLocaleDateString()} to ${new Date(
+                      job?.end_date
+                    ).toLocaleDateString()}`}
+                    timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
+                    level={job?.experience_level}
+                    address={`${job?.location}, ${job?.state}`}
+                    description={job?.description}
+                    userType={userType}
+                    loading={false}
+                    applicants={job?.applicant}
+                  />
+                </div>
+              ))}
           </Slider>
         </div>
       </div>
@@ -340,38 +365,38 @@ const Home = () => {
           <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-1">
             {!matchJobs || matchJobs.length === 0
               ? // Show skeleton loaders for the number of jobs you expect to show
-                [...Array(3)].map((_, index) => (
-                  <div key={index} className="p-2">
-                    <JobCard loading={true} /> {/* Loader JobCard */}
-                  </div>
-                ))
+              [...Array(3)].map((_, index) => (
+                <div key={index} className="p-2">
+                  <JobCard loading={true} /> {/* Loader JobCard */}
+                </div>
+              ))
               : matchJobs?.splice(0, 3)?.map((job) => (
-                  <div key={job?.id} className="p-2">
-                    <JobCard
-                      className={"shadow-xl"}
-                      jobId={job?.id}
-                      key={job?.id}
-                      companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                      jobTitle={job?.title}
-                      companyName={job?.city} // You can also pass the company name if available
-                      payRate={`$${job?.per_hour_rate}`}
-                      dateRange={`${new Date(
-                        job?.start_date
-                      ).toLocaleDateString()} to ${new Date(
-                        job?.end_date
-                      ).toLocaleDateString()}`}
-                      timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
-                      level={job?.experience_level}
-                      location={`${job?.location}, ${job?.state}`}
-                      description={job?.description}
-                      userType={userType}
-                      loading={false}
-                    />
-                  </div>
-                ))}
+                <div key={job?.id} className="p-2">
+                  <JobCard
+                    className={"shadow-xl"}
+                    jobId={job?.id}
+                    key={job?.id}
+                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                    jobTitle={job?.title}
+                    companyName={job?.city} // You can also pass the company name if available
+                    payRate={`$${job?.per_hour_rate}`}
+                    dateRange={`${new Date(
+                      job?.start_date
+                    ).toLocaleDateString()} to ${new Date(
+                      job?.end_date
+                    ).toLocaleDateString()}`}
+                    timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
+                    level={job?.experience_level}
+                    location={`${job?.location}, ${job?.state}`}
+                    description={job?.description}
+                    userType={userType}
+                    loading={false}
+                  />
+                </div>
+              ))}
           </div>
           <div className="text-center pb-12 mt-6 sm:hidden">
-          <Link
+            <Link
               to={"/jobs"}
               className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium "
             >

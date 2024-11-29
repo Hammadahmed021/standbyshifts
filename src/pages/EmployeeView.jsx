@@ -172,10 +172,8 @@ const EmployeeView = () => {
                   address={`${job.location}, ${job.state}`}
                   description={job.description}
                   userType={userType}
-                  applicants={job?.applicants}
-                  onClick={() => {
-                    navigate(`/job/${job?.id}`); // Assuming job detail page is at '/job/:id'
-                  }}
+                  // applicants={job?.applicants}
+                  
                 />
               ))}
             </div>

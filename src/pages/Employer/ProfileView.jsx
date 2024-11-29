@@ -4,6 +4,7 @@ import { CompanyProfiles, JobCard, Loader } from "../../component"; // Import th
 import { FaFilter } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import LayoutCards from "../../component/Employer/LayoutCards";
 
 const ProfileView = () => {
   const [profile, setProfile] = useState([]); // Initialize as null to check loading state
@@ -15,7 +16,7 @@ const ProfileView = () => {
       try {
         const response = await fetchSingleDetailEmployer();
         setProfile(response); // Set fetched profile data
-        console.log(response, "res");
+        console.log(response, "res >>>>>");
       } catch (error) {
         console.log("Unable to get employer data", error);
       }
@@ -30,6 +31,22 @@ const ProfileView = () => {
     "profile?.jobsPostedByYou?.length"
   );
 
+  const profiles = [
+    {
+      logo: "https://via.placeholder.com/50",
+      title: "McDonald's",
+      description: "A global fast-food chain.",
+      location: "New York, USA",
+      layout: "1",
+    },
+    {
+      logo: "https://via.placeholder.com/50",
+      title: "Starbucks",
+      description: "Famous for coffee and more.",
+      location: "Seattle, USA",
+      layout: "2",
+    },
+  ];
   return (
     <div>
       {profile ? (
@@ -43,7 +60,21 @@ const ProfileView = () => {
           <Loader />
         </p> // Show loading text until profile data is available
       )}
-      
+
+      <div className="container">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {profiles.map((profile, index) => (
+            <LayoutCards
+              key={index}
+              profile={profile}
+              layout={profile.layout}
+            />
+          ))}
+        </div>
+      </div>
+
+
+
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
           <h3 className="text-4xl text-tn_dark font-semibold">Jobs</h3>
