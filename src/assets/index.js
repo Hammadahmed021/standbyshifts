@@ -26,6 +26,7 @@ export { default as layout1 } from "./Images/layout-1.png";
 export { default as layout2 } from "./Images/layout-2.png";
 export { default as layout3 } from "./Images/layout-3.png";
 export { default as layout4 } from "./Images/layout-4.png";
+export { default as card1 } from "./Images/card1.png";
 
 
 export { default as png } from "./Images/png.png";

@@ -5,6 +5,7 @@ import { FaFilter } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import LayoutCards from "../../component/Employer/LayoutCards";
+import { card1 } from "../../assets";
 
 const ProfileView = () => {
   const [profile, setProfile] = useState([]); // Initialize as null to check loading state
@@ -34,13 +35,15 @@ const ProfileView = () => {
   const profiles = [
     {
       logo: "https://via.placeholder.com/50",
+      bannerImg: card1,
       title: "McDonald's",
-      description: "A global fast-food chain.",
+      description: "It is a long established fact that a reader will be distracted by the readable.",
       location: "New York, USA",
       layout: "1",
     },
     {
       logo: "https://via.placeholder.com/50",
+      bannerImg: card1,
       title: "Starbucks",
       description: "Famous for coffee and more.",
       location: "Seattle, USA",
