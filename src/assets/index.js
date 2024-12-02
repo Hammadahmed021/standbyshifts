@@ -28,6 +28,16 @@ export { default as layout3 } from "./Images/layout-3.png";
 export { default as layout4 } from "./Images/layout-4.png";
 export { default as card1 } from "./Images/card1.png";
 
+/* background images for layout */
+export { default as cardLayout1 } from "./Images/card-v-1.png";
+export { default as cardLayout2 } from "./Images/card-v-2.png";
+export { default as cardLayout3 } from "./Images/card-v1-1.png";
+export { default as cardLayout4 } from "./Images/card-v1-2.png";
+export { default as cardLayout5 } from "./Images/card-v2-1.png";
+export { default as cardLayout6 } from "./Images/card-v2-2.png";
+export { default as cardLayout7 } from "./Images/card-v3-1.png";
+export { default as cardLayout8 } from "./Images/card-v3-2.png";
+
 
 export { default as png } from "./Images/png.png";
 export { default as google } from "./Images/google.png";

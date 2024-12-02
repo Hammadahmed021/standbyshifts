@@ -1,16 +1,30 @@
 import { FaLocationPin } from "react-icons/fa6";
+import {
+  cardLayout1,
+  cardLayout3,
+  cardLayout5,
+  cardLayout7,
+  fallback,
+} from "../../assets";
+
+const restrictWordCount = (text, wordLimit) => {
+  if (!text) return ""; // Handle null or undefined input
+  const words = text.split(" ");
+  if (words.length <= wordLimit) return text; // No need to truncate
+  return words.slice(0, wordLimit).join(" ") + "...";
+};
 
 const LayoutCards = ({ profile, layout }) => {
   switch (layout) {
     case "1":
       return (
-        <div className="rounded-3xl shadow-lg bg-white w-[368px] h-[490px]">
+        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
           <div className="relative overflow-hidden">
-            <div className="h-56 rounded-t-3xl">
+            <div className="h-56 rounded-t-3xl overflow-hidden">
               <img
-                src={profile?.bannerImg}
+                src={profile?.bannerImg || fallback}
                 alt={profile?.title}
-                className="h-full w-full"
+                className="h-full w-full rounded-t-3xl"
               />
             </div>
             <div className="w-full transform -mt-14 relative">
@@ -21,16 +35,19 @@ const LayoutCards = ({ profile, layout }) => {
               />
               <span
                 className="absolute top-0 w-full h-full -z-10 flex items-center justify-center"
-
-                alt="">
-                  <span className="bg-orange-100 w-full h-[60%]"></span> </span>
+                alt=""
+              >
+                {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
+                <img src={cardLayout1} alt="" className="w-full h-auto" />
+              </span>
             </div>
-
           </div>
-          <div className="mt-4 text-center p-4">
+          <div className="text-center p-4">
             <h3 className="text-xl font-semibold">{profile?.title}</h3>
-            <p className="text-gray-600 mt-2">{profile?.description}</p>
-            <div className="mt-4 gap-2 inline-flex items-center justify-center text-blue-500 bg-blue-100 p-1 rounded-2xl">
+            <p className="text-gray-600 mt-2">
+              {restrictWordCount(profile?.description, 15)}
+            </p>
+            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
 
               {profile?.location}
@@ -41,35 +58,114 @@ const LayoutCards = ({ profile, layout }) => {
 
     case "2":
       return (
-        <div className="rounded-2xl shadow-lg bg-white w-[368px] h-[490px]">
-          <div className="relative">
-            <div className="h-28 bg-blue-300 rounded-t-lg"></div>
-            <img
-              src={profile.logo}
-              alt={profile.title}
-              className="absolute top-8 left-4 w-12 h-12 object-cover rounded-full border-4 border-white"
-            />
-          </div>
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold">{profile.title}</h3>
-            <p className="text-gray-600 mt-2">{profile.description}</p>
-            <div className="mt-4 flex items-center text-blue-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16.88 4.47c.34 0 .68.04 1 .12 1.12.27 2.12 1.2 2.58 2.33.46 1.1.56 2.46.33 3.68a8.09 8.09 0 01-2.22 4.3L12 20l-6.57-5.1a8.09 8.09 0 01-2.22-4.3c-.23-1.22-.13-2.57.33-3.68a3.94 3.94 0 012.58-2.33c.33-.08.67-.12 1-.12h5.88z"
+        <div className="rounded-2xl shadow-lg bg-white max-w-[368px] h-[490px]">
+          <div className="relative overflow-hidden">
+            <div className="h-[278px] rounded-t-3xl overflow-hidden relative">
+              <img
+                src={cardLayout3}
+                alt={profile?.title}
+                className="h-full w-full -z-0"
+              />
+              <div className="w-full h-auto absolute bottom-10 left-0 right-0">
+                <img
+                  src={profile?.logo}
+                  alt={profile?.title}
+                  className="transform mx-auto w-32 h-32 object-cover rounded-full z-10 "
                 />
-              </svg>
-              {profile.location}
+              </div>
             </div>
+          </div>
+          <div className="text-center px-4">
+            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <p className="text-gray-600 mt-2">
+              {restrictWordCount(profile?.description, 15)}
+            </p>
+            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+              <FaLocationPin size={16} />
+              {profile?.location}
+            </div>
+          </div>
+        </div>
+      );
+
+    case "3":
+      return (
+        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
+          <div className="relative overflow-hidden">
+            <div className="h-52 rounded-t-3xl relative overflow-hidden">
+              <img
+                src={profile?.bannerImg || fallback}
+                alt={profile?.title}
+                className="h-full w-full -z-10 rounded-t-3xl"
+              />
+              <span
+                className="absolute top-6 w-full h-48 -z-0 flex items-center justify-center"
+                alt=""
+              >
+                {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
+                <img
+                  src={cardLayout5}
+                  alt=""
+                  className="w-full h-full object-cover -z-0"
+                />
+              </span>
+            </div>
+            <div className="w-full flex justify-end transform -mt-16 relative pb-4">
+              <img
+                src={profile?.logo}
+                alt={profile?.title}
+                className="transform w-32 h-32 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg"
+              />
+            </div>
+          </div>
+          <div className="text-start px-4">
+            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <p className="text-gray-600 mt-2">
+              {restrictWordCount(profile?.description, 15)}
+            </p>
+            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+              <FaLocationPin size={16} />
+              {profile?.location}
+            </div>
+          </div>
+        </div>
+      );
+
+    case "4":
+      return (
+        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
+          <div className="relative overflow-hidden">
+            <div className="h-56 rounded-t-3xl relative ">
+              <img
+                src={profile?.bannerImg || fallback}
+                alt={profile?.title}
+                className="h-full w-full -z-10 rounded-t-3xl"
+              />
+              <span
+                className="absolute top-4 w-full h-56 -z-0 flex items-center justify-center"
+                alt=""
+              >
+                {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
+                <img src={cardLayout7} alt="" className="w-full h-full -z-0" />
+              </span>
+            </div>
+            <div className="w-full flex justify-end transform -mt-16 relative pb-4">
+              <img
+                src={profile?.logo}
+                alt={profile?.title}
+                className="transform w-32 h-32 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg"
+              />
+            </div>
+          </div>
+          <div className="text-start px-4">
+            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <div className="my-4 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+              <FaLocationPin size={16} />
+              {profile?.location}
+            </div>
+            <p className="text-gray-600 mt-2">
+              {restrictWordCount(profile?.description, 15)}
+            </p>
           </div>
         </div>
       );
