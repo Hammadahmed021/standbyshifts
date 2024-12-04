@@ -83,6 +83,15 @@ const Header = ({ style }) => {
       </li>
       <li>
         <NavLink
+          to={"/companies"}
+          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
+        >
+          Companies
+        </NavLink>
+      </li>
+      
+      <li>
+        <NavLink
           to={"/jobs"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
@@ -140,14 +149,14 @@ const Header = ({ style }) => {
           Post Job
         </NavLink>
       </li>
-      {/* <li>
+      <li>
         <NavLink
-          to={"/manage-jobs"}
+          to={"/employees"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Manage Jobs
+          Employees
         </NavLink>
-      </li> */}
+      </li>
       <li>
         <NavLink
           to={"/appliers-on-job"}

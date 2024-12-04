@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDataForEmployer } from "../../utils/Api";
+import { GetComOrEmp, getDataForEmployer } from "../../utils/Api";
 import {
   Button,
   CompanyProfiles,
@@ -9,12 +9,15 @@ import {
 } from "../../component";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { girlSofa } from "../../assets";
+import { fallback, girlSofa } from "../../assets";
+import { employees } from "../../utils/localDB";
+import LayoutCards from "../../component/Employer/LayoutCards";
 
 const Home = () => {
   const { type } = location.state || {}; // Get the type passed from modal
   const [profile, setProfile] = useState([]); // Initialize as null to check loading state
   const [candidateApllied, setCandidateApllied] = useState([]);
+  const [getDetails, setGetDetails] = useState([]);
 
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
@@ -29,27 +32,79 @@ const Home = () => {
   }, []);
 
   const checkLayout = profile?.about?.layout || "1"; // Check layout from profile
+  console.log(candidateApllied, "candidateApllied");
 
   const navigate = useNavigate();
   const handleRoute = () => {
     navigate("/post-job");
   };
 
+  const FuckinType = "employee";
+  useEffect(() => {
+    const getAllCompany = async (userType) => {
+      try {
+        const response = await GetComOrEmp(userType);
+        console.log(response, "getting data based on type", userType);
+        setGetDetails(response);
+      } catch (error) {
+        console.log(error, "unable to get data");
+      }
+    };
+    getAllCompany(FuckinType);
+  }, []);
+
+  const transformedProfiles = getDetails.map((job) => ({
+    bannerImg: job?.banner || fallback, // Fallback banner image
+    image: job?.employee?.image || fallback, // Fallback logo image
+    title: job?.name || "No Title Provided",
+    description: job?.short_description || "No Description Available",
+    location: job?.employer?.location || job?.employee?.location || "Location Not Available",
+    layout: job?.employer?.layout || "1", // Default layout if not provided
+    id: job?.id, // Default layout if not provided
+  }));
+
   return (
     <>
-      {profile ? (
-        <CompanyProfiles
-          profile={profile?.about}
-          layout={checkLayout}
-          count={profile?.jobPostCount}
-        />
-      ) : (
-        <p>
-          <Loader />
-        </p> // Show loading text until profile data is available
-      )}
+      <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
+        <div className="container h-full flex sm:items-end p-6 sm:px-4 ">
+          <div className="w-full  py-0 flex-col h-full">
+            <div className="container flex flex-col lg:flex-row items-end justify-between sm:pt-10">
+              <div className="">
+                <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
+                  Discover the ideal{" "}
+                  <span className="font-bold text-tn_primary inline sm:block">
+                    match for professional needs
+                  </span>
+                </h2>
+                <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
+                  It is a long established fact that a reader will be distracted
+                  by the readable content of a page when looking at its layout.
+                </p>
+              </div>
+              <Link
+                to={"/companies"}
+                className="border px-8 py-3 rounded-site text-white font-medium hidden sm:block"
+              >
+                View All
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="bg-tn_light_grey py-8 sm:py-16 mb-16 mt-8">
+      <div className="container md:-mt-[350px] lg:-mt-[400px] sm:px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {transformedProfiles?.slice(0, 4)?.map((profile, index) => (
+            <LayoutCards
+              key={index}
+              profile={profile}
+              layout={profile.layout}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className=" py-8 sm:py-16 mb-16 mt-8">
         <div className="flex items-center justify-between container">
           <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
             Recent job posts
@@ -63,7 +118,7 @@ const Home = () => {
         </div>
         <div className="container">
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {profile?.jobsPostedByYou?.slice(0,6)?.map((job) => (
+            {profile?.jobsPostedByYou?.slice(0, 6)?.map((job) => (
               <JobCard
                 className={"shadow-xl"}
                 key={job.id}
@@ -131,14 +186,24 @@ const Home = () => {
 
       <div className="container">
         <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-center">
-          Popular employees
+          Rated Shift Seekers
         </h3>
         <p className=" my-4 text-base w-full text-tn_dark  font-normal md:w-[40%] text-center mx-auto">
           It is a long established fact that a reader will be distracted by the
           readable content of a page when looking at its layout.
         </p>
-        <div className="mt-8 grid grid-cols-1 gap-8 text-center">
-          <p>No popular employee available</p>
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {candidateApllied?.map((employee) => (
+            <EmpCard
+              image={employee.image || employee?.profile_picture}
+              title={employee.title || employee?.designation}
+              subheading={employee.subheading}
+              employer_name={employee.employer_name || employee.name}
+              location={employee.location}
+              isLocation={true}
+              jobId={employee?.id}
+            />
+          ))}
         </div>
       </div>
 

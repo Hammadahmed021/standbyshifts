@@ -255,8 +255,10 @@ export const updateEmployerProfile = async (userData) => {
     zip_code,
     industry_id, // Ensure this is always an array
     logo,
+    banner,
     layout,
     about,
+    short_description,
   } = userData;
 
   const formData = new FormData();
@@ -266,12 +268,16 @@ export const updateEmployerProfile = async (userData) => {
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
   formData.append("about", about || ""); // Directly use userData
+  formData.append("short_description", short_description || ""); // Directly use userData
 
   formData.append("industry_id", industry_id);
 
   // Append profile image if present
   if (logo) {
     formData.append("logo", logo);
+  }
+  if (banner) {
+    formData.append("banner", banner);
   }
 
   // Log form data for debugging
@@ -316,6 +322,8 @@ export const updateUserProfile = async (userData) => {
     // skills, // Default to an empty array if undefined
     work_history, // Default to an empty array if undefined
     profile_picture,
+    short_description,
+    banner,
   } = userData;
   console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
 
@@ -324,6 +332,7 @@ export const updateUserProfile = async (userData) => {
   formData.append("phone", phone);
   formData.append("location", location || ""); // Directly use userData
   formData.append("zip_code", zip_code || ""); // Directly use userData
+  formData.append("short_description", short_description || ""); // Directly use userData
 
   formData.append("industry_id", industry_id);
   // formData.append("expertise", expertise);
@@ -344,6 +353,11 @@ export const updateUserProfile = async (userData) => {
   // Append profile image if present
   if (profile_picture) {
     formData.append("profile_picture", profile_picture);
+  }
+
+  // Append banner image if present
+  if (banner) {
+    formData.append("banner", banner);
   }
 
   // Log form data for debugging
@@ -520,7 +534,6 @@ export const fetchUserNearByRestaurants = async ({ payload }) => {
 };
 
 /* Send newsletter */
-
 export const sendNewsletter = async (newsEmail) => {
   const email = newsEmail.email;
   console.log(newsEmail, "email api newsletter");
@@ -836,7 +849,6 @@ export const getJobByIdEmployee = async (id) => {
 };
 
 //get job detail employer
-
 export const getJobByIdEmployer = async (id) => {
   const token = localStorage.getItem("webToken");
 
@@ -900,3 +912,46 @@ export const hirePeople = async (body) => {
 
 // fetch single page as employer of jobs
 // endpoint - /fetch-single-job/{jobId}
+
+// toggle employee availablity
+export const ToggleAvailablity = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}employee/profile/toggle-availability`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error, "unable to toggle availablity");
+    throw error;
+  }
+};
+
+// get company and employee
+
+export const GetComOrEmp = async (type) => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(
+      `${BASE_URL}available-users/${type}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error, "unable to toggle availablity");
+    throw error;
+  }
+};

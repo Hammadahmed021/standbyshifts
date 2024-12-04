@@ -1,5 +1,21 @@
 import img from "../assets/Images/restaurant-image.png";
-import { menu, ImgB, ImgB1, like, bubble, support, messages, trendUp, grammerly, task, people as peeps, layout1, layout2 } from "../assets";
+import {
+  menu,
+  ImgB,
+  ImgB1,
+  like,
+  bubble,
+  support,
+  messages,
+  trendUp,
+  grammerly,
+  task,
+  people as peeps,
+  layout1,
+  layout2,
+  layout3,
+  layout4,
+} from "../assets";
 
 export const imageData = [
   { src: ImgB1 },
@@ -21,65 +37,76 @@ export const layoutOptions = [
     label: "Layout 2",
     imageUrl: layout2,
   },
-  // {
-  //   id: "3",
-  //   label: "Layout 3",
-  //   imageUrl: "https://via.placeholder.com/100?text=Layout+3",
-  // },
-  // {
-  //   id: "4",
-  //   label: "Layout 4",
-  //   imageUrl: "https://via.placeholder.com/100?text=Layout+4",
-  // },
+  {
+    id: "3",
+    label: "Layout 3",
+    imageUrl: layout3,
+  },
+  {
+    id: "4",
+    label: "Layout 4",
+    imageUrl: layout4,
+  },
 ];
 
 export const infoGrid = [
   {
     icon: bubble,
     title: "Over 50+ categories",
-    description: "It is a long established fact that a reader will be distracted by.",
+    description:
+      "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: messages,
     title: "Clear communication",
-    description: "It is a long established fact that a reader will be distracted by.",
+    description:
+      "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: like,
     title: "Quality work done",
-    description: "It is a long established fact that a reader will be distracted by.",
+    description:
+      "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: support,
     title: "24/7  support",
-    description: "It is a long established fact that a reader will be distracted by.",
+    description:
+      "It is a long established fact that a reader will be distracted by.",
   },
 ];
-export const testimonial = [{
-  text: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-}, {
-  text: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-}]
+export const testimonial = [
+  {
+    text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+  },
+  {
+    text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+  },
+];
 export const revenueGrid = [
   {
     icon: trendUp,
     title: "Grow your revenue",
-    description: "It is a long established fact that a reader will be distracted by the readable content.",
+    description:
+      "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: peeps,
     title: "Meet new peoples",
-    description: "It is a long established fact that a reader will be distracted by the readable content.",
+    description:
+      "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: grammerly,
     title: "Live Smarter",
-    description: "It is a long established fact that a reader will be distracted by the readable content.",
+    description:
+      "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: task,
     title: "Describe Your Task",
-    description: "It is a long established fact that a reader will be distracted by the readable content.",
+    description:
+      "It is a long established fact that a reader will be distracted by the readable content.",
   },
 ];
 
@@ -102,7 +129,6 @@ export const employer = [
   // Add more employee objects as needed
 ];
 
-
 export const employees = [
   {
     image: "https://via.placeholder.com/150",
@@ -124,7 +150,6 @@ export const employees = [
   },
   // Add more employee objects as needed
 ];
-
 
 export const localDB = [
   {
@@ -219,8 +244,8 @@ export const infoLinks = {
 export const supportLinks = {
   "Privacy Policy": "/privacy-policy",
   "Refund Policy": "/terms-of-service",
-  "About": "/",
-  "Contact": "/contact",
+  About: "/",
+  Contact: "/contact",
 };
 
 export const menus = [

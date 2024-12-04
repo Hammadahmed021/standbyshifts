@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getJobsForEmployee } from "../../utils/Api";
+import { GetComOrEmp, getJobsForEmployee } from "../../utils/Api";
 import {
   Button,
   EmpCardSlider,
@@ -9,12 +9,13 @@ import {
   TestimonialSlider,
 } from "../../component";
 import { testimonial } from "../../utils/localDB";
-import { paypal, peoples } from "../../assets";
+import { fallback, paypal, peoples } from "../../assets";
 import Slider from "react-slick";
 import { NextArrow, PrevArrow } from "../../component/CustomArrows";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import LayoutCards from "../../component/Employer/LayoutCards";
 
 const Home = () => {
   const [recentJobs, setRecentJobs] = useState([]);
@@ -25,6 +26,7 @@ const Home = () => {
   const [industries, setIndustries] = useState([]);
   // const [shifts, setShifts] = useState([]);
   const [start_date, setStart_date] = useState([]);
+  const [getDetails, setGetDetails] = useState([]);
 
   const shiftTimes = [
     { id: "morning", name: "Morning" },
@@ -40,7 +42,7 @@ const Home = () => {
     jobTitle: null,
     zipCode: null,
     location: null,
-    start_date: null
+    start_date: null,
   });
 
   const handleFilterChange = (e, category) => {
@@ -137,117 +139,79 @@ const Home = () => {
   const handleRoute = () => {
     navigate("/jobs", { state: selectedOptions });
   };
+
+ 
+
+  const FuckinType = 'employer'
+  useEffect(() => {
+    const getAllCompany = async (userType) => {
+      try {
+        const response = await GetComOrEmp(userType);
+        console.log(response, 'getting data based on type', userType);
+        setGetDetails(response)
+      } catch (error) {
+        console.log(error, "unable to get data");
+      }
+    };
+    getAllCompany(FuckinType);
+  }, []);
+
+  const transformedProfiles = getDetails.map((job) => ({
+    bannerImg: job?.banner || fallback, // Fallback banner image
+    image: job?.employer?.image || fallback, // Fallback logo image
+    title: job?.name || "No Title Provided",
+    description:
+      job?.short_description || "No Description Available",
+    location: job?.employer?.location || "Location Not Available",
+    layout: job?.employer?.layout || "1", // Default layout if not provided
+    id: job?.id, // Default layout if not provided
+  }));
+
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
-        <div className="container h-full flex items-center sm:items-end p-6 sm:px-0 ">
-          <div className="w-full flex sm:pl-10 py-0 flex-col justify-evenly h-full">
-            <div className="w-[100%] sm:w-[90%]">
-              <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
-                Discover the ideal{" "}
-                <span className="font-bold text-tn_primary inline sm:block">
-                  match for professional needs
-                </span>
-              </h2>
-              <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
-                It is a long established fact that a reader will be distracted
-                by the readable content of a page when looking at its layout.
-              </p>
-              <div className="flex flex-wrap sm:flex-nowrap container px-0  mt-10 gap-3">
-                <div className="flex flex-wrap sm:flex-nowrap gap-2 rounded-2xl sm:rounded-site border py-3 px-4">
-                  <SelectOption
-                    // label="Expertise"
-                    pl={"pl-1"}
-                    value={selectedOptions.expertise}
-                    onChange={(e) => handleFilterChange(e, "expertise")}
-                    className="border-b sm:border-b-0 sm:border-r  sm:pr-1 py-2"
-                    options={addAllOption(expertise || [], "All Expertise")}
-                  />
-                  <SelectOption
-                    // label="Industries"
-                    pl={"pl-1"}
-                    value={selectedOptions.shifts}
-                    onChange={(e) => handleFilterChange(e, "shifts")}
-                    className="border-b sm:border-b-0 sm:border-r pr-1 py-2"
-                    options={addAllOption(shiftTimes || [], "All shifts")}
-                  />
-
-                  <input
-                    label="Search by title"
-                    placeholder="Job title"
-                    type="text"
-                    className="w-[100%]  bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
-                    value={selectedOptions.jobTitle}
-                    onChange={(e) => {
-                      setSelectedOptions((prevSelectedOptions) => ({
-                        ...prevSelectedOptions,
-                        jobTitle: e.target.value,
-                      }));
-                    }}
-                  />
-                  <input
-                    className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
-                    type="date"
-                    value={selectedOptions.start_date}
-                    onChange={(e) => {
-                      setSelectedOptions((prevSelectedOptions) => ({
-                        ...prevSelectedOptions,
-                        start_date: e.target.value,
-                      }));
-                    }}
-                    placeholder="Enter start date"
-                  />
-
-                  <input
-                    label="Search by Zipcode"
-                    placeholder="Zipcode"
-                    type="text"
-                    className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
-                    value={selectedOptions.zipCode}
-                    onChange={(e) => {
-                      setSelectedOptions((prevSelectedOptions) => ({
-                        ...prevSelectedOptions,
-                        zipCode: e.target.value,
-                      }));
-                    }}
-                  />
-                  <input
-                    label="Search by location"
-                    placeholder="Location"
-                    type="text"
-                    className="w-[100%]  bg-transparent py-2 outline-none focus:outline-none text-white"
-                    value={selectedOptions.location}
-                    onChange={(e) => {
-                      setSelectedOptions((prevSelectedOptions) => ({
-                        ...prevSelectedOptions,
-                        location: e.target.value,
-                      }));
-                    }}
-                  />
-                </div>
-                <Button onClick={handleRoute}>Search</Button>
+        <div className="container h-full flex sm:items-end p-6 sm:px-4 ">
+          <div className="w-full  py-0 flex-col h-full">
+            <div className="container flex flex-col lg:flex-row items-end justify-between sm:pt-10">
+              <div className="">
+                <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
+                  Discover the ideal{" "}
+                  <span className="font-bold text-tn_primary inline sm:block">
+                    match for professional needs
+                  </span>
+                </h2>
+                <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
+                  It is a long established fact that a reader will be distracted
+                  by the readable content of a page when looking at its layout.
+                </p>
               </div>
-            </div>
-            <div className="mt-6 sm:mt-0">
-              <p className="text-white font-base">Popular searches:</p>
-              <ul className="flex flex-wrap gap-2 custom-icons mt-4">
-                {skills.slice(0, 6).map((item) => (
-                  <li key={item.id}>
-                    <span className="text-tn_light rounded-site text-sm bg-tn_text_grey px-3 py-1 flex items-center justify-between">
-                      <FaMagnifyingGlass size={13} className="mr-2" />{" "}
-                      {item.title}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <Link
+                to={"/companies"}
+                className="border px-8 py-3 rounded-site text-white font-medium hidden sm:block"
+              >
+                View All
+              </Link>
             </div>
           </div>
         </div>
       </div>
+
+      <div className="container md:-mt-[350px] lg:-mt-[400px] sm:px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {transformedProfiles?.slice(0, 4)?.map((profile, index) => (
+            <LayoutCards
+              key={index}
+              profile={profile}
+              layout={profile.layout}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className="container mt-24 employee-home px-0">
         <div className="container">
           <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold">
-            Recent job posts
+          Recently posted shifts 
           </h3>
           <div className="flex flex-wrap flex-col-reverse sm:flex-row item-center justify-between">
             <ul className="flex flex-wrap gap-2 custom-icons mt-4">
@@ -260,7 +224,7 @@ const Home = () => {
                 </li>
               ))}
             </ul>
-            <Link to={"/jobs"} className="text-tn_text_grey text-base">
+            <Link to={"/employee-filter"} className="text-tn_text_grey text-base">
               View All
             </Link>
           </div>
@@ -268,42 +232,42 @@ const Home = () => {
         <div className="px-6">
           <Slider {...getSliderSettings(matchJobs)} className="mt-12">
             {!matchJobs || matchJobs.length === 0
-              ? // Show skeleton loaders for the number of jobs you expect to show
-              [...Array(3)].map((_, index) => (
-                <div key={index} className="p-2">
-                  <JobCard loading={true} /> {/* Loader JobCard */}
-                </div>
-              ))
+              ? 
+                [...Array(3)].map((_, index) => (
+                  <div key={index} className="p-2">
+                    <JobCard loading={true} /> 
+                  </div>
+                ))
               : matchJobs?.map((job) => (
-                <div key={job?.id} className="p-2">
-                  <JobCard
-                    className={"shadow-xl"}
-                    jobId={job?.id}
-                    key={job?.id}
-                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                    jobTitle={job?.title}
-                    companyName={job?.city} // You can also pass the company name if available
-                    payRate={`$${job?.per_hour_rate}`}
-                    dateRange={`${new Date(
-                      job?.start_date
-                    ).toLocaleDateString()} to ${new Date(
-                      job?.end_date
-                    ).toLocaleDateString()}`}
-                    timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
-                    level={job?.experience_level}
-                    address={`${job?.location}, ${job?.state}`}
-                    description={job?.description}
-                    userType={userType}
-                    loading={false}
-                    applicants={job?.applicant}
-                  />
-                </div>
-              ))}
+                  <div key={job?.id} className="p-2">
+                    <JobCard
+                      className={"shadow-xl"}
+                      jobId={job?.id}
+                      key={job?.id}
+                      companyLogo={job?.user?.employer?.logo} 
+                      jobTitle={job?.title}
+                      companyName={job?.city} 
+                      payRate={`$${job?.per_hour_rate}`}
+                      dateRange={`${new Date(
+                        job?.start_date
+                      ).toLocaleDateString()} to ${new Date(
+                        job?.end_date
+                      ).toLocaleDateString()}`}
+                      timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
+                      level={job?.experience_level}
+                      address={`${job?.location}, ${job?.state}`}
+                      description={job?.description}
+                      userType={userType}
+                      loading={false}
+                      applicants={job?.applicant}
+                    />
+                  </div>
+                ))}
           </Slider>
         </div>
       </div>
 
-      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
+      {/* <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
         <div className="container h-full flex flex-wrap items-center px-0">
           <div className="lg:w-5/12 w-full flex px-4 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
@@ -314,7 +278,9 @@ const Home = () => {
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
               </p>
-              <Button className="mt-2 sm:mt-8 pointer-events-none">Find more</Button>
+              <Button className="mt-2 sm:mt-8 pointer-events-none">
+                Find more
+              </Button>
             </div>
           </div>
           <div className="lg:w-7/12 w-full ">
@@ -323,9 +289,9 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="container">
+      {/* <div className="container">
         <h3 className="text-tn_dark text-4xl inline sm:block leading-tight font-semibold text-center">
           Who's hiring on standby shifts
         </h3>
@@ -347,64 +313,63 @@ const Home = () => {
             </>
           ))}
         </div>
-      </div>
+      </div> */}
 
-      <div className="bg-nearby-bg my-0 sm:my-24 bg-cover py-8">
-        <div className="container pt-20 pb-10">
+    
+        <div className="container mt-24">
           <div className="flex flex-wrap items-center justify-center sm:justify-between">
-            <h3 className="text-white text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-start sm:text-center">
-              Jobs near you
+            <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-start sm:text-center">
+            Nearby available shifts
             </h3>
             <Link
-              to={"/jobs"}
-              className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium hidden sm:block"
+              to={"/employee-filter"}
+              className="text-tn_text_grey text-base hidden sm:block"
             >
               Find more
             </Link>
           </div>
-          <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-1">
+          <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {!matchJobs || matchJobs.length === 0
               ? // Show skeleton loaders for the number of jobs you expect to show
-              [...Array(3)].map((_, index) => (
-                <div key={index} className="p-2">
-                  <JobCard loading={true} /> {/* Loader JobCard */}
-                </div>
-              ))
+                [...Array(3)].map((_, index) => (
+                  <div key={index} className="p-2">
+                    <JobCard loading={true} /> {/* Loader JobCard */}
+                  </div>
+                ))
               : matchJobs?.splice(0, 3)?.map((job) => (
-                <div key={job?.id} className="p-2">
-                  <JobCard
-                    className={"shadow-xl"}
-                    jobId={job?.id}
-                    key={job?.id}
-                    companyLogo={job?.user?.employer?.logo} // Replace with actual logo
-                    jobTitle={job?.title}
-                    companyName={job?.city} // You can also pass the company name if available
-                    payRate={`$${job?.per_hour_rate}`}
-                    dateRange={`${new Date(
-                      job?.start_date
-                    ).toLocaleDateString()} to ${new Date(
-                      job?.end_date
-                    ).toLocaleDateString()}`}
-                    timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
-                    level={job?.experience_level}
-                    location={`${job?.location}, ${job?.state}`}
-                    description={job?.description}
-                    userType={userType}
-                    loading={false}
-                  />
-                </div>
-              ))}
+                  <div key={job?.id} className="">
+                    <JobCard
+                      className={"shadow-xl"}
+                      jobId={job?.id}
+                      key={job?.id}
+                      companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                      jobTitle={job?.title}
+                      companyName={job?.city} // You can also pass the company name if available
+                      payRate={`$${job?.per_hour_rate}`}
+                      dateRange={`${new Date(
+                        job?.start_date
+                      ).toLocaleDateString()} to ${new Date(
+                        job?.end_date
+                      ).toLocaleDateString()}`}
+                      timeRange={`${job?.shift_start_time} - ${job?.shift_end_time}`}
+                      level={job?.experience_level}
+                      location={`${job?.location}, ${job?.state}`}
+                      description={job?.description}
+                      userType={userType}
+                      loading={false}
+                    />
+                  </div>
+                ))}
           </div>
           <div className="text-center pb-12 mt-6 sm:hidden">
             <Link
-              to={"/jobs"}
-              className="bg-tn_primary px-8 py-3 rounded-site text-white font-medium "
+              to={"/employee-filter"}
+              className="text-tn_text_grey text-base block sm:hidden"
             >
               Find more
             </Link>
           </div>
         </div>
-      </div>
 
       <div className="container flex items-center mt-0 mb-20 sm:mt-20 testimonials">
         <div className="lg:w-5/12 w-full">
@@ -424,3 +389,109 @@ const Home = () => {
 };
 
 export default Home;
+
+// <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
+//       <div className="container h-full flex items-center sm:items-end p-6 sm:px-0 ">
+//         <div className="w-full flex sm:pl-10 py-0 flex-col justify-evenly h-full">
+//           <div className="w-[100%] sm:w-[90%]">
+//             <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
+//               Discover the ideal{" "}
+//               <span className="font-bold text-tn_primary inline sm:block">
+//                 match for professional needs
+//               </span>
+//             </h2>
+//             <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
+//               It is a long established fact that a reader will be distracted
+//               by the readable content of a page when looking at its layout.
+//             </p>
+//             <div className="flex flex-wrap sm:flex-nowrap container px-0  mt-10 gap-3">
+//               <div className="flex flex-wrap sm:flex-nowrap gap-2 rounded-2xl sm:rounded-site border py-3 px-4">
+//                 <SelectOption
+//                   // label="Expertise"
+//                   pl={"pl-1"}
+//                   value={selectedOptions.expertise}
+//                   onChange={(e) => handleFilterChange(e, "expertise")}
+//                   className="border-b sm:border-b-0 sm:border-r  sm:pr-1 py-2"
+//                   options={addAllOption(expertise || [], "All Expertise")}
+//                 />
+//                 <SelectOption
+//                   // label="Industries"
+//                   pl={"pl-1"}
+//                   value={selectedOptions.shifts}
+//                   onChange={(e) => handleFilterChange(e, "shifts")}
+//                   className="border-b sm:border-b-0 sm:border-r pr-1 py-2"
+//                   options={addAllOption(shiftTimes || [], "All shifts")}
+//                 />
+
+//                 <input
+//                   label="Search by title"
+//                   placeholder="Job title"
+//                   type="text"
+//                   className="w-[100%]  bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
+//                   value={selectedOptions.jobTitle}
+//                   onChange={(e) => {
+//                     setSelectedOptions((prevSelectedOptions) => ({
+//                       ...prevSelectedOptions,
+//                       jobTitle: e.target.value,
+//                     }));
+//                   }}
+//                 />
+//                 <input
+//                   className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
+//                   type="date"
+//                   value={selectedOptions.start_date}
+//                   onChange={(e) => {
+//                     setSelectedOptions((prevSelectedOptions) => ({
+//                       ...prevSelectedOptions,
+//                       start_date: e.target.value,
+//                     }));
+//                   }}
+//                   placeholder="Enter start date"
+//                 />
+
+//                 <input
+//                   label="Search by Zipcode"
+//                   placeholder="Zipcode"
+//                   type="text"
+//                   className="w-[100%] bg-transparent border-b sm:border-b-0 sm:border-r pr-1 py-2 outline-none focus:outline-none text-white"
+//                   value={selectedOptions.zipCode}
+//                   onChange={(e) => {
+//                     setSelectedOptions((prevSelectedOptions) => ({
+//                       ...prevSelectedOptions,
+//                       zipCode: e.target.value,
+//                     }));
+//                   }}
+//                 />
+//                 <input
+//                   label="Search by location"
+//                   placeholder="Location"
+//                   type="text"
+//                   className="w-[100%]  bg-transparent py-2 outline-none focus:outline-none text-white"
+//                   value={selectedOptions.location}
+//                   onChange={(e) => {
+//                     setSelectedOptions((prevSelectedOptions) => ({
+//                       ...prevSelectedOptions,
+//                       location: e.target.value,
+//                     }));
+//                   }}
+//                 />
+//               </div>
+//               <Button onClick={handleRoute}>Search</Button>
+//             </div>
+//           </div>
+//           <div className="mt-6 sm:mt-0">
+//             <p className="text-white font-base">Popular searches:</p>
+//             <ul className="flex flex-wrap gap-2 custom-icons mt-4">
+//               {skills.slice(0, 6).map((item) => (
+//                 <li key={item.id}>
+//                   <span className="text-tn_light rounded-site text-sm bg-tn_text_grey px-3 py-1 flex items-center justify-between">
+//                     <FaMagnifyingGlass size={13} className="mr-2" />{" "}
+//                     {item.title}
+//                   </span>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+//         </div>
+//       </div>
+//     </div>

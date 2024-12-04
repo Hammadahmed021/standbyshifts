@@ -6,6 +6,7 @@ import {
   cardLayout7,
   fallback,
 } from "../../assets";
+import { Link } from "react-router-dom";
 
 const restrictWordCount = (text, wordLimit) => {
   if (!text) return ""; // Handle null or undefined input
@@ -14,11 +15,11 @@ const restrictWordCount = (text, wordLimit) => {
   return words.slice(0, wordLimit).join(" ") + "...";
 };
 
-const LayoutCards = ({ profile, layout }) => {
+const LayoutCards = ({ profile, layout, type = "employee" }) => {
   switch (layout) {
     case "1":
       return (
-        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
+        <div className="rounded-3xl shadow-lg bg-white w-full h-[490px]">
           <div className="relative overflow-hidden">
             <div className="h-56 rounded-t-3xl overflow-hidden">
               <img
@@ -29,9 +30,9 @@ const LayoutCards = ({ profile, layout }) => {
             </div>
             <div className="w-full transform -mt-14 relative">
               <img
-                src={profile?.logo}
+                src={profile?.image}
                 alt={profile?.title}
-                className="transform mx-auto w-32 h-32 object-cover rounded-full z-10 border-4 border-white"
+                className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-gray-50 "
               />
               <span
                 className="absolute top-0 w-full h-full -z-10 flex items-center justify-center"
@@ -43,7 +44,15 @@ const LayoutCards = ({ profile, layout }) => {
             </div>
           </div>
           <div className="text-center p-4">
-            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <h3 className="text-xl font-semibold">
+              {type == "employer" ? (
+                <Link to={`/employee-view/${profile?.id}`}>
+                  {profile?.title}
+                </Link>
+              ) : (
+                <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              )}
+            </h3>
             <p className="text-gray-600 mt-2">
               {restrictWordCount(profile?.description, 15)}
             </p>
@@ -58,7 +67,7 @@ const LayoutCards = ({ profile, layout }) => {
 
     case "2":
       return (
-        <div className="rounded-2xl shadow-lg bg-white max-w-[368px] h-[490px]">
+        <div className="rounded-3xl shadow-lg bg-white w-full h-[490px]">
           <div className="relative overflow-hidden">
             <div className="h-[278px] rounded-t-3xl overflow-hidden relative">
               <img
@@ -68,15 +77,17 @@ const LayoutCards = ({ profile, layout }) => {
               />
               <div className="w-full h-auto absolute bottom-10 left-0 right-0">
                 <img
-                  src={profile?.logo}
+                  src={profile?.image}
                   alt={profile?.title}
-                  className="transform mx-auto w-32 h-32 object-cover rounded-full z-10 "
+                  className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-gray-50 shadow-lg"
                 />
               </div>
             </div>
           </div>
           <div className="text-center px-4">
-            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <h3 className="text-xl font-semibold">
+              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+            </h3>
             <p className="text-gray-600 mt-2">
               {restrictWordCount(profile?.description, 15)}
             </p>
@@ -90,7 +101,7 @@ const LayoutCards = ({ profile, layout }) => {
 
     case "3":
       return (
-        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
+        <div className="rounded-3xl shadow-lg bg-white w-full h-[490px]">
           <div className="relative overflow-hidden">
             <div className="h-52 rounded-t-3xl relative overflow-hidden">
               <img
@@ -112,14 +123,16 @@ const LayoutCards = ({ profile, layout }) => {
             </div>
             <div className="w-full flex justify-end transform -mt-16 relative pb-4">
               <img
-                src={profile?.logo}
+                src={profile?.image}
                 alt={profile?.title}
-                className="transform w-32 h-32 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg"
+                className="transform w-24 h-24 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg"
               />
             </div>
           </div>
           <div className="text-start px-4">
-            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <h3 className="text-xl font-semibold">
+              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+            </h3>
             <p className="text-gray-600 mt-2">
               {restrictWordCount(profile?.description, 15)}
             </p>
@@ -133,7 +146,7 @@ const LayoutCards = ({ profile, layout }) => {
 
     case "4":
       return (
-        <div className="rounded-3xl shadow-lg bg-white max-w-[368px] h-[490px]">
+        <div className="rounded-3xl shadow-lg bg-white w-full h-[490px]">
           <div className="relative overflow-hidden">
             <div className="h-56 rounded-t-3xl relative ">
               <img
@@ -151,14 +164,16 @@ const LayoutCards = ({ profile, layout }) => {
             </div>
             <div className="w-full flex justify-end transform -mt-16 relative pb-4">
               <img
-                src={profile?.logo}
+                src={profile?.image}
                 alt={profile?.title}
-                className="transform w-32 h-32 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg"
+                className="transform w-24 h-24 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg"
               />
             </div>
           </div>
           <div className="text-start px-4">
-            <h3 className="text-xl font-semibold">{profile?.title}</h3>
+            <h3 className="text-xl font-semibold">
+              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+            </h3>
             <div className="my-4 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
               {profile?.location}

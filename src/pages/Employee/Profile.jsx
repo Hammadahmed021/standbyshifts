@@ -14,6 +14,7 @@ import {
   AutoComplete,
   SelectOption,
   Modal,
+  ToggleAvailability,
 } from "../../component";
 import {
   deleteAllUserBookings,
@@ -30,6 +31,7 @@ import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import {
   FaAdjust,
+  FaClipboard,
   FaLocationArrow,
   FaLock,
   FaPen,
@@ -37,8 +39,9 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa";
+import { layoutOptions } from "../../utils/localDB";
 
-const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+const MAX_FILE_SIZE_MB = 6; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
 const Profile = () => {
@@ -55,6 +58,9 @@ const Profile = () => {
   const [displayedFavorites, setDisplayedFavorites] = useState(4);
   const [imagePreview, setImagePreview] = useState(fallback);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(fallback);
+  const [selectedBanner, setSelectedBanner] = useState(null);
+  const [bannerFileError, setBannerFileError] = useState("");
   const [fileError, setFileError] = useState("");
   const [showError, setShowError] = useState("");
   const [isSigning, setIsSigning] = useState(false);
@@ -137,6 +143,7 @@ const Profile = () => {
       phone: currentUser?.phone || "",
       address: fetchUser?.employee?.address || "",
       zip: fetchUser?.employee?.zip_code || "",
+      short_description: currentUser?.short_description,
       newPassword: "",
       confirmPassword: "",
 
@@ -178,7 +185,7 @@ const Profile = () => {
     { id: 11, name: "November" },
     { id: 12, name: "December" },
   ];
-
+  const selectedLayout = watch("layout");
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
 
@@ -200,7 +207,24 @@ const Profile = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
-
+  const handleFileChangeBanner = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (!VALID_IMAGE_TYPES.includes(file.type)) {
+        setBannerFileError(
+          "Invalid file type. Only JPEG, PNG, and JPG files are allowed."
+        );
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        setBannerFileError(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
+        return;
+      }
+      setBannerFileError("");
+      setSelectedBanner(file);
+      setBannerPreview(URL.createObjectURL(file));
+    }
+  };
   const uploadProfileImage = async (file) => {
     try {
       // Implement your image upload logic here
@@ -220,9 +244,11 @@ const Profile = () => {
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
     let profileImageFile = selectedFile;
+    let profileBannerFile = selectedBanner;
 
     try {
-      const { newPassword, confirmPassword, address, zip } = data;
+      const { newPassword, confirmPassword, address, zip, short_description } =
+        data;
 
       // Password update logic (if needed)
       if (newPassword && confirmPassword) {
@@ -254,6 +280,8 @@ const Profile = () => {
           }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
+        short_description: short_description || "",
+        layout: "1",
         industry_id:
           selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
         expertise: [...newTags, ...tags] || [],
@@ -266,6 +294,10 @@ const Profile = () => {
           start_year: exp.startYear || exp.start_year,
           end_year: exp.endYear || exp.end_year,
         })),
+        ...(profileBannerFile &&
+          profileBannerFile !== currentUser?.banner && {
+            banner: profileBannerFile,
+          }), // Use existing profile picture if not updated
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -298,11 +330,11 @@ const Profile = () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
     const token = localStorage.getItem("webToken");
-    
+
     const payload = {
       userAgent,
       ipAddress,
-      token
+      token,
     };
     try {
       const response = await verifyUser(payload);
@@ -314,7 +346,10 @@ const Profile = () => {
       setValue("phone", data?.phone || "");
       setValue("address", data?.employee?.location || "");
       setValue("zip", data?.employee?.zip_code || "");
+      setValue("layout", data?.layout || "");
+      setValue("short_description", data?.short_description || "");
       setImagePreview(data?.employee?.profile_picture || fallback);
+      setBannerPreview(data?.banner || fallback);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -514,26 +549,42 @@ const Profile = () => {
     return "+1";
   };
 
+  useEffect(() => {
+    return () => {
+      if (bannerPreview && bannerPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(bannerPreview);
+      }
+    };
+  }, [bannerPreview]);
+
+
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl">
             <div className="flex flex-col">
-              <div className="flex items-center overflow-hidden">
-                <img
-                  src={imagePreview}
-                  alt="user profile"
-                  className="w-16 h-16 rounded-full"
-                />
-                <div className="ml-4">
-                  <input
-                    type="file"
-                    accept=".jpg, .jpeg, .png"
-                    onChange={handleFileChange}
+              <div className="flex items-center justify-between overflow-hidden">
+                <div className="flex items-center">
+                  <img
+                    src={imagePreview}
+                    alt="user profile"
+                    className="w-16 h-16 rounded-full"
                   />
+                  <div className="ml-4">
+                    <input
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={handleFileChange}
+                    />
 
-                  {fileError && <p className="text-red-500">{fileError}</p>}
+                    {fileError && <p className="text-red-500">{fileError}</p>}
+                  </div>
+                </div>
+                <div>
+                  <ToggleAvailability
+                    is_available={!!currentUser?.is_available}
+                  />
                 </div>
               </div>
 
@@ -774,15 +825,15 @@ const Profile = () => {
                   </h3>
                   <span className="mb-6 block">
                     <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                    <span className="mb-6 sm:mb-0 w-full">
-                      <Input
-                        label="New Password"
-                        type="password"
-                        icon={FaLock}
-                        {...register("newPassword")}
-                        placeholder="Enter new password"
-                        // disabled={isGmailUser}
-                      />
+                      <span className="mb-6 sm:mb-0 w-full">
+                        <Input
+                          label="New Password"
+                          type="password"
+                          icon={FaLock}
+                          {...register("newPassword")}
+                          placeholder="Enter new password"
+                          // disabled={isGmailUser}
+                        />
                       </span>
                       <Input
                         label="Confirm Password"
@@ -1002,7 +1053,7 @@ const Profile = () => {
               <div className="mb-6">
                 <SelectOption
                   label="Industries"
-                  pl={'pl-1'}
+                  pl={"pl-1"}
                   value={selectedIndustries.map((industry) => industry.title)}
                   onChange={handleFilterChange}
                   options={addAllOption(
@@ -1030,6 +1081,90 @@ const Profile = () => {
                     <li>No industry found.</li> // Handle the case where there is no industry
                   )}
                 </ul>
+              </div>
+
+              <div className=" overflow-hidden ">
+                <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                  Add banner and short description
+                </h3>
+                <div className="flex items-center py-4">
+                  <img
+                    src={bannerPreview}
+                    alt="user profile"
+                    className="w-32 h-16 rounded-lg border"
+                  />
+                  <div className="ml-4">
+                    <input
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={handleFileChangeBanner}
+                    />
+
+                    {bannerFileError && (
+                      <p className="text-red-500">{bannerFileError}</p>
+                    )}
+                  </div>
+                </div>
+                <span className="mb-6 w-full block">
+                  <div className="relative ">
+                    <FaClipboard
+                      scale={15}
+                      color="#F59200"
+                      className="absolute top-3 left-2"
+                    />
+                    <textarea
+                      label="Short description"
+                      maxLength={80}
+                      rows="3" // Adjust the number of rows as needed
+                      {...register("short_description", {
+                        validate: {
+                          lengthCheck: (value) =>
+                            (value.length >= 50 && value.length <= 80) ||
+                            "Short description must be between 50 and 80 characters",
+                        },
+                      })}
+                      placeholder="Enter short description"
+                      className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                    />
+                    <p className="text-tn_text_grey text-sm">
+                      Short description must be of 80 characters.
+                    </p>
+                  </div>
+
+                  {errors.short_description && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.short_description.message}
+                    </p>
+                  )}
+                </span>
+              </div>
+
+              <strong className="mt-4 block mb-2">Select Layouts:</strong>
+              <div className="flex space-x-4 justify-start mb-6">
+                {layoutOptions.map((layout) => (
+                  <label key={layout.id} className="cursor-pointer">
+                    <input
+                      type="radio"
+                      value={layout.id}
+                      {...register("layout")}
+                      className="hidden"
+                    />
+                    <div
+                      className={`border ${
+                        selectedLayout === layout.id
+                          ? "border-blue-500"
+                          : "border-gray-300"
+                      } rounded-lg p-2`}
+                    >
+                      <img
+                        src={layout.imageUrl}
+                        alt={layout.label}
+                        className="mb-2"
+                      />
+                      <p>{layout.label}</p>
+                    </div>
+                  </label>
+                ))}
               </div>
 
               <Button

@@ -26,7 +26,7 @@ const ProfileView = () => {
     getEmployer();
   }, []);
 
-  const checkLayout = profile?.about?.layout || "1"; // Check layout from profile
+  const checkLayout = "1"; // Check layout from profile
   console.log(
     profile?.jobsPostedByYou?.length,
     "profile?.jobsPostedByYou?.length"
@@ -80,8 +80,8 @@ const ProfileView = () => {
         </p> // Show loading text until profile data is available
       )}
 
-      <div className="container">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {/* <div className="container">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {profiles.map((profile, index) => (
             <LayoutCards
               key={index}
@@ -90,7 +90,7 @@ const ProfileView = () => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
 
 
 

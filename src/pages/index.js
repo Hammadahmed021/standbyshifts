@@ -31,3 +31,6 @@ export { default as AppliedJobs } from "./Employer/AppliedJobs";
 export { default as ApplierCandidates } from "./Employer/ApplierCandidates";
 export { default as EmployeeView } from "./EmployeeView";
 export { default as Chat } from "./Chat";
+export { default as FilterPage } from "./Employee/FilterPage";
+export { default as Companies } from "./Employee/Companies";
+export { default as AllEmployees } from "./Employer/AllEmployee";

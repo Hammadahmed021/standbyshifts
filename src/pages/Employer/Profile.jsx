@@ -43,7 +43,7 @@ import {
 import { FcAbout } from "react-icons/fc";
 import { layoutOptions } from "../../utils/localDB";
 
-const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
+const MAX_FILE_SIZE_MB = 6; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
 const Profile = () => {
@@ -60,6 +60,9 @@ const Profile = () => {
   const [displayedFavorites, setDisplayedFavorites] = useState(4);
   const [imagePreview, setImagePreview] = useState(fallback);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(fallback);
+  const [selectedBanner, setSelectedBanner] = useState(null);
+  const [bannerFileError, setBannerFileError] = useState("");
   const [fileError, setFileError] = useState("");
   const [showError, setShowError] = useState("");
   const [isSigning, setIsSigning] = useState(false);
@@ -127,6 +130,7 @@ const Profile = () => {
       confirmPassword: "",
       layout: "1", // Default to first layout
       about: currentUser?.about,
+      short_description: currentUser?.short_description,
     },
   });
   const selectedLayout = watch("layout");
@@ -153,6 +157,25 @@ const Profile = () => {
     }
   };
 
+  const handleFileChangeBanner = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (!VALID_IMAGE_TYPES.includes(file.type)) {
+        setBannerFileError(
+          "Invalid file type. Only JPEG, PNG, and JPG files are allowed."
+        );
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        setBannerFileError(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
+        return;
+      }
+      setBannerFileError("");
+      setSelectedBanner(file);
+      setBannerPreview(URL.createObjectURL(file));
+    }
+  };
+
   const uploadProfileImage = async (file) => {
     try {
       // Implement your image upload logic here
@@ -172,6 +195,7 @@ const Profile = () => {
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
     let profileImageFile = selectedFile;
+    let profileBannerFile = selectedBanner;
 
     try {
       const { newPassword, confirmPassword, address, zip } = data;
@@ -207,8 +231,13 @@ const Profile = () => {
         zip_code: zip || "",
         layout: data.layout,
         about: data.about,
+        short_description: data.short_description,
         industry_id:
           selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
+        ...(profileBannerFile &&
+          profileBannerFile !== currentUser?.banner && {
+            banner: profileBannerFile,
+          }), // Use existing profile picture if not updated
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -260,7 +289,9 @@ const Profile = () => {
       setValue("zip", data?.employer?.zip_code || "");
       setValue("layout", data?.layout || "");
       setValue("about", data?.about || "");
+      setValue("short_description", data?.short_description || "");
       setImagePreview(data?.employer?.logo || fallback);
+      setBannerPreview(data?.banner || fallback);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -277,6 +308,14 @@ const Profile = () => {
       }
     };
   }, [imagePreview]);
+
+  useEffect(() => {
+    return () => {
+      if (bannerPreview && bannerPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(bannerPreview);
+      }
+    };
+  }, [bannerPreview]);
 
   // Prevent numbers in text fields
   const handleNameKeyPress = (e) => {
@@ -372,6 +411,8 @@ const Profile = () => {
                   {fileError && <p className="text-red-500">{fileError}</p>}
                 </div>
               </div>
+
+              
 
               <div className="my-6">
                 <h2 className="text-3xl font-black text-tn_dark">
@@ -469,6 +510,7 @@ const Profile = () => {
                   )}
                 </span>
               </span>
+
               <span className="mb-6 w-full block">
                 <div className="relative ">
                   <FaClipboard
@@ -543,22 +585,80 @@ const Profile = () => {
                     <li key={industry.id}>{industry.title}</li>
                   ))}
                 </ul>
-                <strong className="mt-4 block">Selected Industries:</strong>
                 {/* <ul>
                   {selectedIndustries.map((industry) => (
                     <li key={industry.id}>{industry.title}</li>
                   ))}
                 </ul> */}
-                <ul>
+                {/* <ul>
                   {fetchUser?.profile?.industry ? (
                     <li key={fetchUser.profile.industry.id}>
                       {fetchUser.profile.industry.title}
                     </li>
                   ) : (
-                    <li>No industry found.</li> // Handle the case where there is no industry
+                    <li>No industry found.</li> 
                   )}
-                </ul>
+                </ul> */}
               </div>
+
+              <div className=" overflow-hidden ">
+                <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                  Add banner and short description
+                </h3>
+                <div className="flex items-center py-4">
+                  <img
+                    src={bannerPreview}
+                    alt="user profile"
+                    className="w-32 h-16 rounded-lg border"
+                  />
+                  <div className="ml-4">
+                    <input
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={handleFileChangeBanner}
+                    />
+
+                    {bannerFileError && (
+                      <p className="text-red-500">{bannerFileError}</p>
+                    )}
+                  </div>
+                </div>
+                <span className="mb-6 w-full block">
+                  <div className="relative ">
+                    <FaClipboard
+                      scale={15}
+                      color="#F59200"
+                      className="absolute top-3 left-2"
+                    />
+                    <textarea
+                      label="Short description"
+                      maxLength={80}
+                      rows="3" // Adjust the number of rows as needed
+                      {...register("short_description", {
+                        validate: {
+                          lengthCheck: (value) =>
+                            (value.length >= 50 && value.length <= 80) ||
+                            "Short description must be between 50 and 80 characters",
+                        },
+                      })}
+                      placeholder="Enter short description"
+                      className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                    />
+                    <p className="text-tn_text_grey text-sm">
+                      Short description must be of 80 characters.
+                    </p>
+                  </div>
+
+                  {errors.short_description && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.short_description.message}
+                    </p>
+                  )}
+                </span>
+              </div>
+              
+
+              <strong className="mt-4 block mb-2">Select Layouts:</strong>
               <div className="flex space-x-4 justify-start">
                 {layoutOptions.map((layout) => (
                   <label key={layout.id} className="cursor-pointer">
