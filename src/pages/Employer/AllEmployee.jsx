@@ -51,7 +51,7 @@ const AllEmployees = () => {
     title: job?.name || "No Title Provided",
     description: job?.short_description || "No Description Available",
     location: job?.employer?.location || "Location Not Available",
-    layout: job?.employer?.layout || "1", // Default layout
+    layout: job?.layout || "1", // Default layout
     id: job?.id,
   }));
 
@@ -82,7 +82,7 @@ const AllEmployees = () => {
             <h2 className="col-span-4 text-start">No company found</h2>
           ) : (
             transformedProfiles.slice(0, visibleJobsCount).map((profile, index) => (
-              <LayoutCards key={index} profile={profile} layout={profile.layout} />
+              <LayoutCards key={index} profile={profile} layout={profile.layout} type={"employee"} />
             ))
           )}
         </div>

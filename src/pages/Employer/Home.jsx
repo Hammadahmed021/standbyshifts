@@ -58,8 +58,8 @@ const Home = () => {
     image: job?.employee?.image || fallback, // Fallback logo image
     title: job?.name || "No Title Provided",
     description: job?.short_description || "No Description Available",
-    location: job?.employer?.location || job?.employee?.location || "Location Not Available",
-    layout: job?.employer?.layout || "1", // Default layout if not provided
+    location: job?.employee?.location || "Location Not Available",
+    layout: job?.layout || "1", // Default layout
     id: job?.id, // Default layout if not provided
   }));
 
@@ -99,6 +99,7 @@ const Home = () => {
               key={index}
               profile={profile}
               layout={profile.layout}
+              type={FuckinType}
             />
           ))}
         </div>

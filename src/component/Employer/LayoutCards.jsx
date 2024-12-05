@@ -15,7 +15,7 @@ const restrictWordCount = (text, wordLimit) => {
   return words.slice(0, wordLimit).join(" ") + "...";
 };
 
-const LayoutCards = ({ profile, layout, type = "employee" }) => {
+const LayoutCards = ({ profile, layout, type }) => {
   switch (layout) {
     case "1":
       return (
@@ -32,7 +32,7 @@ const LayoutCards = ({ profile, layout, type = "employee" }) => {
               <img
                 src={profile?.image}
                 alt={profile?.title}
-                className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-gray-50 "
+                className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-white "
               />
               <span
                 className="absolute top-0 w-full h-full -z-10 flex items-center justify-center"
@@ -45,7 +45,7 @@ const LayoutCards = ({ profile, layout, type = "employee" }) => {
           </div>
           <div className="text-center p-4">
             <h3 className="text-xl font-semibold">
-              {type == "employer" ? (
+              {type == "employee" ? (
                 <Link to={`/employee-view/${profile?.id}`}>
                   {profile?.title}
                 </Link>
@@ -79,7 +79,7 @@ const LayoutCards = ({ profile, layout, type = "employee" }) => {
                 <img
                   src={profile?.image}
                   alt={profile?.title}
-                  className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-gray-50 shadow-lg"
+                  className="transform mx-auto w-24 h-24 object-cover rounded-full z-10 border-4 border-white bg-white shadow-lg"
                 />
               </div>
             </div>
@@ -125,7 +125,7 @@ const LayoutCards = ({ profile, layout, type = "employee" }) => {
               <img
                 src={profile?.image}
                 alt={profile?.title}
-                className="transform w-24 h-24 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg"
+                className="transform w-24 h-24 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
               />
             </div>
           </div>
@@ -166,7 +166,7 @@ const LayoutCards = ({ profile, layout, type = "employee" }) => {
               <img
                 src={profile?.image}
                 alt={profile?.title}
-                className="transform w-24 h-24 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg"
+                className="transform w-24 h-24 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
               />
             </div>
           </div>

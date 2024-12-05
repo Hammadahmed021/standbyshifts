@@ -163,7 +163,7 @@ const Home = () => {
     description:
       job?.short_description || "No Description Available",
     location: job?.employer?.location || "Location Not Available",
-    layout: job?.employer?.layout || "1", // Default layout if not provided
+    layout: job?.layout || "1", // Default layout
     id: job?.id, // Default layout if not provided
   }));
 
@@ -203,6 +203,7 @@ const Home = () => {
               key={index}
               profile={profile}
               layout={profile.layout}
+              type={FuckinType}
             />
           ))}
         </div>

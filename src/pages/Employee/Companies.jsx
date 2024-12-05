@@ -50,7 +50,7 @@ const Companies = () => {
     title: job?.name || "No Title Provided",
     description: job?.short_description || "No Description Available",
     location: job?.employer?.location || "Location Not Available",
-    layout: job?.employer?.layout || "1", // Default layout
+    layout: job?.layout || "1", // Default layout 
     id: job?.id,
   }));
 
