@@ -319,7 +319,7 @@ export const updateUserProfile = async (userData) => {
     zip_code,
     industry_id, // Ensure this is always an array
     expertise, // Default to an empty array if undefined
-    // skills, // Default to an empty array if undefined
+    layout, 
     work_history, // Default to an empty array if undefined
     profile_picture,
     short_description,
@@ -335,6 +335,7 @@ export const updateUserProfile = async (userData) => {
   formData.append("short_description", short_description || ""); // Directly use userData
 
   formData.append("industry_id", industry_id);
+  formData.append("layout", layout);
   // formData.append("expertise", expertise);
 
   // Append skills

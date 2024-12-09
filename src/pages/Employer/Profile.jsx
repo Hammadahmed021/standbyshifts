@@ -76,6 +76,8 @@ const Profile = () => {
   const [selectedIndustries, setSelectedIndustries] = useState([]);
   const [savedExperiences, setSavedExperiences] = useState([]);
   const [editIndex, setEditIndex] = useState(null); // Track which experience is being edited
+  const [togglePassword, setTogglePassword] = useState(false);
+  const [hideProfile, setHideProfile] = useState(false); // State for hiding the profile section
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -389,11 +391,18 @@ const Profile = () => {
     return "+1";
   };
 
+  const toggleText = () => {
+    setTogglePassword((prev) => !prev);
+  };
+  const toggleProfileSection = () => {
+    setHideProfile((prev) => !prev); // Toggle the hideProfile state
+  };
+
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
-          <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl">
+          <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl border">
             <div className="flex flex-col">
               <div className="flex items-center overflow-hidden">
                 <img
@@ -411,8 +420,6 @@ const Profile = () => {
                   {fileError && <p className="text-red-500">{fileError}</p>}
                 </div>
               </div>
-
-              
 
               <div className="my-6">
                 <h2 className="text-3xl font-black text-tn_dark">
@@ -536,61 +543,72 @@ const Profile = () => {
 
               {!isGmailUser && (
                 <>
-                  <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                    Change Password
-                  </h3>
-                  <span className="mb-6 block">
-                    <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                      <span className=" w-full">
+                  <span className="w-full block mb-6">
+                    <p className="text-tn_text_grey text-sm">
+                      Want to change password?{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={toggleText}
+                      >
+                        {togglePassword ? "hide" : "click here"}
+                      </span>
+                    </p>
+                  </span>
+                  {togglePassword && (
+                    <span className="mb-6 block">
+                      <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                         <Input
                           label="New Password"
                           type="password"
-                          icon={FaLock}
                           {...register("newPassword")}
                           placeholder="Enter new password"
                           // disabled={isGmailUser}
+                          className="mb-6 sm:mb-0"
+                          icon={FaLock}
                         />
-                      </span>
-                      <span className=" w-full">
                         <Input
                           label="Confirm Password"
                           type="password"
-                          icon={FaLock}
                           {...register("confirmPassword")}
                           placeholder="Confirm new password"
                           // disabled={isGmailUser}
+                          icon={FaLock}
                         />
                       </span>
+                      {showError && (
+                        <p className="text-red-500 text-sm">{showError}</p>
+                      )}
                     </span>
-                    {showError && (
-                      <p className="text-red-500 text-sm">{showError}</p>
-                    )}
-                  </span>
+                  )}
                 </>
               )}
 
-              <div className="mb-6">
-                <SelectOption
-                  pl={"pl-1"}
-                  label="Industries"
-                  value={selectedIndustries.map((industry) => industry.title)}
-                  onChange={handleFilterChange}
-                  options={addAllOption(
-                    fetchUser?.industries,
-                    "All Industries"
-                  )}
-                />
-                <ul>
-                  {selectedIndustries.map((industry) => (
-                    <li key={industry.id}>{industry.title}</li>
-                  ))}
-                </ul>
-                {/* <ul>
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
+                  Industries
+                </h3>
+                <div className="mb-6">
+                  <SelectOption
+                    pl={"pl-0 border p-2 rounded-lg"}
+                    // label="Industries"
+                    value={selectedIndustries.map((industry) => industry.title)}
+                    onChange={handleFilterChange}
+                    options={addAllOption(
+                      fetchUser?.industries,
+                      "All Industries"
+                    )}
+                  />
+                  <ul>
+                    {selectedIndustries.map((industry) => (
+                      <li key={industry.id}>{industry.title}</li>
+                    ))}
+                  </ul>
+                  {/* <ul>
                   {selectedIndustries.map((industry) => (
                     <li key={industry.id}>{industry.title}</li>
                   ))}
                 </ul> */}
-                {/* <ul>
+                  {/* <ul>
                   {fetchUser?.profile?.industry ? (
                     <li key={fetchUser.profile.industry.id}>
                       {fetchUser.profile.industry.title}
@@ -599,92 +617,119 @@ const Profile = () => {
                     <li>No industry found.</li> 
                   )}
                 </ul> */}
-              </div>
-
-              <div className=" overflow-hidden ">
-                <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                  Add banner and short description
-                </h3>
-                <div className="flex items-center py-4">
-                  <img
-                    src={bannerPreview}
-                    alt="user profile"
-                    className="w-32 h-16 rounded-lg border"
-                  />
-                  <div className="ml-4">
-                    <input
-                      type="file"
-                      accept=".jpg, .jpeg, .png"
-                      onChange={handleFileChangeBanner}
-                    />
-
-                    {bannerFileError && (
-                      <p className="text-red-500">{bannerFileError}</p>
-                    )}
-                  </div>
                 </div>
-                <span className="mb-6 w-full block">
-                  <div className="relative ">
-                    <FaClipboard
-                      scale={15}
-                      color="#F59200"
-                      className="absolute top-3 left-2"
-                    />
-                    <textarea
-                      label="Short description"
-                      maxLength={80}
-                      rows="3" // Adjust the number of rows as needed
-                      {...register("short_description", {
-                        validate: {
-                          lengthCheck: (value) =>
-                            (value.length >= 50 && value.length <= 80) ||
-                            "Short description must be between 50 and 80 characters",
-                        },
-                      })}
-                      placeholder="Enter short description"
-                      className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
-                    />
-                    <p className="text-tn_text_grey text-sm">
-                      Short description must be of 80 characters.
-                    </p>
-                  </div>
-
-                  {errors.short_description && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.short_description.message}
-                    </p>
-                  )}
-                </span>
               </div>
               
-
-              <strong className="mt-4 block mb-2">Select Layouts:</strong>
-              <div className="flex space-x-4 justify-start">
-                {layoutOptions.map((layout) => (
-                  <label key={layout.id} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      value={layout.id}
-                      {...register("layout")}
-                      className="hidden"
-                    />
-                    <div
-                      className={`border ${
-                        selectedLayout === layout.id
-                          ? "border-blue-500"
-                          : "border-gray-300"
-                      } rounded-lg p-2`}
+              <div className="border-t pt-6 mt-6">
+                <div>
+                  {/* Toggle Button */}
+                  <p className="text-tn_text_grey text-sm mb-6">
+                    Want to set profile?{" "}
+                    <span
+                      onClick={toggleProfileSection}
+                      className="underline cursor-pointer"
                     >
-                      <img
-                        src={layout.imageUrl}
-                        alt={layout.label}
-                        className="mb-2"
-                      />
-                      <p>{layout.label}</p>
-                    </div>
-                  </label>
-                ))}
+                      {hideProfile ? "Hide Profile" : "Show Profile"}
+                    </span>
+                  </p>
+
+                  {/* Profile Section */}
+                  {hideProfile && (
+                    <>
+                      <div className="overflow-hidden">
+                        <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                          Data for profile
+                        </h3>
+                        <div className="flex items-center py-4">
+                          <img
+                            src={bannerPreview}
+                            alt="user profile"
+                            className="w-32 h-16 rounded-lg border"
+                          />
+                          <div className="ml-4">
+                            <input
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              onChange={handleFileChangeBanner}
+                            />
+
+                            {bannerFileError && (
+                              <p className="text-red-500">{bannerFileError}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="mb-6 w-full block">
+                          <span className="mt-6 mb-2 font-semibold block">
+                            Short Description
+                          </span>
+                          <div className="relative">
+                            <FaClipboard
+                              scale={15}
+                              color="#F59200"
+                              className="absolute top-3 left-2"
+                            />
+                            <textarea
+                              label="Short description"
+                              maxLength={80}
+                              rows="3"
+                              {...register("short_description", {
+                                validate: {
+                                  lengthCheck: (value) =>
+                                    (value.length >= 50 &&
+                                      value.length <= 80) ||
+                                    "Short description must be between 50 and 80 characters",
+                                },
+                              })}
+                              placeholder="Enter short description"
+                              className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                            />
+                            <p className="text-tn_text_grey text-sm">
+                              Short description must be of 80 characters.
+                            </p>
+                          </div>
+
+                          {errors.short_description && (
+                            <p className="text-red-500 text-xs mt-1">
+                              {errors.short_description.message}
+                            </p>
+                          )}
+                        </span>
+                      </div>
+
+                      <span className="mt-4 block font-semibold mb-2">
+                        Select Layout
+                      </span>
+                      <div className="flex space-x-4 justify-start mb-6">
+                        {layoutOptions.map((layout) => (
+                          <label key={layout.id} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              value={layout.id}
+                              {...register("layout")}
+                              className="hidden"
+                            />
+                            <div
+                              className={`border ${
+                                selectedLayout === layout.id
+                                  ? "border-blue-500"
+                                  : "border-gray-300"
+                              } rounded-lg p-2`}
+                            >
+                              <img
+                                src={layout.imageUrl}
+                                alt={layout.label}
+                                className="mb-2"
+                              />
+                              <p>{layout.label}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
+              
               <div className="flex space-x-2 items-center justify-between my-3">
                 <Button
                   type="submit"

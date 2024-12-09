@@ -86,7 +86,13 @@ const LayoutCards = ({ profile, layout, type }) => {
           </div>
           <div className="text-center px-4">
             <h3 className="text-xl font-semibold">
-              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              {type == "employee" ? (
+                <Link to={`/employee-view/${profile?.id}`}>
+                  {profile?.title}
+                </Link>
+              ) : (
+                <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              )}
             </h3>
             <p className="text-gray-600 mt-2">
               {restrictWordCount(profile?.description, 15)}
@@ -131,7 +137,13 @@ const LayoutCards = ({ profile, layout, type }) => {
           </div>
           <div className="text-start px-4">
             <h3 className="text-xl font-semibold">
-              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              {type == "employee" ? (
+                <Link to={`/employee-view/${profile?.id}`}>
+                  {profile?.title}
+                </Link>
+              ) : (
+                <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              )}
             </h3>
             <p className="text-gray-600 mt-2">
               {restrictWordCount(profile?.description, 15)}
@@ -172,7 +184,13 @@ const LayoutCards = ({ profile, layout, type }) => {
           </div>
           <div className="text-start px-4">
             <h3 className="text-xl font-semibold">
-              <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              {type == "employee" ? (
+                <Link to={`/employee-view/${profile?.id}`}>
+                  {profile?.title}
+                </Link>
+              ) : (
+                <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
+              )}
             </h3>
             <div className="my-4 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />

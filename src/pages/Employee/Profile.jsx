@@ -78,6 +78,10 @@ const Profile = () => {
   const [editExperiences, setEditExperiences] = useState({});
   const [editIndex, setEditIndex] = useState(null); // Track which experience is being edited
   const [isVisible, setIsVisible] = useState(false); // Track which experience is being edited
+  const [togglePassword, setTogglePassword] = useState(false);
+  const [hideProfile, setHideProfile] = useState(false); // State for hiding the profile section
+
+ 
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -186,6 +190,8 @@ const Profile = () => {
     { id: 12, name: "December" },
   ];
   const selectedLayout = watch("layout");
+  console.log(selectedLayout, 'selectedLayout');
+  
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
 
@@ -281,7 +287,7 @@ const Profile = () => {
         location: address || "",
         zip_code: zip || "",
         short_description: short_description || "",
-        layout: "1",
+        layout: data.layout,
         industry_id:
           selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
         expertise: [...newTags, ...tags] || [],
@@ -557,12 +563,17 @@ const Profile = () => {
     };
   }, [bannerPreview]);
 
-
+  const toggleText = () => {
+    setTogglePassword((prev) => !prev);
+  };
+  const toggleProfileSection = () => {
+    setHideProfile((prev) => !prev); // Toggle the hideProfile state
+  };
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
-          <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl">
+          <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl border">
             <div className="flex flex-col">
               <div className="flex items-center justify-between overflow-hidden">
                 <div className="flex items-center">
@@ -820,353 +831,396 @@ const Profile = () => {
               </span>
               {!isGmailUser && (
                 <>
-                  <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                    Change Password
-                  </h3>
-                  <span className="mb-6 block">
-                    <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                      <span className="mb-6 sm:mb-0 w-full">
+                  <span className="w-full block mb-6">
+                    <p className="text-tn_text_grey text-sm">
+                      Want to change password?{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={toggleText}
+                      >
+                        {togglePassword ? "hide" : "click here"}
+                      </span>
+                    </p>
+                  </span>
+                  {togglePassword && (
+                    <span className="mb-6 block">
+                      <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
                         <Input
                           label="New Password"
                           type="password"
-                          icon={FaLock}
                           {...register("newPassword")}
                           placeholder="Enter new password"
                           // disabled={isGmailUser}
+                          className="mb-6 sm:mb-0"
+                          icon={FaLock}
+                        />
+                        <Input
+                          label="Confirm Password"
+                          type="password"
+                          {...register("confirmPassword")}
+                          placeholder="Confirm new password"
+                          // disabled={isGmailUser}
+                          icon={FaLock}
                         />
                       </span>
-                      <Input
-                        label="Confirm Password"
-                        type="password"
-                        icon={FaLock}
-                        {...register("confirmPassword")}
-                        placeholder="Confirm new password"
-                        // disabled={isGmailUser}
-                      />
+                      {showError && (
+                        <p className="text-red-500 text-sm">{showError}</p>
+                      )}
                     </span>
-                    {showError && (
-                      <p className="text-red-500 text-sm">{showError}</p>
-                    )}
-                  </span>
+                  )}
                 </>
               )}
-
-              <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                Work Experience
-              </h3>
-              <div className="mb-6">
-                <label className="block mb-2 font-semibold">Tags</label>
-                <AutoComplete options={dropdownTags} onAddTag={handleAddTag} />
-                <ul className="space-x-1">
-                  {newTags.map((tag, index) => (
-                    <li
-                      key={index}
-                      className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-                <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
-                <ul className="mb-4">
-                  {tags?.map((tag, index) => (
-                    <li
-                      key={index}
-                      className="px-2 py-1 text-sm rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
-                    >
-                      {tag}
-                      <FaTrash
-                        onClick={() => removeSkills(index)}
-                        size={11}
-                        className="cursor-pointer"
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mb-6">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    id={`experienceForm_${index}`}
-                    className="mb-4 border p-4 rounded bg-gray-50"
-                  >
-                    <h3 className="font-semibold mb-2">
-                      Experience {index + 1}
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="mb-2 text-red-500 hover:underline"
-                    >
-                      Remove Experience
-                    </button>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Job Title</label>
-                      <input
-                        {...register(`experiences.${index}.jobTitle`)}
-                        placeholder="Enter your job title"
-                        className="border p-2 w-full rounded"
-                      />
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Job Description</label>
-                      <textarea
-                        {...register(`experiences.${index}.jobDesc`)}
-                        placeholder="Enter your job description"
-                        className="border p-2 w-full rounded"
-                      />
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">Start Date</label>
-                      <span className="flex flex-wrap gap-2">
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.startMonth`)}
-                        >
-                          <option value="">Select Month</option>
-                          {months.map((month) => (
-                            <option key={month.id} value={month.id}>
-                              {month.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.startYear`)}
-                        >
-                          <option value="">Select Year</option>
-                          {years.map((year) => (
-                            <option key={year} value={year}>
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="block mb-1">End Date</label>
-                      <span className="flex flex-wrap gap-2">
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.endMonth`)}
-                        >
-                          <option value="">Select Month</option>
-                          {months.map((month) => (
-                            <option key={month.id} value={month.id}>
-                              {month.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="border p-2 rounded"
-                          {...register(`experiences.${index}.endYear`)}
-                        >
-                          <option value="">Select Year</option>
-                          {years.map((year) => (
-                            <option key={year} value={year}>
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
-                    </div>
-
-                    {/* Save Experience Button */}
-                    <button
-                      type="button"
-                      onClick={() => saveExperience(index)}
-                      className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                    >
-                      {editIndex === index
-                        ? "Update Experience"
-                        : "Save Experience"}
-                    </button>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      jobTitle: "",
-                      jobDesc: "",
-                      startYear: "",
-                      startMonth: "",
-                      endYear: "",
-                      endMonth: "",
-                    })
-                  }
-                  className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Add More Experience
-                </button>
-              </div>
-              <div>
-                <strong className="mt-4 block">Saved Experiences:</strong>
-                <div>
-                  {savedExperiences.length > 0 ? (
-                    savedExperiences.map((work, index) => {
-                      console.log("experio", index, work);
-                      return (
-                        <ul>
-                          <li key={index} className="mb-4 relative">
-                            <h2 className="font-bold">
-                              {work.jobTitle ?? work.title}
-                            </h2>
-                            <p>{work.jobDesc ?? work.description}</p>
-                            <p>
-                              {work.startMonth ?? work.start_month}/
-                              {work.startYear ?? work.start_year} -{" "}
-                              {work.endMonth ?? work.end_month}/
-                              {work.endYear ?? work.end_year}
-                            </p>
-                            {/* Edit button (Pen icon) */}
-                            <button
-                              type="button"
-                              onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
-                              className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
-                            >
-                              <FaPen />
-                            </button>
-                            {/* Delete button */}
-                            <button
-                              type="button"
-                              onClick={() => deleteExperience(index)} // This function will remove the entry
-                              className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
-                            >
-                              <FaTrash />
-                            </button>
-                          </li>
-                        </ul>
-                      );
-                    })
-                  ) : (
-                    <p>No work history found.</p>
-                  )}
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
+                  Work Experience
+                </h3>
+                <div className="mb-6">
+                  <label className="block mb-2 font-semibold">Tags</label>
+                  <AutoComplete
+                    options={dropdownTags}
+                    onAddTag={handleAddTag}
+                  />
+                  <ul className="space-x-1">
+                    {newTags.map((tag, index) => (
+                      <li
+                        key={index}
+                        className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                  <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
+                  <ul className="mb-4">
+                    {tags?.map((tag, index) => (
+                      <li
+                        key={index}
+                        className="px-2 py-1 text-sm rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
+                      >
+                        {tag}
+                        <FaTrash
+                          onClick={() => removeSkills(index)}
+                          size={11}
+                          className="cursor-pointer"
+                        />
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-              <div className="mb-6">
-                <SelectOption
-                  label="Industries"
-                  pl={"pl-1"}
-                  value={selectedIndustries.map((industry) => industry.title)}
-                  onChange={handleFilterChange}
-                  options={addAllOption(
-                    fetchUser?.industries,
-                    "All Industries"
-                  )}
-                />
-                <ul>
-                  {selectedIndustries.map((industry) => (
-                    <li key={industry.id}>{industry.title}</li>
+                <div className="mb-6">
+                  {fields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      id={`experienceForm_${index}`}
+                      className="mb-4 border p-4 rounded bg-gray-50"
+                    >
+                      <h3 className="font-semibold mb-2">
+                        Experience {index + 1}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="mb-2 text-red-500 hover:underline"
+                      >
+                        Remove Experience
+                      </button>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">Job Title</label>
+                        <input
+                          {...register(`experiences.${index}.jobTitle`)}
+                          placeholder="Enter your job title"
+                          className="border p-2 w-full rounded"
+                        />
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">Job Description</label>
+                        <textarea
+                          {...register(`experiences.${index}.jobDesc`)}
+                          placeholder="Enter your job description"
+                          className="border p-2 w-full rounded"
+                        />
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">Start Date</label>
+                        <span className="flex flex-wrap gap-2">
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.startMonth`)}
+                          >
+                            <option value="">Select Month</option>
+                            {months.map((month) => (
+                              <option key={month.id} value={month.id}>
+                                {month.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.startYear`)}
+                          >
+                            <option value="">Select Year</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">End Date</label>
+                        <span className="flex flex-wrap gap-2">
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.endMonth`)}
+                          >
+                            <option value="">Select Month</option>
+                            {months.map((month) => (
+                              <option key={month.id} value={month.id}>
+                                {month.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.endYear`)}
+                          >
+                            <option value="">Select Year</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
+                      </div>
+
+                      {/* Save Experience Button */}
+                      <button
+                        type="button"
+                        onClick={() => saveExperience(index)}
+                        className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                      >
+                        {editIndex === index
+                          ? "Update Experience"
+                          : "Save Experience"}
+                      </button>
+                    </div>
                   ))}
-                </ul>
-                <strong className="mt-4 block">Selected Industries:</strong>
-                {/* <ul>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      append({
+                        jobTitle: "",
+                        jobDesc: "",
+                        startYear: "",
+                        startMonth: "",
+                        endYear: "",
+                        endMonth: "",
+                      })
+                    }
+                    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Add More Experience
+                  </button>
+                </div>
+                <div>
+                  <strong className="mt-4 block">Saved Experiences:</strong>
+                  <div>
+                    {savedExperiences.length > 0 ? (
+                      savedExperiences.map((work, index) => {
+                        console.log("experio", index, work);
+                        return (
+                          <ul>
+                            <li key={index} className="mb-4 relative">
+                              <h2 className="font-bold">
+                                {work.jobTitle ?? work.title}
+                              </h2>
+                              <p>{work.jobDesc ?? work.description}</p>
+                              <p>
+                                {work.startMonth ?? work.start_month}/
+                                {work.startYear ?? work.start_year} -{" "}
+                                {work.endMonth ?? work.end_month}/
+                                {work.endYear ?? work.end_year}
+                              </p>
+                              {/* Edit button (Pen icon) */}
+                              <button
+                                type="button"
+                                onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
+                                className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                              >
+                                <FaPen />
+                              </button>
+                              {/* Delete button */}
+                              <button
+                                type="button"
+                                onClick={() => deleteExperience(index)} // This function will remove the entry
+                                className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
+                              >
+                                <FaTrash />
+                              </button>
+                            </li>
+                          </ul>
+                        );
+                      })
+                    ) : (
+                      <p>No work history found.</p>
+                    )}
+                  </div>
+                </div>
+              </div>{" "}
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
+                  Industries
+                </h3>
+                <div className="mb-6">
+                  <SelectOption
+                    // label="Industries"
+                    pl={"pl-0 border p-2 rounded-lg"}
+                    value={selectedIndustries.map((industry) => industry.title)}
+                    onChange={handleFilterChange}
+                    options={addAllOption(
+                      fetchUser?.industries,
+                      "All Industries"
+                    )}
+                  />
+                  <ul>
+                    {selectedIndustries.map((industry) => (
+                      <li key={industry.id}>{industry.title}</li>
+                    ))}
+                  </ul>
+                  <strong className="mt-4 block">Selected Industries:</strong>
+                  {/* <ul>
                   {selectedIndustries.map((industry) => (
                     <li key={industry.id}>{industry.title}</li>
                   ))}
                 </ul> */}
-                <ul>
-                  {fetchUser?.profile?.industry ? (
-                    <li key={fetchUser.profile.industry.id}>
-                      {fetchUser.profile.industry.title}
-                    </li>
-                  ) : (
-                    <li>No industry found.</li> // Handle the case where there is no industry
-                  )}
-                </ul>
-              </div>
-
-              <div className=" overflow-hidden ">
-                <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                  Add banner and short description
-                </h3>
-                <div className="flex items-center py-4">
-                  <img
-                    src={bannerPreview}
-                    alt="user profile"
-                    className="w-32 h-16 rounded-lg border"
-                  />
-                  <div className="ml-4">
-                    <input
-                      type="file"
-                      accept=".jpg, .jpeg, .png"
-                      onChange={handleFileChangeBanner}
-                    />
-
-                    {bannerFileError && (
-                      <p className="text-red-500">{bannerFileError}</p>
+                  <ul>
+                    {fetchUser?.profile?.industry ? (
+                      <li key={fetchUser.profile.industry.id}>
+                        {fetchUser.profile.industry.title}
+                      </li>
+                    ) : (
+                      <li>No industry found.</li> // Handle the case where there is no industry
                     )}
-                  </div>
+                  </ul>
                 </div>
-                <span className="mb-6 w-full block">
-                  <div className="relative ">
-                    <FaClipboard
-                      scale={15}
-                      color="#F59200"
-                      className="absolute top-3 left-2"
-                    />
-                    <textarea
-                      label="Short description"
-                      maxLength={80}
-                      rows="3" // Adjust the number of rows as needed
-                      {...register("short_description", {
-                        validate: {
-                          lengthCheck: (value) =>
-                            (value.length >= 50 && value.length <= 80) ||
-                            "Short description must be between 50 and 80 characters",
-                        },
-                      })}
-                      placeholder="Enter short description"
-                      className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
-                    />
-                    <p className="text-tn_text_grey text-sm">
-                      Short description must be of 80 characters.
-                    </p>
-                  </div>
-
-                  {errors.short_description && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.short_description.message}
-                    </p>
-                  )}
-                </span>
               </div>
-
-              <strong className="mt-4 block mb-2">Select Layouts:</strong>
-              <div className="flex space-x-4 justify-start mb-6">
-                {layoutOptions.map((layout) => (
-                  <label key={layout.id} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      value={layout.id}
-                      {...register("layout")}
-                      className="hidden"
-                    />
-                    <div
-                      className={`border ${
-                        selectedLayout === layout.id
-                          ? "border-blue-500"
-                          : "border-gray-300"
-                      } rounded-lg p-2`}
+              
+              <div className="border-t pt-6 mt-6">
+                <div>
+                  {/* Toggle Button */}
+                  <p className="text-tn_text_grey text-sm mb-6">
+                    Want to set profile?{" "}
+                    <span
+                      onClick={toggleProfileSection}
+                      className="underline cursor-pointer"
                     >
-                      <img
-                        src={layout.imageUrl}
-                        alt={layout.label}
-                        className="mb-2"
-                      />
-                      <p>{layout.label}</p>
-                    </div>
-                  </label>
-                ))}
-              </div>
+                      {hideProfile ? "Hide Profile" : "Show Profile"}
+                    </span>
+                  </p>
 
+                  {/* Profile Section */}
+                  {hideProfile && (
+                    <>
+                      <div className="overflow-hidden">
+                        <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                          Data for profile
+                        </h3>
+                        <div className="flex items-center py-4">
+                          <img
+                            src={bannerPreview}
+                            alt="user profile"
+                            className="w-32 h-16 rounded-lg border"
+                          />
+                          <div className="ml-4">
+                            <input
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              onChange={handleFileChangeBanner}
+                            />
+
+                            {bannerFileError && (
+                              <p className="text-red-500">{bannerFileError}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="mb-6 w-full block">
+                          <span className="mt-6 mb-2 font-semibold block">
+                            Short Description
+                          </span>
+                          <div className="relative">
+                            <FaClipboard
+                              scale={15}
+                              color="#F59200"
+                              className="absolute top-3 left-2"
+                            />
+                            <textarea
+                              label="Short description"
+                              maxLength={80}
+                              rows="3"
+                              {...register("short_description", {
+                                validate: {
+                                  lengthCheck: (value) =>
+                                    (value.length >= 50 &&
+                                      value.length <= 80) ||
+                                    "Short description must be between 50 and 80 characters",
+                                },
+                              })}
+                              placeholder="Enter short description"
+                              className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                            />
+                            <p className="text-tn_text_grey text-sm">
+                              Short description must be of 80 characters.
+                            </p>
+                          </div>
+
+                          {errors.short_description && (
+                            <p className="text-red-500 text-xs mt-1">
+                              {errors.short_description.message}
+                            </p>
+                          )}
+                        </span>
+                      </div>
+
+                      <span className="mt-4 block font-semibold mb-2">
+                        Select Layout
+                      </span>
+                      <div className="flex space-x-4 justify-start mb-6">
+                        {layoutOptions.map((layout) => (
+                          <label key={layout.id} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              value={layout.id}
+                              {...register("layout")}
+                              className="hidden"
+                            />
+                            <div
+                              className={`border ${
+                                selectedLayout === layout.id
+                                  ? "border-blue-500"
+                                  : "border-gray-300"
+                              } rounded-lg p-2`}
+                            >
+                              <img
+                                src={layout.imageUrl}
+                                alt={layout.label}
+                                className="mb-2"
+                              />
+                              <p>{layout.label}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
               <Button
                 type="submit"
                 className={`w-full  ${
