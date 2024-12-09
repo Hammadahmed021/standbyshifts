@@ -32,7 +32,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
                 <img
                   src={profile?.employer?.logo || avatar}
                   alt={profile?.name}
-                  className="rounded-full w-32 h-32 sm:w-44 sm:h-44 mx-auto shadow-md object-cover"
+                  className="rounded-full w-32 h-32 sm:w-44 sm:h-44 mx-auto shadow-md object-cover bg-white border-4 border-slate-200"
                 />
               </div>
               <div className="second_col text-center sm:text-left mt-4 sm:mt-0">

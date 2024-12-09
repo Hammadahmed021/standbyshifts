@@ -143,7 +143,7 @@ const CompanyProfile = () => {
       </>
     );
   }
-  const checkLayout = companyData?.about?.layout || "1"; // Check layout from profile
+  const checkLayout =  "1"; // Check layout from profile
   console.log(companyData, "companyData >>>>>>>>>>>>>>>>");
 
   return (
