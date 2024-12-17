@@ -1,9 +1,9 @@
 import { FaLocationPin } from "react-icons/fa6";
 import {
-  cardLayout1,
-  cardLayout3,
-  cardLayout5,
-  cardLayout7,
+  cardLayout2,
+  cardLayout4,
+  cardLayout6,
+  cardLayout8,
   fallback,
 } from "../../assets";
 import { Link } from "react-router-dom";
@@ -41,7 +41,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                     alt=""
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
-                    <img src={cardLayout1} alt="" className="w-full h-auto" />
+                    <img src={cardLayout2} alt="" className="w-full h-auto" />
                   </span>
                 </div>
               </Link>
@@ -65,7 +65,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                     alt=""
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
-                    <img src={cardLayout1} alt="" className="w-full h-auto" />
+                    <img src={cardLayout2} alt="" className="w-full h-auto" />
                   </span>
                 </div>
               </Link>
@@ -102,7 +102,7 @@ const LayoutCards = ({ profile, layout, type }) => {
               <Link to={`/employee-view/${profile?.id}`}>
                 <div className="h-[278px] rounded-t-3xl overflow-hidden relative">
                   <img
-                    src={cardLayout3}
+                    src={cardLayout4}
                     alt={profile?.title}
                     className="h-full w-full -z-0"
                   />
@@ -119,7 +119,7 @@ const LayoutCards = ({ profile, layout, type }) => {
               <Link to={`/company/${profile?.id}`}>
                 <div className="h-[278px] rounded-t-3xl overflow-hidden relative">
                   <img
-                    src={cardLayout3}
+                    src={cardLayout4}
                     alt={profile?.title}
                     className="h-full w-full -z-0"
                   />
@@ -173,7 +173,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
                     <img
-                      src={cardLayout5}
+                      src={cardLayout6}
                       alt=""
                       className="w-full h-full object-cover -z-0"
                     />
@@ -201,7 +201,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
                     <img
-                      src={cardLayout5}
+                      src={cardLayout6}
                       alt=""
                       className="w-full h-full object-cover -z-0"
                     />
@@ -256,7 +256,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
                     <img
-                      src={cardLayout7}
+                      src={cardLayout8}
                       alt=""
                       className="w-full h-full -z-0"
                     />
@@ -286,7 +286,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   >
                     {/* <span className="bg-orange-100 w-full h-[60%]"></span> */}
                     <img
-                      src={cardLayout7}
+                      src={cardLayout8}
                       alt=""
                       className="w-full h-full -z-0"
                     />

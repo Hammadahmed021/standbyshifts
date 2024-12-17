@@ -242,7 +242,7 @@ const CompanyProfile = () => {
             companyData?.jobPostedByEmployer
               ?.slice(0, visibleJobsCount)
               ?.map((job) => (
-                <JobCard
+                <JobCard 
                   className={"shadow-xl"}
                   jobId={job?.id}
                   key={job.id}
@@ -261,7 +261,7 @@ const CompanyProfile = () => {
                   description={job.description}
                   userType={userType}
                   loading={false}
-                  // applicants={job?.applicant}
+                  applicants={job?.applicant}
                 />
               ))
           )}

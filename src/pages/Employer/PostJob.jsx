@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Input, SelectOption, Button } from "../../component"; // Assuming Input is in the same folder
@@ -22,6 +22,8 @@ const shiftTimes = [
 ];
 
 const PostJob = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -44,25 +46,39 @@ const PostJob = () => {
     formState: { errors },
   } = useForm();
 
+  // useEffect(() => {
+  //   if (jobData?.id) {
+  //     Object.entries(jobData).forEach(([key, value]) => {
+  //       if (key === "certificate")
+  //         setValue(key, [value.map((res) => res.title)]);
+  //       else setValue(key, value);
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (jobData?.id) {
       Object.entries(jobData).forEach(([key, value]) => {
-        if (key === "required_expertise")
-          setValue(key, [value.map((res) => res.title)]);
-        else setValue(key, value);
+        if (key === "certificate") {
+          setValue(key, value); // Directly set the string value for certificate
+        } else {
+          setValue(key, value);
+        }
       });
     }
-  }, []);
+  }, [jobData, setValue]);
 
   const onSubmit = async (data) => {
     console.log(data, "form data of job posting");
+    setIsLoading(true);
     const formattedData = {
       ...data,
-      required_expertise: data?.required_expertise
-        ?.split(",")
-        ?.map((item) => item?.trim())
-        ?.filter(Boolean),
-      id: jobData?.id
+      certificate: data.certificate || "",
+      // certificate: data?.certificate
+      //   ?.split(",")
+      //   ?.map((item) => item?.trim())
+      //   ?.filter(Boolean),
+      id: jobData?.id,
     };
 
     try {
@@ -71,13 +87,29 @@ const PostJob = () => {
         : await postJob(formattedData);
       if (response.status == 200) {
         if (!jobData?.id) reset();
-        showSuccessToast("Job posted successfully");
+        const toastMessage = jobData?.id
+          ? "Job updated successfully!"
+          : "Job posted successfully!";
+        showSuccessToast(toastMessage);
         navigate("/appliers-on-job");
-      } else showErrorToast("Error posting the job");
+      } else {
+        // Show dynamic error toast
+        const errorMessage = jobData?.id
+          ? "Error updating the job"
+          : "Error posting the job";
+        showErrorToast(errorMessage);
+      }
       console.log("Job updated successfully:", response);
     } catch (error) {
-      showErrorToast("Error posting the job");
-      console.error("Error posting the job:", error);
+      console.error("Error:", error);
+
+      // Handle unexpected errors
+      const errorMessage = jobData?.id
+        ? "Unexpected error occurred while updating the job"
+        : "Unexpected error occurred while posting the job";
+      showErrorToast(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,8 +146,8 @@ const PostJob = () => {
                 )}
               </div>
 
-              <div className="flex flex-col w-full">
-                {/* Designation */}
+              {/* Designation */}
+              {/* <div className="flex flex-col w-full">
                 <h2>Designation</h2>
 
                 <Input
@@ -136,7 +168,7 @@ const PostJob = () => {
                     {errors.designation.message}
                   </span>
                 )}
-              </div>
+              </div> */}
 
               <div className="flex flex-col w-full">
                 {/* Per Hour Rate */}
@@ -161,9 +193,10 @@ const PostJob = () => {
               </div>
             </div>
 
-            {/* Description */}
-            <h2>Job Description</h2>
-
+            <div>
+              {/* Description */}
+              <h2>Job Description</h2>
+              {/* 
             <Input
               label="Description"
               placeholder="Enter job description"
@@ -173,10 +206,28 @@ const PostJob = () => {
               {...register("description", {
                 required: "Description is required",
               })}
-            />
-            {errors.description && (
-              <span className="text-red-500">{errors.description.message}</span>
-            )}
+            /> */}
+              <div
+                className={` appearance-none w-full px-3 py-3 border normal-case border-tn_light_grey outline-none
+                 focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 relative`}
+              >
+                <span className="inline-block absolute top-4 px-1 left-[6px]">
+                  <FaCalendar size={15} color="#0000F8" />
+                </span>
+                <textarea
+                  placeholder="Enter job description"
+                  className="w-full outline-none pl-5"
+                  {...register("description", {
+                    required: "Description is required",
+                  })}
+                />
+              </div>
+              {errors.description && (
+                <span className="text-red-500">
+                  {errors.description.message}
+                </span>
+              )}
+            </div>
 
             <div className="flex flex-wrap md:flex-nowrap space-y-2 md:space-y-0 md:space-x-2">
               <div className="flex flex-col w-full">
@@ -272,7 +323,7 @@ const PostJob = () => {
               </div>
             </div>
 
-            {/* Required Expertise */}
+            {/* Required Expertise
             <h2>Required Expertise</h2>
 
             <Input
@@ -301,10 +352,40 @@ const PostJob = () => {
               <span className="text-red-500">
                 {errors.required_expertise.message}
               </span>
-            )}
+            )} */}
+            <div>
+              <h2>Certificate</h2>
+              <Input
+                label="certificate"
+                placeholder="Enter certificate (comma-separated)"
+                iconColor={"#0000F8"}
+                icon={FaCalendar}
+                {...register("certificate", {
+                  required: "Certificate is required",
+                  validate: (value) => {
+                    // Convert value to a string to avoid errors if it's not a string
+                    const expertiseArray = String(value)
+                      .split(",")
+                      .map((item) => item.trim())
+                      .filter(Boolean);
+
+                    return (
+                      expertiseArray.length > 0 ||
+                      "At least one expertise is required"
+                    );
+                  },
+                })}
+              />
+
+              {errors.certificate && (
+                <span className="text-red-500">
+                  {errors.certificate.message}
+                </span>
+              )}
+            </div>
 
             <div className="flex flex-wrap md:flex-nowrap space-y-2 md:space-y-0 md:space-x-2">
-              <div className="flex flex-col w-full">
+              {/* <div className="flex flex-col w-full">
                 <h2>Experience Level</h2>
                 <SelectOption
                   selectClassName={"border rounded-lg py-3 px-3"}
@@ -320,7 +401,7 @@ const PostJob = () => {
                     {errors.experience_level.message}
                   </span>
                 )}
-              </div>
+              </div> */}
 
               <div className="flex flex-col w-full">
                 <h2>Shift Timings</h2>
@@ -334,9 +415,7 @@ const PostJob = () => {
                   })}
                 />
                 {errors.shifts && (
-                  <span className="text-red-500">
-                    {errors.shifts.message}
-                  </span>
+                  <span className="text-red-500">{errors.shifts.message}</span>
                 )}
               </div>
               {/* <div className="flex flex-col w-full">
@@ -441,8 +520,8 @@ const PostJob = () => {
               </div>
             </div>
 
-            <div className="flex flex-col w-full">
-              {/* Qualification */}
+            {/* Qualification */}
+            {/* <div className="flex flex-col w-full">
               <h2>Qualification</h2>
 
               <Input
@@ -459,11 +538,45 @@ const PostJob = () => {
                   {errors.qualification.message}
                 </span>
               )}
+            </div> */}
+
+            <div className="flex flex-col w-full">
+              {/* Previous Experience */}
+              <h2>Previous Experience</h2>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  {...register("previous_experience", {
+                    required: "Previous experience selection is required",
+                  })}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-gray-700">
+                  Do you have previous experience?
+                </span>
+              </label>
+              {errors.previous_experience && (
+                <span className="text-red-500">
+                  {errors.previous_experience.message}
+                </span>
+              )}
             </div>
 
             {/* Submit Button */}
-            
-            <Button type="submit">{jobData?.id ? 'Update Job' : 'Post Job'}</Button>
+
+            {/* <Button type="submit">
+              {jobData?.id ? "Update Job" : "Post Job"}
+            </Button> */}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading
+                ? jobData?.id
+                  ? "Updating..."
+                  : "Posting..."
+                : jobData?.id
+                ? "Update Job"
+                : "Post Job"}
+            </Button>
           </div>
         </form>
       </div>

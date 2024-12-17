@@ -23,7 +23,7 @@ const AppliedJobs = () => {
   const hasMore = appliers != null ? visibleJobsCount < appliers.length : false;
 
   const handleLoadMore = () => {
-    setVisibleJobsCount((prevCount) => prevCount + 6); // Increase visible job count by 6
+    setVisibleJobsCount((prevCount) => prevCount + 3); // Increase visible job count by 6
   };
   return (
     <>
@@ -70,10 +70,11 @@ const AppliedJobs = () => {
                 }}
               />
             ))
-          )}
-
-          {/* Load More Component */}
-          <LoadMore
+          )}         
+        </div>
+        <div>
+           {/* Load More Component */}
+           <LoadMore
             onLoadMore={handleLoadMore}
             hasMore={hasMore}
             className="mt-5"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetComOrEmp } from "../../utils/Api";
-import { LoadMore } from "../../component";
+import { EmpLayoutCards, LoadMore } from "../../component";
 import { fallback } from "../../assets";
 import LayoutCards from "../../component/Employer/LayoutCards";
 import { BsBackpack } from "react-icons/bs";
@@ -81,7 +81,7 @@ const Companies = () => {
             <h2 className="col-span-4 text-start">No company found</h2>
           ) : (
             transformedProfiles.slice(0, visibleJobsCount).map((profile, index) => (
-              <LayoutCards key={index} profile={profile} layout={profile.layout} />
+              <EmpLayoutCards key={index} profile={profile} layout={profile.layout} />
             ))
           )}
         </div>

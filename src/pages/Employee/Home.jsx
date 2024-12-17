@@ -3,6 +3,7 @@ import { GetComOrEmp, getJobsForEmployee } from "../../utils/Api";
 import {
   Button,
   EmpCardSlider,
+  EmpLayoutCards,
   Input,
   JobCard,
   SelectOption,
@@ -198,8 +199,8 @@ const Home = () => {
 
       <div className="container md:-mt-[350px] lg:-mt-[400px] sm:px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {transformedProfiles?.slice(0, 4)?.map((profile, index) => (
-            <LayoutCards
+          {transformedProfiles?.slice(0, 8)?.map((profile, index) => (
+            <EmpLayoutCards
               key={index}
               profile={profile}
               layout={profile.layout}
@@ -209,7 +210,9 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="container mt-24 employee-home px-0">
+      {/* hide recent  */}
+      
+      {/* <div className="container mt-24 employee-home px-0">
         <div className="container">
           <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold">
           Recently posted shifts 
@@ -266,7 +269,7 @@ const Home = () => {
                 ))}
           </Slider>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
         <div className="container h-full flex flex-wrap items-center px-0">
@@ -316,8 +319,8 @@ const Home = () => {
         </div>
       </div> */}
 
-    
-        <div className="container mt-24">
+        {/* hide nearby  */}
+        {/* <div className="container mt-24">
           <div className="flex flex-wrap items-center justify-center sm:justify-between">
             <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-start sm:text-center">
             Nearby available shifts
@@ -331,10 +334,10 @@ const Home = () => {
           </div>
           <div className="mt-6 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {!matchJobs || matchJobs.length === 0
-              ? // Show skeleton loaders for the number of jobs you expect to show
+              ? 
                 [...Array(3)].map((_, index) => (
                   <div key={index} className="p-2">
-                    <JobCard loading={true} /> {/* Loader JobCard */}
+                    <JobCard loading={true} /> 
                   </div>
                 ))
               : matchJobs?.splice(0, 3)?.map((job) => (
@@ -343,9 +346,9 @@ const Home = () => {
                       className={"shadow-xl"}
                       jobId={job?.id}
                       key={job?.id}
-                      companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                      companyLogo={job?.user?.employer?.logo} 
                       jobTitle={job?.title}
-                      companyName={job?.city} // You can also pass the company name if available
+                      companyName={job?.city} 
                       payRate={`$${job?.per_hour_rate}`}
                       dateRange={`${new Date(
                         job?.start_date
@@ -370,7 +373,7 @@ const Home = () => {
               Find more
             </Link>
           </div>
-        </div>
+        </div> */}
 
       <div className="container flex items-center mt-0 mb-20 sm:mt-20 testimonials">
         <div className="lg:w-5/12 w-full">

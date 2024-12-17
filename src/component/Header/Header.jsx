@@ -98,22 +98,7 @@ const Header = ({ style }) => {
           Find Jobs
         </NavLink>
       </li>
-      <li>
-        <NavLink
-          to={"/contact"}
-          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
-        >
-          Contact
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to={"/about"}
-          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
-        >
-          About
-        </NavLink>
-      </li>
+      
       {/* <li>
         <Link >
           <span className="rounded-full p-1 bg-tn_primary w-8 h-8 flex items-center justify-center">
@@ -165,36 +150,6 @@ const Header = ({ style }) => {
           Manage Jobs
         </NavLink>
       </li>
-      <li>
-        <NavLink
-          to={"/contact"}
-          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
-        >
-          Contact
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to={"/about"}
-          className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
-        >
-          About
-        </NavLink>
-      </li>
-      {/* <li>
-        <Link >
-          <span className="rounded-full p-1 bg-tn_pink w-8 h-8 flex items-center justify-center">
-            <FaBell size={18} color="#fff" />
-          </span>
-        </Link>
-      </li>
-      <li>
-        <Link >
-          <span className="rounded-full p-1 bg-tn_pink w-8 h-8 flex items-center justify-center">
-            <FaMessage size={18} color="#fff" />
-          </span>
-        </Link>
-      </li> */}
     </>
   );
 

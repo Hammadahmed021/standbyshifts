@@ -111,7 +111,7 @@ const EmployeeView = () => {
       <div className="flex flex-col lg:flex-row  container lg:space-x-4 my-16">
         {/* Main Content */}
         <div className="w-full lg:w-2/3 ">
-          <div className=" mb-4 p-6 flex justify-between bg-white rounded-2xl shadow-xl relative">
+          <div className=" mb-4 p-6 flex justify-between bg-white rounded-2xl shadow-xl relative border">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <img
