@@ -44,7 +44,7 @@ import { layoutOptions } from "../../utils/localDB";
 const MAX_FILE_SIZE_MB = 6; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
-const Profile = () => {
+const ProfileExp = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -155,10 +155,10 @@ const Profile = () => {
         {
           jobTitle: "", // Job title
           jobDesc: "", // Job description
-          startYear: "", // Start year
-          startMonth: "", // Start month
-          endYear: "", // End year
-          endMonth: "", // End month
+        //   startYear: "", // Start year
+        //   startMonth: "", // Start month
+        //   endYear: "", // End year
+        //   endMonth: "", // End month
         },
       ],
     },
@@ -295,10 +295,10 @@ const Profile = () => {
         work_history: allExperiences.map((exp) => ({
           title: exp.jobTitle || exp.title,
           description: exp.jobDesc || exp.description,
-          start_month: exp.startMonth || exp.start_month,
-          end_month: exp.endMonth || exp.end_month,
-          start_year: exp.startYear || exp.start_year,
-          end_year: exp.endYear || exp.end_year,
+        //   start_month: exp.startMonth || exp.start_month,
+        //   end_month: exp.endMonth || exp.end_month,
+        //   start_year: exp.startYear || exp.start_year,
+        //   end_year: exp.endYear || exp.end_year,
         })),
         ...(profileBannerFile &&
           profileBannerFile !== currentUser?.banner && {
@@ -440,10 +440,10 @@ const Profile = () => {
     const experience = {
       jobTitle: values.jobTitle,
       jobDesc: values.jobDesc,
-      startMonth: values.startMonth,
-      startYear: values.startYear,
-      endMonth: values.endMonth,
-      endYear: values.endYear,
+    //   startMonth: values.startMonth,
+    //   startYear: values.startYear,
+    //   endMonth: values.endMonth,
+    //   endYear: values.endYear,
     };
 
     // Update the state based on edit mode
@@ -467,10 +467,10 @@ const Profile = () => {
     // Reset form fields after saving
     resetField(`experiences.${index}.jobTitle`);
     resetField(`experiences.${index}.jobDesc`);
-    resetField(`experiences.${index}.startMonth`);
-    resetField(`experiences.${index}.startYear`);
-    resetField(`experiences.${index}.endMonth`);
-    resetField(`experiences.${index}.endYear`);
+    // resetField(`experiences.${index}.startMonth`);
+    // resetField(`experiences.${index}.startYear`);
+    // resetField(`experiences.${index}.endMonth`);
+    // resetField(`experiences.${index}.endYear`);
 
     // Reset edit mode after saving
     setEditIndex(null);
@@ -574,38 +574,7 @@ const Profile = () => {
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl border">
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between overflow-hidden">
-                <div className="flex items-center">
-                  <img
-                    src={imagePreview}
-                    alt="user profile"
-                    className="w-16 h-16 rounded-full"
-                  />
-                  <div className="ml-4">
-                    <input
-                      type="file"
-                      accept=".jpg, .jpeg, .png"
-                      onChange={handleFileChange}
-                    />
-
-                    {fileError && <p className="text-red-500">{fileError}</p>}
-                  </div>
-                </div>
-                <div>
-                  <ToggleAvailability
-                    is_available={!!currentUser?.is_available}
-                  />
-                </div>
-              </div>
-
-              <div className="my-6">
-                <h2 className="text-3xl font-black text-tn_dark">
-                  Welcome {fetchUser?.profile?.name || "N/A"}
-                </h2>
-                <p>You can change your profile information here.</p>
-              </div>
-            </div>
+           
             {isVisible && (
               <Modal
                 title={"Edit Experience"}
@@ -647,7 +616,7 @@ const Profile = () => {
                       />
                     </div>
 
-                    <div className="mb-2">
+                    {/* <div className="mb-2">
                       <label className="block mb-1">Start Date</label>
                       <span className="flex space-x-2">
                         <select
@@ -729,7 +698,7 @@ const Profile = () => {
                           ))}
                         </select>
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* Save Experience Button */}
                     <button
@@ -743,134 +712,360 @@ const Profile = () => {
                 }
               />
             )}
-            <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
-              <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                Personal Information
-              </h3>
-              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <span className="mb-6 w-full">
-                  <Input
-                    label="Name"
-                    onKeyPress={handleNameKeyPress} // Prevent numbers
-                    icon={FaUser}
-                    {...register("name")}
-                    placeholder="Enter your name"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </span>
-                <span className="mb-6 w-full">
-                  <Input
-                    label="Phone"
-                    type="tel"
-                    icon={FaPhone} // Using the phone icon here
-                    maxLength={17} // To accommodate "+1 (XXX) XXX-XXXX"
-                    placeholder="+1 (123) 456-7890" // US phone format with country code
-                    {...register("phone", {
-                      onChange: (e) => {
-                        const formattedValue = formatPhoneNumberWithCountryCode(
-                          e.target.value
-                        );
-                        setValue("phone", formattedValue); // Update form state with formatted value
-                      },
-                      validate: {
-                        lengthCheck: (value) =>
-                          value.replace(/\D/g, "").length === 11 ||
-                          "Phone number must be exactly 10 digits after +1",
-                      },
-                    })}
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.phone.message}
-                    </p>
-                  )}
-                </span>
-              </span>
-              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <span className="mb-6 w-full">
-                  <Input
-                    label="Address"
-                    {...register("address")}
-                    icon={FaLocationArrow}
-                    placeholder="Enter your address"
-                    type="text"
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.address.message}
-                    </p>
-                  )}
-                </span>
 
-                <span className="mb-6 w-full">
-                  {" "}
-                  <Input
-                    label="Zip Code"
-                    type="text"
-                    icon={FaAdjust}
-                    maxLength={10} // Restrict length to 15 digits
-                    {...register("zip", {
-                      // validate: {
-                      //   lengthCheck: (value) =>
-                      //     (value.length >= 5 && value.length <= 10) ||
-                      //     "Phone number must be between 11 and 15 digits",
-                      // },
-                    })}
-                    placeholder="Zip code"
-                  />
-                  {errors.zip && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.zip.message}
-                    </p>
-                  )}
-                </span>
-              </span>
-              {!isGmailUser && (
-                <>
-                  <span className="w-full block mb-6">
-                    <p className="text-tn_text_grey text-sm">
-                      Want to change password?{" "}
-                      <span
-                        className="underline cursor-pointer"
-                        onClick={toggleText}
-                      >
-                        {togglePassword ? "hide" : "click here"}
-                      </span>
-                    </p>
-                  </span>
-                  {togglePassword && (
-                    <span className="mb-6 block">
-                      <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                        <Input
-                          label="New Password"
-                          type="password"
-                          {...register("newPassword")}
-                          placeholder="Enter new password"
-                          // disabled={isGmailUser}
-                          className="mb-6 sm:mb-0"
-                          icon={FaLock}
-                        />
-                        <Input
-                          label="Confirm Password"
-                          type="password"
-                          {...register("confirmPassword")}
-                          placeholder="Confirm new password"
-                          // disabled={isGmailUser}
-                          icon={FaLock}
-                        />
-                      </span>
-                      {showError && (
-                        <p className="text-red-500 text-sm">{showError}</p>
-                      )}
-                    </span>
-                  )}
-                </>
-              )}
+            <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
              
+              <div className="">
+                <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
+                  Work Experience
+                </h3>
+                <div className="mb-6">
+                  <label className="block mb-2 font-semibold">Tags</label>
+                  <AutoComplete
+                    options={dropdownTags}
+                    onAddTag={handleAddTag}
+                  />
+                  <ul className="space-x-1">
+                    {newTags.map((tag, index) => (
+                      <li
+                        key={index}
+                        className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                  <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
+                  <ul className="mb-4 flex gap-2">
+                    {tags?.map((tag, index) => (
+                      <li
+                        key={index}
+                        className="px-2 py-1 text-xs rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
+                      >
+                        {tag}
+                        <FaTrash
+                          onClick={() => removeSkills(index)}
+                          size={11}
+                          className="cursor-pointer"
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mb-6">
+                  {fields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      id={`experienceForm_${index}`}
+                      className="mb-4 border p-4 rounded bg-gray-50"
+                    >
+                      <h3 className="font-semibold mb-2">
+                        Experience {index + 1}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="mb-2 text-red-500 hover:underline"
+                      >
+                        Remove Experience
+                      </button>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">Job Title</label>
+                        <input
+                          {...register(`experiences.${index}.jobTitle`)}
+                          placeholder="Enter your job title"
+                          className="border p-2 w-full rounded"
+                        />
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">Job Description</label>
+                        <textarea
+                          {...register(`experiences.${index}.jobDesc`)}
+                          placeholder="Enter your job description"
+                          className="border p-2 w-full rounded"
+                        />
+                      </div>
+
+                      {/* <div className="mb-2">
+                        <label className="block mb-1">Start Date</label>
+                        <span className="flex flex-wrap gap-2">
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.startMonth`)}
+                          >
+                            <option value="">Select Month</option>
+                            {months.map((month) => (
+                              <option key={month.id} value={month.id}>
+                                {month.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.startYear`)}
+                          >
+                            <option value="">Select Year</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block mb-1">End Date</label>
+                        <span className="flex flex-wrap gap-2">
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.endMonth`)}
+                          >
+                            <option value="">Select Month</option>
+                            {months.map((month) => (
+                              <option key={month.id} value={month.id}>
+                                {month.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="border p-2 rounded"
+                            {...register(`experiences.${index}.endYear`)}
+                          >
+                            <option value="">Select Year</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
+                      </div> */}
+
+                      {/* Save Experience Button */}
+                      <button
+                        type="button"
+                        onClick={() => saveExperience(index)}
+                        className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                      >
+                        {editIndex === index
+                          ? "Update Experience"
+                          : "Save Experience"}
+                      </button>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      append({
+                        jobTitle: "",
+                        jobDesc: "",
+                        startYear: "",
+                        startMonth: "",
+                        endYear: "",
+                        endMonth: "",
+                      })
+                    }
+                    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Add More Experience
+                  </button>
+                </div>
+                <div>
+                  <strong className="mt-4 block">Saved Experiences:</strong>
+                  <div>
+                    {savedExperiences.length > 0 ? (
+                      savedExperiences.map((work, index) => {
+                        console.log("experio", index, work);
+                        return (
+                          <ul>
+                            <li key={index} className="mb-4 relative">
+                              <h2 className="font-bold">
+                                {work.jobTitle ?? work.title}
+                              </h2>
+                              <p>{work.jobDesc ?? work.description}</p>
+                              {/* <p>
+                                {work.startMonth ?? work.start_month}/
+                                {work.startYear ?? work.start_year} -{" "}
+                                {work.endMonth ?? work.end_month}/
+                                {work.endYear ?? work.end_year}
+                              </p> */}
+                              {/* Edit button (Pen icon) */}
+                              <button
+                                type="button"
+                                onClick={() => editExperience(index)} // This function will take the user to the form with pre-filled data
+                                className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                              >
+                                <FaPen />
+                              </button>
+                              {/* Delete button */}
+                              <button
+                                type="button"
+                                onClick={() => deleteExperience(index)} // This function will remove the entry
+                                className="absolute top-0 right-5 text-gray-500 hover:text-gray-700"
+                              >
+                                <FaTrash />
+                              </button>
+                            </li>
+                          </ul>
+                        );
+                      })
+                    ) : (
+                      <p>No work history found.</p>
+                    )}
+                  </div>
+                </div>
+              </div>{" "}
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
+                  Industries
+                </h3>
+                <div className="mb-6">
+                  <SelectOption
+                    // label="Industries"
+                    pl={"pl-0 border p-2 rounded-lg"}
+                    value={selectedIndustries.map((industry) => industry.title)}
+                    onChange={handleFilterChange}
+                    options={addAllOption(
+                      fetchUser?.industries,
+                      "All Industries"
+                    )}
+                  />
+                  <ul>
+                    {selectedIndustries.map((industry) => (
+                      <li key={industry.id}>{industry.title}</li>
+                    ))}
+                  </ul>
+                  <strong className="mt-4 block">Selected Industries:</strong>
+                  {/* <ul>
+                  {selectedIndustries.map((industry) => (
+                    <li key={industry.id}>{industry.title}</li>
+                  ))}
+                </ul> */}
+                  <ul>
+                    {fetchUser?.profile?.industry ? (
+                      <li key={fetchUser.profile.industry.id}>
+                        {fetchUser.profile.industry.title}
+                      </li>
+                    ) : (
+                      <li>No industry found.</li> // Handle the case where there is no industry
+                    )}
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="border-t pt-6 mt-6">
+                <div>
+                  {/* Toggle Button */}
+                  <p className="text-tn_text_grey text-sm mb-6">
+                    Want to set profile?{" "}
+                    <span
+                      onClick={toggleProfileSection}
+                      className="underline cursor-pointer"
+                    >
+                      {hideProfile ? "Hide Profile" : "Show Profile"}
+                    </span>
+                  </p>
+
+                  {/* Profile Section */}
+                  {hideProfile && (
+                    <>
+                      <div className="overflow-hidden">
+                        <h3 className="text-2xl font-semibold text-tn_dark mb-4">
+                          Data for profile
+                        </h3>
+                        <div className="flex items-center py-4">
+                          <img
+                            src={bannerPreview}
+                            alt="user profile"
+                            className="w-32 h-16 rounded-lg border"
+                          />
+                          <div className="ml-4">
+                            <input
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              onChange={handleFileChangeBanner}
+                            />
+
+                            {bannerFileError && (
+                              <p className="text-red-500">{bannerFileError}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="mb-6 w-full block">
+                          <span className="mt-6 mb-2 font-semibold block">
+                            Short Description
+                          </span>
+                          <div className="relative">
+                            <FaClipboard
+                              scale={15}
+                              color="#F59200"
+                              className="absolute top-3 left-2"
+                            />
+                            <textarea
+                              label="Short description"
+                              maxLength={80}
+                              rows="3"
+                              {...register("short_description", {
+                                validate: {
+                                  lengthCheck: (value) =>
+                                    (value.length >= 50 &&
+                                      value.length <= 80) ||
+                                    "Short description must be between 50 and 80 characters",
+                                },
+                              })}
+                              placeholder="Enter short description"
+                              className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
+                            />
+                            <p className="text-tn_text_grey text-sm">
+                              Short description must be of 80 characters.
+                            </p>
+                          </div>
+
+                          {errors.short_description && (
+                            <p className="text-red-500 text-xs mt-1">
+                              {errors.short_description.message}
+                            </p>
+                          )}
+                        </span>
+                      </div>
+
+                      <span className="mt-4 block font-semibold mb-2">
+                        Select Layout
+                      </span>
+                      <div className="flex space-x-4 justify-start mb-6">
+                        {layoutOptions.map((layout) => (
+                          <label key={layout.id} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              value={layout.id}
+                              {...register("layout")}
+                              className="hidden"
+                            />
+                            <div
+                              className={`border ${
+                                selectedLayout === layout.id
+                                  ? "border-blue-500"
+                                  : "border-gray-300"
+                              } rounded-lg p-2`}
+                            >
+                              <img
+                                src={layout.imageUrl}
+                                alt={layout.label}
+                                className="mb-2"
+                              />
+                              <p>{layout.label}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
               <Button
                 type="submit"
                 className={`w-full  ${
@@ -894,4 +1089,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileExp;

@@ -89,7 +89,7 @@ const Header = ({ style }) => {
           Companies
         </NavLink>
       </li>
-      
+
       <li>
         <NavLink
           to={"/jobs"}
@@ -98,7 +98,7 @@ const Header = ({ style }) => {
           Find Jobs
         </NavLink>
       </li>
-      
+
       {/* <li>
         <Link >
           <span className="rounded-full p-1 bg-tn_primary w-8 h-8 flex items-center justify-center">
@@ -287,6 +287,15 @@ const Header = ({ style }) => {
                         >
                           Profile
                         </Link>
+                        {userData && userType === "employee" && (
+                          <Link
+                            to={"employee-experience"}
+                            className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
+                          >
+                            Work
+                          </Link>
+                        )}
+
                         <LogoutBtn />
                       </div>
                     )}

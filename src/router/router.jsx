@@ -38,6 +38,7 @@ import {
   FilterPage,
   Companies,
   AllEmployees,
+  ProfileExp,
 } from "../pages";
 import { AuthLayout } from "../component";
 
@@ -84,6 +85,7 @@ function BaseRouter() {
           <Route path="companies" element={<AuthLayout authentication={true}><Companies /></AuthLayout>} />
           <Route path="employees" element={<AuthLayout authentication={true}><AllEmployees /></AuthLayout>} />
           <Route path="view-applicants/:id" element={<AuthLayout authentication={true}><ApplierCandidates /></AuthLayout>} />
+          <Route path="employee-experience" element={<AuthLayout authentication={true}><ProfileExp /></AuthLayout>} />
           <Route path="chat" element={<AuthLayout authentication={true}><Chat /></AuthLayout>} />
           <Route path="*" element={<NotFound />} />
         </Route>

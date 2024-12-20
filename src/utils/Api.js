@@ -345,10 +345,10 @@ export const updateUserProfile = async (userData) => {
   work_history.forEach((work, index) => {
     formData.append(`work_history[${index}][title]`, work.title);
     formData.append(`work_history[${index}][description]`, work.description);
-    formData.append(`work_history[${index}][start_month]`, work.start_month);
-    formData.append(`work_history[${index}][end_month]`, work.end_month);
-    formData.append(`work_history[${index}][start_year]`, work.start_year);
-    formData.append(`work_history[${index}][end_year]`, work.end_year);
+    // formData.append(`work_history[${index}][start_month]`, work.start_month);
+    // formData.append(`work_history[${index}][end_month]`, work.end_month);
+    // formData.append(`work_history[${index}][start_year]`, work.start_year);
+    // formData.append(`work_history[${index}][end_year]`, work.end_year);
   });
 
   // Append profile image if present
