@@ -3,6 +3,7 @@ import { FaStar } from "react-icons/fa";
 import Ratings from "./Ratings"; // Assuming your Ratings component is in the same folder
 import { useNavigate } from "react-router-dom";
 import { FaArrowRightLong, FaLocationDot } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 const EmpCard = ({
   image,
@@ -13,9 +14,18 @@ const EmpCard = ({
   isLocation = false,
   jobId,
 }) => {
+  const userData = useSelector((state) => state.auth.userData);
+  const userType = userData?.user?.type;
+
+  console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
   const navigate = useNavigate(); // Initialize navigate
   const handleCardClick = () => {
+    if (userType == "employer") {
     navigate(`/employee-view/${jobId}`); // Navigate to job detail page with jobId
+    } else{
+    navigate(`/job/${jobId}`); // Navigate to job detail page with jobId
+
+    }
   };
 
   return (

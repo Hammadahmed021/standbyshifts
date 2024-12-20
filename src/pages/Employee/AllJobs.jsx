@@ -4,47 +4,76 @@ import { JobCard, Search, LoadMore } from "../../component";
 import { FaFilter } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { LuSearch } from "react-icons/lu";
+import { BsBackpack } from "react-icons/bs";
 
 const AllJobs = () => {
   const location = useLocation();
-  const [jobs, setJobs] = useState(null);
-  const [afterSearch, setAfterSearch] = useState([]);
+  const [originalJobs, setOriginalJobs] = useState([]); // To store unfiltered jobs
+  const [jobs, setJobs] = useState([]); // To store filtered jobs
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
 
-  const getJobs = async (e) => {
+  // Fetch jobs from API
+  const getJobs = async (searchText = null) => {
     const res = await getJobsByFilter({
       ...location.state,
-      jobTitle: e ?? location?.state?.jobTitle,
+      jobTitle: searchText ?? location?.state?.jobTitle,
     });
-    setJobs(res?.data ?? []);
-    console.log(JSON.stringify(res?.data), "res?.data?>>>>>>>>>>>>>");
-    // Check if there are more jobs than the initial load
+    const fetchedJobs = res?.data ?? [];
+    setOriginalJobs(fetchedJobs); // Save original jobs
+    setJobs(fetchedJobs); // Show all jobs initially
   };
-  useEffect(() => {
-    getJobs();
-  }, []);
 
-  const hasMore = jobs != null ? visibleJobsCount < jobs.length : false;
+  const hasMore = jobs.length > visibleJobsCount;
 
   const handleLoadMore = () => {
     setVisibleJobsCount((prevCount) => prevCount + 6); // Increase visible job count by 6
   };
 
-  const onSearchText = (e) => {
-    setJobs(null);
-    getJobs(e);
+  const handleSearch = (searchText) => {
+    setSearchTerm(searchText); // Update search term
+    const lowerCaseSearch = searchText.toLowerCase();
+
+    // Filter jobs or reset to original jobs
+    const filteredJobs = lowerCaseSearch
+      ? originalJobs.filter((job) =>
+          job.title?.toLowerCase().includes(lowerCaseSearch)
+        )
+      : originalJobs;
+
+    setJobs(filteredJobs);
   };
+
+  useEffect(() => {
+    getJobs(); // Fetch jobs on component mount
+  }, []);
+
+  
 
   return (
     <div className="container my-10 px-0">
       <div className="flex justify-between items-center">
-        <Search onSearch={onSearchText} />
-        {/* <span className="bg-tn_primary rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
-          <FaFilter size={16} color="#fff" />
-        </span> */}
-      </div> 
+        <span className="py-2 w-auto border outline-none focus:bg-gray-50 bg-white text-black rounded-site text-sm duration-200 border-gray-200 flex justify-between shadow-lg">
+          <span className="flex items-center">
+            <BsBackpack size={18} className="mx-3" />
+            <input
+              type="text"
+              placeholder="Job title or keywords"
+              className="w-full outline-none"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </span>
+          <LuSearch
+            size={24}
+            className="bg-tn_primary mr-2 rounded-full w-8 h-8 py-1 px-2 text-white"
+            onClick={() => handleSearch(searchTerm)}
+          />
+        </span>
+      </div>
       <div className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
           {!jobs || jobs === null ? (

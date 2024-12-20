@@ -104,6 +104,9 @@ const JobDetail = () => {
     }
   }, [job?.details?.applicant]);
 
+  console.log(relatedJobs, 'relatedJobs');
+  
+
   if (!job)
     return (
       <div className="container text-center pt-8">
