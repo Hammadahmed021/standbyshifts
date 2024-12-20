@@ -540,6 +540,42 @@ const PostJob = () => {
               )}
             </div> */}
 
+<div>
+              {/* Notes */}
+              <h2>Notes</h2>
+              {/* 
+            <Input
+              label="Description"
+              placeholder="Enter job description"
+              iconColor={"#0000F8"}
+              icon={FaCalendar}
+              type="textarea"
+              {...register("description", {
+                required: "Description is required",
+              })}
+            /> */}
+              <div
+                className={` appearance-none w-full px-3 py-3 border normal-case border-tn_light_grey outline-none
+                 focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 relative`}
+              >
+                <span className="inline-block absolute top-4 px-1 left-[6px]">
+                  <FaCalendar size={15} color="#0000F8" />
+                </span>
+                <textarea
+                  placeholder="Enter job notes"
+                  className="w-full outline-none pl-5"
+                  {...register("notes", {
+                    required: "Notes is required",
+                  })}
+                />
+              </div>
+              {errors.notes && (
+                <span className="text-red-500">
+                  {errors.notes.message}
+                </span>
+              )}
+            </div>
+
             <div className="flex flex-col w-full">
               {/* Previous Experience */}
               <h2>Previous Experience</h2>
