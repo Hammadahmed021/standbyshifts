@@ -247,9 +247,10 @@ const JobDetail = () => {
           <hr className="border-b border-tn_light_grey my-6" />
 
           <div className="mb-6">
-            <h3 className="text-lg font-semibold">Required Skills</h3>
+            <h3 className="text-lg font-semibold">certificate</h3>
             <div className="flex flex-wrap gap-2">
-              {job?.details?.expertise?.length ? (
+              {job?.details?.certificate || "N/A"}
+              {/* {job?.details?.expertise?.length ? (
                 job?.details.expertise.map((skill) => (
                   <span
                     key={skill.id}
@@ -260,12 +261,12 @@ const JobDetail = () => {
                 ))
               ) : (
                 <p className="text-gray-500">No skills listed.</p>
-              )}
+              )} */}
             </div>
           </div>
           <hr className="border-b border-tn_light_grey my-6" />
-          <h3 className="text-lg font-semibold"> Qualifications & Ability</h3>
-          <p>{job?.details?.qualification}</p>
+          <h3 className="text-lg font-semibold"> notes</h3>
+          <p>{job?.details?.notes || "N/A"}</p>
         </div>
 
         {/* Sidebar */}
