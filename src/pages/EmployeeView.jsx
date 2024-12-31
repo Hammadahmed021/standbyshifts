@@ -150,7 +150,7 @@ const EmployeeView = () => {
           </div>
           <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl">
             <h2 className="text-2xl font-semibold capitalize items-center mb-6">
-              {employee?.name || "Employee name"} Applied on your jobs
+              {employee?.name || "Employee name"} Applied on your shifts
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {employeeJobs.map((job, ind) => (
@@ -288,7 +288,7 @@ const EmployeeView = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <BsBackpack2Fill className="mr-2" /> Total Jobs Done
+                <BsBackpack2Fill className="mr-2" /> Total Shifts Done
               </h4>
               <p className="font-semibold">{employee?.applied_jobs?.length}</p>
             </div>
@@ -366,7 +366,7 @@ const EmployeeView = () => {
             <div className="container py-10">
               <div className="w-[50%] mx-auto mt-6">
                 <h3 className="text-tn_dark text-center text-5xl inline sm:block leading-tight font-semibold">
-                  Related Jobs
+                  Related Shifts
                 </h3>
                 <p className=" my-4 text-base w-full text-tn_dark  font-normal  text-center">
                   It is a long established fact that a reader will be distracted

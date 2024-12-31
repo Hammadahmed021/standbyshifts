@@ -122,7 +122,7 @@ const JobDetail = () => {
           <div className="flex flex-wrap justify-between items-start mb-4">
             <div className="mb-4 sm:mb-0">
               <p className="text-gray-500 flex flex-wrap space-x-2 items-center text-sm">
-                <FaBagShopping size={14} className="mr-2" /> Job type:{" "}
+                <FaBagShopping size={14} className="mr-2" /> Shift type:{" "}
                 <span className="font-semibold text-tn_dark">
                   {job?.details?.designation || "Designation"}
                 </span>
@@ -318,7 +318,7 @@ const JobDetail = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <BsBackpack2Fill className="mr-2" /> Job Posts
+                <BsBackpack2Fill className="mr-2" /> Shift Posts
               </h4>
               <p className="font-semibold">{job?.jobPostCount || '10'}</p>
             </div>
@@ -331,7 +331,7 @@ const JobDetail = () => {
             <div className="container py-6 sm:py-10">
               <div className="w-full md:w-[50%] mx-auto mt-6">
                 <h3 className="text-tn_dark text-center text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
-                  Related Jobs
+                  Related Shifts
                 </h3>
                 <p className=" my-4 text-base w-full text-tn_dark  font-normal text-start sm:text-center">
                   It is a long established fact that a reader will be distracted

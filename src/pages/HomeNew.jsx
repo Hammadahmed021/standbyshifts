@@ -317,7 +317,7 @@ export default function HomeNew() {
                 Get your next
                 <span className="font-bold text-tn_primary inline sm:block">
                   {" "}
-                  weeknight job shifts
+                  weeknight shifts
                 </span>
               </h2>
               <p className=" my-4 text-base w-full text-white  font-normal sm:text-start sm:w-[95%]">
@@ -497,7 +497,7 @@ export default function HomeNew() {
         <div className="flex flex-wrap item-center justify-between">
           <AnimatedCounter
             icon={FaClipboard}
-            heading="Jobs posted"
+            heading="Shifts posted"
             targetNumber={200} // Target number to count to
             duration={3000} // Duration in milliseconds
             className={"p-3"}

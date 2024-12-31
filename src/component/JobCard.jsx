@@ -74,7 +74,7 @@ const JobCard = ({
   console.log(isEmployeeView, "isEmployeeView >>>>>>>");
 
   // Determine button text based on applicants
-  const buttonText = applicants?.length > 0 ? "View Job" : "Apply";
+  const buttonText = applicants?.length > 0 ? "View Shift" : "Apply";
 
   if (loading) {
     return <JobCardSkeleton />;
@@ -165,7 +165,7 @@ const JobCard = ({
               className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
               onClick={handleApplyClick}
             >
-              View Job
+              View Shift
             </button>
           )}
         </div>
@@ -177,7 +177,7 @@ const JobCard = ({
             className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
             onClick={handleApplyClick}
           >
-            View Job
+            View Shift
           </button>
         </div>
       )}

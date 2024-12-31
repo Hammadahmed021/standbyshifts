@@ -108,7 +108,7 @@ const Home = () => {
       <div className=" py-8 sm:py-16 mb-16 mt-8">
         <div className="flex items-center justify-between container">
           <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
-            Recent job posts
+            Recent shift posts
           </h3>
           <Link
             to={"/appliers-on-job"}
@@ -168,7 +168,7 @@ const Home = () => {
           <div className="lg:w-5/12 w-full flex pl-0 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
               <h3 className="text-white text-4xl inline sm:block leading-tight font-semibold">
-                Candidates who applied on your job
+                Candidates who applied on your shift
               </h3>
               <p className=" my-4 text-base w-full text-white  font-normal text-start">
                 It is a long established fact that a reader will be distracted
@@ -214,7 +214,7 @@ const Home = () => {
             <h3 className="text-white text-4xl sm:text-5xl inline sm:block leading-tight">
               Hire experts &{" "}
               <span className="font-bold text-tn_primary inline sm:block">
-                Get your job done
+                Get your shift done
               </span>
             </h3>
             <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
@@ -227,7 +227,7 @@ const Home = () => {
                 className="bg-white text-tn_pink"
                 textColor="text-tn_pink"
               >
-                Post a Job
+                Post a Shift
               </Button>
             </div>
           </div>

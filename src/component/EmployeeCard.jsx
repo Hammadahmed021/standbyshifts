@@ -67,7 +67,7 @@ const EmployeeDetailCard = ({ profile }) => {
               className="w-14 h-14 object-cover mr-3 rounded-md shadow-sm"
             />
             <div>
-              <p className="text-gray-500 text-sm">Job applied:</p>
+              <p className="text-gray-500 text-sm">Shift applied:</p>
               <p className="font-semibold">{jobTitle}</p>
             </div>
           </div>

@@ -95,7 +95,7 @@ const Header = ({ style }) => {
           to={"/jobs"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Find Jobs
+          Find Shifts
         </NavLink>
       </li>
 
@@ -131,7 +131,7 @@ const Header = ({ style }) => {
           to={"/post-job"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Post Job
+          Post Shift
         </NavLink>
       </li>
       <li>
@@ -147,7 +147,7 @@ const Header = ({ style }) => {
           to={"/appliers-on-job"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Manage Jobs
+          Manage Shifts
         </NavLink>
       </li>
     </>

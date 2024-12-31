@@ -37,7 +37,7 @@ const AppliedJobs = () => {
               </div>
             ))
           ) : appliers?.length === 0 ? (
-            <h2>No jobs available to manage</h2>
+            <h2>No shifts available to manage</h2>
           ) : (
             appliers?.slice(0, visibleJobsCount)?.map((job) => (
               <JobCard

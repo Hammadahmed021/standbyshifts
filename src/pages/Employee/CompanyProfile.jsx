@@ -214,7 +214,7 @@ const CompanyProfile = () => {
       </div>
       <div className="container my-16">
         <div className="flex items-center justify-between my-10">
-          <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Jobs</h3>
+          <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Shifts</h3>
           {/* <span className="bg-tn_pink rounded-full bg-contain w-8 h-8 inline-flex items-center justify-center">
             <FaFilter size={16} color="#fff" />
           </span> */}
@@ -230,9 +230,9 @@ const CompanyProfile = () => {
               ))}
               <div className="text-center p-4 text-black">
                 <p>
-                  No jobs available.{" "}
+                  No shifts available.{" "}
                   <a href="/post-job" className="text-blue-600 underline">
-                    Post a job now
+                    Post a shift now
                   </a>
                 </p>
               </div>

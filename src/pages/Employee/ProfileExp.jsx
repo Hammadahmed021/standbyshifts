@@ -771,19 +771,19 @@ const ProfileExp = () => {
                       </button>
 
                       <div className="mb-2">
-                        <label className="block mb-1">Job Title</label>
+                        <label className="block mb-1">Shift Title</label>
                         <input
                           {...register(`experiences.${index}.jobTitle`)}
-                          placeholder="Enter your job title"
+                          placeholder="Enter your shift title"
                           className="border p-2 w-full rounded"
                         />
                       </div>
 
                       <div className="mb-2">
-                        <label className="block mb-1">Job Description</label>
+                        <label className="block mb-1">Shift Description</label>
                         <textarea
                           {...register(`experiences.${index}.jobDesc`)}
-                          placeholder="Enter your job description"
+                          placeholder="Enter your shift description"
                           className="border p-2 w-full rounded"
                         />
                       </div>

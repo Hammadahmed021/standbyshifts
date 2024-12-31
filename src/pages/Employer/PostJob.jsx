@@ -115,12 +115,12 @@ const PostJob = () => {
 
   return (
     <>
-      <div className="container py-6">
+      <div className="container py-6 mb-10 px-2 sm:px-0">
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          <div className="shadow-2xl rounded-2xl p-4 sm:p-6 space-y-4">
+          <div className="shadow-2xl rounded-2xl p-4 sm:p-6 space-y-4 border">
             <div className="flex justify-between mb-10  ">
               <h2 className="text-3xl sm:text-4xl font-semibold text-tn_dark">
-                Job Details
+                Shift Details
               </h2>
               {/* <button className="flex items-center gap-2" onClick={goBack}>
                 <FaArrowLeftLong /> Back
@@ -130,12 +130,12 @@ const PostJob = () => {
             <div className="flex flex-wrap md:flex-nowrap space-y-2 md:space-y-0 md:space-x-2">
               <div className="flex flex-col w-full">
                 {/* Job Title */}
-                <h2>Job Title</h2>
+                <h2>Shift Title</h2>
                 <Input
-                  label="Job Title"
+                  label="Shift Title"
                   iconColor={"#0000F8"}
                   icon={FaUnlock}
-                  placeholder="Enter job title"
+                  placeholder="Enter shift title"
                   {...register("title", {
                     required: "Title is required",
                     maxLength: 255,
@@ -195,7 +195,7 @@ const PostJob = () => {
 
             <div>
               {/* Description */}
-              <h2>Job Description</h2>
+              <h2>Shift Description</h2>
               {/* 
             <Input
               label="Description"
@@ -215,7 +215,7 @@ const PostJob = () => {
                   <FaCalendar size={15} color="#0000F8" />
                 </span>
                 <textarea
-                  placeholder="Enter job description"
+                  placeholder="Enter shift description"
                   className="w-full outline-none pl-5"
                   {...register("description", {
                     required: "Description is required",
@@ -610,8 +610,8 @@ const PostJob = () => {
                   ? "Updating..."
                   : "Posting..."
                 : jobData?.id
-                ? "Update Job"
-                : "Post Job"}
+                ? "Update Shift"
+                : "Post Shift"}
             </Button>
           </div>
         </form>
