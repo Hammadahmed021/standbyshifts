@@ -73,7 +73,7 @@ const Home = () => {
                 <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
                   Discover the ideal{" "}
                   <span className="font-bold text-tn_primary inline sm:block">
-                    match for professional needs
+                    match for staffing needs
                   </span>
                 </h2>
                 <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
