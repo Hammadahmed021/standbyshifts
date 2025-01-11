@@ -27,7 +27,7 @@ function BannerSlider({ images, reverse, slidesToShow }) {
             <img
               src={image.src}
               alt={`Slide ${index + 1}`}
-              className="w-[220px] h-[250px] 2xl:h-[400px] 2xl:w-[350px] xl:h-[250px] xl:w-[220px] object-cover rounded-lg my-1"
+              className="w-[220px] h-[250px] 2xl:h-[400px] 2xl:w-[350px] lg:h-[450px] lg:w-[350px] object-cover rounded-lg my-1"
             />
           </div>
         ))}

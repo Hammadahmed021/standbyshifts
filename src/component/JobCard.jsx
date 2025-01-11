@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { FaArrowRightLong, FaPencil } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
+import { fallback } from "../assets";
 
 // Skeleton Loader Component
 const JobCardSkeleton = () => (
@@ -87,7 +88,7 @@ const JobCard = ({
       {/* Header */}
       <div className="flex items-center mb-4 relative">
         <img
-          src={companyLogo}
+          src={companyLogo || fallback}
           alt={companyName}
           className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
         />

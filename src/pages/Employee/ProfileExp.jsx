@@ -40,6 +40,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { layoutOptions } from "../../utils/localDB";
+import { showErrorToast } from "../../utils/Toast";
 
 const MAX_FILE_SIZE_MB = 6; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -81,7 +82,7 @@ const ProfileExp = () => {
   const [togglePassword, setTogglePassword] = useState(false);
   const [hideProfile, setHideProfile] = useState(false); // State for hiding the profile section
 
- 
+  const [prevTagsLength, setPrevTagsLength] = useState(tags.length);
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -121,17 +122,6 @@ const ProfileExp = () => {
     fetchData(); // Call the async function
   }, []); // Runs once when the component mounts
 
-  // Log tags whenever they change
-  useEffect(() => {
-    console.log(tags, "all tags");
-  }, [tags]);
-
-  const handleAddTag = (newTag) => {
-    if (!newTags.includes(newTag)) {
-      setNewTags((prevTags) => [...prevTags, newTag]);
-    }
-  };
-
   const {
     register,
     handleSubmit,
@@ -155,14 +145,41 @@ const ProfileExp = () => {
         {
           jobTitle: "", // Job title
           jobDesc: "", // Job description
-        //   startYear: "", // Start year
-        //   startMonth: "", // Start month
-        //   endYear: "", // End year
-        //   endMonth: "", // End month
+          //   startYear: "", // Start year
+          //   startMonth: "", // Start month
+          //   endYear: "", // End year
+          //   endMonth: "", // End month
         },
       ],
     },
   });
+
+  const [errorMessage, setErrorMessage] = useState(""); // State for error prompt
+
+  // Automatically update the form when tags or newTags change (No Duplicates)
+  useEffect(() => {
+    const uniqueTags = [...new Set([...tags, ...newTags])]; // Remove duplicates
+    setValue('tags', uniqueTags);
+  }, [tags, newTags, setValue]);
+  
+  // Add new tag only if it's unique
+  const handleAddTag = (newTag) => {
+    const isDuplicate = tags.includes(newTag) || newTags.includes(newTag); // Check both arrays
+    if (!isDuplicate) {
+      setNewTags((prevTags) => [...prevTags, newTag]);
+    } else {
+      // Show error message if the tag is already added
+      showErrorToast(`"${newTag}" is already added to skills!`);
+      setTimeout(() => setErrorMessage(""), 3000); // Clear the message after 3 seconds
+    }
+  };
+  
+
+  // Remove tag
+  const handleRemoveTag = (tagToRemove) => {
+    setNewTags((prevTags) => prevTags.filter(tag => tag !== tagToRemove));
+    setTags((prevTags) => prevTags.filter(tag => tag !== tagToRemove));
+  };
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -190,8 +207,7 @@ const ProfileExp = () => {
     { id: 12, name: "December" },
   ];
   const selectedLayout = watch("layout");
-  console.log(selectedLayout, 'selectedLayout');
-  
+
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
 
@@ -213,6 +229,7 @@ const ProfileExp = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
   const handleFileChangeBanner = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -231,6 +248,7 @@ const ProfileExp = () => {
       setBannerPreview(URL.createObjectURL(file));
     }
   };
+
   const uploadProfileImage = async (file) => {
     try {
       // Implement your image upload logic here
@@ -282,8 +300,8 @@ const ProfileExp = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-            profile_picture: profileImageFile,
-          }), // Use existing profile picture if not updated
+          profile_picture: profileImageFile,
+        }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         short_description: short_description || "",
@@ -295,15 +313,15 @@ const ProfileExp = () => {
         work_history: allExperiences.map((exp) => ({
           title: exp.jobTitle || exp.title,
           description: exp.jobDesc || exp.description,
-        //   start_month: exp.startMonth || exp.start_month,
-        //   end_month: exp.endMonth || exp.end_month,
-        //   start_year: exp.startYear || exp.start_year,
-        //   end_year: exp.endYear || exp.end_year,
+          //   start_month: exp.startMonth || exp.start_month,
+          //   end_month: exp.endMonth || exp.end_month,
+          //   start_year: exp.startYear || exp.start_year,
+          //   end_year: exp.endYear || exp.end_year,
         })),
         ...(profileBannerFile &&
           profileBannerFile !== currentUser?.banner && {
-            banner: profileBannerFile,
-          }), // Use existing profile picture if not updated
+          banner: profileBannerFile,
+        }), // Use existing profile picture if not updated
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -312,6 +330,11 @@ const ProfileExp = () => {
       const response = await updateUserProfile(updatedUserData);
       if (response.status === 200 || response.status === 201) {
         dispatch(updateUserData(updatedUserData));
+
+        // 🔥 Update local state to reflect changes without reload
+        setTags([...newTags, ...tags]);   // Sync tags with updated data
+        setNewTags([]);
+
         setIsSigning(false);
         setSuccessMessage("Profile updated successfully!");
       }
@@ -332,6 +355,7 @@ const ProfileExp = () => {
       return null;
     }
   };
+
   const fetchUserData = async () => {
     const userAgent = navigator.userAgent;
     const ipAddress = await getUserIP();
@@ -400,6 +424,7 @@ const ProfileExp = () => {
       setSelectedIndustries([]);
     }
   }, []);
+
   const handleFilterChange = (event) => {
     const selectedValue = event.target.value; // Extract value from event
 
@@ -440,10 +465,10 @@ const ProfileExp = () => {
     const experience = {
       jobTitle: values.jobTitle,
       jobDesc: values.jobDesc,
-    //   startMonth: values.startMonth,
-    //   startYear: values.startYear,
-    //   endMonth: values.endMonth,
-    //   endYear: values.endYear,
+      //   startMonth: values.startMonth,
+      //   startYear: values.startYear,
+      //   endMonth: values.endMonth,
+      //   endYear: values.endYear,
     };
 
     // Update the state based on edit mode
@@ -522,7 +547,6 @@ const ProfileExp = () => {
   };
 
   // Remove Skills
-
   const removeSkills = (index) => {
     const afterFilterTags = tags.filter((res, i) => i != index);
     setTags(afterFilterTags);
@@ -547,9 +571,8 @@ const ProfileExp = () => {
     // Format according to the US number format +1 (XXX) XXX-XXXX
     const match = cleanedValue.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (match) {
-      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${
-        match[2] ? `) ${match[2]}` : ""
-      }${match[3] ? `-${match[3]}` : ""}`;
+      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${match[2] ? `) ${match[2]}` : ""
+        }${match[3] ? `-${match[3]}` : ""}`;
       return formatted.trim();
     }
     return "+1";
@@ -566,15 +589,17 @@ const ProfileExp = () => {
   const toggleText = () => {
     setTogglePassword((prev) => !prev);
   };
+
   const toggleProfileSection = () => {
     setHideProfile((prev) => !prev); // Toggle the hideProfile state
   };
+
   return (
     <>
       <div className="container mx-auto p-4">
         <div className="flex flex-col md:flex-row items-start justify-between mb-4">
           <div className="w-full md:w-7/12 p-6 shadow-md mx-auto rounded-2xl border">
-           
+
             {isVisible && (
               <Modal
                 title={"Edit Experience"}
@@ -714,7 +739,7 @@ const ProfileExp = () => {
             )}
 
             <form onSubmit={handleSubmit(onSave)} className="mt-4 w-full">
-             
+
               <div className="">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                   Work Experience
@@ -724,19 +749,26 @@ const ProfileExp = () => {
                   <AutoComplete
                     options={dropdownTags}
                     onAddTag={handleAddTag}
+                    selectedTags={[...newTags]}
+                    onRemoveTag={handleRemoveTag}
                   />
-                  <ul className="space-x-1">
+                  {/* <ul className="space-x-1">
                     {newTags.map((tag, index) => (
                       <li
                         key={index}
                         className="px-1 text-sm rounded-full bg-tn_text_grey text-white inline-block"
                       >
                         {tag}
+                        <FaTrash
+                          onClick={() => handleRemoveTag(tag)}
+                          size={11}
+                          className="cursor-pointer hover:text-red-400"
+                        />
                       </li>
                     ))}
-                  </ul>
+                  </ul> */}
                   <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
-                  <ul className="mb-4 flex gap-2">
+                  <ul className="mb-4 flex gap-2 flex-wrap">
                     {tags?.map((tag, index) => (
                       <li
                         key={index}
@@ -752,128 +784,84 @@ const ProfileExp = () => {
                     ))}
                   </ul>
                 </div>
+
                 <div className="mb-6">
-                  {fields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      id={`experienceForm_${index}`}
-                      className="mb-4 border p-4 rounded bg-gray-50"
+                  {fields.map((field, index) => {
+                    const isFilled = field.jobTitle.trim() !== "" || field.jobDesc.trim() !== ""; // Check if fields are filled
+                    return (
+                      <div
+                        key={field.id}
+                        id={`experienceForm_${index}`}
+                        className="mb-4 border p-4 rounded bg-gray-50"
+                      >
+                        <h3 className="font-semibold mb-2">
+                          Experience {index + 1}
+                        </h3>
+
+                        {isFilled && (
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="mb-2 text-red-500 hover:underline"
+                          >
+                            Remove Experience
+                          </button>
+                        )}
+
+                        <div className="mb-2">
+                          <label className="block mb-1">Shift Title</label>
+                          <input
+                            {...register(`experiences.${index}.jobTitle`)}
+                            placeholder="Enter your shift title"
+                            className="border p-2 w-full rounded"
+                          />
+                        </div>
+
+                        <div className="mb-2">
+                          <label className="block mb-1">Shift Description</label>
+                          <textarea
+                            {...register(`experiences.${index}.jobDesc`)}
+                            placeholder="Enter your shift description"
+                            className="border p-2 w-full rounded"
+                          />
+                        </div>
+
+                        {/* Save Experience Button */}
+                        <button
+                          type="button"
+                          onClick={() => saveExperience(index)}
+                          className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                        >
+                          {editIndex === index
+                            ? "Update Experience"
+                            : "Save Experience"}
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                  {/* Conditionally render "Add More Experience" button only if at least one experience is filled */}
+                  {fields.some((field) => field.jobTitle.trim() !== "" || field.jobDesc.trim() !== "") && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        append({
+                          jobTitle: "",
+                          jobDesc: "",
+                          startYear: "",
+                          startMonth: "",
+                          endYear: "",
+                          endMonth: "",
+                        })
+                      }
+                      className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
-                      <h3 className="font-semibold mb-2">
-                        Experience {index + 1}
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="mb-2 text-red-500 hover:underline"
-                      >
-                        Remove Experience
-                      </button>
-
-                      <div className="mb-2">
-                        <label className="block mb-1">Shift Title</label>
-                        <input
-                          {...register(`experiences.${index}.jobTitle`)}
-                          placeholder="Enter your shift title"
-                          className="border p-2 w-full rounded"
-                        />
-                      </div>
-
-                      <div className="mb-2">
-                        <label className="block mb-1">Shift Description</label>
-                        <textarea
-                          {...register(`experiences.${index}.jobDesc`)}
-                          placeholder="Enter your shift description"
-                          className="border p-2 w-full rounded"
-                        />
-                      </div>
-
-                      {/* <div className="mb-2">
-                        <label className="block mb-1">Start Date</label>
-                        <span className="flex flex-wrap gap-2">
-                          <select
-                            className="border p-2 rounded"
-                            {...register(`experiences.${index}.startMonth`)}
-                          >
-                            <option value="">Select Month</option>
-                            {months.map((month) => (
-                              <option key={month.id} value={month.id}>
-                                {month.name}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            className="border p-2 rounded"
-                            {...register(`experiences.${index}.startYear`)}
-                          >
-                            <option value="">Select Year</option>
-                            {years.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            ))}
-                          </select>
-                        </span>
-                      </div>
-
-                      <div className="mb-2">
-                        <label className="block mb-1">End Date</label>
-                        <span className="flex flex-wrap gap-2">
-                          <select
-                            className="border p-2 rounded"
-                            {...register(`experiences.${index}.endMonth`)}
-                          >
-                            <option value="">Select Month</option>
-                            {months.map((month) => (
-                              <option key={month.id} value={month.id}>
-                                {month.name}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            className="border p-2 rounded"
-                            {...register(`experiences.${index}.endYear`)}
-                          >
-                            <option value="">Select Year</option>
-                            {years.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            ))}
-                          </select>
-                        </span>
-                      </div> */}
-
-                      {/* Save Experience Button */}
-                      <button
-                        type="button"
-                        onClick={() => saveExperience(index)}
-                        className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                      >
-                        {editIndex === index
-                          ? "Update Experience"
-                          : "Save Experience"}
-                      </button>
-                    </div>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      append({
-                        jobTitle: "",
-                        jobDesc: "",
-                        startYear: "",
-                        startMonth: "",
-                        endYear: "",
-                        endMonth: "",
-                      })
-                    }
-                    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    Add More Experience
-                  </button>
+                      Add More Experience
+                    </button>
+                  )}
                 </div>
+
+
                 <div>
                   <strong className="mt-4 block">Saved Experiences:</strong>
                   <div>
@@ -956,7 +944,7 @@ const ProfileExp = () => {
                   </ul>
                 </div>
               </div>
-              
+
               <div className="border-t pt-6 mt-6">
                 <div>
                   {/* Toggle Button */}
@@ -1046,11 +1034,10 @@ const ProfileExp = () => {
                               className="hidden"
                             />
                             <div
-                              className={`border ${
-                                selectedLayout === layout.id
-                                  ? "border-blue-500"
-                                  : "border-gray-300"
-                              } rounded-lg p-2`}
+                              className={`border ${selectedLayout === layout.id
+                                ? "border-blue-500"
+                                : "border-gray-300"
+                                } rounded-lg p-2`}
                             >
                               <img
                                 src={layout.imageUrl}
@@ -1068,9 +1055,8 @@ const ProfileExp = () => {
               </div>
               <Button
                 type="submit"
-                className={`w-full  ${
-                  isSigning ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
                 disabled={isSigning}
               >
                 {isSigning ? "Saving..." : "Save changes"}

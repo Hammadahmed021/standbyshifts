@@ -32,6 +32,7 @@ import { Capacitor } from "@capacitor/core";
 import {
   FaAdjust,
   FaClipboard,
+  FaEnvelope,
   FaLocationArrow,
   FaLock,
   FaPen,
@@ -81,7 +82,7 @@ const Profile = () => {
   const [togglePassword, setTogglePassword] = useState(false);
   const [hideProfile, setHideProfile] = useState(false); // State for hiding the profile section
 
- 
+
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -145,6 +146,7 @@ const Profile = () => {
     defaultValues: {
       name: currentUser?.name || "",
       phone: currentUser?.phone || "",
+      email: currentUser?.email || "",
       address: fetchUser?.employee?.address || "",
       zip: fetchUser?.employee?.zip_code || "",
       short_description: currentUser?.short_description,
@@ -191,7 +193,7 @@ const Profile = () => {
   ];
   const selectedLayout = watch("layout");
   console.log(selectedLayout, 'selectedLayout');
-  
+
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
 
@@ -282,8 +284,8 @@ const Profile = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-            profile_picture: profileImageFile,
-          }), // Use existing profile picture if not updated
+          profile_picture: profileImageFile,
+        }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         short_description: short_description || "",
@@ -302,8 +304,8 @@ const Profile = () => {
         })),
         ...(profileBannerFile &&
           profileBannerFile !== currentUser?.banner && {
-            banner: profileBannerFile,
-          }), // Use existing profile picture if not updated
+          banner: profileBannerFile,
+        }), // Use existing profile picture if not updated
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -350,6 +352,7 @@ const Profile = () => {
       // dispatch(updateUserData(data));
       setValue("name", data?.name || "");
       setValue("phone", data?.phone || "");
+      setValue("email", data?.email || "");
       setValue("address", data?.employee?.location || "");
       setValue("zip", data?.employee?.zip_code || "");
       setValue("layout", data?.layout || "");
@@ -547,9 +550,8 @@ const Profile = () => {
     // Format according to the US number format +1 (XXX) XXX-XXXX
     const match = cleanedValue.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (match) {
-      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${
-        match[2] ? `) ${match[2]}` : ""
-      }${match[3] ? `-${match[3]}` : ""}`;
+      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${match[2] ? `) ${match[2]}` : ""
+        }${match[3] ? `-${match[3]}` : ""}`;
       return formatted.trim();
     }
     return "+1";
@@ -659,7 +661,7 @@ const Profile = () => {
                               start_month: e.target.value,
                             }));
                           }}
-                          // {...register(`experiences.${editIndex}.startMonth`)}
+                        // {...register(`experiences.${editIndex}.startMonth`)}
                         >
                           <option value="">Select Month</option>
                           {months.map((month) => (
@@ -677,7 +679,7 @@ const Profile = () => {
                               start_year: e.target.value,
                             }));
                           }}
-                          // {...register(`experiences.${editIndex}.startYear`)}
+                        // {...register(`experiences.${editIndex}.startYear`)}
                         >
                           <option value="">Select Year</option>
                           {years.map((year) => (
@@ -701,7 +703,7 @@ const Profile = () => {
                               end_month: e.target.value,
                             }));
                           }}
-                          // {...register(`experiences.${editIndex}.endMonth`)}
+                        // {...register(`experiences.${editIndex}.endMonth`)}
                         >
                           <option value="">Select Month</option>
                           {months.map((month) => (
@@ -719,7 +721,7 @@ const Profile = () => {
                               end_year: e.target.value,
                             }));
                           }}
-                          // {...register(`experiences.${editIndex}.endYear`)}
+                        // {...register(`experiences.${editIndex}.endYear`)}
                         >
                           <option value="">Select Year</option>
                           {years.map((year) => (
@@ -788,6 +790,17 @@ const Profile = () => {
                       {errors.phone.message}
                     </p>
                   )}
+                </span>
+              </span>
+              <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
+                <span className="mb-6 w-full">
+                  <Input
+                    label="Email"
+                    icon={FaEnvelope}
+                    {...register("email")}
+                    disabled={true} // Disable the email field
+                  // placeholder="Enter your name"
+                  />
                 </span>
               </span>
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
@@ -870,12 +883,11 @@ const Profile = () => {
                   )}
                 </>
               )}
-             
+
               <Button
                 type="submit"
-                className={`w-full  ${
-                  isSigning ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
                 disabled={isSigning}
               >
                 {isSigning ? "Saving..." : "Save changes"}

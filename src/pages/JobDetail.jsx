@@ -104,7 +104,8 @@ const JobDetail = () => {
     }
   }, [job?.details?.applicant]);
 
-  console.log(relatedJobs, 'relatedJobs');
+  console.log(job?.details?.user?.industry?.title, 'hs>>>');
+  
   
 
   if (!job)
@@ -240,7 +241,7 @@ const JobDetail = () => {
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold">Description</h3>
-            <p className="text-gray-700">
+            <p className="text-gray-700 break-words">
               {job?.details?.description || "No description available."}
             </p>
           </div>
@@ -308,9 +309,8 @@ const JobDetail = () => {
                 <FaBoxesPacking className="mr-2" /> Industry
               </h4>
               <p className="font-semibold">
-                {job?.details?.industry_id
-                  ? job?.details?.industry_id
-                  : "Not specified"}
+                {job?.details?.user?.industry?.title
+                  || "Not specified"}
               </p>
             </div>
 

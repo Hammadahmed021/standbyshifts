@@ -17,7 +17,6 @@ const EmpCard = ({
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type;
 
-  console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
   const navigate = useNavigate(); // Initialize navigate
   const handleCardClick = () => {
     if (userType == "employer") {

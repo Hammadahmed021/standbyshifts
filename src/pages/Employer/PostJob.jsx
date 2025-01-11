@@ -68,16 +68,22 @@ const PostJob = () => {
     }
   }, [jobData, setValue]);
 
+  const removeSeconds = (time) => {
+    if (!time) return "";
+    return time.split(":").slice(0, 2).join(":");  // Converts "17:13:00" → "17:13"
+  };
+  
+  
+  
+
   const onSubmit = async (data) => {
     console.log(data, "form data of job posting");
     setIsLoading(true);
     const formattedData = {
       ...data,
+      shift_start_time: removeSeconds(data.shift_start_time),
+      shift_end_time: removeSeconds(data.shift_end_time),
       certificate: data.certificate || "",
-      // certificate: data?.certificate
-      //   ?.split(",")
-      //   ?.map((item) => item?.trim())
-      //   ?.filter(Boolean),
       id: jobData?.id,
     };
 
@@ -286,10 +292,10 @@ const PostJob = () => {
                   type="time"
                   {...register("shift_start_time", {
                     required: "Shift start time is required",
-                    pattern: {
-                      value: /^([0-1]\d|2[0-3]):([0-5]\d)$/,
-                      message: "Invalid time format",
-                    },
+                    // pattern: {
+                    //   value: /^([0-1]\d|2[0-3]):([0-5]\d)$/,
+                    //   message: "Invalid time format",
+                    // },
                   })}
                 />
                 {errors.shift_start_time && (
@@ -322,37 +328,6 @@ const PostJob = () => {
                 )}
               </div>
             </div>
-
-            {/* Required Expertise
-            <h2>Required Expertise</h2>
-
-            <Input
-              label="Required Expertise"
-              placeholder="Enter expertise (comma-separated)"
-              iconColor={"#0000F8"}
-              icon={FaCalendar}
-              {...register("required_expertise", {
-                required: "Expertise is required",
-                validate: (value) => {
-                  // Convert value to a string to avoid errors if it's not a string
-                  const expertiseArray = String(value)
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean);
-
-                  return (
-                    expertiseArray.length > 0 ||
-                    "At least one expertise is required"
-                  );
-                },
-              })}
-            />
-
-            {errors.required_expertise && (
-              <span className="text-red-500">
-                {errors.required_expertise.message}
-              </span>
-            )} */}
             <div>
               <h2>Certificate</h2>
               <Input

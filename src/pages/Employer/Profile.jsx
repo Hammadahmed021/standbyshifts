@@ -227,8 +227,8 @@ const Profile = () => {
         phone: data.phone,
         ...(profileImageFile &&
           profileImageFile !== currentUser?.employee?.profile_image && {
-            logo: profileImageFile,
-          }), // Use existing profile picture if not updated
+          logo: profileImageFile,
+        }), // Use existing profile picture if not updated
         location: address || "",
         zip_code: zip || "",
         layout: data.layout,
@@ -238,8 +238,8 @@ const Profile = () => {
           selectedIndustries.length > 0 ? selectedIndustries[0].id : "",
         ...(profileBannerFile &&
           profileBannerFile !== currentUser?.banner && {
-            banner: profileBannerFile,
-          }), // Use existing profile picture if not updated
+          banner: profileBannerFile,
+        }), // Use existing profile picture if not updated
       };
 
       console.log(updatedUserData, "updatedUserData");
@@ -345,6 +345,8 @@ const Profile = () => {
       // Set default industries to empty or preselected values as needed
       setSelectedIndustries([]);
     }
+    console.log(fetchUser, 'fetch usser >>>');
+
   }, []);
   const handleFilterChange = (event) => {
     const selectedValue = event.target.value; // Extract value from event
@@ -383,9 +385,8 @@ const Profile = () => {
     // Format according to the US number format +1 (XXX) XXX-XXXX
     const match = cleanedValue.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (match) {
-      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${
-        match[2] ? `) ${match[2]}` : ""
-      }${match[3] ? `-${match[3]}` : ""}`;
+      const formatted = `+1 ${match[1] ? `(${match[1]}` : ""}${match[2] ? `) ${match[2]}` : ""
+        }${match[3] ? `-${match[3]}` : ""}`;
       return formatted.trim();
     }
     return "+1";
@@ -440,7 +441,7 @@ const Profile = () => {
                     onKeyPress={handleNameKeyPress} // Prevent numbers
                     {...register("name")}
                     placeholder="Enter your name"
-                    // className="mb-6"
+                  // className="mb-6"
                   />
                   {errors.name && (
                     <p className="text-red-500 text-xs mt-1">
@@ -585,8 +586,10 @@ const Profile = () => {
 
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                  Industries
+                  Select Industry
                 </h3>
+                <span className="block mb-4 text-base"><strong>Industry:</strong> {fetchUser?.profile?.industry}</span>
+
                 <div className="mb-6">
                   <SelectOption
                     pl={"pl-0 border p-2 rounded-lg"}
@@ -603,23 +606,10 @@ const Profile = () => {
                       <li key={industry.id}>{industry.title}</li>
                     ))}
                   </ul>
-                  {/* <ul>
-                  {selectedIndustries.map((industry) => (
-                    <li key={industry.id}>{industry.title}</li>
-                  ))}
-                </ul> */}
-                  {/* <ul>
-                  {fetchUser?.profile?.industry ? (
-                    <li key={fetchUser.profile.industry.id}>
-                      {fetchUser.profile.industry.title}
-                    </li>
-                  ) : (
-                    <li>No industry found.</li> 
-                  )}
-                </ul> */}
+
                 </div>
               </div>
-              
+
               <div className="border-t pt-6 mt-6">
                 <div>
                   {/* Toggle Button */}
@@ -709,11 +699,10 @@ const Profile = () => {
                               className="hidden"
                             />
                             <div
-                              className={`border ${
-                                selectedLayout === layout.id
+                              className={`border ${selectedLayout === layout.id
                                   ? "border-blue-500"
                                   : "border-gray-300"
-                              } rounded-lg p-2`}
+                                } rounded-lg p-2`}
                             >
                               <img
                                 src={layout.imageUrl}
@@ -729,13 +718,12 @@ const Profile = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="flex space-x-2 items-center justify-between my-3">
                 <Button
                   type="submit"
-                  className={`w-full  ${
-                    isSigning ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
+                  className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
                   disabled={isSigning}
                 >
                   {isSigning ? "Saving..." : "Save changes"}
