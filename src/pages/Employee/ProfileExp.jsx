@@ -795,7 +795,7 @@ const ProfileExp = () => {
                         className="mb-4 border p-4 rounded bg-gray-50"
                       >
                         <h3 className="font-semibold mb-2">
-                          Experience {index + 1}
+                          Experience
                         </h3>
 
                         {isFilled && (
@@ -834,7 +834,7 @@ const ProfileExp = () => {
                         >
                           {editIndex === index
                             ? "Update Experience"
-                            : "Save Experience"}
+                            : "Add Experience"}
                         </button>
                       </div>
                     );
@@ -863,18 +863,18 @@ const ProfileExp = () => {
 
 
                 <div>
-                  <strong className="mt-4 block">Saved Experiences:</strong>
+                  <strong className="mt-4 block mb-6">Saved Experiences:</strong>
                   <div>
                     {savedExperiences.length > 0 ? (
                       savedExperiences.map((work, index) => {
                         console.log("experio", index, work);
                         return (
                           <ul>
-                            <li key={index} className="mb-4 relative">
-                              <h2 className="font-bold">
-                                {work.jobTitle ?? work.title}
+                            <li key={index} className="mb-4 relative border-b pb-4 space-y-1">
+                              <h2 className="font-medium text-base">
+                               <span className="font-semibold">Shift Title:</span> <br />{work.jobTitle ?? work.title}
                               </h2>
-                              <p>{work.jobDesc ?? work.description}</p>
+                              <p className="text-base"><span className="font-semibold">Shift Description:</span><br /> {work.jobDesc ?? work.description}</p>
                               {/* <p>
                                 {work.startMonth ?? work.start_month}/
                                 {work.startYear ?? work.start_year} -{" "}
@@ -907,7 +907,7 @@ const ProfileExp = () => {
                   </div>
                 </div>
               </div>{" "}
-              <div className="border-t pt-6 mt-6">
+              <div className="pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                   Industries
                 </h3>

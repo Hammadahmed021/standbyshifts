@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { infoLinks, supportLinks } from "../../utils/localDB";
-import { Logo, fb, instagram, twitter, youtube } from "../../assets"; 
+import { Logo, fb, instagram, twitter, youtube } from "../../assets";
 import { useSelector } from "react-redux";
 
 const Footer = () => {
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
 
-
+  const getCurrentYear = new Date().getFullYear();
   return (
     <footer className="bg-tn_dark text-white">
       <div className="border-t-2 border-b-2 border-tn_light_grey pt-10 pb-4">
@@ -84,7 +84,7 @@ const Footer = () => {
 
       </div>
       <div className="footer-bottom py-4 flex justify-between container mx-auto items-center">
-        <p>© 2024 Stand by shifts | All rights Reserved</p>
+        <p>© {getCurrentYear} Stand by shifts | All Rights Reserved</p>
         <div className="flex items-center">
 
           <ul className="flex flex-wrap justify-between space-x-4 mt-6 sm:mt-0">

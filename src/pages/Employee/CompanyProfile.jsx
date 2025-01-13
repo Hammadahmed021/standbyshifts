@@ -246,7 +246,7 @@ const CompanyProfile = () => {
                   className={"shadow-xl"}
                   jobId={job?.id}
                   key={job.id}
-                  companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                  companyLogo={companyData?.about?.employer?.logo} // Replace with actual logo
                   jobTitle={job.title}
                   companyName={job.city} // You can also pass the company name if available
                   payRate={`$${job.per_hour_rate}`}

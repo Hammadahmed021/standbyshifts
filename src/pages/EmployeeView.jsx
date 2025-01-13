@@ -223,20 +223,21 @@ const EmployeeView = () => {
                         {new Date(history.created_at).toLocaleDateString()}
                       </p>
                       {/* Job Title */}
-                      <h3 className="text-lg font-semibold capitalize text-tn_dark_field">
+                      <h3 className="text-lg font-medium capitalize text-tn_dark_field">
+                      <span className="font-semibold">Shift Title:</span>{" "}
                         {history.title}
                       </h3>
 
                       {/* Job Duration */}
-                      <p className="text-sm text-tn_text_grey">
+                      {/* <p className="text-sm text-tn_text_grey">
                         Duration: ({history.start_month}/{history.start_year} -{" "}
                         {history.end_month}/{history.end_year})
-                      </p>
+                      </p> */}
 
                       {/* Description */}
                       {history.description ? (
                         <p className="text-tn_text_grey text-sm">
-                          Description: {history.description}
+                          <span className="font-semibold">Description:</span> {history.description}
                         </p>
                       ) : (
                         <p className="text-tn_text_grey">
