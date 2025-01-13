@@ -127,6 +127,7 @@ const ProfileView = () => {
                 address={`${job.location}, ${job.state}`}
                 description={job.description}
                 userType={userType}
+                jobId={job?.id}
               />
             ))
           )}

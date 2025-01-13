@@ -130,7 +130,7 @@ const JobDetail = () => {
               </p>
               <h2 className="text-lg sm:text-2xl font-semibold capitalize flex items-center mt-2">
                 <img
-                  src={people}
+                  src={job?.details?.user?.employer?.logo}
                   className="mr-2 rounded-full w-8 h-8 bg-tn_light_grey"
                 />{" "}
                 {job?.details?.title || "Job Title"}
@@ -275,7 +275,7 @@ const JobDetail = () => {
           <div className="p-4  bg-white rounded-2xl shadow-xl h-auto">
             <div className="mb-4 flex gap-2 items-center">
               <img
-                src={job?.details?.user?.profile_image || people}
+                src={job?.details?.user?.employer?.logo || people}
                 alt={job?.details?.user?.name || "Company Logo"}
                 className="w-20 h-20 object-contain rounded-2xl bg-slate-100 shadow-sm"
               />
