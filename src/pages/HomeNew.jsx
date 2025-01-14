@@ -138,49 +138,7 @@ export default function HomeNew() {
     // );
   }, [location.pathname, user_id, refetch]);
 
-  const getLocation = async () => {
-    if (Capacitor.isNativePlatform()) {
-      try {
-        const permissionStatus = await Geolocation.requestPermissions();
-        if (permissionStatus.location === "granted") {
-          const coordinates = await Geolocation.getCurrentPosition();
-          console.log("User location:", coordinates);
-          setUserLocation({
-            latitude: coordinates.coords.latitude,
-            longitude: coordinates.coords.longitude,
-          });
-        } else {
-          alert("Please enable location services in your app settings.");
-        }
-      } catch (error) {
-        console.error(
-          "Error requesting geolocation permissions or getting position:",
-          error
-        );
-      }
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
-  };
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      getLocation();
-    };
-    fetchLocation();
-  }, []);
+ 
 
   const pathname = location.pathname;
   let page = ""; // Default page value
@@ -191,37 +149,7 @@ export default function HomeNew() {
     console.log(pathname, "name path"); // Log for other paths
   }
 
-  const payload = {
-    id: user_id,
-    latitude: userLocation?.longitude,
-    longitude: userLocation?.latitude,
-    page, // Add 'home' or the page name in the payload
-  };
 
-  console.log(userLocation, "userLocation");
-
-  const getNearbyRestaurant = async () => {
-    try {
-      const response = await fetchUserNearByRestaurants({ payload });
-      const data = await response;
-      const nearbyData = data ? transformData(data) : [];
-      const approveNearbyData = nearbyData.filter(
-        (item) => item.is_approved && item.status === "active"
-      );
-      setNearByData(approveNearbyData);
-      console.log(approveNearbyData, "response of nearby home");
-      return response;
-    } catch (error) {
-      console.log(error, "error");
-    }
-  };
-
-  // Trigger fetching nearby restaurants when userLocation is available
-  useEffect(() => {
-    if (userLocation) {
-      getNearbyRestaurant();
-    }
-  }, [userLocation]);
 
   // const transformedData = data ? transformData(data) : [];
   // Transform and filter the data

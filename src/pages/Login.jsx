@@ -148,7 +148,7 @@ const Login = () => {
             </div>
             {/* Left Column: Login Form */}
             <div className="mb-6 w-full">
-              <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-semibold md:w-2/4">
+              <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-semibold md:w-3/4 lg:w-2/4">
                 Login as an {userType}
               </h2>
               <p className="text-tn_text_grey mt-2 mb-12">

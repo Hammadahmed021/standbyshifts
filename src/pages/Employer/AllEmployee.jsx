@@ -50,7 +50,7 @@ const AllEmployees = () => {
     image: job?.employee?.image || fallback, // Fallback logo image
     title: job?.name || "No Title Provided",
     description: job?.short_description || "No Description Available",
-    location: job?.employer?.location || "Location Not Available",
+    location: job?.employee?.location || "Location Not Available",
     layout: job?.layout || "1", // Default layout
     id: job?.id,
   }));
