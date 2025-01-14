@@ -188,7 +188,7 @@ const EmployeeView = () => {
             </div>
             <hr className="border-b border-tn_light_grey my-6" />
 
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <h3 className="text-lg font-semibold">Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {employee?.skills?.length ? (
@@ -204,9 +204,9 @@ const EmployeeView = () => {
                   <p className="text-gray-500">No skills listed.</p>
                 )}
               </div>
-            </div>
+            </div> */}
 
-            <hr className="border-b border-tn_light_grey my-6" />
+            {/* <hr className="border-b border-tn_light_grey my-6" /> */}
 
             <div className="mb-6">
               <h3 className="text-lg font-semibold">Work Experience</h3>

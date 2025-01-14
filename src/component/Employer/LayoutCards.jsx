@@ -82,7 +82,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                 <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
               )}
             </h3>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 15)}
             </p>
             <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
@@ -144,7 +144,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                 <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
               )}
             </h3>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 15)}
             </p>
             <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
@@ -227,7 +227,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                 <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
               )}
             </h3>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 15)}
             </p>
             <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
@@ -317,7 +317,7 @@ const LayoutCards = ({ profile, layout, type }) => {
               <FaLocationPin size={16} />
               {profile?.location}
             </div>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 15)}
             </p>
           </div>
