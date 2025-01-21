@@ -12,7 +12,7 @@ import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
 import { imageData } from "../utils/localDB";
 import { getIdToken } from "firebase/auth";
-import { showErrorToast } from "../utils/Toast";
+import { showErrorToast, showSuccessToast } from "../utils/Toast";
 
 const Signup = () => {
   const location = useLocation();

@@ -426,6 +426,8 @@ export const getUserFromGmailLogin = async (userData) => {
 
 // Function to get user from gmail to signup
 export const getUserFromGmailSignup = async (userData) => {
+  console.log(userData, ' userData google signup');
+  
   try {
     const response = await axios.post(`${BASE_URL}socialSignup`, userData);
     console.log(response, "response");
