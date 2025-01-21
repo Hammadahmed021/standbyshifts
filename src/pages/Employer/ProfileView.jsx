@@ -10,7 +10,7 @@ import { card1, fallback } from "../../assets";
 const ProfileView = () => {
   const [profile, setProfile] = useState([]); // Initialize as null to check loading state
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
 
   useEffect(() => {
     const getEmployer = async () => {

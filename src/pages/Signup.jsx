@@ -17,7 +17,8 @@ import { showErrorToast, showSuccessToast } from "../utils/Toast";
 const Signup = () => {
   const location = useLocation();
   const { type } = location.state || {}; // Get the type passed from the homepage
-
+  console.log(type, 'type');
+  
   useEffect(() => {
     if (type) {
       localStorage.setItem("userType", type); // Save the type in localStorage

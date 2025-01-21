@@ -8,7 +8,7 @@ const ManageJobs = () => {
   const navigate = useNavigate();
   const [allJobs, setAllJobs] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
   useEffect(() => {
     const fetchAllJobs = async () => {
       const response = await fetchAllJobByEmployer();

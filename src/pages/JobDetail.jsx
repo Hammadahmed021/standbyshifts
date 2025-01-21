@@ -35,7 +35,7 @@ const JobDetail = () => {
   const [isApplying, setIsApplying] = useState(false);
   console.log(id, "id job detail");
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
 
   console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
 

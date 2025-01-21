@@ -36,7 +36,7 @@ const Header = ({ style }) => {
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
 
-  const userType = userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
+  const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
 
   console.log(userData?.user?.type, "userData");
   console.log(userType, "userType");

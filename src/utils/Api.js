@@ -692,7 +692,7 @@ export const getJobsByFilter = async (filterData) => {
 // get company details for employee
 export const getCompanyProfile = async (id) => {
   console.log(id, "id");
-  const token = localStorage.getItem("webToken");
+  const token = localStorage.getItem("webToken");  
 
   try {
     const response = await axios.get(

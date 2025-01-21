@@ -20,7 +20,7 @@ const Home = () => {
   const [getDetails, setGetDetails] = useState([]);
 
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.type || userData?.user?.type;
 
   useEffect(() => {
     const getData = async () => {

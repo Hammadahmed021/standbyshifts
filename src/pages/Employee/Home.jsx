@@ -58,7 +58,7 @@ const Home = () => {
   };
 
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.type || userData?.user?.type;
 
   console.log(recentJobs, "recentJobs");
 

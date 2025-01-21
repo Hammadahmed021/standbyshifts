@@ -71,10 +71,10 @@ function App() {
 
   useEffect(() => {
     // Redirect logic when the user visits the base URL
-    if (location.pathname === "/" && userData?.user?.type) {
-      if (userData?.user?.type === "employee") {
+    if (location.pathname === "/" && (userData?.user?.type || userData?.type)) {
+      if ((userData?.user?.type || userData?.type) === "employee") {
         navigate("/employee");
-      } else if (userData?.user?.type === "employer") {
+      } else if ((userData?.user?.type || userData?.type) === "employer") {
         navigate("/employer");
       }
     }

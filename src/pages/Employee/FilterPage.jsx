@@ -56,7 +56,7 @@ const FilterPage = () => {
   };
 
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
 
   console.log(recentJobs, "recentJobs");
 

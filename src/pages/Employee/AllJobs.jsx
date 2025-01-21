@@ -14,7 +14,7 @@ const AllJobs = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.type || userData?.user?.type;
 
   // Fetch jobs from API
   const getJobs = async (searchText = null) => {

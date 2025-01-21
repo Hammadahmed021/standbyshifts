@@ -15,7 +15,7 @@ const EmpCard = ({
   jobId,
 }) => {
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
 
   const navigate = useNavigate(); // Initialize navigate
   const handleCardClick = () => {

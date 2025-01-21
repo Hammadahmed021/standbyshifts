@@ -21,7 +21,7 @@ const CompanyProfile = () => {
   const [companyData, setCompanyData] = useState(null);
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.type || userData?.user?.type;
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratings, setRatings] = useState([]); // Initialize with ratings
 
@@ -104,7 +104,9 @@ const CompanyProfile = () => {
       closeRatingModal();
     }
   };
-  
+
+  console.log(userType, 'userType compa1');
+    
 
   useEffect(() => {
     const fetchCompanyProfile = async () => {

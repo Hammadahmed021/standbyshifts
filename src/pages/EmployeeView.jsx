@@ -41,7 +41,7 @@ const EmployeeView = () => {
   const [ratings, setRatings] = useState([]); // Initialize with ratings
 
   const userData = useSelector((state) => state.auth.userData);
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
   console.log(userData, "userData >>>>>");
 
   const { id } = useParams();

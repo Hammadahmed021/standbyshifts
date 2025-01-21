@@ -84,7 +84,7 @@ const Profile = () => {
   console.log(fetchUser, "fetchUser >>>> employer");
   console.log(currentUser, "currentUser >>>> employer");
 
-  const userType = userData?.user?.type || localStorage.getItem("userType");
+  const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType");
 
   useEffect(() => {
     const fetchData = async () => {

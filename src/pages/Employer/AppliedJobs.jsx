@@ -10,7 +10,7 @@ const AppliedJobs = () => {
   const userData = useSelector((state) => state.auth.userData);
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
 
-  const userType = userData?.user?.type;
+  const userType = userData?.user?.type || userData?.type;
   useEffect(() => {
     const getAppliers = async () => {
       const response = await checkAppliersOnJob();

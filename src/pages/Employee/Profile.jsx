@@ -87,7 +87,7 @@ const Profile = () => {
   // Predefined options for the autocomplete dropdown
   // const options = tags;
 
-  const userType = userData?.user?.type || localStorage.getItem("userType");
+  const userType = userData?.user?.type || userData?.type || localStorage.getItem("userType");
 
   useEffect(() => {
     const fetchData = async () => {
