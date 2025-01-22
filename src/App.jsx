@@ -80,7 +80,7 @@ function App() {
     }
   }, [location.pathname, navigate, userData]);
 
-  console.log(location.pathname, userData, 'location.pathname');
+  // console.log(location.pathname, userData, 'location.pathname');
   
 
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(

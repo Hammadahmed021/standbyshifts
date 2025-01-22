@@ -32,7 +32,6 @@ function Chat() {
   const [lastMessages, setLastMessages] = useState({});
   const chatroomDocRef = useRef(null);
 
-  console.log(selectedUser, "selectedUser ???");
 
   const userData = useSelector((state) => state.auth.userData);
 
@@ -46,11 +45,6 @@ function Chat() {
       return null;
     }
   };
-
-  useEffect(() => {
-    getAuth();
-    selectUser(location.state);
-  }, []);
 
   const getAuth = async () => {
     const token = localStorage.getItem("webToken");
@@ -83,30 +77,38 @@ function Chat() {
   };
 
   const selectUser = async (user) => {
+    if (!authUser || !user) {
+      console.error("authUser or selected user is undefined");
+      return;
+    }
+  
     setSelectedUser(user);
     setIsSelected(true);
-
+  
     const newChatroomId =
-      userData?.user?.id < user?.id
-        ? `${user?.applied_jobs?.id}_${userData?.user?.id}_${user?.id}`
-        : `${user?.applied_jobs?.id}_${user?.id}_${userData?.user?.id}`;
+      authUser?.id < user?.id
+        ? `${user?.applied_jobs?.id}_${authUser?.id}_${user?.id}`
+        : `${user?.applied_jobs?.id}_${user?.id}_${authUser?.id}`;
+  
+    console.log(user?.applied_jobs?.id, authUser?.id, user?.id, "ids");
+  
     setChatroomId(newChatroomId);
-
+  
     chatroomDocRef.current = await getChatRoomObj(newChatroomId);
-
+  
     const chatroomDocSnap = await getDoc(chatroomDocRef.current);
-
+  
     if (!chatroomDocSnap.exists()) {
       await setDoc(chatroomDocRef.current, { messages: [] });
     }
-
+  
     const lastMessageQuery = query(
       collection(db, "messages", newChatroomId, "messages"),
       where("sender", "==", user.id),
       orderBy("createdAt", "desc"),
       limit(1)
     );
-
+  
     const querySnapshot = await getDocs(lastMessageQuery);
     if (!querySnapshot.empty) {
       const lastMessageDoc = querySnapshot.docs[0];
@@ -119,7 +121,7 @@ function Chat() {
       );
       await updateDoc(messageRef, { seen: "1" });
     }
-
+  
     const messagesQuery = query(
       collection(chatroomDocRef.current, "messages"),
       orderBy("createdAt")
@@ -128,6 +130,7 @@ function Chat() {
       setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     });
   };
+  
 
   const sendMessage = async () => {
     if (newMessage.trim()) {
@@ -138,9 +141,9 @@ function Chat() {
         );
         await setDoc(doc(chatMessagesCollection), {
           text: newMessage,
-          sender: userData.user?.id,
+          sender: authUser?.id,
           receiver: selectedUser.id,
-          user: userData.user?.name,
+          user: authUser?.name,
           seen: 0,
           createdAt: serverTimestamp(),
         });
@@ -151,6 +154,24 @@ function Chat() {
     }
   };
 
+  
+  useEffect(() => {
+    if (authUser && location.state) {
+      selectUser(location.state);
+    }
+  }, [authUser, location.state]);
+
+  useEffect(() => {
+    const initChat = async () => {
+      await getAuth(); // Ensure auth data is set
+      selectUser(location.state); // Call after auth data is available
+    };
+  
+    initChat();
+  }, []);
+
+  
+  
   return (
     <div className="container max-h-screen h-[75vh] mb-6 relative">
       <div className="w-full max-w-md lg:max-w-lg mx-auto bg-white shadow-lg rounded-lg flex flex-col h-full">
@@ -166,7 +187,7 @@ function Chat() {
             <span className="font-semibold">Job title - </span>{" "}
             {selectedUser?.applied_jobs?.title || "N/A"}
           </span>
-        </div> 
+        </div>
 
         {/* Messages Container */}
         <section className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
@@ -174,25 +195,22 @@ function Chat() {
             {messages.map((message) => (
               <li
                 key={message.id}
-                className={`flex ${
-                  message.sender === userData?.user.id
+                className={`flex ${message.sender === authUser?.id
                     ? "justify-end"
                     : "justify-start"
-                }`}
+                  }`}
               >
                 <div
-                  className={`flex flex-col ${
-                    message.sender === userData?.user.id
+                  className={`flex flex-col ${message.sender === authUser?.id
                       ? "items-end"
                       : "items-start"
-                  } max-w-xs lg:max-w-sm`}
+                    } max-w-xs lg:max-w-sm`}
                 >
                   <div
-                    className={`px-2 py-2 rounded-lg text-sm shadow-sm ${
-                      message.sender === userData?.user.id
+                    className={`px-2 py-2 rounded-lg text-sm shadow-sm ${message.sender === authUser?.id
                         ? "bg-blue-500 text-white text-right"
                         : "bg-gray-300 text-gray-800 text-left"
-                    }`}
+                      }`}
                   >
                     <p>{message.text}</p>
                   </div>
@@ -200,12 +218,12 @@ function Chat() {
                     {message.user} •{" "}
                     {message.createdAt
                       ? new Date(message.createdAt.toDate()).toLocaleTimeString(
-                          [],
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }
-                        )
+                        [],
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )
                       : ""}
                   </span>
                 </div>
