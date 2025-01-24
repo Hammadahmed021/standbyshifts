@@ -53,17 +53,23 @@ const Footer = () => {
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">
                 <h3 class="text-lg font-extrabold mb-4">Info</h3>
                 <ul className="flex flex-col">
-                  {Object.entries(infoLinks).map(([name, url], index) => (
-                    <li key={index} className="mb-2 lg:text-base md:text-sm ">
-                      <Link
-                        to={url}
-                        target="_blank"
-                        className="hover:underline"
-                      >
-                        {name}
-                      </Link>
-                    </li>
-                  ))}
+                  <li className="mb-2 lg:text-base md:text-sm ">
+                    <Link to={
+                      userData
+                        ? userType === "employee"
+                          ? "employee"
+                          : "employer"
+                        : "/"
+                    }>
+                      {
+                        userData
+                          ? userType === "employee"
+                            ? "Employee"
+                            : "Employer"
+                          : "Home"
+                      }
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">

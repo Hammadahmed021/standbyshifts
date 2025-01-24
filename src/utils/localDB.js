@@ -243,7 +243,6 @@ export const infoLinks = {
 
 export const supportLinks = {
   "Privacy Policy": "/privacy-policy",
-  "Refund Policy": "/terms-of-service",
   About: "/",
   Contact: "/contact",
 };

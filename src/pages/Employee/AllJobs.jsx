@@ -11,9 +11,13 @@ const AllJobs = () => {
   const location = useLocation();
   const [originalJobs, setOriginalJobs] = useState([]); // To store unfiltered jobs
   const [jobs, setJobs] = useState([]); // To store filtered jobs
+  const [appliedJobs, setAppliedJobs] = useState([]); // Jobs the user has applied to
+  const [unappliedJobs, setUnappliedJobs] = useState([]); // Jobs the user hasn't applied to
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
+  const [isShiftView, setIsShiftView] = useState(false); // Toggle state
   const userData = useSelector((state) => state.auth.userData);
+  const userId = userData?.user?.id;
   const userType = userData?.type || userData?.user?.type;
 
   // Fetch jobs from API
@@ -27,7 +31,9 @@ const AllJobs = () => {
     setJobs(fetchedJobs); // Show all jobs initially
   };
 
-  const hasMore = jobs.length > visibleJobsCount;
+  const hasMore = isShiftView
+    ? appliedJobs.length > visibleJobsCount
+    : unappliedJobs.length > visibleJobsCount;
 
   const handleLoadMore = () => {
     setVisibleJobsCount((prevCount) => prevCount + 6); // Increase visible job count by 6
@@ -40,8 +46,8 @@ const AllJobs = () => {
     // Filter jobs or reset to original jobs
     const filteredJobs = lowerCaseSearch
       ? originalJobs.filter((job) =>
-          job.title?.toLowerCase().includes(lowerCaseSearch)
-        )
+        job.title?.toLowerCase().includes(lowerCaseSearch)
+      )
       : originalJobs;
 
     setJobs(filteredJobs);
@@ -51,7 +57,24 @@ const AllJobs = () => {
     getJobs(); // Fetch jobs on component mount
   }, []);
 
-  
+  useEffect(() => {
+    if (userId) {
+      // Separate applied and unapplied jobs
+      const applied = jobs.filter((job) =>
+        job?.applicant?.some((applicant) => applicant.id === userId)
+      );
+      const unapplied = jobs.filter(
+        (job) =>
+          !job?.applicant?.some((applicant) => applicant.id === userId)
+      );
+
+      setAppliedJobs(applied);
+      setUnappliedJobs(unapplied);
+    }
+  }, [jobs, userId]);
+
+
+  const displayedJobs = isShiftView ? appliedJobs : unappliedJobs;
 
   return (
     <div className="container my-10 px-0">
@@ -61,7 +84,7 @@ const AllJobs = () => {
             <BsBackpack size={18} className="mx-3" />
             <input
               type="text"
-              placeholder="Job title or keywords"
+              placeholder="Shift title or keywords"
               className="w-full outline-none"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
@@ -73,20 +96,42 @@ const AllJobs = () => {
             onClick={() => handleSearch(searchTerm)}
           />
         </span>
+        {/* Toggle Tabs */}
+        <div className="flex border border-gray-200 rounded-site overflow-hidden">
+          <button
+            onClick={() => setIsShiftView(true)} // Show Applied Shifts
+            className={`px-4 py-2 text-sm font-medium ${isShiftView
+              ? "bg-tn_pink text-white" // Active Tab Styling
+              : "text-gray-500 hover:text-tn_pink"
+              }`}
+          >
+            Applied Shifts
+          </button>
+          <button
+            onClick={() => setIsShiftView(false)} // Show Unapplied Shifts
+            className={`px-4 py-2 text-sm font-medium ${!isShiftView
+              ? "bg-tn_primary text-white" // Active Tab Styling
+              : "text-gray-500 hover:text-tn_primary"
+              }`}
+          >
+            Unapplied Shifts
+          </button>
+        </div>
+
       </div>
       <div className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
-          {!jobs || jobs === null ? (
+          {!displayedJobs || displayedJobs === null ? (
             // Show skeleton loaders for the number of jobs you expect to show
             [...Array(3)].map((_, index) => (
               <div key={index} className="p-2">
                 <JobCard loading={true} /> {/* Loader JobCard */}
               </div>
             ))
-          ) : jobs?.length == 0 ? (
-            <h2>no data found</h2>
+          ) : displayedJobs?.length === 0 ? (
+            <h2>No data found</h2>
           ) : (
-            jobs?.slice(0, visibleJobsCount)?.map((job) => (
+            displayedJobs?.slice(0, visibleJobsCount)?.map((job) => (
               <div key={job?.id} className="p-2">
                 <JobCard
                   className={"shadow-xl"}

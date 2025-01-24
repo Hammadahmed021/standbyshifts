@@ -105,7 +105,7 @@ const ProfileView = () => {
           {profile?.jobsPostedByYou?.length <= 0 ? (
             <>
               <p>
-                No jobs available. <Link to={"/post-job"}>Post a job new</Link>
+                No shift available. <Link to={"/post-job"}>Post a job new</Link>
               </p>
             </>
           ) : (
