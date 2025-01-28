@@ -76,17 +76,17 @@ const CompanyProfile = () => {
       rating: ratingData?.rating,
       review: ratingData?.feedback,
     };
-  
+
     try {
       const response = await giveRating(rateData);
       console.log(response, 'response >>>>>>');
-      
-  
+
+
       // If the response is successful, show a success toast
       if (response?.message == "Profile rated successfully") {
         showSuccessToast("You've successfully rated!");
         console.log("Rating submitted successfully:", response.data);
-  
+
         // Construct the new rating object based on API response
         const newRating = {
           id: response?.data?.ratingsReceived?.id,
@@ -94,7 +94,7 @@ const CompanyProfile = () => {
           review: ratingData?.feedback,
           created_at: new Date().toISOString(),
         };
-  
+
         // Update the ratings state with the new rating at the top
         setRatings((prevRatings) => [newRating, ...prevRatings]);
       }
@@ -106,7 +106,7 @@ const CompanyProfile = () => {
   };
 
   console.log(userType, 'userType compa1');
-    
+
 
   useEffect(() => {
     const fetchCompanyProfile = async () => {
@@ -145,7 +145,7 @@ const CompanyProfile = () => {
       </>
     );
   }
-  const checkLayout =  "1"; // Check layout from profile
+  const checkLayout = "1"; // Check layout from profile
   console.log(companyData, "companyData >>>>>>>>>>>>>>>>");
 
   return (
@@ -166,24 +166,29 @@ const CompanyProfile = () => {
           <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Rate Company</h3>
         </div>
         <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg sm:text-2xl font-semibold capitalize items-center">
-              Rate {companyData?.about?.name}
-            </h2>
-            <span className="flex items-center gap-1">
+
+
+          <div className="flex items-start justify-between mb-6">
+            <span className="flex flex-col">
+              <h2 className="text-2xl font-semibold capitalize items-center">
+                Rate {companyData?.about?.name}
+
+              </h2>
               <span
-                className={`text-sm underline cursor-pointer ${
-                  companyData?.is_rated == true &&
+                className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate == true &&
                   "pointer-events-none opacity-75"
-                }`}
+                  }`}
                 onClick={openRatingModal}
               >
-                {companyData?.is_rated == true
+                {companyData?.eligibleToRate == true
                   ? "Already rated"
                   : "Click to rate"}
               </span>
-              <span className="text-sm text-tn_primary">
-                ⭐{Math.floor(companyData.averageRating)}
+            </span>
+
+            <span className="flex  gap-1">
+              <span className="text-sm text-tn_dark">
+                Ratings ({Math.floor(companyData.averageRating)}/<b>5</b>)
               </span>
             </span>
           </div>
@@ -244,7 +249,7 @@ const CompanyProfile = () => {
             companyData?.jobPostedByEmployer
               ?.slice(0, visibleJobsCount)
               ?.map((job) => (
-                <JobCard 
+                <JobCard
                   className={"shadow-xl"}
                   jobId={job?.id}
                   key={job.id}
@@ -263,7 +268,7 @@ const CompanyProfile = () => {
                   description={job.description}
                   userType={userType}
                   loading={false}
-                  // applicants={job?.applicant}
+                  applicants={job?.applicant}
                 />
               ))
           )}

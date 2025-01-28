@@ -172,8 +172,8 @@ const EmployeeView = () => {
                   address={`${job.location}, ${job.state}`}
                   description={job.description}
                   userType={userType}
-                  // applicants={job?.applicants}
-                  
+                // applicants={job?.applicants}
+
                 />
               ))}
             </div>
@@ -224,7 +224,7 @@ const EmployeeView = () => {
                       </p>
                       {/* Job Title */}
                       <h3 className="text-lg font-medium capitalize text-tn_dark_field">
-                      <span className="font-semibold">Shift Title:</span>{" "}
+                        <span className="font-semibold">Shift Title:</span>{" "}
                         {history.title}
                       </h3>
 
@@ -314,24 +314,26 @@ const EmployeeView = () => {
           </div>
 
           <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold capitalize items-center">
-                Rate {employee?.name}
-              </h2>
-              <span className="flex items-center gap-1">
+            <div className="flex items-start justify-between mb-6">
+              <span className="flex flex-col">
+                <h2 className="text-2xl font-semibold capitalize items-center">
+                  Rate {employee?.name}
+                </h2>
                 <span
-                  className={`text-sm underline cursor-pointer ${
-                    employee?.isRated == true &&
+                  className={`text-xs underline cursor-pointer ${employee?.eligibleToRate == true &&
                     "pointer-events-none opacity-75"
-                  }`}
+                    }`}
                   onClick={openRatingModal}
                 >
-                  {employee?.isRated == true
+                  {employee?.eligibleToRate == true
                     ? "Already rated"
                     : "Click to rate"}
                 </span>
-                <span className="text-sm text-tn_primary">
-                  ⭐{Math.floor(employee.averageRating)}
+              </span>
+
+              <span className="flex  gap-1">
+                <span className="text-sm text-tn_dark">
+                  Ratings ({Math.floor(employee.averageRating)}/<b>5</b>)
                 </span>
               </span>
             </div>
