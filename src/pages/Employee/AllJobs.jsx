@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getJobsByFilter } from "../../utils/Api";
+import { getJobsByFilter, verifyUser } from "../../utils/Api";
 import { JobCard, Search, LoadMore } from "../../component";
 import { FaFilter } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -16,9 +16,49 @@ const AllJobs = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
   const [isShiftView, setIsShiftView] = useState(false); // Toggle state
+  const [currentUser, setCurrentUser] = useState(null); // user state
   const userData = useSelector((state) => state.auth.userData);
-  const userId = userData?.user?.id;
+
   const userType = userData?.type || userData?.user?.type;
+
+  const getUserIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address:", error);
+      return null;
+    }
+  };
+
+  const fetchCurrentUserData = async () => {
+    const userAgent = navigator.userAgent;
+    const ipAddress = await getUserIP();
+    const token = localStorage.getItem("webToken");
+
+    const payload = {
+      userAgent,
+      ipAddress,
+      token,
+    };
+    try {
+      const response = await verifyUser(payload);
+      const data = await response.data;
+      setCurrentUser(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserData()
+  }, [])
+  console.log(currentUser, 'currentUser');
+
+
+  const userId = userData?.user?.id || currentUser?.id;
+
 
   // Fetch jobs from API
   const getJobs = async (searchText = null) => {
@@ -72,6 +112,10 @@ const AllJobs = () => {
       setUnappliedJobs(unapplied);
     }
   }, [jobs, userId]);
+  console.log(userId, 'userid');
+
+  console.log(appliedJobs, 'appliedJobs');
+  console.log(unappliedJobs, 'unappliedJobs');
 
 
   const displayedJobs = isShiftView ? appliedJobs : unappliedJobs;

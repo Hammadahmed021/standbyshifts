@@ -161,7 +161,7 @@ const ProfileExp = () => {
     const uniqueTags = [...new Set([...tags, ...newTags])]; // Remove duplicates
     setValue('tags', uniqueTags);
   }, [tags, newTags, setValue]);
-  
+
   // Add new tag only if it's unique
   const handleAddTag = (newTag) => {
     const isDuplicate = tags.includes(newTag) || newTags.includes(newTag); // Check both arrays
@@ -173,7 +173,7 @@ const ProfileExp = () => {
       setTimeout(() => setErrorMessage(""), 3000); // Clear the message after 3 seconds
     }
   };
-  
+
 
   // Remove tag
   const handleRemoveTag = (tagToRemove) => {
@@ -872,7 +872,7 @@ const ProfileExp = () => {
                           <ul>
                             <li key={index} className="mb-4 relative border-b pb-4 space-y-1">
                               <h2 className="font-medium text-base">
-                               <span className="font-semibold">Shift Title:</span> <br />{work.jobTitle ?? work.title}
+                                <span className="font-semibold">Shift Title:</span> <br />{work.jobTitle ?? work.title}
                               </h2>
                               <p className="text-base"><span className="font-semibold">Shift Description:</span><br /> {work.jobDesc ?? work.description}</p>
                               {/* <p>
@@ -912,6 +912,16 @@ const ProfileExp = () => {
                   Industries
                 </h3>
                 <div className="mb-6">
+                  <ul className="mb-4">
+                    {fetchUser?.profile?.industry ? (
+                      <li className="flex gap-2 items-center" key={fetchUser.profile.industry.id}>
+                        <strong className="">Industry</strong>
+                        {fetchUser.profile.industry.title}
+                      </li>
+                    ) : (
+                      <li>No industry selected yet.</li> // Handle the case where there is no industry
+                    )}
+                  </ul>
                   <SelectOption
                     // label="Industries"
                     pl={"pl-0 border p-2 rounded-lg"}
@@ -924,24 +934,15 @@ const ProfileExp = () => {
                   />
                   <ul>
                     {selectedIndustries.map((industry) => (
-                      <li key={industry.id}>{industry.title}</li>
+                      <> <span>Selected Industry:</span> <li key={industry.id}>{industry.title}</li></>
                     ))}
                   </ul>
-                  <strong className="mt-4 block">Selected Industries:</strong>
                   {/* <ul>
                   {selectedIndustries.map((industry) => (
                     <li key={industry.id}>{industry.title}</li>
                   ))}
                 </ul> */}
-                  <ul>
-                    {fetchUser?.profile?.industry ? (
-                      <li key={fetchUser.profile.industry.id}>
-                        {fetchUser.profile.industry.title}
-                      </li>
-                    ) : (
-                      <li>No industry found.</li> // Handle the case where there is no industry
-                    )}
-                  </ul>
+
                 </div>
               </div>
 

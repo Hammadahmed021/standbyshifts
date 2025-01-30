@@ -38,10 +38,6 @@ const Header = ({ style }) => {
 
   const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
 
-  console.log(userData?.user?.type, "userData");
-  console.log(userType, "userType");
-  console.log(userData, "userData sss");
-
   const defaultMenu = (
     <>
       <li>

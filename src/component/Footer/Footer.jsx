@@ -64,12 +64,32 @@ const Footer = () => {
                       {
                         userData
                           ? userType === "employee"
-                            ? "Employee"
-                            : "Employer"
+                            ? "Employee Home"
+                            : "Employer Home"
                           : "Home"
                       }
                     </Link>
                   </li>
+
+                  <li className="mb-2 lg:text-base md:text-sm ">
+                    <Link to={
+                      userData
+                        ? userType === "employee"
+                          ? "companies"
+                          : "employees"
+                        : "/"
+                    }>
+                      {
+                        userData
+                          ? userType === "employee"
+                            ? "Find Employer"
+                            : "Find Employee"
+                          : "Home"
+                      }
+                    </Link>
+                  </li>
+
+                  
                 </ul>
               </div>
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">
