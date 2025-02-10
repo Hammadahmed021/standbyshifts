@@ -10,7 +10,7 @@ import {
   FaRegMessage,
   FaTrashCan,
 } from "react-icons/fa6";
-import { people, peoples } from "../assets";
+import { avatar, people, peoples } from "../assets";
 import {
   FaCalendarAlt,
   FaClock,
@@ -115,7 +115,7 @@ const EmployeeView = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <img
-                  src={employee?.employee?.profile_picture || peoples}
+                  src={employee?.employee?.profile_picture || avatar}
                   className="mr-2 rounded-full w-24 h-24 bg-tn_light_grey"
                 />
                 <span>
@@ -148,7 +148,7 @@ const EmployeeView = () => {
               </span> */}
             </div>
           </div>
-          <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl">
+          <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl border">
             <h2 className="text-2xl font-semibold capitalize items-center mb-6">
               {employee?.name || "Employee name"} Applied on your shifts
             </h2>
@@ -179,14 +179,14 @@ const EmployeeView = () => {
             </div>
           </div>
 
-          <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl">
+          <div className="mb-4 p-6  bg-white rounded-2xl shadow-xl border">
             <div className="mb-6">
               <h3 className="text-lg font-semibold">About my self</h3>
               <p className="text-gray-700">
                 {employee?.about || "No description available."}
               </p>
             </div>
-            <hr className="border-b border-tn_light_grey my-6" />
+            {/* <hr className="border-b border-tn_light_grey my-6" />  */}
 
             {/* <div className="mb-6">
               <h3 className="text-lg font-semibold">Skills</h3>
@@ -208,7 +208,7 @@ const EmployeeView = () => {
 
             {/* <hr className="border-b border-tn_light_grey my-6" /> */}
 
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <h3 className="text-lg font-semibold">Work Experience</h3>
               <div className="space-y-4">
                 {employee?.work_histories?.length ? (
@@ -216,17 +216,17 @@ const EmployeeView = () => {
                     <div
                       key={history.id}
                       className="border border-tn_light_grey p-4 rounded-lg w-full flex flex-col gap-2"
-                    >
+                    > */}
                       {/* Date Created */}
-                      <p className="text-xs text-tn_text_grey">
+                      {/* <p className="text-xs text-tn_text_grey">
                         Added on:{" "}
                         {new Date(history.created_at).toLocaleDateString()}
-                      </p>
+                      </p> */}
                       {/* Job Title */}
-                      <h3 className="text-lg font-medium capitalize text-tn_dark_field">
+                      {/* <h3 className="text-lg font-medium capitalize text-tn_dark_field">
                         <span className="font-semibold">Shift Title:</span>{" "}
                         {history.title}
-                      </h3>
+                      </h3> */}
 
                       {/* Job Duration */}
                       {/* <p className="text-sm text-tn_text_grey">
@@ -235,7 +235,8 @@ const EmployeeView = () => {
                       </p> */}
 
                       {/* Description */}
-                      {history.description ? (
+                      
+                      {/* {history.description ? (
                         <p className="text-tn_text_grey text-sm">
                           <span className="font-semibold">Description:</span> {history.description}
                         </p>
@@ -250,15 +251,15 @@ const EmployeeView = () => {
                   <p className="text-gray-500">No work history listed.</p>
                 )}
               </div>
-            </div>
+            </div> */}
             {/* <h3 className="text-lg font-semibold"> Qualifications & Ability</h3>
             <p>{employee?.qualification}</p> */}
           </div>
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-1/3 p-0">
-          <div className="p-4  bg-white rounded-2xl shadow-xl h-auto">
+        <div className="w-full lg:w-1/3 p-0 ">
+          <div className="p-4  bg-white rounded-2xl shadow-xl h-auto border">
             <h2 className="text-2xl font-semibold capitalize items-center mb-6">
               Applicant Info
             </h2>
@@ -300,7 +301,7 @@ const EmployeeView = () => {
               <h4 className="text-sm text-tag_blue  bg-tag_blue  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
                 <BsEnvelopeAtFill className="mr-2" /> E-Mail address
               </h4>
-              <p className="font-semibold">{employee?.email}</p>
+              <p className="font-semibold w-min">{employee?.email}</p>
             </div>
 
             <hr className="border-b border-tn_light_grey my-6" />

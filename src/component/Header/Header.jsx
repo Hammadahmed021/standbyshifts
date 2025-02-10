@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Logo, fallback, fb, instagram, twitter, youtube } from "../../assets";
+import { Logo, avatar, fallback, fb, instagram, twitter, youtube } from "../../assets";
 import { Link, NavLink, useLocation } from "react-router-dom"; // Import useLocation
 import { useSelector } from "react-redux";
 import {
@@ -247,7 +247,7 @@ const Header = ({ style }) => {
                           currentUser?.employee?.profile_picture ||
                           currentUser?.employer?.logo ||
                           userData?.profile_image?.name ||
-                          fallback
+                          avatar
                         }
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
@@ -326,7 +326,7 @@ const Header = ({ style }) => {
                             src={
                               currentUser?.profile_image ||
                               userData?.profile_image?.name ||
-                              fallback
+                              avatar
                             }
                             alt="user profile"
                             className="w-16 h-16 rounded-full"

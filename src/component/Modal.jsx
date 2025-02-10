@@ -20,22 +20,22 @@ const Modal = ({ title, onYes, onClose, isChilderConponent }) => {
         <button onClick={onClose} className="text-2xl absolute top-1 right-2 font-bold text-gray-600 hover:text-gray-800">
           &times;
         </button>
-        <h2 className="text-xl font-semibold mb-4 text-center">{title}</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
         {isChilderConponent && isChilderConponent}
         {/* Conditionally render Yes and No buttons only if onYes is passed */}
         {onYes && (
           <div className="flex justify-center space-x-4 mt-8">
             <button
               onClick={onClose}
-              className="px-4 py-2 w-full bg-tn_light_grey text-tn_text_grey rounded hover:bg-gray-300"
+              className="px-4 py-2 w-full bg-tn_light_grey text-tn_text_grey rounded-site hover:bg-gray-300"
             >
               No
             </button>
             <button
               onClick={() => { onYes(); onClose(); }}
-              className="px-4 py-2 w-full bg-tn_dark text-white rounded hover:bg-tn_pink"
+              className="px-4 py-2 w-full bg-tn_dark text-white hover:bg-tn_pink rounded-site"
             >
-              Yes
+              Log out
             </button>
           </div>
         )}

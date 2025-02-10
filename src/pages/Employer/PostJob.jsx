@@ -539,6 +539,7 @@ const PostJob = () => {
                 <textarea
                   placeholder="Enter job notes"
                   className="w-full outline-none pl-5"
+                  maxLength={50}
                   {...register("notes", {
                     required: "Notes is required",
                   })}

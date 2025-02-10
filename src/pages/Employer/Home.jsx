@@ -9,7 +9,7 @@ import {
 } from "../../component";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { fallback, girlSofa } from "../../assets";
+import { avatar, fallback, girlSofa } from "../../assets";
 import { employees } from "../../utils/localDB";
 import LayoutCards from "../../component/Employer/LayoutCards";
 
@@ -196,7 +196,7 @@ const Home = () => {
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {candidateApllied?.map((employee) => (
             <EmpCard
-              image={employee.image || employee?.profile_picture}
+              image={employee.image || employee?.profile_picture || avatar}
               title={employee.title || employee?.designation}
               subheading={employee.subheading}
               employer_name={employee.employer_name || employee.name}

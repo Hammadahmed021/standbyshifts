@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getEmployeeAppliedOnJob, hirePeople } from "../../utils/Api";
 import { EmployeeDetailCard } from "../../component";
 import { showErrorToast, showSuccessToast } from "../../utils/Toast";
+import { avatar } from "../../assets";
 
 const ApplierCandidates = () => {
   const { id } = useParams();
@@ -40,7 +41,7 @@ const ApplierCandidates = () => {
                 location: job.location || "Location not specified", // Default location if none provided
                 jobTitle: job?.applied_jobs?.title,
                 companyLogo: job?.applied_jobs?.logo, // Ensure you have the logo URL
-                profileImage: job?.profile_picture,
+                profileImage: job?.profile_picture || avatar,
                 jobId: job?.applied_jobs?.id,
                 employeeId: job?.id,
                 isHired: job?.is_hired,

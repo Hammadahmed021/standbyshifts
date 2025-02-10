@@ -41,7 +41,7 @@ export default function LogoutBtn({ className }) {
       </button>
       {isModalOpen && (
         <Modal
-          title="Are you sure you want to log out?"
+          title="Are you sure?"
           onYes={handleYes}
           onClose={handleClose}
         />

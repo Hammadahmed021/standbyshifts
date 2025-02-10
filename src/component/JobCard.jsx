@@ -131,10 +131,10 @@ const JobCard = ({
 
       {/* Level and Location */}
       <div className="flex flex-wrap gap-2 mb-4 truncate">
-        <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
+        {/* <span className="bg-purple-100 text-tag_purple px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FaCrown size={12} className="mr-1" />
           {level}
-        </span>
+        </span> */}
         <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FaMapMarker size={12} className="mr-1" />
           {address}

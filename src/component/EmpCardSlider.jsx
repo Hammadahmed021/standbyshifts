@@ -2,6 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import EmpCard from "./EmpCard";
 import { NextArrow, PrevArrow } from "./CustomArrows";
+import { avatar } from "../assets";
 
 const EmpCardSlider = ({ data = [], arrowPosition, slidesToShow = 3 }) => {
   const itemCount = data.length;
@@ -61,7 +62,7 @@ const EmpCardSlider = ({ data = [], arrowPosition, slidesToShow = 3 }) => {
         {data.map((employee, index) => (
           <div key={index} className="px-2 py-12">
             <EmpCard
-              image={employee.image || employee?.profile_picture || employee?.user?.employer?.logo}
+              image={employee.image || employee?.profile_picture || employee?.user?.employer?.logo || avatar}
               title={employee.title || employee?.designation}
               subheading={employee.subheading}
               employer_name={employee.employer_name || employee.name}

@@ -55,7 +55,10 @@ const CompanyProfiles = ({ profile, layout, count }) => {
             <div className="container gap-4 flex flex-wrap sm:flex-nowrap items-start justify-between">
               <div className="w-full sm:w-8/12 shadow-xl rounded-2xl bg-white p-4">
                 <h3 className="text-lg font-semibold mb-6">About Company</h3>
-                <p>{profile?.about}</p>
+                <p className="max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+  {profile?.about}
+</p>
+
               </div>
               <div className="w-full sm:w-4/12 shadow-xl rounded-2xl bg-white p-4">
                 <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
