@@ -43,7 +43,7 @@ const Footer = () => {
                     <a href="tel:+12 345 678 000">+12 345 678 000</a>
                   </li>
                   <li className="lg:text-base md:text-sm ">
-                    <a href="mailto:info@tablenow.com">info@standbyshifts.com</a>
+                    <a href="mailto:info@standbyshifts.com">info@standbyshifts.com</a>
                   </li>
                   <li className="mt-2 sm:mt-5  w-full sm:w-[100%] lg:text-base md:text-sm ">
                     7262 Sepulveda Blvd. Culver City, CA, 90230
@@ -54,43 +54,20 @@ const Footer = () => {
                 <h3 class="text-lg font-extrabold mb-4">Info</h3>
                 <ul className="flex flex-col">
                   <li className="mb-2 lg:text-base md:text-sm ">
-                    <Link to={
-                      userData
-                        ? userType === "employee"
-                          ? "employee"
-                          : "employer"
-                        : "/"
-                    }>
-                      {
-                        userData
-                          ? userType === "employee"
-                            ? "Employee Home"
-                            : "Employer Home"
-                          : "Home"
-                      }
+                    <Link to={userData ? (userType === "employee" ? "/employee" : "/employer") : "/"}>
+                      {userData ? (userType === "employee" ? "Employee Home" : "Employer Home") : "Home"}
                     </Link>
                   </li>
 
-                  <li className="mb-2 lg:text-base md:text-sm ">
-                    <Link to={
-                      userData
-                        ? userType === "employee"
-                          ? "companies"
-                          : "employees"
-                        : "/"
-                    }>
-                      {
-                        userData
-                          ? userType === "employee"
-                            ? "Find Employer"
-                            : "Find Employee"
-                          : "Home"
-                      }
-                    </Link>
-                  </li>
-
-                  
+                  {userData && ( // Only render this if `userData` exists
+                    <li className="mb-2 lg:text-base md:text-sm ">
+                      <Link to={userType === "employee" ? "/companies" : "/employees"}>
+                        {userType === "employee" ? "Find Employer" : "Find Employee"}
+                      </Link>
+                    </li>
+                  )}
                 </ul>
+
               </div>
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">
                 <h3 class="text-lg font-extrabold mb-4">Support</h3>

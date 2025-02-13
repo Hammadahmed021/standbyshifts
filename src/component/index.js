@@ -41,3 +41,4 @@ export { default as LoginSignupModal } from "./LoginSignupModal";
 export { default as ToggleAvailability } from "./ToggleAvailablity";
 export { default as LayoutCards } from "./Employer/LayoutCards";
 export { default as EmpLayoutCards } from "./Employee/LayoutCards";
+export { default as Contact } from "./Contact";

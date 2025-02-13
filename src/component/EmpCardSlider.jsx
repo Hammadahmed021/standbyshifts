@@ -64,7 +64,7 @@ const EmpCardSlider = ({ data = [], arrowPosition, slidesToShow = 3 }) => {
             <EmpCard
               image={employee.image || employee?.profile_picture || employee?.user?.employer?.logo || avatar}
               title={employee.title || employee?.designation}
-              subheading={employee.subheading}
+              subheading={employee.subheading || employee?.industry}
               employer_name={employee.employer_name || employee.name}
               rating={employee.rating}
               jobId={employee?.id}

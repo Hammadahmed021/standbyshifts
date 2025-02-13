@@ -100,6 +100,18 @@ export const Login = async (payload) => {
   }
 };
 
+// Contact form page form
+export const submitContactForm = async (payload) => {  
+  try {
+    const response = await axios.post(`${BASE_URL}contact`, payload);
+    console.log(response, 'Contact form submitted');
+    return response.data;
+  } catch (error) {
+    console.error('API Contact request failed:', error.response);
+    throw error;
+  }
+};
+
 // Function to fetch filtered data
 export const fetchFilteredData = async (filters) => {
   try {
@@ -955,6 +967,19 @@ export const GetComOrEmp = async (type) => {
     return response.data;
   } catch (error) {
     console.log(error, "unable to toggle availablity");
+    throw error;
+  }
+};
+
+// get top rated users
+export const fetchTopRatedUsers = async () => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}top-rated-users`,
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error, "unable to get top rated users");
     throw error;
   }
 };

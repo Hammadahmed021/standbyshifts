@@ -99,9 +99,7 @@ export default function Signup({ onClick }) {
 
   const password = watch("password");
 
-  // const handleRecaptchaChange = (value) => {
-  //   setRecaptchaToken(value);
-  // };
+  
 
   // Prevent numbers in text fields
   const handleNameKeyPress = (e) => {
@@ -122,49 +120,6 @@ export default function Signup({ onClick }) {
       e.preventDefault();
     }
   };
-
-  // const handleGoogleSignup = async () => {
-  //   try {
-  //     const { user } = await SignUpWithGoogle();
-  //     console.log("User logged in:", user.displayName);
-
-  //     const ipAddress = await getUserIP();
-
-  //     // Proceed with login if it's a different user or not logged in
-  //     const userData = {
-  //       name: user?.displayName,
-  //       email: user?.email,
-  //       type,
-  //       userAgent,
-  //       ipAddress
-  //     };
-
-  //     if (userData) {
-  //       const response = await getUserFromGmailSignup(userData);
-  //       const token = response.data.token;
-
-  //       // Store token in localStorage
-  //       localStorage.setItem("webToken", token);
-  //     }
-
-  //     if (user) {
-  //       dispatch(
-  //         loginFunc({
-  //           userData: {
-  //             uid: user.uid,
-  //             displayName: user.displayName,
-  //             email: user.email,
-  //             password: user.password,
-  //             loginType: user.providerData?.[0]?.providerId,
-  //           },
-  //         })
-  //       );
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error("Login failed:", error.message);
-  //   }
-  // };
 
   return (
     <form onSubmit={handleSubmit(handleSignup)} className="mt-8">

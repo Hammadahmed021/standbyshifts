@@ -14,6 +14,7 @@ export { default as signup } from "./Images/signup.png";
 export { default as notfound } from "./Images/notfound.png";
 export { default as hero } from "./Images/hero-girl.png";
 export { default as avatar } from "./Images/avatar.png";
+export { default as about } from "./Images/about.png";
 
 export { default as ImgB } from "./Images/image1.png";
 export { default as ImgB1 } from "./Images/image2.png";

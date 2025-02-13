@@ -45,7 +45,7 @@ import useFetch from "../hooks/useFetch";
 import { transformData, getDistance } from "../utils/HelperFun";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { fetchUserNearByRestaurants, verifyUser } from "../utils/Api";
+import { fetchTopRatedUsers, fetchUserNearByRestaurants, verifyUser } from "../utils/Api";
 import { app } from "../service/firebase";
 import { Capacitor } from "@capacitor/core";
 import BannerSlider from "../component/BannerSlider";
@@ -64,11 +64,12 @@ export default function HomeNew() {
   const isDesktop = useMediaQuery("(max-width: 991px)");
   const userData = useSelector((state) => state.auth.userData);
 
+
   const [visibleCards, setVisibleCards] = useState(4);
   const [visibleAllCards, setVisibleAllCards] = useState(4);
   const [visibleFeatureCards, setVisibleFeatureCards] = useState(4);
   const [currentUser, setCurrentUser] = useState({});
-  const [userLocation, setUserLocation] = useState(null);
+  const [topRatedUsers, setTopRatedUsers] = useState([]);
   const [nearByData, setNearByData] = useState([]);
 
   const [filterValues, setFilterValues] = useState({
@@ -97,6 +98,26 @@ export default function HomeNew() {
       return null;
     }
   };
+  useEffect(() => {
+    const getTopRatedUsers = async () => {
+      try {
+        const response = await fetchTopRatedUsers();
+        console.log(response, 'response of top rated user');
+        
+        setTopRatedUsers(response);
+      } catch (error) {
+        console.log(error, "unable to fetch top rated users");
+
+      }
+    }
+    getTopRatedUsers()
+
+  }, [])
+
+  useEffect(() => {
+    console.log(topRatedUsers, "Updated topRatedUsers");
+  }, [topRatedUsers]); // This will log the updated state when it changes
+
 
   useEffect(() => {
     // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
@@ -138,7 +159,7 @@ export default function HomeNew() {
     // );
   }, [location.pathname, user_id, refetch]);
 
- 
+
 
   const pathname = location.pathname;
   let page = ""; // Default page value
@@ -235,6 +256,8 @@ export default function HomeNew() {
     }
   };
 
+
+
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-[500px] sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
@@ -255,7 +278,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                  // className="border p-3 bg-gray-200 rounded-lg"
+                // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Register
                 </Button>
@@ -301,7 +324,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container mx-auto ">
+      <div className="container mx-auto">
         <div className=" mb-10 sm:mb-14">
           <div className="text-center sm:text-center md:w-[44%] mx-auto">
             <h2 className="text-[26px] w-full text-black md:text-[50px] leading-none font-semibold">
@@ -336,7 +359,7 @@ export default function HomeNew() {
               <div className="flex container px-0 space-x-3 mt-10">
                 <Button
                   onClick={() => handleOpenModal("/signup")}
-                  // className="border p-3 bg-gray-200 rounded-lg"
+                // className="border p-3 bg-gray-200 rounded-lg"
                 >
                   Get Started
                 </Button>
@@ -358,7 +381,7 @@ export default function HomeNew() {
       <div className="container">
         <div className="flex flex-col-reverse sm:flex-row items-center space-x-4 relative">
           <div className="md:w-8/12 w-full employees pointer-events-none">
-            <EmpCardSlider data={employees} />
+            <EmpCardSlider data={topRatedUsers?.top_rated_employees} />
           </div>
           <div className="md:w-4/12 w-full pb-8">
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
@@ -415,7 +438,7 @@ export default function HomeNew() {
           </div>
           <div className="lg:w-7/12 w-full ">
             <div className="flex flex-col items-ends justify-center px-6 employer pointer-events-none">
-              <EmpCardSlider data={employer} />
+              <EmpCardSlider data={topRatedUsers?.top_rated_employers} />
             </div>
           </div>
         </div>

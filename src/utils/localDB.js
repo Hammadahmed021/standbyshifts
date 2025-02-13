@@ -243,7 +243,7 @@ export const infoLinks = {
 
 export const supportLinks = {
   "Privacy Policy": "/privacy-policy",
-  About: "/",
+  About: "/about",
   Contact: "/contact",
 };
 
