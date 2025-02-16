@@ -804,7 +804,7 @@ const Profile = () => {
                 </span>
               </span>
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <span className="mb-6 w-full">
+                {/* <span className="mb-6 w-full">
                   <Input
                     label="Address"
                     {...register("address")}
@@ -817,7 +817,7 @@ const Profile = () => {
                       {errors.address.message}
                     </p>
                   )}
-                </span>
+                </span> */}
 
                 <span className="mb-6 w-full">
                   {" "}

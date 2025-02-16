@@ -11,7 +11,7 @@ function RevenueCard({ items }) {
                         className="w-10 h-10 mb-2"
                     />
                     <h3 className="text-lg text-white font-semibold mb-2">{item.title}</h3>
-                    <p className="text-tn_text_grey text-base">{item.description}</p>
+                    {/* <p className="text-tn_text_grey text-base">{item.description}</p> */}
                 </div>
             ))}
         </div>

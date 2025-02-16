@@ -11,7 +11,7 @@ function InfoGrid({ items }) {
                         className="w-12 h-12 mx-auto mb-4"
                     />
                     <h3 className="text-xl text-tn_primary font-semibold mb-2">{item.title}</h3>
-                    <p className="text-tn_text_grey text-base">{item.description}</p>
+                    {/* <p className="text-tn_text_grey text-base">{item.description}</p> */}
                 </div>
             ))}
         </div>

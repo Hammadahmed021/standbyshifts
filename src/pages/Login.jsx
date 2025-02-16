@@ -35,6 +35,13 @@ const Login = () => {
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
 
+  const [displayUserType, setDisplayUserType] = useState("");
+  
+    useEffect(() => {
+      const changeUserTypeName = (type) => (type === "employer" ? "Business" : "Shift Seeker");
+      setDisplayUserType(changeUserTypeName(userType));
+    }, [userType]); // Re-run if userType changes
+
   const isApp =
     Capacitor.getPlatform() === "android" || Capacitor.getPlatform() === "ios";
 
@@ -149,11 +156,11 @@ const Login = () => {
             {/* Left Column: Login Form */}
             <div className="mb-6 w-full">
               <h2 className="text-3xl w-full text-black sm:text-4xl md:text-5xl font-semibold md:w-3/4 lg:w-2/4">
-                Login as an {userType}
+                Login as a {displayUserType}
               </h2>
-              <p className="text-tn_text_grey mt-2 mb-12">
+              {/* <p className="text-tn_text_grey mt-2 mb-12">
                 It is a long established fact that a reader
-              </p>
+              </p> */}
               <LoginComponent onClick={handleSocialLogin} />
               {/* <span
               className="p-3 flex justify-center text-center border w-full border-tn_light_grey rounded-lg"

@@ -28,7 +28,7 @@ const EmpCard = ({
   };
 
   return (
-    <div className=" bg-white shadow-xl rounded-3xl overflow-hidden py-8 px-4">
+    <div className=" bg-white shadow-xl border rounded-3xl overflow-hidden py-8 px-4">
       {/* Circular Image */}
       <div className="flex justify-center">
         <img
@@ -66,7 +66,7 @@ const EmpCard = ({
           </div>
         </>
       )}
-      {isLocation !== true && (
+      {isLocation !== true && userType && (
         <div className="text-center mt-4">
           <span
             className="cursor-pointer border rounded-site px-4 py-2 hover:bg-tn_primary duration-200 transition-all hover:text-white"

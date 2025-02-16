@@ -82,7 +82,7 @@ const Header = ({ style }) => {
           to={"/companies"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Companies
+          Businesses
         </NavLink>
       </li>
 
@@ -135,7 +135,7 @@ const Header = ({ style }) => {
           to={"/employees"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Employees
+          Shift Seeker
         </NavLink>
       </li>
       <li>

@@ -46,12 +46,12 @@ const EmployeeDetailCard = ({ profile }) => {
         <div>
           <h2 className="font-semibold text-xl capitalize">{name}</h2>
           <p className="text-gray-500">{role}</p>
-          <div className="flex items-center space-x-2 mt-1 break-all">
+          {/* <div className="flex items-center space-x-2 mt-1 break-all">
             <span className="inline-flex text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-start px-2 py-1 rounded-2xl">
               <FaMapMarkerAlt className="mr-2 text-tag_blue mt-1" />
               <span className="capitalize break-words">{location}</span>
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -149,7 +149,7 @@ const AllJobs = () => {
               : "text-gray-500 hover:text-tn_pink"
               }`}
           >
-            Applied Shifts
+            Applied
           </button>
           <button
             onClick={() => setIsShiftView(false)} // Show Unapplied Shifts
@@ -158,7 +158,7 @@ const AllJobs = () => {
               : "text-gray-500 hover:text-tn_primary"
               }`}
           >
-            Unapplied Shifts
+            Available
           </button>
         </div>
 

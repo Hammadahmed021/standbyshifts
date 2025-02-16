@@ -22,14 +22,14 @@ const Footer = () => {
                   : "employer"
                 : "/"
             }>
-              <img src={Logo} alt="" className="w-32" />
+              <img src={Logo} alt="" className="w-44" />
             </Link>
-            <p className="py-6 mr-0 sm:mr-6">
+            {/* <p className="py-6 mr-0 sm:mr-6">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus
               lorem id penatibus imperdiet. Turpis egestas ultricies purus
               auctor tincidunt lacus nunc.
-            </p>
-            <p>Turpis egestas ultricies purus auctor tincidunt lacus nunc.</p>
+            </p> */}
+            {/* <p>Turpis egestas ultricies purus auctor tincidunt lacus nunc.</p> */}
           </div>
 
           {/* <!-- 60% Column --> */}
@@ -45,9 +45,9 @@ const Footer = () => {
                   <li className="lg:text-base md:text-sm ">
                     <a href="mailto:info@standbyshifts.com">info@standbyshifts.com</a>
                   </li>
-                  <li className="mt-2 sm:mt-5  w-full sm:w-[100%] lg:text-base md:text-sm ">
+                  {/* <li className="mt-2 sm:mt-5  w-full sm:w-[100%] lg:text-base md:text-sm ">
                     7262 Sepulveda Blvd. Culver City, CA, 90230
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">
@@ -86,9 +86,9 @@ const Footer = () => {
         </div>
 
       </div>
-      <div className="footer-bottom py-4 flex justify-between container mx-auto items-center">
+      <div className="footer-bottom py-4 flex justify-center container mx-auto items-center">
         <p>© {getCurrentYear} Stand by shifts | All Rights Reserved</p>
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
 
           <ul className="flex flex-wrap justify-between space-x-4 mt-6 sm:mt-0">
             <li>
@@ -112,7 +112,7 @@ const Footer = () => {
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

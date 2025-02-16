@@ -479,7 +479,7 @@ const Profile = () => {
               </span>
 
               <span className="flex-wrap flex space-x-0 sm:space-x-2 sm:flex-nowrap">
-                <span className="mb-6 w-full">
+                {/* <span className="mb-6 w-full">
                   <Input
                     label="Address"
                     {...register("address")}
@@ -492,7 +492,7 @@ const Profile = () => {
                       {errors.address.message}
                     </p>
                   )}
-                </span>
+                </span> */}
                 <span className="mb-6 w-full">
                   <Input
                     label="Zip Code"
@@ -586,9 +586,9 @@ const Profile = () => {
 
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                  Select Industry
+                  Select Type of Business
                 </h3>
-                <span className="block mb-4 text-base"><strong>Industry:</strong> {fetchUser?.profile?.industry}</span>
+                <span className="block mb-4 text-base"><strong>Type of Business:</strong> {fetchUser?.profile?.industry}</span>
 
                 <div className="mb-6">
                   <SelectOption
@@ -598,7 +598,7 @@ const Profile = () => {
                     onChange={handleFilterChange}
                     options={addAllOption(
                       fetchUser?.industries,
-                      "All Industries"
+                      "All Business"
                     )}
                   />
                   <ul>
@@ -606,7 +606,6 @@ const Profile = () => {
                       <li key={industry.id}>{industry.title}</li>
                     ))}
                   </ul>
-
                 </div>
               </div>
 
@@ -614,12 +613,12 @@ const Profile = () => {
                 <div>
                   {/* Toggle Button */}
                   <p className="text-tn_text_grey text-sm mb-6">
-                    Want to set profile?{" "}
+                    Create your profile, {" "}
                     <span
                       onClick={toggleProfileSection}
                       className="underline cursor-pointer"
                     >
-                      {hideProfile ? "Hide Profile" : "Show Profile"}
+                      {hideProfile ? "Hide this" : "Click here"}
                     </span>
                   </p>
 
@@ -628,7 +627,7 @@ const Profile = () => {
                     <>
                       <div className="overflow-hidden">
                         <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                          Data for profile
+                          Picture for profile
                         </h3>
                         <div className="flex items-center py-4">
                           <img
@@ -650,7 +649,7 @@ const Profile = () => {
                         </div>
                         <span className="mb-6 w-full block">
                           <span className="mt-6 mb-2 font-semibold block">
-                            Short Description
+                          Provide a Short Description of your Business
                           </span>
                           <div className="relative">
                             <FaClipboard

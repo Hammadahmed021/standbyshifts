@@ -863,7 +863,7 @@ const ProfileExp = () => {
 
 
                 <div>
-                  <strong className="mt-4 block mb-6">Saved Experiences:</strong>
+                  <strong className="mt-4 block mb-6">Saved Experience:</strong>
                   <div>
                     {savedExperiences.length > 0 ? (
                       savedExperiences.map((work, index) => {
@@ -909,7 +909,7 @@ const ProfileExp = () => {
               </div>{" "}
               <div className="pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                  Industries
+                Type of Business
                 </h3>
                 <div className="mb-6">
                   <ul className="mb-4">
@@ -919,7 +919,7 @@ const ProfileExp = () => {
                         {fetchUser.profile.industry.title}
                       </li>
                     ) : (
-                      <li>No industry selected yet.</li> // Handle the case where there is no industry
+                      <li>No business selected yet.</li> // Handle the case where there is no industry
                     )}
                   </ul>
                   <SelectOption
@@ -929,12 +929,12 @@ const ProfileExp = () => {
                     onChange={handleFilterChange}
                     options={addAllOption(
                       fetchUser?.industries,
-                      "All Industries"
+                      "All Business"
                     )}
                   />
                   <ul>
                     {selectedIndustries.map((industry) => (
-                      <> <span>Selected Industry:</span> <li key={industry.id}>{industry.title}</li></>
+                      <> <span>Selected Type of Business:</span> <li key={industry.id}>{industry.title}</li></>
                     ))}
                   </ul>
                   {/* <ul>
@@ -950,12 +950,12 @@ const ProfileExp = () => {
                 <div>
                   {/* Toggle Button */}
                   <p className="text-tn_text_grey text-sm mb-6">
-                    Want to set profile?{" "}
+                    Create your profile, {" "}
                     <span
                       onClick={toggleProfileSection}
                       className="underline cursor-pointer"
                     >
-                      {hideProfile ? "Hide Profile" : "Show Profile"}
+                      {hideProfile ? "Hide this" : "Click here"}
                     </span>
                   </p>
 
@@ -964,7 +964,7 @@ const ProfileExp = () => {
                     <>
                       <div className="overflow-hidden">
                         <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                          Data for profile
+                          Add Your Picture
                         </h3>
                         <div className="flex items-center py-4">
                           <img
@@ -986,7 +986,7 @@ const ProfileExp = () => {
                         </div>
                         <span className="mb-6 w-full block">
                           <span className="mt-6 mb-2 font-semibold block">
-                            Short Description
+                          Stand Out with a Short Description about You
                           </span>
                           <div className="relative">
                             <FaClipboard

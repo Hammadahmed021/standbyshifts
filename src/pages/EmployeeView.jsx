@@ -132,12 +132,12 @@ const EmployeeView = () => {
                         {employee?.email || "Experience Level"}
                       </span>
                     </span>
-                    <span className="inline-flex flex-wrap text-xs sm:text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-center px-2 py-1 rounded-2xl">
+                    {/* <span className="inline-flex flex-wrap text-xs sm:text-sm text-tag_blue bg-tag_blue bg-opacity-20 items-center px-2 py-1 rounded-2xl">
                       <FaMapMarkerAlt className="mr-2 text-tag_blue" />
                       <span className="capitalize">
                         {employee?.employee?.location}
                       </span>
-                    </span>
+                    </span> */}
                   </span>
                 </span>
               </div>
@@ -277,7 +277,7 @@ const EmployeeView = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <FaBoxesPacking className="mr-2" /> Industry
+                <FaBoxesPacking className="mr-2" /> Type of Business
               </h4>
               <p className="font-semibold">
                 {employee?.industry

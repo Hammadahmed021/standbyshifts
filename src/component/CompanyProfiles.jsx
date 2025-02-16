@@ -47,7 +47,7 @@ const CompanyProfiles = ({ profile, layout, count }) => {
                   </p>
                   <p className="bg-tag_brown bg-opacity-20 p-2 rounded-full text-tag_brown inline-flex items-center gap-2 text-sm">
                     <FaLocationDot />
-                    Industry: {profile?.industry}
+                    Business type: {profile?.industry}
                   </p>
                 </div>
               </div>
@@ -56,8 +56,8 @@ const CompanyProfiles = ({ profile, layout, count }) => {
               <div className="w-full sm:w-8/12 shadow-xl rounded-2xl bg-white p-4">
                 <h3 className="text-lg font-semibold mb-6">About Company</h3>
                 <p className="max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-  {profile?.about}
-</p>
+                  {profile?.about}
+                </p>
 
               </div>
               <div className="w-full sm:w-4/12 shadow-xl rounded-2xl bg-white p-4">
@@ -75,13 +75,16 @@ const CompanyProfiles = ({ profile, layout, count }) => {
                   </h4>
                   <p className="font-semibold truncate">{profile?.phone}</p>
                 </div>
-                <hr className="border-b border-tn_light_grey my-6" />
+
+              {/* hiding location after client feedback */}
+
+                {/* <hr className="border-b border-tn_light_grey my-6" />
                 <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
                   <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaLocationDot /> Location
                   </h4>
                   <p className="font-semibold truncate">{profile?.employer?.location}</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </>

@@ -85,11 +85,11 @@ const LayoutCards = ({ profile, layout, type }) => {
             <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 10)}
             </p>
-            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+            {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
 
               {profile?.location}
-            </div>
+            </div> */}
           </div>
         </div>
       );
@@ -147,10 +147,10 @@ const LayoutCards = ({ profile, layout, type }) => {
             <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 10)}
             </p>
-            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+            {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
               {profile?.location}
-            </div>
+            </div> */}
           </div>
         </div>
       );
@@ -230,10 +230,10 @@ const LayoutCards = ({ profile, layout, type }) => {
             <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 10)}
             </p>
-            <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+            {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
               {profile?.location}
-            </div>
+            </div> */}
           </div>
         </div>
       );
@@ -313,10 +313,10 @@ const LayoutCards = ({ profile, layout, type }) => {
                 <Link to={`/company/${profile?.id}`}>{profile?.title}</Link>
               )}
             </h3>
-            <div className="my-4 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
+            {/* <div className="my-4 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
               {profile?.location}
-            </div>
+            </div> */}
             <p className="text-gray-600 mt-2 break-words">
               {restrictWordCount(profile?.description, 10)}
             </p>

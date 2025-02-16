@@ -41,7 +41,7 @@ const JobDetail = () => {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
-      if (userType == "employee") {
+      if (userType === "employee") {
         const response = await getJobByIdEmployee(id); // Fetch job details by ID
         console.log(
           response?.data,
@@ -248,7 +248,7 @@ const JobDetail = () => {
           <hr className="border-b border-tn_light_grey my-6" />
 
           <div className="mb-6">
-            <h3 className="text-lg font-semibold">certificate</h3>
+            <h3 className="text-lg font-semibold">Skills</h3>
             <div className="flex flex-wrap gap-2">
               {job?.details?.certificate || "N/A"}
               {/* {job?.details?.expertise?.length ? (
@@ -306,7 +306,7 @@ const JobDetail = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <FaBoxesPacking className="mr-2" /> Industry
+                <FaBoxesPacking className="mr-2" />Type of Business
               </h4>
               <p className="font-semibold">
                 {job?.details?.user?.industry?.title

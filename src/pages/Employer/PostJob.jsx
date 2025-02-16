@@ -329,10 +329,10 @@ const PostJob = () => {
               </div>
             </div>
             <div>
-              <h2>Certificate</h2>
+              <h2>Skills</h2>
               <Input
-                label="certificate"
-                placeholder="Enter certificate (comma-separated)"
+                label="skills"
+                placeholder="Enter skills (comma-separated)"
                 iconColor={"#0000F8"}
                 icon={FaCalendar}
                 {...register("certificate", {

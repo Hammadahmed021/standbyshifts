@@ -52,7 +52,7 @@ export default function About() {
         <div className="lg:w-7/12 w-full ">
           <div className="text-start w-full lg:w-[65%] mx-auto">
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
-              Trusted by people all over
+              Control Your Workforce Experience.
             </h3>
             <TestimonialSlider data={testimonial} />
           </div>

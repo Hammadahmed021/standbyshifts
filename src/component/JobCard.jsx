@@ -135,10 +135,11 @@ const JobCard = ({
           <FaCrown size={12} className="mr-1" />
           {level}
         </span> */}
-        <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
+        
+        {/* <span className="bg-blue-100 text-tag_blue px-3 py-1 rounded-full text-xs font-medium flex items-center">
           <FaMapMarker size={12} className="mr-1" />
           {address}
-        </span>
+        </span> */}
       </div>
 
       {/* Description */}

@@ -52,25 +52,25 @@ export const layoutOptions = [
 export const infoGrid = [
   {
     icon: bubble,
-    title: "Over 50+ categories",
+    title: "Connect.",
     description:
       "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: messages,
-    title: "Clear communication",
+    title: "Find and Fill Shifts.",
     description:
       "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: like,
-    title: "Quality work done",
+    title: "Set your schedule.",
     description:
       "It is a long established fact that a reader will be distracted by.",
   },
   {
     icon: support,
-    title: "24/7  support",
+    title: "Rate Your Experience.",
     description:
       "It is a long established fact that a reader will be distracted by.",
   },
@@ -86,25 +86,25 @@ export const testimonial = [
 export const revenueGrid = [
   {
     icon: trendUp,
-    title: "Grow your revenue",
+    title: "Make Meaningful Connections.",
     description:
       "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: peeps,
-    title: "Meet new peoples",
+    title: "Find Shifts that Fit Your Schedule.",
     description:
       "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: grammerly,
-    title: "Live Smarter",
+    title: "Find Shift Seekers that Want to Work.",
     description:
       "It is a long established fact that a reader will be distracted by the readable content.",
   },
   {
     icon: task,
-    title: "Describe Your Task",
+    title: "Take Charge of your Workforce Experience.",
     description:
       "It is a long established fact that a reader will be distracted by the readable content.",
   },

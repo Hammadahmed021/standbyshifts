@@ -21,7 +21,7 @@ const AuthModal = ({ title, onSelectRole, onClose }) => {
           &times;
         </button>
         <h2 className="text-2xl sm:text-5xl font-semibold mb-4 text-center">{title}</h2>
-        <p>It is a long established fact that a reader will be distracted.</p>
+        {/* <p>It is a long established fact that a reader will be distracted.</p> */}
 
 
         {/* Render Employee and Employer buttons */}
@@ -30,13 +30,13 @@ const AuthModal = ({ title, onSelectRole, onClose }) => {
             onClick={() => { onSelectRole('employee'); onClose(); }} // Pass 'employee' to onSelectRole
             className="px-4 py-3 w-full bg-tn_pink text-white rounded-2xl hover:opacity-80"
           >
-            Employee
+            Shift Seeker
           </button>
           <button
             onClick={() => { onSelectRole('employer'); onClose(); }} // Pass 'employer' to onSelectRole
             className="px-4 py-3 w-full border border-tn_primary text-tn_primary hover:text-white rounded-2xl  hover:bg-tn_primary"
           >
-            Employer
+            Business
           </button>
         </div>
       </div>

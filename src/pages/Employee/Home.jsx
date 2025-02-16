@@ -176,15 +176,17 @@ const Home = () => {
             <div className="container flex flex-col lg:flex-row items-end justify-between sm:pt-10">
               <div className="">
                 <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
-                  Discover the ideal{" "}
+                  {/* Discover the ideal{" "} */}
+                  Connect with Business and Find 
                   <span className="font-bold text-tn_primary inline sm:block">
-                    match for staffing needs
+                    {/* match for staffing needs */}
+                    Shifts that Fit your Schedule.
                   </span>
                 </h2>
-                <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
+                {/* <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
                   It is a long established fact that a reader will be distracted
                   by the readable content of a page when looking at its layout.
-                </p>
+                </p> */}
               </div>
               <Link
                 to={"/companies"}
@@ -382,7 +384,7 @@ const Home = () => {
         <div className="lg:w-7/12 w-full ">
           <div className="text-start w-full lg:w-[65%] mx-auto">
             <h3 className="text-tn_dark text-4xl inline sm:block leading-tight font-semibold">
-              Trusted by people all over
+              Control Your Workforce Experience.
             </h3>
             <TestimonialSlider data={testimonial} />
           </div>
