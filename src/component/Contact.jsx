@@ -1,14 +1,20 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ReCAPTCHA from "react-google-recaptcha";
 import { FaRegUser, FaRegEnvelope, FaPhone, FaPen, FaEnvelope, FaUser } from "react-icons/fa";
 import Button from "./Button";
 import Input from "./Input";
 import { showErrorToast, showSuccessToast } from "../utils/Toast";
-import { useState } from "react";
 import { FaMessage } from "react-icons/fa6";
 import { submitContactForm } from "../utils/Api";
 
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
 const Contact = () => {
     const [isSigning, setIsSigning] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState(null);
+    const [showError, setShowError] = useState(null);
+
     const {
         register,
         handleSubmit,
@@ -16,20 +22,30 @@ const Contact = () => {
         reset
     } = useForm();
 
+    // Function to handle reCAPTCHA
+    const handleRecaptchaChange = (value) => {
+        setRecaptchaToken(value);
+        setShowError(null); // Clear previous errors when user completes reCAPTCHA
+    };
 
     const onSubmit = async (data) => {
+        if (!recaptchaToken) {
+            setShowError("Please complete the reCAPTCHA.");
+            return;
+        }
+
         setIsSigning(true);
         try {
-            await submitContactForm(data);
-            showSuccessToast('Message sent successfully!');
+            await submitContactForm({ ...data, recaptchaToken });
+            showSuccessToast("Message sent successfully!");
             reset(); // Clears all form fields after success
+            setRecaptchaToken(null); // Reset reCAPTCHA
         } catch (error) {
-            showErrorToast('Failed to send message. Please try again later.');
+            showErrorToast("Failed to send message. Please try again later.");
         } finally {
             setIsSigning(false);
         }
     };
-    
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,7 +120,7 @@ const Contact = () => {
                         mainInput="w-full"
                         icon={FaPen}
                         iconColor="0000F8"
-                        type="tel"
+                        type="text"
                         placeholder="Subject"
                         {...register("subject", {
                             required: "Subject is required",
@@ -116,7 +132,7 @@ const Contact = () => {
 
                 <div className="w-full mb-4">
                     <div className="w-full p-3 border rounded-md relative">
-                        <FaMessage className="size-4 text-tn_pink absolute top-4"/>
+                        <FaMessage className="size-4 text-tn_pink absolute top-4" />
                         <textarea
                             className="w-full border-none pl-6 outline-none"
                             rows="4"
@@ -127,11 +143,23 @@ const Contact = () => {
 
                     {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
                 </div>
+
+                {/* reCAPTCHA Section */}
+                <div className="mb-6">
+                    <ReCAPTCHA
+                        sitekey={RECAPTCHA_SITE_KEY}
+                        onChange={handleRecaptchaChange}
+                    />
+                    {showError && (
+                        <p className="text-red-500 text-xs mt-1">{showError}</p>
+                    )}
+                </div>
+
+                {/* Submit Button */}
                 <Button
                     type="submit"
-                    className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""
-                        }`}
-                    disabled={isSigning} // Disable button while signing
+                    className={`w-full ${isSigning ? "opacity-70 cursor-not-allowed" : ""}`}
+                    disabled={isSigning}
                 >
                     {isSigning ? "Sending..." : "Send Message"}
                 </Button>

@@ -22,7 +22,7 @@ const Footer = () => {
                   : "employer"
                 : "/"
             }>
-              <img src={Logo} alt="" className="w-44" />
+              <img src={Logo} alt="" className="w-28" />
             </Link>
             {/* <p className="py-6 mr-0 sm:mr-6">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus

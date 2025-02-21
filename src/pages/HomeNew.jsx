@@ -449,7 +449,7 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container bg-tn_pink rounded-site p-4 sm:p-12 ">
+      <div className="container bg-tn_pink rounded-site p-4 sm:p-12 mb-12 sm:mb-20">
         <div className="flex flex-wrap item-center justify-between">
           <AnimatedCounter
             icon={FaClipboard}
@@ -482,26 +482,22 @@ export default function HomeNew() {
         </div>
       </div>
 
-      <div className="container flex flex-col-reverse sm:flex-row items-center my-20">
+      {/* <div className="container flex flex-col-reverse sm:flex-row items-center my-20">
         <div className="lg:w-5/12 w-full mt-12 sm:mt-0">
           <img src={girl} alt="" />
         </div>
         <div className="lg:w-7/12 w-full ">
           <div className="text-center w-full sm:w-[65%] mx-auto">
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
-              {/* Connect us to register yourself */}
               Register to Connect with Businesses Hiring Shift Seekers.
             </h3>
-            {/* <p className=" my-4 text-base w-full text-tn_text_grey  font-normal  text-center">
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout.
-            </p> */}
+            
           </div>
           <div className="mx-auto w-[80%] ">
             <ContactForm />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="container rounded-site bg-tn_light_grey flex items-center px-0">
         <div className="lg:w-6/12 w-full">
