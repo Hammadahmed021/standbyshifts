@@ -43,7 +43,7 @@ const Footer = () => {
                     <a href="tel:+12 345 678 000">+12 345 678 000</a>
                   </li> */}
                   <li className="lg:text-base md:text-sm break-words">
-                    <a href="mailto:info@standbyshifts.com">customercare@standybyshifts.com</a>
+                    <a href="mailto:customercare@standbyshifts.com">customercare@standbyshifts.com</a>
                   </li>
                   {/* <li className="mt-2 sm:mt-5  w-full sm:w-[100%] lg:text-base md:text-sm ">
                     7262 Sepulveda Blvd. Culver City, CA, 90230
