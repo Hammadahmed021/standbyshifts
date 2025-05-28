@@ -1,6 +1,7 @@
 /* Images */
 
 export { default as Logo } from "./Images/Logo.png";
+export { default as LogoFooter } from "./Images/Logo-footer.png";
 export { default as Banner } from "./Images/banner.png";
 export { default as Fav } from "./Images/FavIcon.png";
 export { default as App } from "./Images/app.png";
@@ -16,6 +17,10 @@ export { default as hero } from "./Images/hero-girl.png";
 export { default as avatar } from "./Images/avatar.png";
 export { default as about } from "./Images/about.png";
 
+export { default as ImgA1 } from "./Images/imageA1.jpeg";
+export { default as ImgA2 } from "./Images/imageA3.png";
+export { default as ImgA4 } from "./Images/imageA4.png";
+export { default as ImgA5 } from "./Images/imageA5.png";
 export { default as ImgB } from "./Images/image1.png";
 export { default as ImgB1 } from "./Images/image2.png";
 export { default as connect } from "./Images/connect.png";

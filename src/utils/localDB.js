@@ -1,6 +1,10 @@
 import img from "../assets/Images/restaurant-image.png";
 import {
   menu,
+  ImgA2,
+  ImgA4,
+  ImgA5,
+  ImgA1,
   ImgB,
   ImgB1,
   like,
@@ -18,12 +22,12 @@ import {
 } from "../assets";
 
 export const imageData = [
+  { src: ImgA1 },
+  { src: ImgA2 },
   { src: ImgB1 },
   { src: ImgB },
-  { src: ImgB1 },
-  { src: ImgB },
-  { src: ImgB1 },
-  { src: ImgB },
+  { src: ImgA4 },
+  { src: ImgA5 },
 ];
 
 export const layoutOptions = [
@@ -243,7 +247,7 @@ export const infoLinks = {
 
 export const supportLinks = {
   "Privacy Policy": "/privacy-policy",
-  About: "/about",
+  // About: "/about",
   Contact: "/contact",
 };
 

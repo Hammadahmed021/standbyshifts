@@ -14,20 +14,20 @@ export default function Contact() {
       </div>
       <div className="container flex items-start my-20 testimonials gap-6">
         <div className="lg:w-5/12 w-full">
-          <div className="flex shadow-md rounded-lg bg-white p-6 border gap-4 items-center mb-6">
+          {/* <div className="flex shadow-md rounded-lg bg-white p-6 border gap-4 items-center mb-6">
             <FaPhone size={50} color='#F59200' />
             <div>
               <h4 className='text-tn_dark text-2xl sm:text-3xl inline sm:block leading-tight font-semibold mb-2'>Phone Number</h4>
               <p className='text-base text-tn_text_grey'><a href='tel:(132) 123-1324'>(132) 123-1324</a></p>
               <p className='text-base text-tn_text_grey'><a href='tel:(132) 123-1324'>(132) 123-1324</a></p>
             </div>
-          </div>
+          </div> */}
           <div className="flex shadow-md rounded-lg bg-white p-6 border gap-4 items-center">
             <FaEnvelope size={50} color='#F59200' />
             <div>
               <h4 className='text-tn_dark text-2xl sm:text-3xl inline sm:block leading-tight font-semibold mb-2'>Email Address</h4>
-              <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>info@standbyshifts.com</a></p>
-              <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>info@standbyshifts.com</a></p>
+              <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>customercare@standybyshifts.com</a></p>
+              {/* <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>info@standbyshifts.com</a></p> */}
             </div>
           </div>
         </div>

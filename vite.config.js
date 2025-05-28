@@ -9,7 +9,7 @@ export default defineConfig(({ command, mode }) => {
   // Determine the base URL based on the mode
   const baseURL = mode === 'production'
     ? env.VITE_BASE_URL_PRODUCTION
-    : env.VITE_BASE_URL_LOCAL || '/standbyshifts/';
+    : env.VITE_BASE_URL_LOCAL || '/';
 
   return {
     plugins: [react()],

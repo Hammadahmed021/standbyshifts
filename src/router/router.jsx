@@ -58,7 +58,7 @@ function BaseRouter() {
           <Route path="signup" element={<AuthLayout authentication={false}><Signup /></AuthLayout>} />
           <Route path="employer" element={<AuthLayout authentication={true}><Employer /></AuthLayout>} />
           <Route path="employee" element={<AuthLayout authentication={true}><Employee /></AuthLayout>} />
-          <Route path="about" element={<About />} />
+          {/* <Route path="about" element={<About />} /> */}
           <Route path="restaurant/:id" element={<RestaurantDetail />} />
           <Route path="partner" element={<Partner />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />

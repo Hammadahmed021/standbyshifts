@@ -56,14 +56,14 @@ const Header = ({ style }) => {
           Contact
         </NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink
           to={"/about"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
           About
         </NavLink>
-      </li>
+      </li> */}
     </>
   );
 

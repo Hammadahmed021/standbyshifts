@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { infoLinks, supportLinks } from "../../utils/localDB";
-import { Logo, fb, instagram, twitter, youtube } from "../../assets";
+import { LogoFooter, fb, instagram, twitter, youtube } from "../../assets";
 import { useSelector } from "react-redux";
 
 const Footer = () => {
@@ -22,7 +22,7 @@ const Footer = () => {
                   : "employer"
                 : "/"
             }>
-              <img src={Logo} alt="" className="w-28" />
+              <img src={LogoFooter} alt="" className="w-28" />
             </Link>
             {/* <p className="py-6 mr-0 sm:mr-6">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus
@@ -39,11 +39,11 @@ const Footer = () => {
               <div class="w-full md:w-1/3 p-2 pl-0 lg:pl-12">
                 <h3 class="text-lg font-extrabold mb-4">Contact</h3>
                 <ul className="flex flex-col">
-                  <li className="lg:text-base md:text-sm ">
+                  {/* <li className="lg:text-base md:text-sm ">
                     <a href="tel:+12 345 678 000">+12 345 678 000</a>
-                  </li>
-                  <li className="lg:text-base md:text-sm ">
-                    <a href="mailto:info@standbyshifts.com">info@standbyshifts.com</a>
+                  </li> */}
+                  <li className="lg:text-base md:text-sm break-words">
+                    <a href="mailto:info@standbyshifts.com">customercare@standybyshifts.com</a>
                   </li>
                   {/* <li className="mt-2 sm:mt-5  w-full sm:w-[100%] lg:text-base md:text-sm ">
                     7262 Sepulveda Blvd. Culver City, CA, 90230
