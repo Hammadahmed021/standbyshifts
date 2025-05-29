@@ -99,7 +99,7 @@ const ProfileExp = () => {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
-        console.log("data.profile.work_histories", data.profile.work_histories);
+        ////console.log("data.profile.work_histories", data.profile.work_histories);
         setSavedExperiences(data.profile.work_histories);
         // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
         setTags(
@@ -263,7 +263,7 @@ const ProfileExp = () => {
   };
 
   const onSave = async (data) => {
-    console.log(data, "form data");
+    ////console.log(data, "form data");
 
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
@@ -324,7 +324,7 @@ const ProfileExp = () => {
         }), // Use existing profile picture if not updated
       };
 
-      console.log(updatedUserData, "updatedUserData");
+      ////console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
       const response = await updateUserProfile(updatedUserData);
@@ -450,7 +450,7 @@ const ProfileExp = () => {
     ];
   };
 
-  console.log(savedExperiences, "savedExperiences");
+  ////console.log(savedExperiences, "savedExperiences");
 
   // Initialize saved experiences only when the component mounts
   // useEffect(() => {
@@ -477,13 +477,13 @@ const ProfileExp = () => {
 
       if (editIndex !== null) {
         updatedExperiences[editIndex] = experience;
-        console.log(
-          `Updated Experience at index ${editIndex}:`,
-          updatedExperiences[editIndex]
-        );
+        ////console.log(
+        //   `Updated Experience at index ${editIndex}:`,
+        //   updatedExperiences[editIndex]
+        // );
       } else {
         updatedExperiences.push(experience);
-        console.log("Appended New Experience:", experience);
+        ////console.log("Appended New Experience:", experience);
       }
 
       return updatedExperiences; // Return the updated array
@@ -504,7 +504,7 @@ const ProfileExp = () => {
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
       const newExperiences = prev.filter((_, i) => i !== index);
-      console.log(`Deleted experience at index ${index}`);
+      ////console.log(`Deleted experience at index ${index}`);
       return newExperiences;
     });
 
@@ -517,10 +517,10 @@ const ProfileExp = () => {
   const editExperience = (index) => {
     const selectedExperience = savedExperiences[index];
 
-    console.log(
-      "kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",
-      selectedExperience
-    );
+    ////console.log(
+    //   "kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",
+    //   selectedExperience
+    // );
 
     if (selectedExperience) {
       setEditExperiences(selectedExperience);
@@ -867,7 +867,7 @@ const ProfileExp = () => {
                   <div>
                     {savedExperiences.length > 0 ? (
                       savedExperiences.map((work, index) => {
-                        console.log("experio", index, work);
+                        ////console.log("experio", index, work);
                         return (
                           <ul>
                             <li key={index} className="mb-4 relative border-b pb-4 space-y-1">

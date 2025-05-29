@@ -15,7 +15,7 @@ const ApplierCandidates = () => {
   useEffect(() => {
     getEmployeeOnJob(id);
   }, []);
-  console.log(candidates, "response?.data>>>>>>>>>>>>>>>>");
+  ////console.log(candidates, "response?.data>>>>>>>>>>>>>>>>");
 
   const hirePeopleFun = async ({ userId, jobId }) => {
     const hireForJob = await hirePeople({
@@ -27,7 +27,7 @@ const ApplierCandidates = () => {
       showSuccessToast("Hired");
     } else showErrorToast(hireForJob?.data?.message);
   };
-  console.log(candidates, "job");
+  ////console.log(candidates, "job");
 
   return (
     <>

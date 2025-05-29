@@ -86,7 +86,7 @@ export default function HomeNew() {
   const user_id = currentUser?.id || userData?.user?.id;
 
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
-  console.log(user_id, "data");
+  ////console.log(user_id, "data");
 
   const getUserIP = async () => {
     try {
@@ -102,11 +102,11 @@ export default function HomeNew() {
     const getTopRatedUsers = async () => {
       try {
         const response = await fetchTopRatedUsers();
-        console.log(response, 'response of top rated user');
+        ////console.log(response, 'response of top rated user');
 
         setTopRatedUsers(response);
       } catch (error) {
-        console.log(error, "unable to fetch top rated users");
+        ////console.log(error, "unable to fetch top rated users");
 
       }
     }
@@ -115,7 +115,7 @@ export default function HomeNew() {
   }, [])
 
   useEffect(() => {
-    console.log(topRatedUsers, "Updated topRatedUsers");
+    ////console.log(topRatedUsers, "Updated topRatedUsers");
   }, [topRatedUsers]); // This will log the updated state when it changes
 
 
@@ -167,7 +167,7 @@ export default function HomeNew() {
   if (pathname === "/") {
     page = "home"; // Set 'home' when the path is '/'
   } else {
-    console.log(pathname, "name path"); // Log for other paths
+    ////console.log(pathname, "name path"); // Log for other paths
   }
 
 
@@ -175,7 +175,7 @@ export default function HomeNew() {
   // const transformedData = data ? transformData(data) : [];
   // Transform and filter the data
   const transformedData = data ? transformData(data) : [];
-  console.log(transformedData, "transformedData");
+  ////console.log(transformedData, "transformedData");
 
   const approvedData = transformedData.filter(
     (item) => item.is_approved && item.status === "active"

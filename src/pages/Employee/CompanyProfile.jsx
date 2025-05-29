@@ -25,14 +25,14 @@ const CompanyProfile = () => {
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratings, setRatings] = useState([]); // Initialize with ratings
 
-  console.log(companyData, "companyData >>>>>>>>>>>>");
-  console.log(companyId, "companyId >>>>>>>>>>>>");
-  console.log(userData, "userData  >>>>>>>>>>>>");
+  // console.log(companyData, "companyData >>>>>>>>>>>>");
+  // console.log(companyId, "companyId >>>>>>>>>>>>");
+  // console.log(userData, "userData  >>>>>>>>>>>>");
 
   useEffect(() => {
     if (companyData?.ratingsReceived) {
       setRatings(companyData.ratingsReceived);
-      console.log(companyData.ratingsReceived, "ratings updated in state");
+      // console.log(companyData.ratingsReceived, "ratings updated in state");
     }
   }, [companyData?.ratingsReceived]);
 
@@ -79,13 +79,13 @@ const CompanyProfile = () => {
 
     try {
       const response = await giveRating(rateData);
-      console.log(response, 'response >>>>>>');
+      // console.log(response, 'response >>>>>>');
 
 
       // If the response is successful, show a success toast
       if (response?.message == "Profile rated successfully") {
         showSuccessToast("You've successfully rated!");
-        console.log("Rating submitted successfully:", response.data);
+        // console.log("Rating submitted successfully:", response.data);
 
         // Construct the new rating object based on API response
         const newRating = {
@@ -105,7 +105,7 @@ const CompanyProfile = () => {
     }
   };
 
-  console.log(userType, 'userType compa1');
+  // console.log(userType, 'userType compa1');
 
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const CompanyProfile = () => {
           const response = await getCompanyProfile(companyId); // Pass companyId to API
           setCompanyData(response.data);
         } else {
-          console.log(userType, "user type employer >>>>>>>>>>");
+          // console.log(userType, "user type employer >>>>>>>>>>");
 
           const response = await getCompanyProfileEmployer(companyId); // Pass companyId to API
           setCompanyData(response.data);
@@ -130,7 +130,7 @@ const CompanyProfile = () => {
     }
   }, [companyId, getCompanyProfile]);
 
-  console.log(companyData, "companyData");
+  // console.log(companyData, "companyData");
 
   const hasMore = visibleJobsCount < companyData?.jobPostedByEmployer?.length;
 
@@ -146,7 +146,7 @@ const CompanyProfile = () => {
     );
   }
   const checkLayout = "1"; // Check layout from profile
-  console.log(companyData, "companyData >>>>>>>>>>>>>>>>");
+  // console.log(companyData, "companyData >>>>>>>>>>>>>>>>");
 
   return (
     <>

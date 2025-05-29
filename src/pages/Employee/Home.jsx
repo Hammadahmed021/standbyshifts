@@ -60,15 +60,15 @@ const Home = () => {
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.type || userData?.user?.type;
 
-  console.log(recentJobs, "recentJobs");
+  ////console.log(recentJobs, "recentJobs");
 
   useEffect(() => {
     const fetchJobs = async () => {
       const response = await getJobsForEmployee();
-      console.log(
-        "responseresponseresponseresponseresponseresponseresponse",
-        response
-      );
+      ////console.log(
+      //   "responseresponseresponseresponseresponseresponseresponse",
+      //   response
+      // );
       setRecentJobs(response?.data?.matchJobs);
       setMatchJobs(response?.data?.recentMatchedJobs);
       setExpertise(response?.data?.expertise);
@@ -81,7 +81,7 @@ const Home = () => {
     fetchJobs();
   }, []);
 
-  console.log(matchJobs, "matchJobs>>>>>>>>>>>>>>>>>>");
+  ////console.log(matchJobs, "matchJobs>>>>>>>>>>>>>>>>>>");
 
   const getSliderSettings = (items = []) => {
     const itemCount = items.length;
@@ -148,10 +148,10 @@ const Home = () => {
     const getAllCompany = async (userType) => {
       try {
         const response = await GetComOrEmp(userType);
-        console.log(response, 'getting data based on type', userType);
+        ////console.log(response, 'getting data based on type', userType);
         setGetDetails(response)
       } catch (error) {
-        console.log(error, "unable to get data");
+        ////console.log(error, "unable to get data");
       }
     };
     getAllCompany(FuckinType);

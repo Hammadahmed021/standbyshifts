@@ -33,30 +33,30 @@ const JobDetail = () => {
   const initialApplicantStatus = job?.details?.applicant?.length > 0;
   const [applyForJob, setApplyForJob] = useState(initialApplicantStatus || []);
   const [isApplying, setIsApplying] = useState(false);
-  console.log(id, "id job detail");
+  ////console.log(id, "id job detail");
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type || userData?.type;
 
-  console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
+  ////console.log(userType, "userType >>>>>>>>>>>>>>>>>>>>>>");
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       if (userType === "employee") {
         const response = await getJobByIdEmployee(id); // Fetch job details by ID
-        console.log(
-          response?.data,
-          " employee response ?????????>>>>>>>>>>>>>>>"
-        );
+        ////console.log(
+        //   response?.data,
+        //   " employee response ?????????>>>>>>>>>>>>>>>"
+        // );
 
         setJob(response?.data);
         setApplyForJob(response?.data?.details?.applicant);
         setRelatedJobs(response?.data?.relatedJobs);
       } else {
         const response = await getJobByIdEmployer(id); // Fetch job details by ID
-        console.log(
-          response?.data,
-          " employer response ?????????>>>>>>>>>>>>>>>"
-        );
+        ////console.log(
+        //   response?.data,
+        //   " employer response ?????????>>>>>>>>>>>>>>>"
+        // );
 
         setJob(response?.data);
         setApplyForJob(response?.data?.details?.applicant);
@@ -79,7 +79,7 @@ const JobDetail = () => {
       try {
         setIsApplying(true); // Set applying status to true
         const response = await applyJob(id);
-        console.log(response, "apply jobs res");
+        ////console.log(response, "apply jobs res");
 
         if (response.status === 200) {
           showSuccessToast("Applied successfully.");
@@ -104,7 +104,7 @@ const JobDetail = () => {
     }
   }, [job?.details?.applicant]);
 
-  console.log(job?.details?.user?.industry?.title, 'hs>>>');
+  ////console.log(job?.details?.user?.industry?.title, 'hs>>>');
   
   
 
@@ -185,7 +185,6 @@ const JobDetail = () => {
                   <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer">
                     <FaTrashCan
                       size={12}
-                      onClick={() => console.log("deleting shit")}
                     />
                   </span>
                   <span className="border rounded-full border-tn_text_grey p-1 w-8 h-8 flex items-center justify-center cursor-pointer hover:opacity-80 duration-200">

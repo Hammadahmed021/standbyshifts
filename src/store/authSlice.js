@@ -23,7 +23,7 @@ const requestPushNotificationPermission = async () => {
   try {
     const permission = await PushNotifications.requestPermissions();
     if (permission.receive === "granted") {
-      console.log("Push Notification permission granted");
+      ////console.log("Push Notification permission granted");
 
       // Register the device for push notifications
       await PushNotifications.register();
@@ -33,10 +33,10 @@ const requestPushNotificationPermission = async () => {
         const registrationListener = PushNotifications.addListener(
           "registration",
           (token) => {
-            console.log(
-              "Device registered for push notifications, token:",
-              token.value
-            );
+            ////console.log(
+            //   "Device registered for push notifications, token:",
+            //   token.value
+            // );
             registrationListener.remove(); // Remove the listener after getting the token
             resolve(token.value); // Resolve the promise with the token
           }
@@ -50,7 +50,7 @@ const requestPushNotificationPermission = async () => {
         });
       });
     } else {
-      console.log("Push Notification permission denied");
+      ////console.log("Push Notification permission denied");
       return null;
     }
   } catch (err) {
@@ -102,7 +102,7 @@ export const signupUser = createAsyncThunk(
         try {
           user.delete();
         } catch (error) {
-          console.log("Unable to delete user from firebase");
+          ////console.log("Unable to delete user from firebase");
           
         }
       }
@@ -117,7 +117,7 @@ export const loginUser = createAsyncThunk(
   async ({payload}, { rejectWithValue }) => {
     try {
       const { email, password, type, userAgent, ipAddress } = payload;
-     console.log(email, 'email');
+     ////console.log(email, 'email');
      
 
       const userCredential = await signInWithEmailAndPassword(
@@ -139,7 +139,7 @@ export const loginUser = createAsyncThunk(
       };
 
       const response = await ApiLogin(signinData);
-      // console.log(response, "response");
+      // ////console.log(response, "response");
 
 
       return {

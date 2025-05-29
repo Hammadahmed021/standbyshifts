@@ -14,30 +14,30 @@
     try {
       const permission = await PushNotifications.requestPermissions();
       if (permission.receive === 'granted') {
-        console.log('Push Notification permission granted');
+        //console.log('Push Notification permission granted');
   
         await PushNotifications.register();
   
         if (!pushNotificationListenersAdded) {
           PushNotifications.addListener('registration', (token) => {
-            console.log('Device registered for push notifications, token:', token.value);
+            //console.log('Device registered for push notifications, token:', token.value);
           });
   
           PushNotifications.addListener('pushNotificationReceived', (notification) => {
-            console.log('Push notification received:', notification);
+            //console.log('Push notification received:', notification);
             dispatch(setNotification(notification.body));
             // showLocalNotification(notification.body);
           });
   
           PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-            console.log('Push notification action performed:', notification);
+            //console.log('Push notification action performed:', notification);
           });
   
           // Mark listeners as added
           pushNotificationListenersAdded = true;
         }
       } else {
-        console.log('Push Notification permission denied');
+        //console.log('Push Notification permission denied');
       }
     } catch (err) {
       console.error('Error requesting push notification permission', err);
@@ -56,7 +56,7 @@
 
 //         // Prevent duplicate notifications
 //         if (notificationId === lastNotificationId) {
-//           console.log('Duplicate notification, ignoring...');
+//           //console.log('Duplicate notification, ignoring...');
 //           return;
 //         }
 //         lastNotificationId = notificationId;
@@ -73,9 +73,9 @@
 //             },
 //           ],
 //         });
-//         console.log('Local notification triggered:', message);
+//         //console.log('Local notification triggered:', message);
 //       } else {
-//         console.log('Local notification permissions not granted');
+//         //console.log('Local notification permissions not granted');
 //       }
 //     } catch (error) {
 //       console.error('Error scheduling local notification:', error);
@@ -115,19 +115,19 @@
       });
 
       socket.on('connect', () => {
-        console.log('Connected to Socket.IO server');
+        //console.log('Connected to Socket.IO server');
       });
 
       // Emit a join event to the server with the userId
       socket.emit('join', userId);
 
       socket.on('joined', (room) => {
-        console.log(`Joined room: ${room}`);
+        //console.log(`Joined room: ${room}`);
       });
 
       // Handle incoming notifications from Socket.IO
       socket.on('notification', async (message) => {
-        console.log('Notification received from socket:', message);
+        //console.log('Notification received from socket:', message);
 
         // Dispatch the notification to the Redux store
         dispatch(setNotification(message));
@@ -156,7 +156,7 @@
     if (socket) {
       socket.disconnect();
       socket = null;
-      console.log('Socket disconnected');
+      //console.log('Socket disconnected');
     }
   };
 
@@ -175,30 +175,30 @@
 //   try {
 //     const permission = await PushNotifications.requestPermissions();
 //     if (permission.receive === 'granted') {
-//       console.log('Push Notification permission granted');
+//       //console.log('Push Notification permission granted');
 
 //       // Register the device for push notifications
 //       await PushNotifications.register();
 
 //       // Handle the registration of the device
 //       PushNotifications.addListener('registration', (token) => {
-//         console.log('Device registered for push notifications, token:', token.value);
+//         //console.log('Device registered for push notifications, token:', token.value);
 //         // Send the token to your server for future use
 //       });
 
 //       // Handle push notification received when app is in the foreground
 //       PushNotifications.addListener('pushNotificationReceived', (notification) => {
-//         console.log('Push notification received:', notification);
+//         //console.log('Push notification received:', notification);
 //         // Dispatch the notification to Redux store
 //         dispatch(setNotification(notification.body));
 //       });
 
 //       // Handle push notification action performed (when the notification is clicked)
 //       PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-//         console.log('Push notification action performed:', notification);
+//         //console.log('Push notification action performed:', notification);
 //       });
 //     } else {
-//       console.log('Push Notification permission denied');
+//       //console.log('Push Notification permission denied');
 //     }
 //   } catch (err) {
 //     console.error('Error requesting push notification permission', err);
@@ -220,14 +220,14 @@
 //     });
 
 //     socket.on('connect', () => {
-//       console.log('Connected to Socket.IO server');
+//       //console.log('Connected to Socket.IO server');
 //     });
 
 //     // Emit a join event to the server with the userId
 //     socket.emit('join', userId);
 
 //     socket.on('joined', (room) => {
-//       console.log(`Joined room: ${room}`);
+//       //console.log(`Joined room: ${room}`);
 //     });
 
 //     socket.on('notification', async (message) => {
@@ -266,6 +266,6 @@
 //   if (socket) {
 //     socket.disconnect();
 //     socket = null;
-//     console.log('Socket disconnected');
+//     //console.log('Socket disconnected');
 //   }
 // };

@@ -19,7 +19,7 @@
 
 // // Handle background messages
 // messaging.onBackgroundMessage((payload) => {
-//   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+//   ////console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
 //   // Customize the notification here
 //   const notificationTitle = payload.notification.title;

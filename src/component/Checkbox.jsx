@@ -2,14 +2,14 @@ import React from "react";
 import { FaCheck } from "react-icons/fa";
 
 const Checkbox = ({ label, options, selectedOptions, onChange }) => {
-  // console.log('label: ', selectedOptions, options);
-  // console.log('options: ', selectedOptions, options);
+  // ////console.log('label: ', selectedOptions, options);
+  // ////console.log('options: ', selectedOptions, options);
   
   return (
     <div className="my-4">
       <p className="text-sm font-semibold">{label}</p>
       {options?.map((option) => {
-        // console.log("options", selectedOptions.includes(option.id));
+        // ////console.log("options", selectedOptions.includes(option.id));
         return (
           <label key={option.id} className="flex items-center my-2">
             <div className="relative">

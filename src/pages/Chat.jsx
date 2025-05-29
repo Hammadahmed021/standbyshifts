@@ -90,7 +90,7 @@ function Chat() {
         ? `${user?.applied_jobs?.id}_${authUser?.id}_${user?.id}`
         : `${user?.applied_jobs?.id}_${user?.id}_${authUser?.id}`;
   
-    console.log(user?.applied_jobs?.id, authUser?.id, user?.id, "ids");
+    ////console.log(user?.applied_jobs?.id, authUser?.id, user?.id, "ids");
   
     setChatroomId(newChatroomId);
   

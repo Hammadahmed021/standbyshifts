@@ -17,7 +17,7 @@ import { showErrorToast, showSuccessToast } from "../utils/Toast";
 const Signup = () => {
   const location = useLocation();
   const { type } = location.state || {}; // Get the type passed from the homepage
-  console.log(type, 'type');
+  ////console.log(type, 'type');
   
   useEffect(() => {
     if (type) {
@@ -57,7 +57,7 @@ const Signup = () => {
     try {
       // Step 1: Sign up with Google
       const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user);
+      ////console.log("User logged in:", user);
 
       if (!user) {
         throw new Error("Google signup failed. Please try again.");
@@ -124,7 +124,7 @@ const Signup = () => {
       );
 
       // Log the error for debugging
-      console.log("Signup failed:", error);
+      ////console.log("Signup failed:", error);
     }
   };
 

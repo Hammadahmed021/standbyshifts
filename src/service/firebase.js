@@ -23,7 +23,7 @@ export const messaging = getMessaging(app);
 //   navigator.serviceWorker
 //     .register('/firebase-messaging-sw.js')
 //     .then((registration) => {
-//       console.log('Service Worker registered with scope:', registration.scope);
+//       ////console.log('Service Worker registered with scope:', registration.scope);
 //     })
 //     .catch((err) => {
 //       console.error('Service Worker registration failed:', err);
@@ -33,8 +33,8 @@ export const messaging = getMessaging(app);
 // if ('serviceWorker' in navigator) {
 //   navigator.serviceWorker.register('../firebase-messaging-sw.js')
 //     .then(function(registration) {
-//       console.log('Registration successful, scope is:', registration.scope);
+//       ////console.log('Registration successful, scope is:', registration.scope);
 //     }).catch(function(err) {
-//       console.log('Service worker registration failed, error:', err);
+//       ////console.log('Service worker registration failed, error:', err);
 //     });
 //   }

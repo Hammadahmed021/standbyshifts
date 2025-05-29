@@ -54,7 +54,7 @@ const AllJobs = () => {
   useEffect(() => {
     fetchCurrentUserData()
   }, [])
-  console.log(currentUser, 'currentUser');
+  ////console.log(currentUser, 'currentUser');
 
 
   const userId = userData?.user?.id || currentUser?.id;
@@ -112,10 +112,10 @@ const AllJobs = () => {
       setUnappliedJobs(unapplied);
     }
   }, [jobs, userId]);
-  console.log(userId, 'userid');
+  ////console.log(userId, 'userid');
 
-  console.log(appliedJobs, 'appliedJobs');
-  console.log(unappliedJobs, 'unappliedJobs');
+  ////console.log(appliedJobs, 'appliedJobs');
+  ////console.log(unappliedJobs, 'unappliedJobs');
 
 
   const displayedJobs = isShiftView ? appliedJobs : unappliedJobs;

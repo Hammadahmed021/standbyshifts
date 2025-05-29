@@ -81,8 +81,8 @@ const Profile = () => {
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
-  console.log(fetchUser, "fetchUser >>>> employer");
-  console.log(currentUser, "currentUser >>>> employer");
+  ////console.log(fetchUser, "fetchUser >>>> employer");
+  ////console.log(currentUser, "currentUser >>>> employer");
 
   const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType");
 
@@ -192,7 +192,7 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
-    console.log(data, "form data");
+    ////console.log(data, "form data");
 
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
@@ -242,7 +242,7 @@ const Profile = () => {
         }), // Use existing profile picture if not updated
       };
 
-      console.log(updatedUserData, "updatedUserData");
+      ////console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
       await updateEmployerProfile(updatedUserData);
@@ -277,7 +277,7 @@ const Profile = () => {
       ipAddress,
       token,
     };
-    console.log(payload, "payload");
+    ////console.log(payload, "payload");
 
     try {
       const response = await verifyUser(payload);
@@ -345,7 +345,7 @@ const Profile = () => {
       // Set default industries to empty or preselected values as needed
       setSelectedIndustries([]);
     }
-    console.log(fetchUser, 'fetch usser >>>');
+    ////console.log(fetchUser, 'fetch usser >>>');
 
   }, []);
   const handleFilterChange = (event) => {

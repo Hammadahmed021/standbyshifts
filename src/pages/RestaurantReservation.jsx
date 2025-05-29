@@ -34,7 +34,7 @@ export default function RestaurantReservation() {
 
   const user = isUser;
   // const isLoggedIn = !user;
-  console.log(user, "user");
+  ////console.log(user, "user");
 
   const { restaurant, date, time, seats, hotel_id } = location.state || {};
 
@@ -44,7 +44,7 @@ export default function RestaurantReservation() {
       const data = await response.data;
       setId(data?.id);
       setIsUser(data);
-      console.log(data, "data on fetch");
+      ////console.log(data, "data on fetch");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -117,7 +117,7 @@ export default function RestaurantReservation() {
   };
 
   const totalPrice = calculateTotalPrice();
-  console.log(totalPrice, "totalPrice");
+  ////console.log(totalPrice, "totalPrice");
 
   const handlePayment = async (paymentIntentId) => {
     setIsSigning(true);
@@ -151,10 +151,10 @@ export default function RestaurantReservation() {
       }
       try {
         const result = await fetchBookings(booking, token);
-        console.log(result, "booking");
+        ////console.log(result, "booking");
         dispatch(addBooking(newBooking));
       } catch (error) {
-        console.log(error, "error while sending bookings");
+        ////console.log(error, "error while sending bookings");
         throw new Error("something went wrong");
       } finally {
         setIsSigning(false);
@@ -195,7 +195,7 @@ export default function RestaurantReservation() {
       </div>
     );
   }
-  console.log(restaurant, "restaurant");
+  ////console.log(restaurant, "restaurant");
 
   useEffect(() => {
     checkMenu();
@@ -206,7 +206,7 @@ export default function RestaurantReservation() {
       const matchingCalendar = restaurant.calendars.find(
         (calendar) => calendar.date === date
       );
-      console.log(matchingCalendar, "matchingCalendar");
+      ////console.log(matchingCalendar, "matchingCalendar");
       if (matchingCalendar.date == date) {
         setCurMenus(matchingCalendar.menus);
       } else {
@@ -219,10 +219,10 @@ export default function RestaurantReservation() {
   // useEffect(() => {
   //   // Extract and store prices when menus change
   //   const prices = curMenus.map((menu) => menu.price_per_person || "N/A");
-  //   console.log(prices, 'price');
+  //   ////console.log(prices, 'price');
   //   setMenuPrices(prices);
   // }, [curMenus]);
-  console.log(selectedMenus, "selectedMenus");
+  ////console.log(selectedMenus, "selectedMenus");
 
   const convertTo12HourFormat = (time) => {
     let [hours, minutes] = time.split(":");

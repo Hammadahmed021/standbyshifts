@@ -119,11 +119,11 @@ export default function RestaurantDetail() {
             };
           })
           .filter((time) => {
-            console.log("Comparing:", time.id, "with", currentTime);
+            ////console.log("Comparing:", time.id, "with", currentTime);
             return time.id > currentTime; // Exclude past times
           });
 
-        console.log("Filtered Times:", times);
+        ////console.log("Filtered Times:", times);
 
         setAvailableTimes(times || []);
         resetField("time");
@@ -236,7 +236,7 @@ export default function RestaurantDetail() {
     return `${hours}:${minutes} ${ampm}`;
   };
 
-  console.log(card, "card");
+  ////console.log(card, "card");
 
   return (
     <>

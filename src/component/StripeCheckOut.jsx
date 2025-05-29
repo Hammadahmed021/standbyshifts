@@ -38,7 +38,7 @@ const CheckoutForm = ({ amount, handlePayment, buttonDis }) => {
       const response = await getPayment(paymentData);
 
       const { clientSecret, paymentIntentId } = response;
-      console.log("Payment Intent Response:", response);
+      ////console.log("Payment Intent Response:", response);
 
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
@@ -55,7 +55,7 @@ const CheckoutForm = ({ amount, handlePayment, buttonDis }) => {
       if (error) {
         setError(error.message);
       } else if (paymentIntent.status === "succeeded") {
-        console.log("Payment successful!");
+        ////console.log("Payment successful!");
         await handlePayment(paymentIntentId); // Pass paymentIntentId to handlePayment
       }
     } catch (error) {

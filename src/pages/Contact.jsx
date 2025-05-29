@@ -25,8 +25,7 @@ export default function Contact() {
             <FaEnvelope size={50} color='#F59200' />
             <div>
               <h4 className='text-tn_dark text-2xl sm:text-3xl inline sm:block leading-tight font-semibold mb-2'>Email Address</h4>
-              <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>customercare@standybyshifts.com</a></p>
-              {/* <p className='text-base text-tn_text_grey'><a href='mailto:info@standbyshifts.com'>info@standbyshifts.com</a></p> */}
+              <p className='text-base text-tn_text_grey'><a href='mailto:customercare@standbyshifts.com'>customercare@standbyshifts.com</a></p>
             </div>
           </div>
         </div>

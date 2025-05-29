@@ -32,7 +32,7 @@ const Home = () => {
   }, []);
 
   const checkLayout = profile?.about?.layout || "1"; // Check layout from profile
-  console.log(candidateApllied, "candidateApllied");
+  ////console.log(candidateApllied, "candidateApllied");
 
   const navigate = useNavigate();
   const handleRoute = () => {
@@ -44,10 +44,10 @@ const Home = () => {
     const getAllCompany = async (userType) => {
       try {
         const response = await GetComOrEmp(userType);
-        console.log(response, "getting data based on type", userType);
+        ////console.log(response, "getting data based on type", userType);
         setGetDetails(response);
       } catch (error) {
-        console.log(error, "unable to get data");
+        ////console.log(error, "unable to get data");
       }
     };
     getAllCompany(FuckinType);

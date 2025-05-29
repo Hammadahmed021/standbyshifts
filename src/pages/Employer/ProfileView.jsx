@@ -17,9 +17,9 @@ const ProfileView = () => {
       try {
         const response = await fetchSingleDetailEmployer();
         setProfile(response); // Set fetched profile data
-        console.log(response, "res >>>>>");
+        ////console.log(response, "res >>>>>");
       } catch (error) {
-        console.log("Unable to get employer data", error);
+        ////console.log("Unable to get employer data", error);
       }
     };
 
@@ -27,10 +27,10 @@ const ProfileView = () => {
   }, []);
 
   const checkLayout = "1"; // Check layout from profile
-  console.log(
-    profile?.jobsPostedByYou?.length,
-    "profile?.jobsPostedByYou?.length"
-  );
+  ////console.log(
+  //   profile?.jobsPostedByYou?.length,
+  //   "profile?.jobsPostedByYou?.length"
+  // );
 
   const profiles = [
     {

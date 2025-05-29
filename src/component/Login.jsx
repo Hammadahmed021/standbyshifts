@@ -50,7 +50,7 @@ export default function Login({ onClick }) {
       userAgent,
       ipAddress,
     };
-    console.log(payload, "payload");
+    ////console.log(payload, "payload");
 
     try {
       const loginResponse = await dispatch(loginUser({ payload })).unwrap();
@@ -64,7 +64,7 @@ export default function Login({ onClick }) {
       } else {
         navigate("/"); // Fallback if type is not provided
       }
-      console.log("Login Response:", loginResponse);
+      ////console.log("Login Response:", loginResponse);
       // Handle success, navigate user or update UI
     } catch (error) {
       console.error("Login failed:", error);

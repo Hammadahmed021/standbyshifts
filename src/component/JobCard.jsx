@@ -72,7 +72,7 @@ const JobCard = ({
   };
   const isEmployeeView = location.pathname.startsWith("/employee-view");
   const isEmployer = location.pathname.startsWith("/appliers-on-job");
-  console.log(isEmployeeView, "isEmployeeView >>>>>>>");
+  ////console.log(isEmployeeView, "isEmployeeView >>>>>>>");
 
   // Determine button text based on applicants
   const buttonText = applicants?.length > 0 ? "View Shift" : "Apply";

@@ -364,8 +364,8 @@ const Header = ({ style }) => {
                     Contact
                   </h4>
                   <ul className="text-base text-tn_dark font-medium">
-                    <li>+12 345 678 000</li>
-                    <li>info@standbyshifts.com</li>
+                    <li>424-242-4605</li>
+                    <li>customercare@standbyshifts.com</li>
 
                     <li className="mt-4">
                       7262 Sepulveda Blvd. <br />

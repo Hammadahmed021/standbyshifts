@@ -99,7 +99,7 @@ const Profile = () => {
           throw new Error("Invalid user type"); // Handle unexpected user type
         }
         setFetchUser(data);
-        console.log("data.profile.work_histories", data.profile.work_histories);
+        ////console.log("data.profile.work_histories", data.profile.work_histories);
         setSavedExperiences(data.profile.work_histories);
         // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
         setTags(
@@ -124,7 +124,7 @@ const Profile = () => {
 
   // Log tags whenever they change
   useEffect(() => {
-    console.log(tags, "all tags");
+    ////console.log(tags, "all tags");
   }, [tags]);
 
   const handleAddTag = (newTag) => {
@@ -192,7 +192,7 @@ const Profile = () => {
     { id: 12, name: "December" },
   ];
   const selectedLayout = watch("layout");
-  console.log(selectedLayout, 'selectedLayout');
+  ////console.log(selectedLayout, 'selectedLayout');
 
   // Check if the user logged in via Gmail
   const isGmailUser = userData?.loginType && currentUser.id;
@@ -247,7 +247,7 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
-    console.log(data, "form data");
+    ////console.log(data, "form data");
 
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
@@ -308,7 +308,7 @@ const Profile = () => {
         }), // Use existing profile picture if not updated
       };
 
-      console.log(updatedUserData, "updatedUserData");
+      ////console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
       const response = await updateUserProfile(updatedUserData);
@@ -428,7 +428,7 @@ const Profile = () => {
     ];
   };
 
-  console.log(savedExperiences, "savedExperiences");
+  ////console.log(savedExperiences, "savedExperiences");
 
   // Initialize saved experiences only when the component mounts
   // useEffect(() => {
@@ -455,13 +455,13 @@ const Profile = () => {
 
       if (editIndex !== null) {
         updatedExperiences[editIndex] = experience;
-        console.log(
-          `Updated Experience at index ${editIndex}:`,
-          updatedExperiences[editIndex]
-        );
+        ////console.log(
+        //   `Updated Experience at index ${editIndex}:`,
+        //   updatedExperiences[editIndex]
+        // );
       } else {
         updatedExperiences.push(experience);
-        console.log("Appended New Experience:", experience);
+        ////console.log("Appended New Experience:", experience);
       }
 
       return updatedExperiences; // Return the updated array
@@ -482,7 +482,7 @@ const Profile = () => {
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
       const newExperiences = prev.filter((_, i) => i !== index);
-      console.log(`Deleted experience at index ${index}`);
+      ////console.log(`Deleted experience at index ${index}`);
       return newExperiences;
     });
 
@@ -495,10 +495,10 @@ const Profile = () => {
   const editExperience = (index) => {
     const selectedExperience = savedExperiences[index];
 
-    console.log(
-      "kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",
-      selectedExperience
-    );
+    ////console.log(
+    //   "kjajksvdkjvskjdvkjsbdvjkbsdlkbvkskdbvksld",
+    //   selectedExperience
+    // );
 
     if (selectedExperience) {
       setEditExperiences(selectedExperience);

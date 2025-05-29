@@ -10,7 +10,7 @@ export const getListDetails = async (url, user_id) => {
     // const fullUrl = user_id
     //   ? `${BASE_URL}${url}/${user_id}`
     //   : `${BASE_URL}${url}`;
-    // console.log(fullUrl, user_id, "fullUrl");
+    // ////console.log(fullUrl, user_id, "fullUrl");
 
     const { data } = await axios.get(`${BASE_URL}${url}/${user_id}`, {
       params: {
@@ -63,7 +63,7 @@ export const Signup = async (payload) => {
     };
 
     const response = await axios.post(`${BASE_URL}signup`, signupData);
-    console.log(response, "response");
+    ////console.log(response, "response");
 
     return response.data;
   } catch (error) {
@@ -91,7 +91,7 @@ export const Login = async (payload) => {
     };
 
     const response = await axios.post(`${BASE_URL}login`, signupData);
-    console.log(response, "payload login");
+    ////console.log(response, "payload login");
 
     return response.data;
   } catch (error) {
@@ -104,7 +104,7 @@ export const Login = async (payload) => {
 export const submitContactForm = async (payload) => {  
   try {
     const response = await axios.post(`${BASE_URL}contact`, payload);
-    console.log(response, 'Contact form submitted');
+    ////console.log(response, 'Contact form submitted');
     return response.data;
   } catch (error) {
     console.error('API Contact request failed:', error.response);
@@ -145,7 +145,7 @@ export const fetchBookings = async (booking) => {
       }
     );
 
-    console.log("API response:", response.data);
+    ////console.log("API response:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -163,13 +163,13 @@ export const fetchBookings = async (booking) => {
 
 // Functions to fetch payment stripe payment intent
 export const getPayment = async (paymentData) => {
-  console.log("Booking object before API call:", paymentData);
+  ////console.log("Booking object before API call:", paymentData);
   try {
     const response = await axios.post(
       `${BASE_URL}create-payment-intent`,
       paymentData
     );
-    console.log("API response:", response.data);
+    ////console.log("API response:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -294,7 +294,7 @@ export const updateEmployerProfile = async (userData) => {
 
   // Log form data for debugging
   for (let pair of formData.entries()) {
-    console.log(pair[0] + ": " + pair[1]);
+    ////console.log(pair[0] + ": " + pair[1]);
   }
 
   try {
@@ -312,7 +312,7 @@ export const updateEmployerProfile = async (userData) => {
       }
     );
 
-    console.log(response.data.user, "Updated user profile data");
+    ////console.log(response.data.user, "Updated user profile data");
     return response;
   } catch (error) {
     console.error("Error in updating user profile: ", error);
@@ -337,7 +337,7 @@ export const updateUserProfile = async (userData) => {
     short_description,
     banner,
   } = userData;
-  console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
+  ////console.log("sljkbvklsdblkvbsdlkvbklsdbvklbdsklv", expertise);
 
   const formData = new FormData();
   formData.append("name", name);
@@ -375,7 +375,7 @@ export const updateUserProfile = async (userData) => {
 
   // Log form data for debugging
   for (let pair of formData.entries()) {
-    console.log(pair[0] + ": " + pair[1]);
+    ////console.log(pair[0] + ": " + pair[1]);
   }
 
   try {
@@ -393,7 +393,7 @@ export const updateUserProfile = async (userData) => {
       }
     );
 
-    console.log(response.data.user, "Updated user profile data");
+    ////console.log(response.data.user, "Updated user profile data");
     return response;
   } catch (error) {
     console.error("Error in updating user profile: ", error);
@@ -413,11 +413,11 @@ export const verifyUser = async (payload) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(data.data, "data for user profile");
+    ////console.log(data.data, "data for user profile");
 
     return data;
   } catch (error) {
-    console.log("Error in updating user profile: ", error);
+    ////console.log("Error in updating user profile: ", error);
     throw new Error("Error in updating user profile");
   }
 };
@@ -426,11 +426,11 @@ export const verifyUser = async (payload) => {
 export const getUserFromGmailLogin = async (userData) => {
   try {
     const response = await axios.post(`${BASE_URL}socialLogin`, userData);
-    console.log(response.data, "response");
+    ////console.log(response.data, "response");
 
     return response;
   } catch (error) {
-    console.log(error, "error getting user from gmail");
+    ////console.log(error, "error getting user from gmail");
 
     throw new Error(error.response.data.message || "something went wrong");
   }
@@ -438,14 +438,14 @@ export const getUserFromGmailLogin = async (userData) => {
 
 // Function to get user from gmail to signup
 export const getUserFromGmailSignup = async (userData) => {
-  console.log(userData, ' userData google signup');
+  ////console.log(userData, ' userData google signup');
   
   try {
     const response = await axios.post(`${BASE_URL}socialSignup`, userData);
-    console.log(response, "response");
+    ////console.log(response, "response");
     return response;
   } catch (error) {
-    console.log(error, "error getting user from gmail");
+    ////console.log(error, "error getting user from gmail");
 
     throw new Error(error.response.data.message || "something went wrong");
   }
@@ -466,7 +466,7 @@ export const addFavorite = async (hotel_id) => {
         },
       }
     );
-    console.log(response, "response add favorite");
+    ////console.log(response, "response add favorite");
 
     return response.data;
   } catch (error) {
@@ -484,7 +484,7 @@ export const showFavorite = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response, "response show list of favorite");
+    ////console.log(response, "response show list of favorite");
 
     return response.data;
   } catch (error) {
@@ -521,7 +521,7 @@ export const giveRating = async (rateData) => {
 };
 
 export const sendFCMToken = async (fcm_token) => {
-  console.log(fcm_token, "fcm_token");
+  ////console.log(fcm_token, "fcm_token");
   try {
     const data = await axios.post(`${BASE_URL}add-fcm-token`, fcm_token);
     return data.data;
@@ -533,7 +533,7 @@ export const sendFCMToken = async (fcm_token) => {
 // Function to show near by hotels if user allow location
 export const fetchUserNearByRestaurants = async ({ payload }) => {
   const { id, latitude, longitude, page } = payload;
-  console.log(id, latitude, longitude, "id, latitude, longitude");
+  ////console.log(id, latitude, longitude, "id, latitude, longitude");
   try {
     const response = await axios.post(`${BASE_URL}nearby-hotels`, {
       id,
@@ -541,7 +541,7 @@ export const fetchUserNearByRestaurants = async ({ payload }) => {
       longitude,
       page,
     });
-    console.log(response, "nearby restaurant");
+    ////console.log(response, "nearby restaurant");
     return response.data;
   } catch (error) {
     throw new Error(error || "unable to fetch nearby restaurants");
@@ -551,7 +551,7 @@ export const fetchUserNearByRestaurants = async ({ payload }) => {
 /* Send newsletter */
 export const sendNewsletter = async (newsEmail) => {
   const email = newsEmail.email;
-  console.log(newsEmail, "email api newsletter");
+  ////console.log(newsEmail, "email api newsletter");
   try {
     const response = await axios.get(
       `${BASE_URL}subscribe-newsletter/${email}`
@@ -572,7 +572,7 @@ export const fetchProfileDataEmployee = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data, "profile data");
+    ////console.log(response.data, "profile data");
     return response.data;
   } catch (error) {
     throw new Error(
@@ -591,7 +591,7 @@ export const fetchProfileDataEmployer = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data, "profile data");
+    ////console.log(response.data, "profile data");
     return response.data;
   } catch (error) {
     throw new Error(
@@ -611,7 +611,7 @@ export const fetchSingleDetailEmployer = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data, "profile data");
+    ////console.log(response.data, "profile data");
     return response.data;
   } catch (error) {
     throw new Error(
@@ -658,7 +658,7 @@ export const getDataForEmployer = async () => {
 
 // Post a job
 export const postJob = async (payload) => {
-  console.log(payload, "payload post job");
+  ////console.log(payload, "payload post job");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -670,13 +670,13 @@ export const postJob = async (payload) => {
     });
     return response;
   } catch (error) {
-    console.log(error || "unable to post a job");
+    ////console.log(error || "unable to post a job");
   }
 };
 
 // Fetching filter data of jobs (for emplpoyee)
 export const getJobsByFilter = async (filterData) => {
-  console.log(filterData, "filter data");
+  ////console.log(filterData, "filter data");
   const token = localStorage.getItem("webToken");
   try {
     const jobs = await axios.post(
@@ -694,16 +694,16 @@ export const getJobsByFilter = async (filterData) => {
         },
       }
     );
-    console.log(jobs, "api jobs by filter check");
+    ////console.log(jobs, "api jobs by filter check");
     return jobs;
   } catch (error) {
-    console.log(error || "unable to fetch jobs by filter");
+    ////console.log(error || "unable to fetch jobs by filter");
   }
 };
 
 // get company details for employee
 export const getCompanyProfile = async (id) => {
-  console.log(id, "id");
+  ////console.log(id, "id");
   const token = localStorage.getItem("webToken");  
 
   try {
@@ -716,16 +716,16 @@ export const getCompanyProfile = async (id) => {
         },
       }
     );
-    console.log(response, "response get company");
+    ////console.log(response, "response get company");
     return response;
   } catch (error) {
-    console.log(error || "unable to get company profile");
+    ////console.log(error || "unable to get company profile");
   }
 };
 
 // get company details for employer
 export const getCompanyProfileEmployer = async (id) => {
-  console.log(id, "id");
+  ////console.log(id, "id");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -738,16 +738,16 @@ export const getCompanyProfileEmployer = async (id) => {
         },
       }
     );
-    console.log(response, "response get company");
+    ////console.log(response, "response get company");
     return response;
   } catch (error) {
-    console.log(error || "unable to get company profile");
+    ////console.log(error || "unable to get company profile");
   }
 };
 
 // update a job
 export const updateJob = async (payload) => {
-  console.log(payload, "payload post job");
+  ////console.log(payload, "payload post job");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -759,7 +759,7 @@ export const updateJob = async (payload) => {
     });
     return response;
   } catch (error) {
-    console.log(error || "unable to post a job");
+    ////console.log(error || "unable to post a job");
   }
 };
 
@@ -777,17 +777,17 @@ export const fetchAllJobByEmployer = async () => {
         },
       }
     );
-    console.log(response, "getting all jobs");
+    ////console.log(response, "getting all jobs");
 
     return response;
   } catch (error) {
-    console.log(error || "unable to get all jobs");
+    ////console.log(error || "unable to get all jobs");
   }
 };
 
 // Apply jobs
 export const applyJob = async (id) => {
-  console.log(id, "id");
+  ////console.log(id, "id");
   const token = localStorage.getItem("webToken");
 
   try {
@@ -797,11 +797,11 @@ export const applyJob = async (id) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response, "response for applied jobs");
+    ////console.log(response, "response for applied jobs");
 
     return response;
   } catch (error) {
-    console.log(error || "unable to apply on job");
+    ////console.log(error || "unable to apply on job");
   }
 };
 
@@ -818,7 +818,7 @@ export const checkAppliersOnJob = async () => {
     });
     return response;
   } catch (error) {
-    console.log(error || "unable to get appliers on jobs");
+    ////console.log(error || "unable to get appliers on jobs");
   }
 };
 
@@ -837,7 +837,7 @@ export const getEmployeeAppliedOnJob = async (employeeId) => {
     );
     return response;
   } catch (error) {
-    console.log(error || "unable to get appliers on jobs");
+    ////console.log(error || "unable to get appliers on jobs");
   }
 };
 
@@ -855,11 +855,11 @@ export const getJobByIdEmployee = async (id) => {
         },
       }
     );
-    console.log(response, "response");
+    ////console.log(response, "response");
 
     return response;
   } catch (error) {
-    console.log(error || "Unable to get job by id");
+    ////console.log(error || "Unable to get job by id");
   }
 };
 
@@ -877,11 +877,11 @@ export const getJobByIdEmployer = async (id) => {
         },
       }
     );
-    console.log(response, "response");
+    ////console.log(response, "response");
 
     return response;
   } catch (error) {
-    console.log(error || "Unable to get job by id");
+    ////console.log(error || "Unable to get job by id");
   }
 };
 
@@ -896,11 +896,11 @@ export const getEmployeeById = async (id) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response, "response");
+    ////console.log(response, "response");
 
     return response;
   } catch (error) {
-    console.log(error || "Unable to get job by id");
+    ////console.log(error || "Unable to get job by id");
   }
 };
 
@@ -915,7 +915,7 @@ export const hirePeople = async (body) => {
       },
     });
 
-    console.log("API response:", response.data);
+    ////console.log("API response:", response.data);
     return response;
   } catch (error) {
     console.error("Error message:", error.message);
@@ -944,7 +944,7 @@ export const ToggleAvailablity = async () => {
     );
     return response.data;
   } catch (error) {
-    console.log(error, "unable to toggle availablity");
+    ////console.log(error, "unable to toggle availablity");
     throw error;
   }
 };
@@ -966,7 +966,7 @@ export const GetComOrEmp = async (type) => {
     );
     return response.data;
   } catch (error) {
-    console.log(error, "unable to toggle availablity");
+    ////console.log(error, "unable to toggle availablity");
     throw error;
   }
 };
@@ -979,7 +979,7 @@ export const fetchTopRatedUsers = async () => {
     );
     return response.data;
   } catch (error) {
-    console.log(error, "unable to get top rated users");
+    ////console.log(error, "unable to get top rated users");
     throw error;
   }
 };

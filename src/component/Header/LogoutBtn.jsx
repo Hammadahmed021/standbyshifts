@@ -23,7 +23,7 @@ export default function LogoutBtn({ className }) {
   };
 
   const handleYes = () => {
-    console.log("Yes clicked");
+    ////console.log("Yes clicked");
     logoutHandler();
   };
 

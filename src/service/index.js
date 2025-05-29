@@ -27,7 +27,7 @@ export const SignUpWithGoogle = async () => {
     const user = result.user;
     // Get the ID token
     const token = await user.getIdToken();
-    console.log("user token", token);
+    ////console.log("user token", token);
     return { user, token };
   } catch (error) {
     console.error("Error signing in with Google:", error);
@@ -51,7 +51,7 @@ export const SignupWithEmail = async (email, password) => {
     const user = userCredential.user;
     // Get the ID token
     const token = await user.getIdToken();
-    console.log(user, token);
+    ////console.log(user, token);
     return { user, token };
   } catch (error) {
     console.error("Error signing in with email:", error);
@@ -63,7 +63,7 @@ export const SignupWithEmail = async (email, password) => {
 export const signOut = async () => {
   try {
     await firebaseSignOut(auth);
-    console.log("User signed out successfully.");
+    ////console.log("User signed out successfully.");
   } catch (error) {
     console.error("Error signing out:", error);
     throw error; // Propagate the error to be handled by the calling function
@@ -74,15 +74,15 @@ export const signOut = async () => {
 // Replace with your test email and password
 
 export const resetPassword = async (email) => {
-  console.log(email, "before email");
+  ////console.log(email, "before email");
 
   if (email) {
-    console.log(email, "after email");
+    ////console.log(email, "after email");
     try {
       await sendPasswordResetEmail(auth, email);
-      console.log(
-        "Password reset email sent to the given email address successfully"
-      );
+      ////console.log(
+      //   "Password reset email sent to the given email address successfully"
+      // );
       return {
         success: true,
         message: "Password reset email sent successfully.",
@@ -118,7 +118,7 @@ export const updateFirebasePassword = async (newPassword) => {
     // Update the password
     await updatePassword(user, newPassword);
     
-    console.log("Password updated successfully");
+    ////console.log("Password updated successfully");
     return true;
   } catch (error) {
     // Handle errors
@@ -132,7 +132,7 @@ export const getFCMToken = async () => {
   try {
     const token = await getToken(messaging, { vapidKey: import.meta.env.VITE_APIKEY_FB });
     if (token) {
-      console.log("FCM Token:", token);
+      ////console.log("FCM Token:", token);
       return token;
     } else {
       console.error("No registration token available.");
@@ -150,10 +150,10 @@ export const requestNotificationPermission = async () => {
   try {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      console.log("Notification permission granted.");
+      ////console.log("Notification permission granted.");
       return true;
     } else {
-      console.log("Notification permission denied.");
+      ////console.log("Notification permission denied.");
       return false;
     }
   } catch (error) {

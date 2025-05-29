@@ -115,7 +115,7 @@ export const getDistance = (lat1, lon1, lat2, lon2) => {
 
   const distance = R * c; // Distance in meters
 
-  console.log("Calculated distance:", distance);
+  ////console.log("Calculated distance:", distance);
   return distance;
 };
 

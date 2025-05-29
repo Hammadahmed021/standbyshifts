@@ -89,7 +89,7 @@ const EmployeeDetailCard = ({ profile }) => {
         <button
           className="rounded-site  text-tn_dark border border-tn_light_grey text-sm font-medium w-full p-2"
           onClick={() => {
-            console.log("sldhvklsbdklvbskldbvlksdbvlkbsdklvbskldb", isHired);
+            ////console.log("sldhvklsbdklvbskldbvlksdbvlkbsdklvbskldb", isHired);
             if (!isHired) {
               onHire({ userId: employeeId, jobId });
             } else navigate("/chat", { state: userData });

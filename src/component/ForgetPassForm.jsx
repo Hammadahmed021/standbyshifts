@@ -17,10 +17,10 @@ export default function ForgotPassForm() {
     setIsSigning(true);
     setError(null);
     setSuccessMessage(null);
-    console.log(data, 'data');
+    ////console.log(data, 'data');
 
     const response = await resetPassword(data.email);
-    console.log(response, 'response');
+    ////console.log(response, 'response');
 
     if (response.success) {
       setSuccessMessage(response.message);

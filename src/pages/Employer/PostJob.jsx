@@ -32,12 +32,12 @@ const PostJob = () => {
   };
 
   const jobData = location?.state;
-  console.log(jobData, "jobData");
+  ////console.log(jobData, "jobData");
 
-  console.log(
-    "jobDatajobDatajobDatajobDatajobDatajobDatajobDatajobData",
-    jobData
-  );
+  ////console.log(
+  //   "jobDatajobDatajobDatajobDatajobDatajobDatajobDatajobData",
+  //   jobData
+  // );
   const {
     register,
     handleSubmit,
@@ -77,7 +77,7 @@ const PostJob = () => {
   
 
   const onSubmit = async (data) => {
-    console.log(data, "form data of job posting");
+    ////console.log(data, "form data of job posting");
     setIsLoading(true);
     const formattedData = {
       ...data,
@@ -105,7 +105,7 @@ const PostJob = () => {
           : "Error posting the job";
         showErrorToast(errorMessage);
       }
-      console.log("Job updated successfully:", response);
+      ////console.log("Job updated successfully:", response);
     } catch (error) {
       console.error("Error:", error);
 

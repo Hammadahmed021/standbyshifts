@@ -61,7 +61,7 @@ const Login = () => {
     try {
       // Step 1: Sign in with Google
       const { user } = await SignUpWithGoogle();
-      console.log("User logged in:", user);
+      ////console.log("User logged in:", user);
   
       if (!user) {
         throw new Error("Google login failed. Please try again.");
@@ -124,7 +124,7 @@ const Login = () => {
       
       // Log the error for debugging
       // console.error("Login failed:", error.message);
-      console.log("Login failed:", error);
+      ////console.log("Login failed:", error);
     }
   };
   

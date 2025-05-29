@@ -94,7 +94,7 @@ const Profile = () => {
 
   // Log tags whenever they change
   useEffect(() => {
-    console.log(tags, "all tags");
+    ////console.log(tags, "all tags");
   }, [tags]);
 
   const handleAddTag = (newTag) => {
@@ -198,7 +198,7 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
-    console.log(data, "form data");
+    ////console.log(data, "form data");
 
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
@@ -259,7 +259,7 @@ const Profile = () => {
         })),
       };
 
-      console.log(updatedUserData, "updatedUserData");
+      ////console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
       await updateUserProfile(updatedUserData);
@@ -371,7 +371,7 @@ const Profile = () => {
     ];
   };
 
-  console.log(savedExperiences, 'savedExperiences');
+  ////console.log(savedExperiences, 'savedExperiences');
 
 
   // Use Effect to initialize saved experiences
@@ -391,7 +391,7 @@ const Profile = () => {
       endYear: values.endYear,
     };
 
-    console.log("Experience to save:", experience);
+    ////console.log("Experience to save:", experience);
 
     // Update the state based on edit mode
     setSavedExperiences((prev) => {
@@ -400,10 +400,10 @@ const Profile = () => {
 
       if (editIndex !== null) {
         updatedExperiences[editIndex] = experience;
-        console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
+        ////console.log(`Updated Experience at index ${editIndex}:`, updatedExperiences[editIndex]);
       } else {
         updatedExperiences.push(experience);
-        console.log("Appended New Experience:", experience);
+        ////console.log("Appended New Experience:", experience);
       }
 
 
@@ -427,7 +427,7 @@ const Profile = () => {
   const deleteExperience = (index) => {
     setSavedExperiences((prev) => {
       const newExperiences = prev.filter((_, i) => i !== index);
-      console.log(`Updated experiences:`, newExperiences); // Debug log
+      ////console.log(`Updated experiences:`, newExperiences); // Debug log
       return newExperiences;
     });
   };

@@ -42,16 +42,16 @@ const EmployeeView = () => {
 
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type || userData?.type;
-  console.log(userData, "userData >>>>>");
+  // console.log(userData, "userData >>>>>");
 
   const { id } = useParams();
   const navigate = useNavigate();
-  console.log(id, "id>>>>>>>>>>");
+  // console.log(id, "id>>>>>>>>>>");
 
   useEffect(() => {
     if (employee?.ratings_received) {
       setRatings(employee.ratings_received);
-      console.log(employee.ratings_received, "ratings updated in state");
+      // console.log(employee.ratings_received, "ratings updated in state");
     }
   }, [employee?.ratings_received]);
 
@@ -61,7 +61,7 @@ const EmployeeView = () => {
         const response = await getEmployeeById(id);
         setEmployee(response?.data);
         setEmployeeJobs(response?.data?.applied_jobs);
-        console.log(response?.data, "response employee signle");
+        // console.log(response?.data, "response employee signle");
         // return response;
       } catch (error) {
         console.log(error || "error fetching employee data");
@@ -70,7 +70,7 @@ const EmployeeView = () => {
     getEmployee(id);
   }, [id]);
 
-  console.log(employeeJobs, "employeeJobs >>>>>>");
+  // console.log(employeeJobs, "employeeJobs >>>>>>");
 
   // Function to open the modal
   const openRatingModal = () => {
@@ -94,11 +94,13 @@ const EmployeeView = () => {
       const response = await giveRating(rateData);
 
       showSuccessToast("You've successfully rated!");
-      console.log("Rating submitted successfully:", response.data);
-      setRatings((prevRatings) => [
-        ...prevRatings,
-        response?.data?.ratings_received,
-      ]); // Add new rating
+      // console.log("Rating submitted successfully:", response.rating);
+      if (response?.rating) {
+        setRatings((prevRatings) => [
+          ...prevRatings,
+          response?.rating,
+        ]); // Add new rating
+      }
     } catch (error) {
       console.error("Error submitting rating:", error.message);
     } finally {
@@ -347,7 +349,7 @@ const EmployeeView = () => {
                   <div key={rating.id} className="py-4 border-b last:border-0">
                     <div className="flex items-center mb-2 justify-between">
                       <span className="text-yellow-500 mr-2">
-                        {"⭐".repeat(rating.rating)}
+                        {"⭐".repeat(rating?.rating)}
                       </span>
                       <span className="text-sm text-gray-600">
                         {new Date(rating.created_at).toLocaleDateString()}

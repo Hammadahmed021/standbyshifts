@@ -49,7 +49,7 @@ export default function ContactForm() {
         }
     };
     const handleSignup = async (data) => {
-        console.log(data, 'data');
+        ////console.log(data, 'data');
 
     }
     return (

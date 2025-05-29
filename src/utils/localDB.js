@@ -246,7 +246,7 @@ export const infoLinks = {
 };
 
 export const supportLinks = {
-  "Privacy Policy": "/privacy-policy",
+  // "Privacy Policy": "/privacy-policy",
   // About: "/about",
   Contact: "/contact",
 };

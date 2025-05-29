@@ -58,15 +58,15 @@ const FilterPage = () => {
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type || userData?.type;
 
-  console.log(recentJobs, "recentJobs");
+  ////console.log(recentJobs, "recentJobs");
 
   useEffect(() => {
     const fetchJobs = async () => {
       const response = await getJobsForEmployee();
-      console.log(
-        "responseresponseresponseresponseresponseresponseresponse",
-        response
-      );
+      ////console.log(
+      //   "responseresponseresponseresponseresponseresponseresponse",
+      //   response
+      // );
       setRecentJobs(response?.data?.matchJobs);
       setMatchJobs(response?.data?.recentMatchedJobs);
       setExpertise(response?.data?.expertise);
@@ -79,7 +79,7 @@ const FilterPage = () => {
     fetchJobs();
   }, []);
 
-  console.log(matchJobs, "matchJobs>>>>>>>>>>>>>>>>>>");
+  ////console.log(matchJobs, "matchJobs>>>>>>>>>>>>>>>>>>");
 
   const getSliderSettings = (items = []) => {
     const itemCount = items.length;

@@ -70,7 +70,7 @@ export default function Signup({ onClick }) {
       userAgent,
       ipAddress,
     };
-    console.log(payload, "signup form");
+    ////console.log(payload, "signup form");
 
     try {
       const response = await dispatch(signupUser({ payload })).unwrap();
@@ -84,7 +84,7 @@ export default function Signup({ onClick }) {
       } else {
         navigate("/"); // Fallback if type is not provided
       }
-      console.log("Signup response:", response);
+      ////console.log("Signup response:", response);
     } catch (error) {
       console.error("API Signup failed:", error);
       if (error == "Firebase: Error (auth/email-already-in-use).") {

@@ -14,7 +14,7 @@ const AppliedJobs = () => {
   useEffect(() => {
     const getAppliers = async () => {
       const response = await checkAppliersOnJob();
-      console.log(response?.data, "eresd>>>>>>>>>>");
+      ////console.log(response?.data, "eresd>>>>>>>>>>");
       setAppliers(response?.data);
     };
     getAppliers();

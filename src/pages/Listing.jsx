@@ -42,7 +42,7 @@ const Listing = () => {
   const [isMapView, setIsMapView] = useState(false);
   const param = location?.state?.heading;
   // const [nearByData, setNearByData] = useState([]);
-  console.log(param, "param");
+  ////console.log(param, "param");
 
   const payload = {
     // id: user_id,
@@ -55,7 +55,7 @@ const Listing = () => {
     setLoading(true); // Start loading
     try {
       const response = await fetchUserNearByRestaurants({ payload });
-      console.log(response, "response");
+      ////console.log(response, "response");
 
       const data = await response;
 
@@ -63,15 +63,15 @@ const Listing = () => {
         (item) => item.is_approved && item.status === "active"
       );
       setFilteredData(approveNearbyData);
-      console.log(approveNearbyData, "response of nearby home");
+      ////console.log(approveNearbyData, "response of nearby home");
       return response;
     } catch (error) {
-      console.log(error, "error");
+      ////console.log(error, "error");
     } finally {
       setLoading(false); // end loading
     }
   };
-  console.log(filteredData, "filteredData >>>>>>");
+  ////console.log(filteredData, "filteredData >>>>>>");
 
   // Trigger fetching nearby restaurants when userLocation is available and param is 'nearby'
   useEffect(() => {
@@ -116,7 +116,7 @@ const Listing = () => {
         }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      ////console.log("Geolocation is not supported by this browser.");
     }
   };
 
@@ -162,8 +162,8 @@ const Listing = () => {
           // Fetch featured restaurants by filtering on `is_featured` flag
           const result = await data;
           const featuredData = result.filter((item) => item.is_featured);
-          console.log(featuredData, "featuredData ");
-          console.log(result, "featuredData result");
+          ////console.log(featuredData, "featuredData ");
+          ////console.log(result, "featuredData result");
 
           setFilteredData(featuredData);
         } else if (param === "all restaurant") {
@@ -201,7 +201,7 @@ const Listing = () => {
   };
 
   const transformedData = transformSingleImageData(filteredData);
-  console.log(transformedData, "transformedData");
+  ////console.log(transformedData, "transformedData");
 
   const generateTimeOptionsWithAMPM = () => {
     const options = [];

@@ -44,7 +44,7 @@ export default function Home() {
   const user_id = currentUser?.id || userData?.user?.id;
 
   const { data, loading, error, refetch } = useFetch("hotels", user_id);
-  console.log(user_id, "data");
+  ////console.log(user_id, "data");
 
   useEffect(() => {
     // Refetch data when the user logs out (user_id changes) or when the location changes to "/"
@@ -83,7 +83,7 @@ export default function Home() {
         const permissionStatus = await Geolocation.requestPermissions();
         if (permissionStatus.location === "granted") {
           const coordinates = await Geolocation.getCurrentPosition();
-          console.log("User location:", coordinates);
+          ////console.log("User location:", coordinates);
           setUserLocation({
             latitude: coordinates.coords.latitude,
             longitude: coordinates.coords.longitude,
@@ -110,7 +110,7 @@ export default function Home() {
         }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      ////console.log("Geolocation is not supported by this browser.");
     }
   };
 
@@ -127,7 +127,7 @@ export default function Home() {
   if (pathname === '/') {
     page = 'home'; // Set 'home' when the path is '/'
   } else {
-    console.log(pathname, 'name path'); // Log for other paths
+    ////console.log(pathname, 'name path'); // Log for other paths
   }
   
   const payload = {
@@ -137,7 +137,7 @@ export default function Home() {
     page, // Add 'home' or the page name in the payload
   };
   
-  console.log(userLocation, "userLocation");
+  ////console.log(userLocation, "userLocation");
 
   const getNearbyRestaurant = async () => {
     try {
@@ -148,10 +148,10 @@ export default function Home() {
         (item) => item.is_approved && item.status === "active"
       );
       setNearByData(approveNearbyData);
-      console.log(approveNearbyData, "response of nearby home");
+      ////console.log(approveNearbyData, "response of nearby home");
       return response;
     } catch (error) {
-      console.log(error, "error");
+      ////console.log(error, "error");
     }
   };
 
@@ -165,7 +165,7 @@ export default function Home() {
   // const transformedData = data ? transformData(data) : [];
   // Transform and filter the data
   const transformedData = data ? transformData(data) : [];
-  console.log(transformedData, "transformedData");
+  ////console.log(transformedData, "transformedData");
 
   const approvedData = transformedData.filter(
     (item) => item.is_approved && item.status === "active"
