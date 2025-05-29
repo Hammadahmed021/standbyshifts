@@ -166,24 +166,20 @@ const CompanyProfile = () => {
           <h3 className="text-3xl sm:text-4xl text-tn_dark font-semibold">Rate Company</h3>
         </div>
         <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
-
-
           <div className="flex items-start justify-between mb-6">
             <span className="flex flex-col">
               <h2 className="text-2xl font-semibold capitalize items-center">
                 Rate {companyData?.about?.name}
-
               </h2>
-              <span
-                className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate == true &&
-                  "pointer-events-none opacity-75"
-                  }`}
-                onClick={openRatingModal}
-              >
-                {companyData?.eligibleToRate == true
-                  ? "Already rated"
-                  : "Click to rate"}
-              </span>
+                <span
+                  className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate == true && "pointer-events-none opacity-75"
+                    }`}
+                  onClick={openRatingModal}
+                >
+                  {companyData?.isRated !== true
+                    ? "Already rated"
+                    : "Click to rate"}
+                </span>
             </span>
 
             <span className="flex  gap-1">

@@ -81,7 +81,7 @@ function App() {
   }, [location.pathname, navigate, userData]);
 
   // ////console.log(location.pathname, userData, 'location.pathname');
-  
+
 
   const shouldHideHeaderFooter = hideHeaderFooterRoutes.includes(
     location.pathname
@@ -93,7 +93,7 @@ function App() {
       <div className="flex flex-col min-h-screen">
         {!shouldHideHeaderFooter && <Header />}
         <main className="flex-grow relative px-3 sm:px-0">
-          {loading ? <Loader /> : <Outlet />}
+          {loading ? <div className="min-h-screen flex items-center justify-center"><Loader /> </div> : <Outlet />}
         </main>
         {!shouldHideHeaderFooter && <Footer />}
       </div>
