@@ -12,7 +12,7 @@ export default function Contact() {
           Contact Us
         </h3>
       </div>
-      <div className="container flex items-start my-20 testimonials gap-6">
+      <div className="container flex flex-col lg:flex-row items-start my-20 testimonials gap-6">
         <div className="lg:w-5/12 w-full">
           <div className="flex shadow-md rounded-lg bg-white p-6 border gap-4 items-center mb-6">
             <FaPhone size={50} color='#F59200' />

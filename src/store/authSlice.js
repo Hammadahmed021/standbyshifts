@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Signup, Login as ApiLogin, sendFCMToken } from "../utils/Api";
+import { Signup, Login as ApiLogin, sendFCMToken, verifyUser } from "../utils/Api";
 import {
   createUserWithEmailAndPassword,
   getIdToken,
@@ -17,6 +17,8 @@ const initialState = {
   userData: null,
   loading: false,
   error: null,
+  userName : null,
+  userImage : null,
 };
 // Function to request push notification permissions and get FCM token
 const requestPushNotificationPermission = async () => {
@@ -58,6 +60,50 @@ const requestPushNotificationPermission = async () => {
     return null;
   }
 };
+
+
+// export const fetchCurrentUserData = createAsyncThunk(
+//   "auth/fetchCurrentUserData",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const userAgent = navigator.userAgent;
+//       const ipAddress = await getUserIP();
+//       const token = localStorage.getItem("webToken");
+
+//       const payload = {
+//         userAgent,
+//         ipAddress,
+//         token,
+//       };
+
+//       const response = await verifyUser(payload);
+//       return response.data; // Assumes response has a `data` key
+//     } catch (error) {
+//       console.error("Error fetching user data:", error);
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+
+export const fetchCurrentUserData = createAsyncThunk(
+  'auth/fetchCurrentUserData',
+  async (_, thunkAPI) => {
+    try {
+      const userAgent = navigator.userAgent;
+      const ipAddress = await getUserIP();
+      const token = localStorage.getItem('webToken');
+
+      const payload = { userAgent, ipAddress, token };
+      const response = await verifyUser(payload);
+      const data = response.data;
+      return data; // This will be the action.payload in fulfilled case
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
@@ -172,12 +218,18 @@ const authSlice = createSlice({
       state.userData = null;
       state.loading = false;
       state.error = null;
+      state.userImage = null;
+      state.userName = null;
       // remove token in localStorage
       localStorage.removeItem("webToken");
       localStorage.removeItem("userType");
+      
 
     },
     updateUserData: (state, action) => {
+      console.log(action)
+      state.userImage = action.payload?.userImage;
+      state.userName = action.payload?.userName;
       state.userData = {
         ...state.userData,
         ...action.payload,
@@ -204,11 +256,30 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.userImage = action.payload?.userImage;
+        state.userName = action.payload?.user?.name;
+
+        console.log('add case : ' , action?.payload);
+
         state.status = true;
         state.userData = action.payload;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchCurrentUserData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentUserData.fulfilled, (state, action) => {
+        state.status = true;
+        state.userData = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchCurrentUserData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

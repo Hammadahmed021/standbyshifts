@@ -198,7 +198,7 @@ const Profile = () => {
   };
 
   const onSave = async (data) => {
-    ////console.log(data, "form data");
+    // console.log(data, "form data");
 
     setIsSigning(true);
     setSuccessMessage(""); // Clear previous success message
@@ -265,6 +265,7 @@ const Profile = () => {
       await updateUserProfile(updatedUserData);
 
       dispatch(updateUserData(updatedUserData));
+      console.log(updatedUserData);
       setIsSigning(false);
       setSuccessMessage("Profile updated successfully!");
       // Clear success message after 3 seconds

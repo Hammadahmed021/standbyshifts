@@ -245,9 +245,27 @@ const Profile = () => {
       ////console.log(updatedUserData, "updatedUserData");
 
       // Update user profile on the server
-      await updateEmployerProfile(updatedUserData);
+      // updateEmployerProfile(updatedUserData).then((res)=>{
+      //   const newUserData = {
+      //     ...updatedUserData,
+      //     userName: res?.data?.profile?.name,
+      //     userImage: res?.data?.profile?.employer?.logo,
+      //   };
+      // })
 
-      dispatch(updateUserData(updatedUserData));
+      // dispatch(updateUserData(updatedUserData));
+
+
+      updateEmployerProfile(updatedUserData).then((res) => {
+        const newUserData = {
+          ...updatedUserData,
+          userName: res?.data?.profile?.name,
+          userImage: res?.data?.profile?.employer?.logo,
+        };
+
+        dispatch(updateUserData(newUserData));
+      });
+
       setIsSigning(false);
       setSuccessMessage("Profile updated successfully!");
       // Clear success message after 3 seconds

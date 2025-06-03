@@ -323,12 +323,12 @@ const EmployeeView = () => {
                   Rate {employee?.name}
                 </h2>
                 <span
-                  className={`text-xs underline cursor-pointer ${employee?.eligibleToRate == true &&
+                  className={`text-xs underline cursor-pointer ${employee?.eligibleToRate != true &&
                     "pointer-events-none opacity-75"
                     }`}
                   onClick={openRatingModal}
                 >
-                  {employee?.eligibleToRate == true
+                  {employee?.eligibleToRate != true
                     ? "Already rated"
                     : "Click to rate"}
                 </span>

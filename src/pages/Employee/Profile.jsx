@@ -5,6 +5,7 @@ import { clearAllBookings } from "../../store/bookingSlice";
 import { updateUserData } from "../../store/authSlice";
 import { fallback, relatedFallback } from "../../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 import {
   Button,
   Loader,
@@ -310,13 +311,25 @@ const Profile = () => {
 
       ////console.log(updatedUserData, "updatedUserData");
 
+       updateUserProfile(updatedUserData).then((res) => {
+              const newUserData = {
+                ...updatedUserData,
+                userName: res?.data?.profile?.name,
+                userImage: res?.data?.profile?.employee?.profile_picture,
+              };
+      
+              dispatch(updateUserData(newUserData));
+              setIsSigning(false);
+              setSuccessMessage("Profile updated successfully!");
+            });
+
       // Update user profile on the server
-      const response = await updateUserProfile(updatedUserData);
-      if (response.status === 200 || response.status === 201) {
-        dispatch(updateUserData(updatedUserData));
-        setIsSigning(false);
-        setSuccessMessage("Profile updated successfully!");
-      }
+      // const response = await updateUserProfile(updatedUserData);
+      // if (response.status === 200 || response.status === 201) {
+      //   dispatch(updateUserData(updatedUserData));
+      //   setIsSigning(false);
+      //   setSuccessMessage("Profile updated successfully!");
+      // }
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {

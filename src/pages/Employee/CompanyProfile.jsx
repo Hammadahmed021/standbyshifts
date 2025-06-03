@@ -172,11 +172,11 @@ const CompanyProfile = () => {
                 Rate {companyData?.about?.name}
               </h2>
                 <span
-                  className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate == true && "pointer-events-none opacity-75"
+                  className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate != true && "pointer-events-none opacity-75"
                     }`}
                   onClick={openRatingModal}
                 >
-                  {companyData?.isRated !== true
+                  {companyData?.eligibleToRate !== true
                     ? "Already rated"
                     : "Click to rate"}
                 </span>

@@ -29,6 +29,8 @@ const Header = ({ style }) => {
   const [currentUser, setCurrentUser] = useState([]);
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
+  const userImage = useSelector((state) => state.auth.userImage);
+  const userName = useSelector((state) => state.auth.userName);
   const isDesktop = useMediaQuery("(max-width: 991px)");
   const [toggle, setToggle] = useState(false);
   const { data } = useFetch("hotels"); // Example useFetch hook, adjust as needed
@@ -37,6 +39,26 @@ const Header = ({ style }) => {
   const isApp = Capacitor.isNativePlatform();
 
   const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
+
+   const [profileImage, setProfileImage] = useState(() => {
+    const localImage = localStorage.getItem("profile_image");
+    if (localImage && localImage !== "null" && localImage !== "undefined") {
+      return localImage;
+    }
+    console.log(userData);
+    
+    return (
+      currentUser?.employee?.profile_picture ||
+      currentUser?.employer?.logo ||
+      userData?.profile_image?.name ||
+      avatar
+    );
+  });
+
+  useEffect(()=>{
+    console.log(userImage);
+    
+  },[userImage])
 
   const defaultMenu = (
     <>
@@ -160,24 +182,29 @@ const Header = ({ style }) => {
     }
   };
 
-  const fetchCurrentUserData = async () => {
-    const userAgent = navigator.userAgent;
-    const ipAddress = await getUserIP();
-    const token = localStorage.getItem("webToken");
+ 
+  // const fetchCurrentUserData = async () => {
+  //   localStorage.removeItem('profile_image');
+  //   const userAgent = navigator.userAgent;
+  //   const ipAddress = await getUserIP();
+  //   const token = localStorage.getItem("webToken");
 
-    const payload = {
-      userAgent,
-      ipAddress,
-      token,
-    };
-    try {
-      const response = await verifyUser(payload);
-      const data = await response.data;
-      setCurrentUser(data);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+  //   const payload = {
+  //     userAgent,
+  //     ipAddress,
+  //     token,
+  //   };
+  //   try {
+  //     const response = await verifyUser(payload);
+  //     const data = await response.data;
+  //     setCurrentUser(data);
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //   }
+  // };
+
+
+
 
   // Close menu on route change
   useEffect(() => {
@@ -187,7 +214,7 @@ const Header = ({ style }) => {
   }, [location]); // Trigger when the route changes
 
   useEffect(() => {
-    fetchCurrentUserData();
+    // fetchCurrentUserData();
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -242,7 +269,7 @@ const Header = ({ style }) => {
                 <li className="inline-flex space-x-2">
                   <div className="relative inline-block">
                     <div className="flex items-center cursor-pointer">
-                      <img
+                      {/* <img
                         src={
                           currentUser?.employee?.profile_picture ||
                           currentUser?.employer?.logo ||
@@ -251,11 +278,18 @@ const Header = ({ style }) => {
                         }
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
+                      /> */}
+
+                      
+                      <img
+                        src={userImage}
+                        alt="user profile"
+                        className="w-8 h-8 rounded-full"
                       />
+
+                      
                       <span className="text-tn_dark text-base font-medium ml-2">
-                        {currentUser?.name ||
-                          userData?.user?.name ||
-                          userData?.displayName}
+                        {userName}
                       </span>
                       <span
                         className="p-2"
@@ -367,10 +401,10 @@ const Header = ({ style }) => {
                     <li>424-242-4605</li>
                     <li>customercare@standbyshifts.com</li>
 
-                    <li className="mt-4">
+                    {/* <li className="mt-4">
                       7262 Sepulveda Blvd. <br />
                       Culver City, CA, 90230
-                    </li>
+                    </li> */}
                   </ul>
                   <ul className="flex flex-wrap justify-start space-x-4 mt-6 sm:mt-0 pb-4">
                     <li>
@@ -407,10 +441,74 @@ const Header = ({ style }) => {
               </Link>
             </div>
             <div className="space-x-2">
-              <Link to={"/profile"} className="text-tn_dark">
+
+
+              <ul className="flex ml-auto items-center space-x-6 border-li font-lato font-medium text-base text-tn_text_grey">
+                  {authStatus && (
+                    <li className="inline-flex space-x-2">
+                      <div className="relative inline-block">
+                        <div className="flex items-center cursor-pointer">
+                          <img
+                            src={
+                              currentUser?.employee?.profile_picture ||
+                              currentUser?.employer?.logo ||
+                              userData?.profile_image?.name ||
+                              avatar
+                            }
+                            alt="user profile"
+                            className="w-8 h-8 rounded-full"
+                          />
+                          
+                          <span
+                            className="p-2"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                          >
+                            {isDropdownOpen ? (
+                              <FaChevronUp className="text-tn_pink" size={12} />
+                            ) : (
+                              <FaChevronDown className="text-tn_dark" size={12} />
+                            )}
+                          </span>
+                        </div>
+                        {isDropdownOpen && (
+                          <div
+                            ref={dropdownRef}
+                            className="absolute right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden min-w-[8rem] max-w-[16rem] w-fit"
+                          >
+                            <Link
+                              to={
+                                userData && userType === "employee"
+                                  ? "employee-profile"
+                                  : "employer-profile"
+                              }
+                              className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
+                            >
+                              Profile
+                            </Link>
+                            {userData && userType === "employee" && (
+                              <Link
+                                to={"employee-experience"}
+                                className="block px-4 py-2 text-tn_dark hover:bg-gray-200"
+                              >
+                                Work
+                              </Link>
+                            )}
+                            <div className="block px-4 py-2 text-tn_dark hover:bg-gray-200">
+                              <LogoutBtn />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  )}
+              </ul>
+
+              
+              {/* <Link to={"/profile"} className="text-tn_dark">
                 <LuShoppingBag size={26} />
-              </Link>
+              </Link> */}
             </div>
+            
           </nav>
         )}
       </div>
