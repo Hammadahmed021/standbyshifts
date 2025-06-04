@@ -97,6 +97,12 @@ const CompanyProfile = () => {
 
         // Update the ratings state with the new rating at the top
         setRatings((prevRatings) => [newRating, ...prevRatings]);
+
+        // Update the isRated flag immediately
+        setCompanyData((prevData) => ({
+          ...prevData,
+          isRated: true,
+        }));
       }
     } catch (error) {
       console.error("Error submitting rating:", error.message);
@@ -171,15 +177,35 @@ const CompanyProfile = () => {
               <h2 className="text-2xl font-semibold capitalize items-center">
                 Rate {companyData?.about?.name}
               </h2>
+                {/* <span>
+
+                  {companyData?.isRated
+                    ? "Already rated"
+                    : (companyData?.eligibleToRate) ? "Click to rate" : ""
+                  }
+
+                </span> */}
+
                 <span
-                  className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate != true && "pointer-events-none opacity-75"
+                  className={`text-xs underline cursor-pointer ${(companyData?.isRated || !companyData?.eligibleToRate) ? "pointer-events-none opacity-75" : ""
                     }`}
                   onClick={openRatingModal}
                 >
-                  {companyData?.eligibleToRate !== true
+                  {companyData?.isRated
+                    ? "Already rated"
+                    : (companyData?.eligibleToRate) ? "Click to rate" : ""
+                  }
+                </span>
+
+                {/* <span
+                  className={`text-xs underline cursor-pointer ${companyData?.eligibleToRate == true && "pointer-events-none opacity-75"
+                    }`}
+                  onClick={openRatingModal}
+                >
+                  {companyData?.eligibleToRate == true
                     ? "Already rated"
                     : "Click to rate"}
-                </span>
+                </span> */}
             </span>
 
             <span className="flex  gap-1">

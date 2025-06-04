@@ -322,7 +322,7 @@ const EmployeeView = () => {
                 <h2 className="text-2xl font-semibold capitalize items-center">
                   Rate {employee?.name}
                 </h2>
-                <span
+                {/* <span
                   className={`text-xs underline cursor-pointer ${employee?.eligibleToRate != true &&
                     "pointer-events-none opacity-75"
                     }`}
@@ -331,7 +331,19 @@ const EmployeeView = () => {
                   {employee?.eligibleToRate != true
                     ? "Already rated"
                     : "Click to rate"}
+                </span> */}
+
+                <span
+                  className={`text-xs underline cursor-pointer ${(employee?.isRated || !employee?.eligibleToRate) ? "pointer-events-none opacity-75" : ""
+                    }`}
+                  onClick={openRatingModal}
+                >
+                  {employee?.isRated
+                    ? "Already rated"
+                    : (employee?.eligibleToRate) ? "Click to rate" : ""
+                  }
                 </span>
+
               </span>
 
               <span className="flex  gap-1">
