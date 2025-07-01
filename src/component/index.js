@@ -23,7 +23,7 @@ export { default as Checkbox } from "./Checkbox";
 export { default as Filter } from "./Filter";
 export { default as ForgotPassForm } from "./ForgetPassForm";
 export { default as Loader } from "./Loader";
-export { default as CheckoutForm } from "./StripeCheckOut";
+// export { default as CheckoutForm } from "./StripeCheckOut";
 export { default as RatingModal } from "./RatingModal";
 
 /*stand by shifts */

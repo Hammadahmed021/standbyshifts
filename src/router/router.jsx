@@ -13,7 +13,7 @@ import {
   FAQs,
   Contact,
   Listing,
-  RestaurantReservation,
+  // RestaurantReservation,
   Signup,
   // Profile,
   Thankyou,
@@ -68,7 +68,7 @@ function BaseRouter() {
           <Route path="contact" element={<Contact />} />
           <Route path="listing" element={<Listing />} />
           <Route path="thankyou" element={<Thankyou />} />
-          <Route path="reservation/:id" element={<RestaurantReservation />} />
+          {/* <Route path="reservation/:id" element={<RestaurantReservation />} /> */}
           <Route path="job/:id" element={<JobDetail />} />
           <Route path="jobs" element={<AllJobs />} />
           <Route path="employee-profile" element={<AuthLayout authentication={true}><EmployeeProfile /></AuthLayout>} />

@@ -122,7 +122,7 @@ const AllJobs = () => {
 
   return (
     <div className="container my-10 px-0">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <span className="py-2 w-auto border outline-none focus:bg-gray-50 bg-white text-black rounded-site text-sm duration-200 border-gray-200 flex justify-between shadow-lg">
           <span className="flex items-center">
             <BsBackpack size={18} className="mx-3" />
@@ -140,7 +140,7 @@ const AllJobs = () => {
             onClick={() => handleSearch(searchTerm)}
           />
         </span>
-        {/* Toggle Tabs */}
+        
         <div className="flex border border-gray-200 rounded-site overflow-hidden">
           <button
             onClick={() => setIsShiftView(true)} // Show Applied Shifts
@@ -162,7 +162,55 @@ const AllJobs = () => {
           </button>
         </div>
 
-      </div>
+      </div> */}
+
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          {/* Search Bar */}
+          <span className="py-2 w-full sm:w-auto border outline-none focus:bg-gray-50 bg-white text-black rounded-site text-sm duration-200 border-gray-200 flex justify-between shadow-lg">
+            <span className="flex items-center w-full">
+              <BsBackpack size={18} className="mx-3" />
+              <input
+                type="text"
+                placeholder="Shift title or keywords"
+                className="w-full outline-none"
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </span>
+            <LuSearch
+              size={24}
+              className="bg-tn_primary mr-2 rounded-full w-8 h-8 py-1 px-2 text-white"
+              onClick={() => handleSearch(searchTerm)}
+            />
+          </span>
+
+          {/* Toggle Tabs */}
+          <div className="flex border border-gray-200 rounded-site overflow-hidden w-full sm:w-auto">
+            <button
+              onClick={() => setIsShiftView(true)}
+              className={`w-1/2 sm:w-auto px-4 py-2 text-sm font-medium ${
+                isShiftView
+                  ? "bg-tn_pink text-white"
+                  : "text-gray-500 hover:text-tn_pink"
+              }`}
+            >
+              Applied
+            </button>
+            <button
+              onClick={() => setIsShiftView(false)}
+              className={`w-1/2 sm:w-auto px-4 py-2 text-sm font-medium ${
+                !isShiftView
+                  ? "bg-tn_primary text-white"
+                  : "text-gray-500 hover:text-tn_primary"
+              }`}
+            >
+              Available
+            </button>
+          </div>
+        </div>
+
+
+
       <div className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
           {!displayedJobs || displayedJobs === null ? (

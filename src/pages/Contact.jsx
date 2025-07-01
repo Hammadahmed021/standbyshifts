@@ -42,7 +42,7 @@ export default function Contact() {
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Control Your Workforce Experience.
             </h3>
-            <TestimonialSlider data={testimonial} />
+            {/* <TestimonialSlider data={testimonial} /> */}
           </div>
         </div>
       </div>

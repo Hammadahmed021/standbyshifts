@@ -326,18 +326,32 @@ const ProfileExp = () => {
 
       ////console.log(updatedUserData, "updatedUserData");
 
-      // Update user profile on the server
-      const response = await updateUserProfile(updatedUserData);
-      if (response.status === 200 || response.status === 201) {
-        dispatch(updateUserData(updatedUserData));
-
-        // 🔥 Update local state to reflect changes without reload
+      updateUserProfile(updatedUserData).then((res) => {
+        const newUserData = {
+          ...updatedUserData,
+          userName: res?.data?.profile?.name,
+          userImage: res?.data?.profile?.employee?.profile_picture,
+        };  
+        dispatch(updateUserData(newUserData));
         setTags([...newTags, ...tags]);   // Sync tags with updated data
         setNewTags([]);
-
         setIsSigning(false);
         setSuccessMessage("Profile updated successfully!");
-      }
+      });
+
+
+      // Update user profile on the server
+      // const response = await updateUserProfile(updatedUserData);
+      // if (response.status === 200 || response.status === 201) {
+      //   dispatch(updateUserData(updatedUserData));
+
+      //   // 🔥 Update local state to reflect changes without reload
+      //   setTags([...newTags, ...tags]);   // Sync tags with updated data
+      //   setNewTags([]);
+
+      //   setIsSigning(false);
+      //   setSuccessMessage("Profile updated successfully!");
+      // }
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
@@ -462,6 +476,15 @@ const ProfileExp = () => {
   const saveExperience = (index) => {
     const values = getValues(`experiences.${index}`);
 
+    const jobTitle = values.jobTitle?.trim();
+    const jobDesc = values.jobDesc?.trim();
+      
+      // Check: Don't proceed if both are empty
+    if (!jobTitle || !jobDesc) {
+      // alert("Please enter both title and description before saving experience.");
+      return;
+    }
+
     const experience = {
       jobTitle: values.jobTitle,
       jobDesc: values.jobDesc,
@@ -523,7 +546,11 @@ const ProfileExp = () => {
     // );
 
     if (selectedExperience) {
-      setEditExperiences(selectedExperience);
+      // setEditExperiences(selectedExperience);
+       setEditExperiences({
+        title: selectedExperience.jobTitle ?? selectedExperience.title,
+        description: selectedExperience.jobDesc ?? selectedExperience.description,
+      });
       setEditIndex(index);
       setIsVisible(true);
 
@@ -553,6 +580,16 @@ const ProfileExp = () => {
   };
 
   const updateExpFun = () => {
+
+    const title = editExperiences.title?.trim();
+    const description = editExperiences.description?.trim();
+
+    // Prevent update if title or description is empty
+    if (!title || !description) {
+      // alert("Please fill both the title and description before updating.");
+      return;
+    }
+
     setIsVisible(false);
     const afterFilterExp = savedExperiences.filter((res, i) => i != editIndex);
     setSavedExperiences((prev) => [...afterFilterExp, editExperiences]);
@@ -767,22 +804,26 @@ const ProfileExp = () => {
                       </li>
                     ))}
                   </ul> */}
-                  <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
-                  <ul className="mb-4 flex gap-2 flex-wrap">
-                    {tags?.map((tag, index) => (
-                      <li
-                        key={index}
-                        className="px-2 py-1 text-xs rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
-                      >
-                        {tag}
-                        <FaTrash
-                          onClick={() => removeSkills(index)}
-                          size={11}
-                          className="cursor-pointer"
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                  {tags?.length > 0 && (
+                  <>
+                    <h3 className="font-semibold mt-6 mb-1">My skills:</h3>
+                    <ul className="mb-4 flex gap-2 flex-wrap">
+                      {tags?.map((tag, index) => (
+                        <li
+                          key={index}
+                          className="px-2 py-1 text-xs rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
+                        >
+                          {tag}
+                          <FaTrash
+                            onClick={() => removeSkills(index)}
+                            size={11}
+                            className="cursor-pointer"
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                  )}
                 </div>
 
                 <div className="mb-6">
@@ -862,11 +903,10 @@ const ProfileExp = () => {
                 </div>
 
 
-                <div>
+                {savedExperiences.length > 0 && (<div>
                   <strong className="mt-4 block mb-6">Saved Experience:</strong>
                   <div>
-                    {savedExperiences.length > 0 ? (
-                      savedExperiences.map((work, index) => {
+                    {(savedExperiences.map((work, index) => {
                         ////console.log("experio", index, work);
                         return (
                           <ul>
@@ -901,11 +941,10 @@ const ProfileExp = () => {
                           </ul>
                         );
                       })
-                    ) : (
-                      <p>No work history found.</p>
                     )}
                   </div>
                 </div>
+                )}
               </div>{" "}
               <div className="pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
@@ -964,7 +1003,8 @@ const ProfileExp = () => {
                     <>
                       <div className="overflow-hidden">
                         <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                          Add Your Picture
+                          {/* Add Your Picture */}
+                          Choose A Background Image
                         </h3>
                         <div className="flex items-center py-4">
                           <img
@@ -1023,9 +1063,10 @@ const ProfileExp = () => {
                       </div>
 
                       <span className="mt-4 block font-semibold mb-2">
-                        Select Layout
+                        {/* Select Layout */}
+                        Select a Card Style
                       </span>
-                      <div className="flex space-x-4 justify-start mb-6">
+                      <div className="flex overflow-x-auto space-x-4 justify-start mb-6 pb-2 -mx-2 px-2">
                         {layoutOptions.map((layout) => (
                           <label key={layout.id} className="cursor-pointer">
                             <input

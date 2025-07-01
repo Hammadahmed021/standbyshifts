@@ -264,10 +264,13 @@ const Profile = () => {
         };
 
         dispatch(updateUserData(newUserData));
+        setIsSigning(false);
+        setSuccessMessage("Profile updated successfully!");
+        navigate('/employer')
       });
 
-      setIsSigning(false);
-      setSuccessMessage("Profile updated successfully!");
+      
+
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
@@ -482,9 +485,19 @@ const Profile = () => {
                         setValue("phone", formattedValue); // Update form state with formatted value
                       },
                       validate: {
-                        lengthCheck: (value) =>
-                          value.replace(/\D/g, "").length === 11 ||
-                          "Phone number must be exactly 10 digits after +1",
+                        // lengthCheck: (value) =>
+                        //   value.replace(/\D/g, "").length === 11 ||
+                        //   "Phone number must be exactly 10 digits after +1",
+
+                         lengthCheck: (value) => {
+                          const digits = value.replace(/\D/g, "");
+
+                          // Allow empty input
+                          if (digits.length === 0) return true;
+
+                          // Only validate if something is entered
+                          return digits.length === 11 || "Phone number must be exactly 10 digits after +1";
+                        },
                       },
                     })}
                   />
@@ -548,7 +561,7 @@ const Profile = () => {
                     label="Bio"
                     rows="4" // Adjust the number of rows as needed
                     {...register("about")}
-                    placeholder="About company"
+                    placeholder="About shift seeker"
                     className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
                   />
                 </div>
@@ -604,9 +617,10 @@ const Profile = () => {
 
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                  Select Type of Business
+                  {/* Select Type of Business */}
+                  Choose Your Industry & Business Type
                 </h3>
-                <span className="block mb-4 text-base"><strong>Type of Business:</strong> {fetchUser?.profile?.industry}</span>
+                <span className="block mb-4 text-base"><strong>Selected Business Type:</strong> {fetchUser?.profile?.industry}</span>
 
                 <div className="mb-6">
                   <SelectOption
@@ -704,9 +718,10 @@ const Profile = () => {
                       </div>
 
                       <span className="mt-4 block font-semibold mb-2">
-                        Select Layout
+                        {/* Select Layout */}
+                        Select a Card Style
                       </span>
-                      <div className="flex space-x-4 justify-start mb-6">
+                      <div className="flex overflow-x-auto space-x-4 justify-start mb-6 pb-2 -mx-2 px-2">
                         {layoutOptions.map((layout) => (
                           <label key={layout.id} className="cursor-pointer">
                             <input

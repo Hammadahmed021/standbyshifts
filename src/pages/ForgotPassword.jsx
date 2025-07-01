@@ -18,10 +18,15 @@ const ForgotPassword = () => {
       <Link to={"/"}>
         <img
           src={Logo}
-          className={` ${
+          // className={` ${
+          //   isApp
+          //     ? "w-fit absolute top-8 left-4"
+          //     : "w-fit absolute top-4 left-4"
+          // }`}
+           className={`h-auto max-w-[120px] sm:max-w-[160px] ${
             isApp
-              ? "w-fit absolute top-8 left-4"
-              : "w-fit absolute top-4 left-4"
+              ? "absolute top-8 left-4"
+              : "absolute top-4 left-4"
           }`}
         />
       </Link>

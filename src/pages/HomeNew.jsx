@@ -381,6 +381,7 @@ export default function HomeNew() {
         </div>
       </div>
 
+      {topRatedUsers?.top_rated_employees?.length > 0 && (
       <div className="container">
         <div className="flex flex-col-reverse sm:flex-row items-center space-x-4 relative">
           <div className="md:w-8/12 w-full employees pointer-events-auto">
@@ -398,8 +399,9 @@ export default function HomeNew() {
           </div>
         </div>
       </div>
+      )}
 
-      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
+      {topRatedUsers?.top_rated_employers?.length > 0 && (<div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-12 mt-16 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0 py-6">
         <div className="container h-full flex items-center flex-col sm:flex-row px-4 sm:px-0 ">
           <div className="lg:w-5/12 w-full flex pl-0 sm:pl-10 py-0 flex-col justify-evenly h-full">
             <div className="w-[100%] sm:w-[95%]">
@@ -447,7 +449,7 @@ export default function HomeNew() {
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
 
       <div className="container bg-tn_pink rounded-site p-4 sm:p-12 mb-12 sm:mb-20">
         <div className="flex flex-wrap item-center justify-between">
@@ -538,7 +540,7 @@ export default function HomeNew() {
             <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
               Control Your Workforce Experience.
             </h3>
-            <TestimonialSlider data={testimonial} />
+            {/* <TestimonialSlider data={testimonial} /> */}
           </div>
         </div>
       </div>

@@ -124,7 +124,7 @@ export default function Signup({ onClick }) {
   return (
     <form onSubmit={handleSubmit(handleSignup)} className="mt-8">
       <div className="mt-2">
-        <span className="sm:mb-6 flex flex-col sm:flex-row sm:space-x-2">
+        <span className="sm:mb-6 flex flex-col sm:flex-row sm:space-x-2 ">
           <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
@@ -146,7 +146,7 @@ export default function Signup({ onClick }) {
               <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
             )}
           </span>
-          <span className="w-full">
+          <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
               icon={FaRegEnvelope}
@@ -168,7 +168,7 @@ export default function Signup({ onClick }) {
           </span>
         </span>
 
-        <span className="mb-6 flex flex-col sm:flex-row sm:space-x-2">
+        <span className="mb-6 flex flex-col sm:flex-row sm:space-x-2 ">
           <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
@@ -177,6 +177,7 @@ export default function Signup({ onClick }) {
               maxLength={10}
               minLength={6}
               placeholder="Enter your password"
+              autoComplete="new-password"
               {...register("password", {
                 required: "Password is required",
               })}
@@ -187,7 +188,7 @@ export default function Signup({ onClick }) {
               </p>
             )}
           </span>
-          <span className="w-full">
+          <span className="w-full mb-4 sm:mb-0">
             <Input
               mainInput={"sm:w-full w-full"}
               icon={FaUnlock}
@@ -195,6 +196,7 @@ export default function Signup({ onClick }) {
               maxLength={10}
               minLength={6}
               placeholder="Re-enter your password"
+              autoComplete="new-password"
               {...register("confirmPassword", {
                 required: "Confirm Password is required",
                 validate: (value) =>

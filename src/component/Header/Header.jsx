@@ -12,6 +12,12 @@ import {
   LuUtensilsCrossed,
   LuX,
 } from "react-icons/lu";
+
+import {
+  Button,
+  AuthModal,
+} from "../../component";
+
 import useMediaQuery from "../../hooks/useQuery";
 import useFetch from "../../hooks/useFetch";
 import Search from "../Search";
@@ -23,7 +29,11 @@ import { verifyUser } from "../../utils/Api";
 import { Capacitor } from "@capacitor/core";
 import { FaMessage } from "react-icons/fa6";
 
+import { useNavigate } from "react-router-dom";
+
+
 const Header = ({ style }) => {
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState([]);
@@ -38,6 +48,9 @@ const Header = ({ style }) => {
   const location = useLocation(); // Hook to get the current route
   const isApp = Capacitor.isNativePlatform();
 
+   const [showModal, setShowModal] = useState(false);
+    const [destination, setDestination] = useState(""); // For signup or login
+
   const userType = userData?.type || userData?.user?.type || localStorage.getItem("userType"); // Fetch user type
 
    const [profileImage, setProfileImage] = useState(() => {
@@ -45,7 +58,10 @@ const Header = ({ style }) => {
     if (localImage && localImage !== "null" && localImage !== "undefined") {
       return localImage;
     }
-    console.log(userData);
+    console.log(currentUser?.employee?.profile_picture);
+    console.log(currentUser?.employer?.logo);
+    console.log(userData?.profile_image?.name);
+    console.log(avatar);
     
     return (
       currentUser?.employee?.profile_picture ||
@@ -56,7 +72,7 @@ const Header = ({ style }) => {
   });
 
   useEffect(()=>{
-    console.log(userImage);
+    console.log('state auth user image : ' , userImage);
     
   },[userImage])
 
@@ -149,7 +165,8 @@ const Header = ({ style }) => {
           to={"/post-job"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Post Shift
+          {/* Post Shift */}
+          Post New Shift
         </NavLink>
       </li>
       <li>
@@ -157,7 +174,7 @@ const Header = ({ style }) => {
           to={"/employees"}
           className={({ isActive }) => (isActive ? "text-tn_pink" : "")}
         >
-          Shift Seeker
+          Shift Seekers
         </NavLink>
       </li>
       <li>
@@ -202,6 +219,16 @@ const Header = ({ style }) => {
   //     console.error("Error fetching user data:", error);
   //   }
   // };
+
+  const handleOpenModal = (path) => {
+    setDestination(path); // Set the destination path (signup/login)
+    setShowModal(true); // Show the modal
+  };
+
+  const handleSelectRole = (role) => {
+    // Navigate to the selected path with the role type as state
+    navigate(destination, { state: { type: role } });
+  };
 
 
 
@@ -282,7 +309,7 @@ const Header = ({ style }) => {
 
                       
                       <img
-                        src={userImage}
+                        src={userImage ?? avatar}
                         alt="user profile"
                         className="w-8 h-8 rounded-full"
                       />
@@ -305,7 +332,8 @@ const Header = ({ style }) => {
                     {isDropdownOpen && (
                       <div
                         ref={dropdownRef}
-                        className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden"
+                        // className="absolute left-0 right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden"
+                        className="absolute right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden min-w-[10rem] w-max whitespace-nowrap"
                       >
                         <Link
                           to={
@@ -357,11 +385,12 @@ const Header = ({ style }) => {
                       <li className="inline-block">
                         <span className="text-tn_dark text-lg font-medium">
                           <img
-                            src={
-                              currentUser?.profile_image ||
-                              userData?.profile_image?.name ||
-                              avatar
-                            }
+                            // src={
+                            //   currentUser?.profile_image ||
+                            //   userData?.profile_image?.name ||
+                            //   avatar
+                            // }
+                            src={userImage ?? avatar}
                             alt="user profile"
                             className="w-16 h-16 rounded-full"
                           />
@@ -373,7 +402,13 @@ const Header = ({ style }) => {
                           className="inline-block px-7 rounded-md text-lg bg-tn_pink text-white py-1"
                           style={{ marginTop: isApp ? "10px" : "10px" }}
                         >
-                          <Link to={"/login"}>Login</Link>
+                          {/* <Link to={"/login"}>Login</Link> */}
+
+                          <Link
+                                            onClick={() => handleOpenModal("/login")}
+                                          >
+                                            Log In
+                                          </Link>
                         </li>
                       </>
                     )}
@@ -449,12 +484,13 @@ const Header = ({ style }) => {
                       <div className="relative inline-block">
                         <div className="flex items-center cursor-pointer">
                           <img
-                            src={
-                              currentUser?.employee?.profile_picture ||
-                              currentUser?.employer?.logo ||
-                              userData?.profile_image?.name ||
-                              avatar
-                            }
+                            // src={
+                            //   currentUser?.employee?.profile_picture ||
+                            //   currentUser?.employer?.logo ||
+                            //   userData?.profile_image?.name ||
+                            //   avatar
+                            // }
+                            src={userImage ?? avatar}
                             alt="user profile"
                             className="w-8 h-8 rounded-full"
                           />
@@ -473,7 +509,8 @@ const Header = ({ style }) => {
                         {isDropdownOpen && (
                           <div
                             ref={dropdownRef}
-                            className="absolute right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden min-w-[8rem] max-w-[16rem] w-fit"
+                            // className="absolute right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden min-w-[8rem] max-w-[16rem] w-fit"
+                            className="absolute right-0 top-12 mt-1 bg-white border border-gray-300 shadow-md rounded-lg z-10 overflow-hidden min-w-[10rem] w-max max-w-[16rem]"
                           >
                             <Link
                               to={
@@ -512,6 +549,16 @@ const Header = ({ style }) => {
           </nav>
         )}
       </div>
+
+        {showModal && (
+        <AuthModal
+          title="Define yourself..."
+          onSelectRole={handleSelectRole}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
+
     </header>
   );
 };

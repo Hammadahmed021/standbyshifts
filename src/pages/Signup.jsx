@@ -145,7 +145,7 @@ const Signup = () => {
           <div className="flex flex-col justify-start items-center w-full md:w-11/12 mx-auto h-full">
             <div className="flex items-center justify-between py-4 w-full mb-12">
               <Link to={"/"}>
-                <img src={Logo} className="w-40" />
+                <img src={Logo} className="w-28 sm:w-32 md:w-40" />
               </Link>
               <p className="text-tn_pink text-base font-medium text-center underline">
                 <Link className=" " to={"/login"} state={{ type: userType }}>

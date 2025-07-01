@@ -63,19 +63,23 @@ const Home = () => {
     id: job?.id, // Default layout if not provided
   }));
 
+  // const transformedProfiles = [];
+
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
         <div className="container h-full flex sm:items-end p-6 sm:px-4 ">
           <div className="w-full  py-0 flex-col h-full">
-            <div className="container flex flex-col lg:flex-row items-end justify-between sm:pt-10">
-              <div className="">
+            {/* <div className="container flex flex-col lg:flex-row items-end justify-between sm:pt-10"> */}
+            <div className="container flex flex-col lg:flex-row justify-between sm:pt-10">
+              {/* <div className=""> */}
+              <div className="flex-1">
                 <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
                   {/* Discover the ideal{" "} */}
-                  Connect with Business and Find 
+                  Connect with People and Find&nbsp;
                   <span className="font-bold text-tn_primary inline sm:block">
                     {/* match for staffing needs */}
-                    Shifts that Fit your Schedule.
+                    Shift Seekers that Fit your Schedule.
                   </span>
                 </h2>
                 {/* <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
@@ -83,12 +87,14 @@ const Home = () => {
                   by the readable content of a page when looking at its layout.
                 </p> */}
               </div>
-              <Link
-                to={"/companies"}
-                className="border px-8 py-3 rounded-site text-white font-medium hidden sm:block"
-              >
-                View All
-              </Link>
+               <div className="mt-4 lg:mt-0 self-start lg:self-end">
+                <Link
+                  to={"/employees"}
+                  className="border px-8 py-3 rounded-site text-white font-medium block"
+                >
+                  View All
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -107,7 +113,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className=" py-8 sm:py-16 mb-16 mt-8">
+      {profile?.jobsPostedByYou?.length > 0 && (<div className=" py-8 sm:py-16 mb-16 mt-8">
         <div className="flex items-center justify-between container">
           <h3 className="text-tn_dark text-4xl sm:text-5xl inline sm:block leading-tight font-semibold">
             Recent shift posts
@@ -150,9 +156,9 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div>)}
 
-      <div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-6 py-8 sm:py-12">
+       {candidateApllied?.length > 0 && (<div className="bg-hero sm:h-auto h-auto sm:mb-24 mb-16 mt-20 bg-no-repeat bg-cover container rounded-site overflow-hidden px-6 py-8 sm:py-12">
         <div className="container h-full flex flex-wrap flex-col-reverse sm:flex-row items-center px-0">
           <div className="lg:w-7/12 w-full">
             <div className="flex flex-col items-ends justify-center px-4 sm:px-6 employer">
@@ -172,29 +178,29 @@ const Home = () => {
               <h3 className="text-white text-4xl inline sm:block leading-tight font-semibold">
                 Candidates who applied on your shift
               </h3>
-              <p className=" my-4 text-base w-full text-white  font-normal text-start">
+              {/* <p className=" my-4 text-base w-full text-white  font-normal text-start">
                 It is a long established fact that a reader will be distracted
                 by the readable content of a page when looking at its layout.
-              </p>
-              <Button
+              </p> */}
+              {/* <Button
                 className="mt-8 pointer-events-none border text-white"
                 bgColor="transparent"
               >
                 Find more
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
 
-      <div className="container">
+      {candidateApllied?.length > 0 && (<div className="container">
         <h3 className="text-tn_dark text-3xl sm:text-4xl inline sm:block leading-tight font-semibold text-center">
           Rated Shift Seekers
         </h3>
-        <p className=" my-4 text-base w-full text-tn_dark  font-normal md:w-[40%] text-center mx-auto">
+        {/* <p className=" my-4 text-base w-full text-tn_dark  font-normal md:w-[40%] text-center mx-auto">
           It is a long established fact that a reader will be distracted by the
           readable content of a page when looking at its layout.
-        </p>
+        </p> */}
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {candidateApllied?.map((employee) => (
             <EmpCard
@@ -203,12 +209,12 @@ const Home = () => {
               subheading={employee.subheading}
               employer_name={employee.employer_name || employee.name}
               location={employee.location}
-              isLocation={true}
+              isLocation={false}
               jobId={employee?.id}
             />
           ))}
         </div>
-      </div>
+      </div>)}
 
       <div className="bg-cta-bg bg-cover bg-no-repeat bg-center rounded-2xl h-auto sm:h-[600px] mt-12 container flex flex-wrap mb-10  items-center p-6">
         <div className="w-full sm:w-7/12 pl-0 md:pl-8 pt-8 sm:pt-0">
@@ -219,17 +225,17 @@ const Home = () => {
                 Get your shift done
               </span>
             </h3>
-            <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
+            {/* <p className=" my-4 text-base w-full text-white  font-normal text-start sm:w-[95%]">
               It is a long established fact that a reader will be distracted by
               the readable content of a page when looking at its layout.
-            </p>
+            </p> */}
             <div className="flex container px-0 space-x-3 mt-10">
               <Button
                 onClick={handleRoute}
                 className="bg-white text-tn_pink"
                 textColor="text-tn_pink"
               >
-                Post a Shift
+                Post New Shift
               </Button>
             </div>
           </div>

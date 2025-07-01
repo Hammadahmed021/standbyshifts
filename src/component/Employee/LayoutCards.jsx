@@ -83,7 +83,8 @@ const LayoutCards = ({ profile, layout, type }) => {
               )}
             </h3>
             <p className="text-gray-600 mt-2">
-              {restrictWordCount(profile?.description, 10)}
+              {/* {restrictWordCount(profile?.description, 10)} */}
+              {profile?.description}
             </p>
             {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
@@ -145,7 +146,8 @@ const LayoutCards = ({ profile, layout, type }) => {
               )}
             </h3>
             <p className="text-gray-600 mt-2">
-              {restrictWordCount(profile?.description, 10)}
+              {/* {restrictWordCount(profile?.description, 10)} */}
+              {profile?.description}
             </p>
             {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
@@ -228,7 +230,8 @@ const LayoutCards = ({ profile, layout, type }) => {
               )}
             </h3>
             <p className="text-gray-600 mt-2">
-              {restrictWordCount(profile?.description, 10)}
+              {/* {restrictWordCount(profile?.description, 10)} */}
+              {profile?.description}
             </p>
             {/* <div className="mt-6 gap-2 inline-flex items-center justify-center text-[#3C96B0] bg-[#E9FAFF] px-2 py-1 rounded-2xl">
               <FaLocationPin size={16} />
@@ -318,7 +321,8 @@ const LayoutCards = ({ profile, layout, type }) => {
               {profile?.location}
             </div> */}
             <p className="text-gray-600 mt-2">
-              {restrictWordCount(profile?.description, 10)}
+              {/* {restrictWordCount(profile?.description, 10)} */}
+              {profile?.description}
             </p>
           </div>
         </div>

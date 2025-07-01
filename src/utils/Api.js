@@ -354,14 +354,18 @@ export const updateUserProfile = async (userData) => {
   expertise.forEach((skill) => formData.append("expertise[]", skill));
 
   // Append work history
-  work_history.forEach((work, index) => {
-    formData.append(`work_history[${index}][title]`, work.title);
-    formData.append(`work_history[${index}][description]`, work.description);
-    // formData.append(`work_history[${index}][start_month]`, work.start_month);
-    // formData.append(`work_history[${index}][end_month]`, work.end_month);
-    // formData.append(`work_history[${index}][start_year]`, work.start_year);
-    // formData.append(`work_history[${index}][end_year]`, work.end_year);
-  });
+  if (work_history.length === 0) {
+    formData.append('delete_work_history', true);
+  } else {
+    work_history.forEach((work, index) => {
+      formData.append(`work_history[${index}][title]`, work.title);
+      formData.append(`work_history[${index}][description]`, work.description);
+      // formData.append(`work_history[${index}][start_month]`, work.start_month);
+      // formData.append(`work_history[${index}][end_month]`, work.end_month);
+      // formData.append(`work_history[${index}][start_year]`, work.start_year);
+      // formData.append(`work_history[${index}][end_year]`, work.end_year);
+    });
+  }
 
   // Append profile image if present
   if (profile_picture) {

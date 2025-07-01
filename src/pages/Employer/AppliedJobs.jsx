@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { checkAppliersOnJob } from "../../utils/Api";
 import { JobCard, LoadMore } from "../../component";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const AppliedJobs = () => {
@@ -37,7 +37,10 @@ const AppliedJobs = () => {
               </div>
             ))
           ) : appliers?.length === 0 ? (
-            <h2>No shifts available to manage</h2>
+            // <h2>No shifts available to manage</h2>
+            <>
+              <h2><b>No Shifts Posted Yet</b> <br /> Start by creating your first shift to find the right candidates. Your opportunities will appear here once posted. <Link to="/post-job" className="text-blue-600 underline">Post a new shift</Link></h2>
+            </>
           ) : (
             appliers?.slice(0, visibleJobsCount)?.map((job) => (
               <JobCard

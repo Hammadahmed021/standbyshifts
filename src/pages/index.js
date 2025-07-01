@@ -10,7 +10,7 @@ export { default as TradingCondition } from "./TradingCondition";
 export { default as FAQs } from "./Faqs";
 export { default as Contact } from "./Contact";
 export { default as Listing } from "./Listing";
-export { default as RestaurantReservation } from "./RestaurantReservation";
+// export { default as RestaurantReservation } from "./RestaurantReservation";
 export { default as Signup } from "./Signup";
 // export { default as Profile } from "./Profile";
 export { default as Thankyou } from "./Thankyou";

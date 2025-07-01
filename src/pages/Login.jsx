@@ -90,7 +90,6 @@ const Login = () => {
   
       // Step 4: Check if the user exists or register them
       const response = await getUserFromGmailLogin(payload);
-  
       if (response.status === 200) {
         showSuccessToast("Successfully logged in!");
   
@@ -102,6 +101,8 @@ const Login = () => {
               displayName: user.displayName,
               email: user.email,
               photo: user.photoURL,
+              userName: response?.data?.user?.name,
+              userImage: response?.data?.userImage,
               loginType: user.providerData?.[0]?.providerId,
               type,
             },
@@ -145,7 +146,7 @@ const Login = () => {
           <div className="flex flex-col justify-start items-center w-full md:w-11/12 mx-auto h-full">
             <div className="flex items-center justify-between py-4 w-full mb-12">
               <Link to={"/"}>
-                <img src={Logo} className="w-40" />
+                <img src={Logo} className="w-28 sm:w-32 md:w-40" />
               </Link>
               <p className="text-tn_pink text-base font-medium text-center underline">
                 <Link className=" " to={"/signup"} state={{ type: userType }}>

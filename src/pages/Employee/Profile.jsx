@@ -321,6 +321,7 @@ const Profile = () => {
               dispatch(updateUserData(newUserData));
               setIsSigning(false);
               setSuccessMessage("Profile updated successfully!");
+              navigate('/jobs')
             });
 
       // Update user profile on the server
@@ -792,9 +793,20 @@ const Profile = () => {
                         setValue("phone", formattedValue); // Update form state with formatted value
                       },
                       validate: {
-                        lengthCheck: (value) =>
-                          value.replace(/\D/g, "").length === 11 ||
-                          "Phone number must be exactly 10 digits after +1",
+                        // lengthCheck: (value) =>
+                        //   value.replace(/\D/g, "").length === 11 ||
+                        //   "Phone number must be exactly 10 digits after +1",
+
+                         lengthCheck: (value) => {
+                          const digits = value.replace(/\D/g, "");
+
+                          // Allow empty input
+                          if (digits.length === 0) return true;
+
+                          // Only validate if something is entered
+                          return digits.length === 11 || "Phone number must be exactly 10 digits after +1";
+                        },
+                        
                       },
                     })}
                   />

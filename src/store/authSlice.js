@@ -210,8 +210,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
+      console.log(action.payload);
       state.status = true;
       state.userData = action.payload.userData; // Set userData from action payload
+
+      state.userImage = action.payload?.userData?.userImage;
+      state.userName = action.payload?.userData?.userName;
     },
     logout: (state) => {
       state.status = false;
@@ -256,10 +260,11 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        
+        console.log('add case : ' , action?.payload);
+
         state.userImage = action.payload?.userImage;
         state.userName = action.payload?.user?.name;
-
-        console.log('add case : ' , action?.payload);
 
         state.status = true;
         state.userData = action.payload;

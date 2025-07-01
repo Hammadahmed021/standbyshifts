@@ -168,6 +168,8 @@ const Home = () => {
     id: job?.id, // Default layout if not provided
   }));
 
+  // const transformedProfiles = [];
+
   return (
     <>
       <div className="bg-hero sm:h-[650px] h-auto sm:mb-16 mb-12 mt-2 bg-no-repeat bg-cover container rounded-site overflow-hidden px-0">
@@ -177,7 +179,7 @@ const Home = () => {
               <div className="">
                 <h2 className="text-white text-4xl sm:text-6xl inline sm:block leading-tight">
                   {/* Discover the ideal{" "} */}
-                  Connect with Business and Find 
+                  Connect with Business and Find&nbsp;
                   <span className="font-bold text-tn_primary inline sm:block">
                     {/* match for staffing needs */}
                     Shifts that Fit your Schedule.
@@ -190,7 +192,7 @@ const Home = () => {
               </div>
               <Link
                 to={"/companies"}
-                className="border px-8 py-3 rounded-site text-white font-medium hidden sm:block"
+                className="border px-8 py-3 rounded-site text-white font-medium block"
               >
                 View All
               </Link>
@@ -199,18 +201,23 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="container md:-mt-[350px] lg:-mt-[400px] sm:px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {transformedProfiles?.slice(0, 8)?.map((profile, index) => (
-            <EmpLayoutCards
-              key={index}
-              profile={profile}
-              layout={profile.layout}
-              type={FuckinType}
-            />
-          ))}
+      {transformedProfiles?.length > 0 ? (
+        <div className="container md:-mt-[350px] lg:-mt-[400px] sm:px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {transformedProfiles?.slice(0, 8)?.map((profile, index) => (
+              <EmpLayoutCards
+                key={index}
+                profile={profile}
+                layout={profile.layout}
+                type={FuckinType}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+          // 👇 Just add margin if no profiles
+          <div className="my-10" />
+      )}
 
       {/* hide recent  */}
       
@@ -386,7 +393,7 @@ const Home = () => {
             <h3 className="text-tn_dark text-4xl inline sm:block leading-tight font-semibold">
               Control Your Workforce Experience.
             </h3>
-            <TestimonialSlider data={testimonial} />
+            {/* <TestimonialSlider data={testimonial} /> */}
           </div>
         </div>
       </div>

@@ -55,14 +55,14 @@ const Footer = () => {
                 <ul className="flex flex-col">
                   <li className="mb-2 lg:text-base md:text-sm ">
                     <Link to={userData ? (userType === "employee" ? "/employee" : "/employer") : "/"}>
-                      {userData ? (userType === "employee" ? "Employee Home" : "Employer Home") : "Home"}
+                      {userData ? (userType === "employee" ? "Shift Seeker Home" : "Business Home") : "Home"}
                     </Link>
                   </li>
 
                   {userData && ( // Only render this if `userData` exists
                     <li className="mb-2 lg:text-base md:text-sm ">
                       <Link to={userType === "employee" ? "/companies" : "/employees"}>
-                        {userType === "employee" ? "Find Employer" : "Find Employee"}
+                        {userType === "employee" ? "Find Business" : "Find Shift Seeker"}
                       </Link>
                     </li>
                   )}

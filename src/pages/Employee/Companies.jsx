@@ -11,6 +11,7 @@ const Companies = () => {
   const [filteredJobs, setFilteredJobs] = useState([]); // Filtered jobs after search
   const [visibleJobsCount, setVisibleJobsCount] = useState(4); // Initially show 4 jobs
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [loading, setLoading] = useState(true);
 
   const hasMore = filteredJobs.length > visibleJobsCount;
 
@@ -39,6 +40,8 @@ const Companies = () => {
         setFilteredJobs(response); // Initialize filteredJobs with full data
       } catch (error) {
         console.error("Error fetching jobs:", error);
+      }finally {
+        setLoading(false); // Set loading to false whether success or error
       }
     };
     fetchJobs();
@@ -62,7 +65,7 @@ const Companies = () => {
             <BsBackpack size={18} className="mx-3" />
             <input
               type="text"
-              placeholder="Job title or keywords"
+              placeholder="Search by Name"
               className="w-full outline-none"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
@@ -77,13 +80,17 @@ const Companies = () => {
       </div>
       <div className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {transformedProfiles.length === 0 ? (
-            <h2 className="col-span-4 text-start">No company found</h2>
-          ) : (
-            transformedProfiles.slice(0, visibleJobsCount).map((profile, index) => (
-              <EmpLayoutCards key={index} profile={profile} layout={profile.layout} />
-            ))
-          )}
+
+          {loading ? (
+              <h2 className="col-span-4 text-start">Loading...</h2>
+            ) : transformedProfiles.length === 0 ? (
+              <h2 className="col-span-4 text-start">No Employer Found</h2>
+            ) : (
+              transformedProfiles.slice(0, visibleJobsCount).map((profile, index) => (
+                <EmpLayoutCards key={index} profile={profile} layout={profile.layout} />
+              ))
+            )}
+
         </div>
         {hasMore && (
           <LoadMore

@@ -78,8 +78,14 @@ export const resetPassword = async (email) => {
 
   if (email) {
     ////console.log(email, "after email");
+
+    const actionCodeSettings = {
+      url: "https://standbyshifts.com/",
+      handleCodeInApp: false, // keep false unless you're handling link in app
+    };
+
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
       ////console.log(
       //   "Password reset email sent to the given email address successfully"
       // );
