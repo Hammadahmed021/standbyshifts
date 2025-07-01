@@ -13,6 +13,7 @@ import {
   RatingModal,
   AutoComplete,
   SelectOption,
+  PreviewModal
 } from "../../component";
 import {
   deleteAllUserBookings,
@@ -42,6 +43,7 @@ import {
 } from "react-icons/fa";
 import { FcAbout } from "react-icons/fc";
 import { layoutOptions } from "../../utils/localDB";
+import LayoutCards from "../../component/Employer/LayoutCards";
 
 const MAX_FILE_SIZE_MB = 6; // Maximum file size in MB
 const VALID_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
@@ -78,6 +80,8 @@ const Profile = () => {
   const [editIndex, setEditIndex] = useState(null); // Track which experience is being edited
   const [togglePassword, setTogglePassword] = useState(false);
   const [hideProfile, setHideProfile] = useState(false); // State for hiding the profile section
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Predefined options for the autocomplete dropdown
   // const options = tags;
@@ -277,6 +281,16 @@ const Profile = () => {
       console.error("Error saving profile:", error);
     }
   };
+
+
+  const transformedProfile = {
+    bannerImg: bannerPreview || fallback,
+    image: imagePreview || fallback,
+    title: watch("name") || "No Name",
+    description: watch("short_description") || "No Description",
+    layout: watch("layout") || "1",
+  };
+
 
   const getUserIP = async () => {
     try {
@@ -760,12 +774,20 @@ const Profile = () => {
                 >
                   {isSigning ? "Saving..." : "Save changes"}
                 </Button>
-                <Link
+                {/* <Link
                   to={"/employer-profile-view"}
                   className="shadow-xl transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] w-full text-center bg-tn_dark_blue px-2 py-3 text-white"
                 >
                   View Profile
-                </Link>
+                </Link> */}
+
+                <button
+                  type="button"
+                  onClick={() => setIsPreviewOpen(true)}
+                  className="shadow-xl transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] w-full text-center bg-tn_dark_blue px-2 py-3 text-white"
+                >
+                  Preview
+                </button>
               </div>
               {successMessage && (
                 <p className="text-green-500 mt-3">{successMessage}</p>
@@ -777,6 +799,17 @@ const Profile = () => {
           </div> */}
         </div>
       </div>
+
+      {isPreviewOpen && (
+         <PreviewModal onClose={() => setIsPreviewOpen(false)} title="Card Preview">
+          <LayoutCards
+            profile={transformedProfile}
+            layout={transformedProfile.layout}
+            type="employer"
+          />
+        </PreviewModal>
+      )}
+
     </>
   );
 };

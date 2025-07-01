@@ -28,6 +28,7 @@ export { default as RatingModal } from "./RatingModal";
 
 /*stand by shifts */
 export { default as AuthModal } from "./AuthModal";
+export { default as PreviewModal } from "./PreviewModal";
 export { default as AutoComplete } from "./AutoComplete";
 export { default as EmpCard } from "./EmpCard";
 export { default as EmpCardSlider } from "./EmpCardSlider";
