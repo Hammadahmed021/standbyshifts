@@ -37,8 +37,10 @@ import { showSuccessToast } from "../utils/Toast";
 const EmployeeView = () => {
   const [employee, setEmployee] = useState([]);
   const [employeeJobs, setEmployeeJobs] = useState([]);
+  const [employer, setEmployer] = useState([]);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratings, setRatings] = useState([]); // Initialize with ratings
+  const userImage = useSelector((state) => state.auth.userImage);
 
   const userData = useSelector((state) => state.auth.userData);
   const userType = userData?.user?.type || userData?.type;
@@ -61,7 +63,8 @@ const EmployeeView = () => {
         const response = await getEmployeeById(id);
         setEmployee(response?.data);
         setEmployeeJobs(response?.data?.applied_jobs);
-        // console.log(response?.data, "response employee signle");
+        setEmployer(response?.data);
+        console.log("response employee signle 123123123 : " , response?.data);
         // return response;
       } catch (error) {
         console.log(error || "error fetching employee data");
@@ -130,7 +133,7 @@ const EmployeeView = () => {
                   <span className="flex flex-wrap gap-3 items-center ">
                     <span className="inline-flex flex-wrap text-xs sm:text-sm text-tag_purple bg-tag_purple bg-opacity-20 items-center px-2 py-1 rounded-2xl">
                       <FaEnvelope className="mr-2 text-tag_purple" />
-                      <span className="capitalize">
+                      <span className="break-all max-w-full">
                         {employee?.email || "Experience Level"}
                       </span>
                     </span>
@@ -155,12 +158,13 @@ const EmployeeView = () => {
               {employee?.name || "Employee name"} Applied on your shifts
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
               {employeeJobs.map((job, ind) => (
                 <JobCard
                   className={"border border-tn_light_grey shadow-none"}
                   jobId={job.id}
                   key={job.id}
-                  companyLogo={job?.user?.employer?.logo} // Replace with actual logo
+                  companyLogo={userImage} // Replace with actual logo
                   jobTitle={job.title}
                   companyName={job.city} // You can also pass the company name if available
                   payRate={`$${job.per_hour_rate}`}
@@ -175,6 +179,16 @@ const EmployeeView = () => {
                   description={job.description}
                   userType={userType}
                 // applicants={job?.applicants}
+                applicants={job?.applicants}
+                onClick={() => {
+                  navigate(`/view-applicants/${job?.id}`); // Assuming job detail page is at '/job/:id'
+                }}
+                btnText={true}
+                onClickToEdit={() => {
+                  navigate(`/post-job`, {
+                    state: job,
+                  });
+                }}
 
                 />
               ))}
@@ -185,7 +199,8 @@ const EmployeeView = () => {
             <div className="mb-6">
               <h3 className="text-lg font-semibold">About my self</h3>
               <p className="text-gray-700">
-                {employee?.about || "No description available."}
+                {/* {employee?.about || "No description available."} */}
+                {employee?.short_description || "No description available."}
               </p>
             </div>
             {/* <hr className="border-b border-tn_light_grey my-6" />  */}
@@ -261,7 +276,7 @@ const EmployeeView = () => {
 
         {/* Sidebar */}
         <div className="w-full lg:w-1/3 p-0 ">
-          <div className="p-4  bg-white rounded-2xl shadow-xl h-auto border">
+          {/* <div className="p-4  bg-white rounded-2xl shadow-xl h-auto border">
             <h2 className="text-2xl font-semibold capitalize items-center mb-6">
               Applicant Info
             </h2>
@@ -292,7 +307,7 @@ const EmployeeView = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <BsBackpack2Fill className="mr-2" /> Total Shifts Done
+                <BsBackpack2Fill className="mr-2" /> Total Shifts Posted
               </h4>
               <p className="font-semibold">{employee?.applied_jobs?.length}</p>
             </div>
@@ -314,7 +329,87 @@ const EmployeeView = () => {
               </h4>
               <p className="font-semibold">{employee?.phone}</p>
             </div>
+          </div> */}
+
+
+          <div className="p-4 bg-white rounded-2xl shadow-xl h-auto border">
+            <h2 className="text-2xl font-semibold capitalize items-center mb-6">
+              Applicant Info
+            </h2>
+
+            {/* Member Since */}
+            <div className="mb-4 flex items-start">
+              <div className="w-1/2">
+                <h4 className="inline-flex items-center text-sm text-tag_purple bg-tag_purple bg-opacity-20 px-2 py-1 rounded-2xl">
+                  <FaUserCircle className="mr-2" /> Member Since
+                </h4>
+              </div>
+              <div className="w-1/2">
+                <p className="font-semibold text-right">
+                  {new Date(employee?.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            <hr className="border-b border-tn_light_grey my-6" />
+
+            {/* Type of Business */}
+            <div className="mb-4 flex items-start">
+              <div className="w-1/2">
+                <h4 className="inline-flex items-center text-sm text-tag_brown bg-tag_brown bg-opacity-20 px-2 py-1 rounded-2xl">
+                  <FaBoxesPacking className="mr-2" /> Industry
+                </h4>
+              </div>
+              <div className="w-1/2">
+                <p className="font-semibold text-right">
+                  {employee?.industry ? employee?.industry?.title : "Not specified"}
+                </p>
+              </div>
+            </div>
+
+            <hr className="border-b border-tn_light_grey my-6" />
+
+            {/* Total Shifts Posted */}
+            <div className="mb-4 flex items-start">
+              <div className="w-1/2">
+                <h4 className="inline-flex items-center text-sm text-tag_green bg-tag_green bg-opacity-20 px-2 py-1 rounded-2xl">
+                  <BsBackpack2Fill className="mr-2" /> Shifts Applied
+                </h4>
+              </div>
+              <div className="w-1/2">
+                <p className="font-semibold text-right">{employee?.applied_jobs?.length}</p>
+              </div>
+            </div>
+
+            <hr className="border-b border-tn_light_grey my-6" />
+
+            {/* E-Mail address */}
+            <div className="mb-4 flex items-start">
+              <div className="w-1/2">
+                <h4 className="inline-flex items-center text-sm text-tag_blue bg-tag_blue bg-opacity-20 px-2 py-1 rounded-2xl">
+                  <BsEnvelopeAtFill className="mr-2" /> E-Mail address
+                </h4>
+              </div>
+              <div className="w-1/2">
+                <p className="font-semibold text-right break-words">{employee?.email}</p>
+              </div>
+            </div>
+
+            <hr className="border-b border-tn_light_grey my-6" />
+
+            {/* Phone */}
+            <div className="mb-4 flex items-start">
+              <div className="w-1/2">
+                <h4 className="inline-flex items-center text-sm text-tag_purple bg-tag_purple bg-opacity-20 px-2 py-1 rounded-2xl">
+                  <BsPhoneFill className="mr-2" /> Phone
+                </h4>
+              </div>
+              <div className="w-1/2">
+                <p className="font-semibold text-right break-words">{employee?.phone}</p>
+              </div>
+            </div>
           </div>
+
 
           <div className="p-4  bg-white rounded-2xl shadow-xl h-auto mt-4">
             <div className="flex items-start justify-between mb-6">

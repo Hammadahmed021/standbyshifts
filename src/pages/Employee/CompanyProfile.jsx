@@ -24,6 +24,7 @@ const CompanyProfile = () => {
   const userType = userData?.type || userData?.user?.type;
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratings, setRatings] = useState([]); // Initialize with ratings
+  const [shiftsLoading, setShiftsLoading] = useState(true);
 
   // console.log(companyData, "companyData >>>>>>>>>>>>");
   // console.log(companyId, "companyId >>>>>>>>>>>>");
@@ -117,6 +118,7 @@ const CompanyProfile = () => {
   useEffect(() => {
     const fetchCompanyProfile = async () => {
       try {
+         setShiftsLoading(true);
         if (userType == "employee") {
           const response = await getCompanyProfile(companyId); // Pass companyId to API
           setCompanyData(response.data);
@@ -128,6 +130,8 @@ const CompanyProfile = () => {
         }
       } catch (error) {
         console.error("Error fetching company profile:", error);
+      } finally {
+        setShiftsLoading(false); // Stop shift loading
       }
     };
 
@@ -249,15 +253,24 @@ const CompanyProfile = () => {
           </span> */}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {!companyData || companyData.length === 0 ? (
+          {shiftsLoading ? (
+            <div className="text-center p-4 text-black">
+                <p>
+                 Loading...
+                </p>
+              </div>
+          ) : !companyData || companyData.length === 0 ? (
             // Show skeleton loaders when loading, and a message if no jobs are available
-            <>
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="p-2">
-                  <JobCard loading={true} /> {/* Loader JobCard */}
-                </div>
-              ))}
-              <div className="text-center p-4 text-black">
+            // <>
+            //   {[...Array(3)].map((_, index) => (
+            //     <div key={index} className="p-2">
+            //       <JobCard loading={true} /> {/* Loader JobCard */}
+            //     </div>
+            //   ))}
+              
+            // </>
+
+            <div className="text-center p-4 text-black">
                 <p>
                   No shifts available.{" "}
                   <a href="/post-job" className="text-blue-600 underline">
@@ -265,7 +278,7 @@ const CompanyProfile = () => {
                   </a>
                 </p>
               </div>
-            </>
+
           ) : (
             // If jobs are available, display the jobs list
             companyData?.jobPostedByEmployer

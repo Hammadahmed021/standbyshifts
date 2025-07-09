@@ -221,7 +221,7 @@ const AllJobs = () => {
               </div>
             ))
           ) : displayedJobs?.length === 0 ? (
-            <h2>No data found</h2>
+            <h2>No {isShiftView ? 'applied' : 'available'} shifts at the moment.</h2>
           ) : (
             displayedJobs?.slice(0, visibleJobsCount)?.map((job) => (
               <div key={job?.id} className="p-2">

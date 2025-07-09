@@ -148,6 +148,7 @@ const Home = () => {
     const getAllCompany = async (userType) => {
       try {
         const response = await GetComOrEmp(userType);
+        console.log('get datails : ' , response)
         ////console.log(response, 'getting data based on type', userType);
         setGetDetails(response)
       } catch (error) {

@@ -10,7 +10,7 @@ const AuthLayout = ({ children, authentication = true }) => {
   const userType = localStorage.getItem("userType"); // Fetch user type
   const user = userType || authType
 
-  useEffect(() => {
+  useEffect(() => {      
     const redirectState = JSON.parse(localStorage.getItem("redirectState"));
 
     if (authentication && !authStatus) {
@@ -18,7 +18,7 @@ const AuthLayout = ({ children, authentication = true }) => {
     } else if (!authentication && authStatus) {
       // Redirect based on user type
       if (user === "employee") {
-        navigate("/employee"); // Redirect to employee page
+        // navigate("/employee"); // Redirect to employee page
       } else if (user === "employer") {
         navigate("/employer-profile"); // Redirect to employer page
       } else {

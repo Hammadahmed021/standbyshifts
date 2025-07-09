@@ -177,7 +177,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                     <img
                       src={cardLayout5}
                       alt=""
-                      className="w-full h-full object-cover -z-0"
+                      className="w-full h-full  -z-0"
                     />
                   </span>
                 </div>
@@ -185,7 +185,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   <img
                     src={profile?.image}
                     alt={profile?.title}
-                    className="transform w-24 h-24 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
+                    className="transform w-24 h-24 mr-[70px] object-content rounded-full z-10 border-4 border-white shadow-lg bg-white"
                   />
                 </div>
               </Link>
@@ -205,7 +205,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                     <img
                       src={cardLayout5}
                       alt=""
-                      className="w-full h-full object-cover -z-0"
+                      className="w-full h-full -z-0"
                     />
                   </span>
                 </div>
@@ -213,7 +213,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   <img
                     src={profile?.image}
                     alt={profile?.title}
-                    className="transform w-24 h-24 mr-[70px] object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
+                    className="transform w-24 h-24 mr-[70px] object-content rounded-full z-10 border-4 border-white shadow-lg bg-white"
                   />
                 </div>
               </Link>
@@ -269,7 +269,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   <img
                     src={profile?.image}
                     alt={profile?.title}
-                    className="transform w-24 h-24 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
+                    className="transform w-24 h-24 mx-auto object-content rounded-full z-10 border-4 border-white shadow-lg bg-white"
                   />
                 </div>
               </div>
@@ -299,7 +299,7 @@ const LayoutCards = ({ profile, layout, type }) => {
                   <img
                     src={profile?.image}
                     alt={profile?.title}
-                    className="transform w-24 h-24 mx-auto object-cover rounded-full z-10 border-4 border-white shadow-lg bg-white"
+                    className="transform w-24 h-24 mx-auto object-content rounded-full z-10 border-4 border-white shadow-lg bg-white"
                   />
                 </div>
               </div>

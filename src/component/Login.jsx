@@ -54,16 +54,38 @@ export default function Login({ onClick }) {
 
     try {
       const loginResponse = await dispatch(loginUser({ payload })).unwrap();
+
       if(loginResponse){
         showSuccessToast("Successfully logged in!");
       }
-      if (type == "employee") {
-        navigate("/employee"); // Redirect to employee dashboard
-      } else if (type == "employer") {
-        navigate("/employer"); // Redirect to employer dashboard
-      } else {
-        navigate("/"); // Fallback if type is not provided
+      
+      
+
+      // if (type == "employee") {
+      //   navigate("/employee"); // Redirect to employee dashboard
+      // } else if (type == "employer") {
+      //   navigate("/employer"); // Redirect to employer dashboard
+      // } else {
+      //   navigate("/"); // Fallback if type is not provided
+      // }
+
+
+      if (type === "employee") {
+        if (loginResponse?.user?.is_first_visit) {
+          navigate("/employee-profile");
+        } else {
+          navigate("/employee");
+        }
+        } else if (type === "employer") {
+        if (loginResponse?.user?.is_first_visit) {
+          navigate("/employer-profile");
+        } else {
+          navigate("/employer");
+        }
+        } else {
+        navigate("/"); // fallback
       }
+
       ////console.log("Login Response:", loginResponse);
       // Handle success, navigate user or update UI
     } catch (error) {

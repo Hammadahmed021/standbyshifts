@@ -9,13 +9,16 @@ const AppliedJobs = () => {
   const [appliers, setAppliers] = useState([]);
   const userData = useSelector((state) => state.auth.userData);
   const [visibleJobsCount, setVisibleJobsCount] = useState(6); // Initially show 6 jobs
+  const [loading, setLoading] = useState(true);
 
   const userType = userData?.user?.type || userData?.type;
   useEffect(() => {
     const getAppliers = async () => {
+      setLoading(true); // Start loading
       const response = await checkAppliersOnJob();
       ////console.log(response?.data, "eresd>>>>>>>>>>");
       setAppliers(response?.data);
+      setLoading(false); // End loading
     };
     getAppliers();
   }, []);
@@ -29,13 +32,15 @@ const AppliedJobs = () => {
     <>
       <div className="container my-10">
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
-          {!appliers || appliers === null ? (
+          {/* {!appliers || appliers === null ? ( */}
+          {loading ? (
             // Show skeleton loaders for the number of jobs you expect to show
-            [...Array(3)].map((_, index) => (
-              <div key={index} className="p-2">
-                <JobCard loading={true} /> {/* Loader JobCard */}
-              </div>
-            ))
+            // [...Array(3)].map((_, index) => (
+            //   <div key={index} className="p-2">
+            //     <JobCard loading={true} /> {/* Loader JobCard */}
+            //   </div>
+            // ))
+            <h2 className="col-span-4 text-start">Loading...</h2>
           ) : appliers?.length === 0 ? (
             // <h2>No shifts available to manage</h2>
             <>

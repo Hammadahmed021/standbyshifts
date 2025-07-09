@@ -585,6 +585,26 @@ export const fetchProfileDataEmployee = async () => {
   }
 };
 
+
+export const fetchExperties = async () => {
+  const token = localStorage.getItem("webToken");
+
+  try {
+    const response = await axios.get(`${BASE_URL}employer/get-experties`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    ////console.log(response.data, "profile data");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error || "something went wrong while fetching experties data"
+    );
+  }
+};
+
 export const fetchProfileDataEmployer = async () => {
   const token = localStorage.getItem("webToken");
 

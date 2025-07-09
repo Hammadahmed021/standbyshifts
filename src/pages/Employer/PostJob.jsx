@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Input, SelectOption, Button } from "../../component"; // Assuming Input is in the same folder
-import { postJob, updateJob } from "../../utils/Api";
+import { Input, SelectOption, Button, AutoComplete } from "../../component"; // Assuming Input is in the same folder
+import { fetchExperties, postJob, updateJob } from "../../utils/Api";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/Toast";
-import { FaCalendar, FaClock, FaUnlock } from "react-icons/fa";
+import { FaCalendar, FaClock, FaTrash, FaUnlock } from "react-icons/fa";
 import { FaArrowDownLong, FaArrowLeftLong } from "react-icons/fa6";
 
 const experienceLevels = [
@@ -46,6 +46,60 @@ const PostJob = () => {
     formState: { errors },
   } = useForm();
 
+
+  const [tags, setTags] = useState([]);
+  const [dropdownTags, setDropdownTags] = useState([]);
+  const [newTags, setNewTags] = useState([]);
+
+
+
+  const handleAddTag = (newTag) => {
+  const isDuplicate = tags.includes(newTag) || newTags.includes(newTag);
+    if (!isDuplicate) {
+      setNewTags((prevTags) => [...prevTags, newTag]);
+    } else {
+      showErrorToast(`"${newTag}" is already added to skills!`);
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setNewTags((prevTags) => prevTags.filter(tag => tag !== tagToRemove));
+    setTags((prevTags) => prevTags.filter(tag => tag !== tagToRemove));
+  };
+
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          let data;
+          
+            data = await fetchExperties();
+          
+          // Set tags based on fetched skills, ensuring it's an empty array if skills are undefined
+          // setTags(
+          //   data.expertise
+          //     ? data.expertise.map((skill) => skill.title)
+          //     : []
+          // );
+  
+          setDropdownTags(
+            data.expertise ? data.expertise.map((skill) => skill.title) : []
+          );
+  
+        } catch (error) {
+          console.error(error.message || "Unable to fetch data");
+        }
+      };
+  
+      fetchData(); // Call the async function
+    }, []);
+
+
+  useEffect(() => {
+    const uniqueTags = [...new Set([...tags, ...newTags])];
+    setValue('tags', uniqueTags); // only if using useForm
+  }, [tags, newTags, setValue]);
+
   // useEffect(() => {
   //   if (jobData?.id) {
   //     Object.entries(jobData).forEach(([key, value]) => {
@@ -56,17 +110,36 @@ const PostJob = () => {
   //   }
   // }, []);
 
+  // useEffect(() => {
+  //   if (jobData?.id) {
+  //     Object.entries(jobData).forEach(([key, value]) => {
+  //       if (key === "certificate") {
+  //         setValue(key, value); // Directly set the string value for certificate
+  //       } else {
+  //         setValue(key, value);
+  //       }
+  //     });
+  //   }
+  // }, [jobData, setValue]);
+
+
   useEffect(() => {
     if (jobData?.id) {
       Object.entries(jobData).forEach(([key, value]) => {
         if (key === "certificate") {
-          setValue(key, value); // Directly set the string value for certificate
+          if (value) {
+            const tagArray = value.split(",").map(tag => tag.trim()).filter(Boolean);
+            setTags(tagArray);
+            // setNewTags(tagArray);
+            setValue("certificate", value); // also update form value
+          }
         } else {
           setValue(key, value);
         }
       });
     }
   }, [jobData, setValue]);
+
 
   const removeSeconds = (time) => {
     if (!time) return "";
@@ -77,13 +150,17 @@ const PostJob = () => {
   
 
   const onSubmit = async (data) => {
+    const allTags = [...tags, ...newTags];
+    const combinedTags = [...new Set(allTags)].join(","); // duplicates bhi hata dega
+    // return false;
     ////console.log(data, "form data of job posting");
     setIsLoading(true);
     const formattedData = {
       ...data,
       shift_start_time: removeSeconds(data.shift_start_time),
       shift_end_time: removeSeconds(data.shift_end_time),
-      certificate: data.certificate || "",
+      // certificate: data.certificate || "",
+      certificate: combinedTags || "",
       id: jobData?.id,
     };
 
@@ -119,10 +196,22 @@ const PostJob = () => {
     }
   };
 
+
+    const removeSkills = (index) => {
+    const afterFilterTags = tags.filter((res, i) => i != index);
+    setTags(afterFilterTags);
+  };
+
   return (
     <>
       <div className="container py-6 mb-10 px-2 sm:px-0">
-        <form onSubmit={handleSubmit(onSubmit)} className="">
+        <form onSubmit={handleSubmit(onSubmit)} 
+         onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+          }
+        }}
+        className="">
           <div className="shadow-2xl rounded-2xl p-4 sm:p-6 space-y-4 border">
             <div className="flex justify-between mb-10  ">
               <h2 className="text-3xl sm:text-4xl font-semibold text-tn_dark">
@@ -330,7 +419,38 @@ const PostJob = () => {
             </div>
             <div>
               <h2>Skills</h2>
-              <Input
+
+
+                <AutoComplete
+    options={dropdownTags}
+    onAddTag={handleAddTag}
+    selectedTags={[...newTags]}
+    onRemoveTag={handleRemoveTag}
+  />
+
+
+  {tags?.length > 0 && (
+                    <>
+                      <h3 className="font-semibold mt-6 mb-1">Previously Selected Skills:</h3>
+                      <ul className="mb-4 flex gap-2 flex-wrap">
+                        {tags?.map((tag, index) => (
+                          <li
+                            key={index}
+                            className="px-2 py-1 text-xs rounded-full bg-tn_text_grey text-white inline-flex gap-2 items-center"
+                          >
+                            {tag}
+                            <FaTrash
+                              onClick={() => removeSkills(index)}
+                              size={11}
+                              className="cursor-pointer"
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                    )}
+
+              {/* <Input
                 label="skills"
                 placeholder="Enter skills (comma-separated)"
                 iconColor={"#0000F8"}
@@ -350,7 +470,22 @@ const PostJob = () => {
                     );
                   },
                 })}
-              />
+              /> */}
+
+
+              {/* <Input
+  type="hidden"
+  {...register("certificate", {
+    required: "Certificate is required",
+    validate: (value) => {
+      const expertiseArray = String(value)
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      return expertiseArray.length > 0 || "At least one expertise is required";
+    },
+  })}
+/> */}
 
               {errors.certificate && (
                 <span className="text-red-500">
@@ -554,18 +689,19 @@ const PostJob = () => {
 
             <div className="flex flex-col w-full">
               {/* Previous Experience */}
-              <h2>Previous Experience</h2>
+              {/* <h2>Previous Experience</h2> */}
 
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  {...register("previous_experience", {
-                    required: "Previous experience selection is required",
-                  })}
+                  // {...register("previous_experience", {
+                  //   required: "Previous experience selection is required",
+                  // })}
+                  {...register("previous_experience")}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <span className="text-gray-700">
-                  Do you have previous experience?
+                  experienced shift seekers only
                 </span>
               </label>
               {errors.previous_experience && (

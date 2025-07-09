@@ -81,6 +81,10 @@ const JobCard = ({
     return <JobCardSkeleton />;
   }
 
+  const shouldShowViewShift =
+  userType === "employer" &&
+  (!isEmployer || (applicants && applicants.length > 0));
+
   return (
     <div
       className={`w-full rounded-2xl bg-white p-6 mb-6 flex flex-col h-full ${className}`}
@@ -90,9 +94,10 @@ const JobCard = ({
         <img
           src={companyLogo || fallback}
           alt={companyName}
-          className="w-16 h-16 object-cover mr-4 rounded-lg shadow-md bg-slate-400"
+          className="w-16 h-16 object-content mr-4 rounded-lg shadow-md bg-slate-400"
         />
-        <div>
+        <div className="pr-12">
+          {/* <h2 className="text-base sm:text-xl font-semibold text-tn_dark_field"> */}
           <h2 className="text-base sm:text-xl font-semibold text-tn_dark_field">
             {jobTitle}
           </h2>
@@ -143,7 +148,8 @@ const JobCard = ({
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 text-sm mb-4 flex-grow truncate">
+      {/* <p className="text-gray-600 text-sm mb-4 flex-grow truncate"> */}
+      <p className="text-gray-600 text-sm mb-4 flex-grow">
         {description}
       </p>
 
@@ -162,8 +168,17 @@ const JobCard = ({
           )}
 
           {/* View Job Button */}
-          {userType === "employer" && (
+          {/* {userType === "employer" && (
             <button
+              className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
+              onClick={handleApplyClick}
+            >
+              View Shift
+            </button>
+          )} */}
+
+          {shouldShowViewShift && (
+          <button
               className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
               onClick={handleApplyClick}
             >
@@ -173,7 +188,7 @@ const JobCard = ({
         </div>
       )}
 
-      {userType === "employer" && !isEmployer && (
+      {/* {userType === "employer" && !isEmployer && (
         <div className="mt-auto">
           <button
             className="bg-tn_primary w-full text-white py-2 rounded-full hover:bg-opacity-80 font-medium transition duration-300"
@@ -182,7 +197,9 @@ const JobCard = ({
             View Shift
           </button>
         </div>
-      )}
+      )} */}
+
+      
 
       {/* Apply/View Job Button */}
       {userType === "employee" && (

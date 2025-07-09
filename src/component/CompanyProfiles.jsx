@@ -32,14 +32,14 @@ const CompanyProfiles = ({ profile, layout, count }) => {
                 <img
                   src={profile?.employer?.logo || avatar}
                   alt={profile?.name}
-                  className="rounded-full w-32 h-32 sm:w-44 sm:h-44 mx-auto shadow-md object-cover bg-white border-4 border-slate-200"
+                  className="rounded-full w-32 h-32 sm:w-44 sm:h-44 mx-auto shadow-md object-content bg-white border-4 border-slate-200"
                 />
               </div>
               <div className="second_col text-center sm:text-left mt-4 sm:mt-0">
                 <h2 className="text-2xl sm:text-4xl font-bold mb-4">{profile?.name}</h2>
                 <div className="flex flex-wrap justify-center gap-2">
                   <p className="bg-tag_green bg-opacity-20 p-2 rounded-full text-tag_green inline-flex items-center gap-2 text-sm">
-                    <BsBackpack2Fill /> Total Jobs: {count || "N/A"}
+                    <BsBackpack2Fill /> Total Shifts: {count || 0}
                   </p>
                   <p className="bg-tag_purple bg-opacity-20 p-2 rounded-full text-tag_purple inline-flex items-center gap-2 text-sm">
                     <FaFileZipper />
@@ -61,20 +61,46 @@ const CompanyProfiles = ({ profile, layout, count }) => {
 
               </div>
               <div className="w-full sm:w-4/12 shadow-xl rounded-2xl bg-white p-4">
-                <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
+                {/* <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
                   <h4 className="text-sm text-tag_purple  bg-tag_purple  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaEnvelope /> Email
                   </h4>
                   <p className="font-semibold truncate">{profile?.email}</p>
-                </div>
+                </div> */}
+
+                  <div className="mb-4 flex items-start">
+                                <div className="w-1/2">
+                                  <h4 className="inline-flex items-center text-sm text-tag_blue bg-tag_blue bg-opacity-20 px-2 py-1 rounded-2xl">
+                                    <FaEnvelope className="mr-2" /> E-Mail address
+                                  </h4>
+                                </div>
+                                <div className="w-1/2">
+                                  <p className="font-semibold text-right break-words">{profile?.email}</p>
+                                </div>
+                              </div>
+
+                
+                            
                 <hr className="border-b border-tn_light_grey my-6" />
 
-                <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
+                {/* <div className="mb-4 flex flex-wrap justify-between items-center gap-2">
                   <h4 className="text-sm text-tag_brown  bg-tag_brown  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center gap-2">
                     <FaPhoneAlt /> Phone
                   </h4>
                   <p className="font-semibold truncate">{profile?.phone}</p>
-                </div>
+                </div> */}
+
+
+                <div className="mb-4 flex items-start">
+                                <div className="w-1/2">
+                                  <h4 className="inline-flex items-center text-sm text-tag_blue bg-tag_blue bg-opacity-20 px-2 py-1 rounded-2xl">
+                                    <FaEnvelope className="mr-2" /> Phone
+                                  </h4>
+                                </div>
+                                <div className="w-1/2">
+                                  <p className="font-semibold text-right break-words">{profile?.phone}</p>
+                                </div>
+                              </div>
 
               {/* hiding location after client feedback */}
 

@@ -84,7 +84,7 @@ const Companies = () => {
           {loading ? (
               <h2 className="col-span-4 text-start">Loading...</h2>
             ) : transformedProfiles.length === 0 ? (
-              <h2 className="col-span-4 text-start">No Employer Found</h2>
+              <h2 className="col-span-4 text-start">There are currently no registered businesses. Please check back later to explore available opportunities.</h2>
             ) : (
               transformedProfiles.slice(0, visibleJobsCount).map((profile, index) => (
                 <EmpLayoutCards key={index} profile={profile} layout={profile.layout} />

@@ -34,7 +34,7 @@ const EmpCard = ({
         <img
           src={image}
           alt={title}
-          className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+          className="w-24 h-24 rounded-full object-content border-2 border-gray-300"
         />
       </div>
 

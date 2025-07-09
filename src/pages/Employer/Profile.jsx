@@ -111,6 +111,19 @@ const Profile = () => {
     fetchData(); // Call the async function
   }, []); // Runs once when the component mounts
 
+
+  useEffect(() => {
+  if (fetchUser?.profile?.industry && fetchUser?.industries?.length > 0) {
+    const matched = fetchUser.industries.find(
+      (item) => item.title === fetchUser.profile.industry
+    );
+    if (matched) {
+      setSelectedIndustries([matched]); // Set previous selected value
+    }
+  }
+}, [fetchUser]);
+
+
   const {
     register,
     handleSubmit,
@@ -387,10 +400,14 @@ const Profile = () => {
     const selectedValue = event.target.value; // Extract value from event
 
     // Find the selected industry based on the value
+    // const selectedIndustry = fetchUser?.industries.find(
+    //   (industry) =>
+    //     industry.title === selectedValue ||
+    //     industry.id.toString() === selectedValue
+    // );
+
     const selectedIndustry = fetchUser?.industries.find(
-      (industry) =>
-        industry.title === selectedValue ||
-        industry.id.toString() === selectedValue
+      (industry) => industry.id.toString() === selectedValue
     );
 
     if (selectedIndustry) {
@@ -575,7 +592,7 @@ const Profile = () => {
                     label="Bio"
                     rows="4" // Adjust the number of rows as needed
                     {...register("about")}
-                    placeholder="About shift seeker"
+                    placeholder="Tell us more about your business"
                     className="pl-8 p-2 border normal-case border-tn_light_grey outline-none focus:bg-white focus:active:bg-white bg-white text-black rounded-md duration-200 w-full"
                   />
                 </div>
@@ -632,26 +649,27 @@ const Profile = () => {
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
                   {/* Select Type of Business */}
-                  Choose Your Industry & Business Type
+                  Choose Your Industry
                 </h3>
-                <span className="block mb-4 text-base"><strong>Selected Business Type:</strong> {fetchUser?.profile?.industry}</span>
+                {/* <span className="block mb-4 text-base"><strong>Selected Business Type:</strong> {fetchUser?.profile?.industry}</span> */}
 
                 <div className="mb-6">
                   <SelectOption
                     pl={"pl-0 border p-2 rounded-lg"}
                     // label="Industries"
-                    value={selectedIndustries.map((industry) => industry.title)}
+                    // value={selectedIndustries.map((industry) => industry.title)}
+                    value={selectedIndustries[0]?.id || ""} 
                     onChange={handleFilterChange}
                     options={addAllOption(
                       fetchUser?.industries,
                       "All Business"
                     )}
                   />
-                  <ul>
+                  {/* <ul>
                     {selectedIndustries.map((industry) => (
                       <li key={industry.id}>{industry.title}</li>
                     ))}
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
 
@@ -673,7 +691,8 @@ const Profile = () => {
                     <>
                       <div className="overflow-hidden">
                         <h3 className="text-2xl font-semibold text-tn_dark mb-4">
-                          Picture for profile
+                          {/* Picture for profile */}
+                          Choose a background image for profile card
                         </h3>
                         <div className="flex items-center py-4">
                           <img

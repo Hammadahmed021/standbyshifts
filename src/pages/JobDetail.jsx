@@ -125,7 +125,8 @@ const JobDetail = () => {
               <p className="text-gray-500 flex flex-wrap space-x-2 items-center text-sm">
                 <FaBagShopping size={14} className="mr-2" /> Shift type:{" "}
                 <span className="font-semibold text-tn_dark">
-                  {job?.details?.designation || "Designation"}
+                  {/* {job?.details?.designation || "Designation"} */}
+                  {job?.details?.shifts} shift
                 </span>
               </p>
               <h2 className="text-lg sm:text-2xl font-semibold capitalize flex items-center mt-2">
@@ -265,7 +266,7 @@ const JobDetail = () => {
             </div>
           </div>
           <hr className="border-b border-tn_light_grey my-6" />
-          <h3 className="text-lg font-semibold"> notes</h3>
+          <h3 className="text-lg font-semibold"> Notes</h3>
           <p>{job?.details?.notes || "N/A"}</p>
         </div>
 
@@ -317,7 +318,7 @@ const JobDetail = () => {
 
             <div className="mb-4 flex justify-between items-center">
               <h4 className="text-sm text-tag_green  bg-tag_green  bg-opacity-20  px-2 py-1 rounded-2xl flex justify-between items-center">
-                <BsBackpack2Fill className="mr-2" /> Shift Posts
+                <BsBackpack2Fill className="mr-2" /> Posted Shifts
               </h4>
               <p className="font-semibold">{job?.jobPostCount || '10'}</p>
             </div>

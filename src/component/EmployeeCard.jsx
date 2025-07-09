@@ -41,7 +41,7 @@ const EmployeeDetailCard = ({ profile }) => {
         <img
           src={profileImage}
           alt={name}
-          className="w-[100px] h-[100px] rounded-full object-cover mr-4 shadow-lg"
+          className="w-[100px] h-[100px] rounded-full object-content mr-4 shadow-lg"
         />
         <div>
           <h2 className="font-semibold text-xl capitalize">{name}</h2>
@@ -64,7 +64,7 @@ const EmployeeDetailCard = ({ profile }) => {
             <img
               src={companyLogo}
               alt={companyName}
-              className="w-14 h-14 object-cover mr-3 rounded-md shadow-sm"
+              className="w-14 h-14 object-content mr-3 rounded-md shadow-sm"
             />
             <div>
               <p className="text-gray-500 text-sm">Shift applied:</p>

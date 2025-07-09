@@ -5,6 +5,7 @@ import { clearAllBookings } from "../../store/bookingSlice";
 import { updateUserData } from "../../store/authSlice";
 import { fallback, relatedFallback } from "../../assets";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import LayoutCards from "../../component/Employee/LayoutCards";
 import {
   Button,
   Loader,
@@ -15,6 +16,7 @@ import {
   SelectOption,
   Modal,
   ToggleAvailability,
+  PreviewModal,
 } from "../../component";
 import {
   deleteAllUserBookings,
@@ -122,6 +124,20 @@ const ProfileExp = () => {
     fetchData(); // Call the async function
   }, []); // Runs once when the component mounts
 
+
+  useEffect(() => {
+    if (fetchUser?.profile?.industry && fetchUser?.industries?.length > 0) {
+      
+      const matched = fetchUser.industries.find(
+        (item) => item.title === fetchUser.profile.industry?.title
+      );
+      // console.log('fetchUser : ' , fetchUser.profile.industry);
+      if (matched) {
+        setSelectedIndustries([matched]); // Set previous selected value
+      }
+    }
+  }, [fetchUser]);
+
   const {
     register,
     handleSubmit,
@@ -155,6 +171,8 @@ const ProfileExp = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState(""); // State for error prompt
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Automatically update the form when tags or newTags change (No Duplicates)
   useEffect(() => {
@@ -337,6 +355,7 @@ const ProfileExp = () => {
         setNewTags([]);
         setIsSigning(false);
         setSuccessMessage("Profile updated successfully!");
+        navigate('/jobs')
       });
 
 
@@ -443,10 +462,14 @@ const ProfileExp = () => {
     const selectedValue = event.target.value; // Extract value from event
 
     // Find the selected industry based on the value
-    const selectedIndustry = fetchUser?.industries.find(
-      (industry) =>
-        industry.title === selectedValue ||
-        industry.id.toString() === selectedValue
+    // const selectedIndustry = fetchUser?.industries.find(
+    //   (industry) =>
+    //     industry.title === selectedValue ||
+    //     industry.id.toString() === selectedValue
+    // );
+
+     const selectedIndustry = fetchUser?.industries.find(
+      (industry) => industry.id.toString() === selectedValue
     );
 
     if (selectedIndustry) {
@@ -630,6 +653,16 @@ const ProfileExp = () => {
   const toggleProfileSection = () => {
     setHideProfile((prev) => !prev); // Toggle the hideProfile state
   };
+
+
+
+  const transformedProfile = {
+      bannerImg: bannerPreview || fallback,
+      image: imagePreview || fallback,
+      title: watch("name") || "No Name",
+      description: watch("short_description") || "No Description",
+      layout: watch("layout") || "1",
+    };
 
   return (
     <>
@@ -948,10 +981,10 @@ const ProfileExp = () => {
               </div>{" "}
               <div className="pt-6 mt-6">
                 <h3 className="text-lg sm:text-2xl font-semibold text-tn_dark mb-4">
-                Type of Business
+                Choose Your Industry
                 </h3>
                 <div className="mb-6">
-                  <ul className="mb-4">
+                  {/* <ul className="mb-4">
                     {fetchUser?.profile?.industry ? (
                       <li className="flex gap-2 items-center" key={fetchUser.profile.industry.id}>
                         <strong className="">Industry</strong>
@@ -960,22 +993,23 @@ const ProfileExp = () => {
                     ) : (
                       <li>No business selected yet.</li> // Handle the case where there is no industry
                     )}
-                  </ul>
+                  </ul> */}
                   <SelectOption
                     // label="Industries"
                     pl={"pl-0 border p-2 rounded-lg"}
-                    value={selectedIndustries.map((industry) => industry.title)}
+                    // value={selectedIndustries.map((industry) => industry.title)}
+                    value={selectedIndustries[0]?.id || ""} 
                     onChange={handleFilterChange}
                     options={addAllOption(
                       fetchUser?.industries,
                       "All Business"
                     )}
                   />
-                  <ul>
+                  {/* <ul>
                     {selectedIndustries.map((industry) => (
                       <> <span>Selected Type of Business:</span> <li key={industry.id}>{industry.title}</li></>
                     ))}
-                  </ul>
+                  </ul> */}
                   {/* <ul>
                   {selectedIndustries.map((industry) => (
                     <li key={industry.id}>{industry.title}</li>
@@ -1004,7 +1038,7 @@ const ProfileExp = () => {
                       <div className="overflow-hidden">
                         <h3 className="text-2xl font-semibold text-tn_dark mb-4">
                           {/* Add Your Picture */}
-                          Choose A Background Image
+                          Choose a background image for profile card
                         </h3>
                         <div className="flex items-center py-4">
                           <img
@@ -1095,14 +1129,26 @@ const ProfileExp = () => {
                   )}
                 </div>
               </div>
-              <Button
-                type="submit"
-                className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
-                disabled={isSigning}
-              >
-                {isSigning ? "Saving..." : "Save changes"}
-              </Button>
+
+              <div className="flex space-x-2 items-center justify-between my-3">
+                <Button
+                  type="submit"
+                  className={`w-full  ${isSigning ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  disabled={isSigning}
+                >
+                  {isSigning ? "Saving..." : "Save changes"}
+                </Button>
+
+                <button
+                    type="button"
+                    onClick={() => setIsPreviewOpen(true)}
+                    className="shadow-xl transition duration-500 ease-in-out hover:opacity-80 rounded-[100px] w-full text-center bg-tn_dark_blue px-2 py-3 text-white"
+                  >
+                    Preview
+                </button>
+              </div>
+
               {successMessage && (
                 <p className="text-green-500 mt-3">{successMessage}</p>
               )}
@@ -1113,6 +1159,17 @@ const ProfileExp = () => {
           </div> */}
         </div>
       </div>
+
+      {isPreviewOpen && (
+         <PreviewModal onClose={() => setIsPreviewOpen(false)} title="Card Preview">
+          <LayoutCards
+            profile={transformedProfile}
+            layout={transformedProfile.layout}
+            type="employer"
+          />
+        </PreviewModal>
+      )}
+
     </>
   );
 };
